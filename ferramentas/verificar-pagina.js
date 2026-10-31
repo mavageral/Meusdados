@@ -35,7 +35,7 @@ const tamanhos = [
     const r = await page.evaluate(() => {
       const vis = el => {
         const b = el.getBoundingClientRect(), s = getComputedStyle(el);
-        return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none';
+        return b.width > 0 && b.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity) > 0;
       };
       const rotulo = el => (el.getAttribute('aria-label') || el.textContent || el.tagName).trim().slice(0, 40);
       const clicaveis = [...document.querySelectorAll('a[href], button, [role="button"], input, select, textarea')].filter(vis);

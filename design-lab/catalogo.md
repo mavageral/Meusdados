@@ -58,6 +58,19 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
 - 8 telas: contadores grandes, mapa de calor, check-in, questionário de sintomas, resultado com ilustração.
 - Azul claro e gradientes suaves, números grandes como herói da tela. Bom modelo para **painéis de dados públicos**.
 
+## Kits do Figma (lidos pelo conector)
+
+### DesignCode UI (Meng To): base da **biblioteca de componentes**
+- Arquivo: cópia da Comunidade nos rascunhos da Edna (`figma.com/design/vpdXnMoxH75nSCMBLLEGiQ`). Lido em 31/10/2026 com cerca de 6 leituras do conector.
+- Páginas: Colors, Spacing, Shadows and Blur, Typography & Content, Buttons, Menus, Cards, Icons, Wireframes, Backgrounds, Patterns + templates e seções bloqueados (versão paga).
+- **Cores em duas camadas**: primitivas (12 matizes, cada uma de 50 a 900, mais Neutral) e semânticas: *Foreground Primary/Secondary/Tertiary*, *Container Background/Border/Divider/Inner*, *Button / Button Hover / Button Selected / Button Inactive / Button Foreground*, *Text Gradient*. É a mesma ideia dos nossos tokens (`--text`, `--text-muted`, `--surface`, `--line`, `--accent`…).
+- **Elevação em 3 níveis**: 1 = conteúdo e botões, 2 = cartões flutuantes e menus, 3 = notificações e modais. Cada nível tem as forças *subtle / regular / strong*.
+- **Brilho interno no escuro**: a sombra some no fundo escuro, então a profundidade vem de um *inner glow* de 1px no topo. Adotado como `--glow-inner`.
+- **Botões**: estilos Primary, Secondary, Ghost, *Glow* (borda em gradiente brilhante) e *Shiny*, em 4 tamanhos, com ícone, sempre em pílula.
+- **Menus e campos**: barra de navegação em pílula (marca · links · Entrar · Criar conta), controle segmentado Mensal/Anual, abas (CSS/React/Tailwind), busca, e-mail com ícone, campo de inscrição com botão embutido, menu lateral de conta, calendário.
+- **Cartões**: preço com checklist, confirmação, cartão de crédito, notificações, anéis de progresso, gráficos de barras e clima.
+- Implementado em `design-lab/componentes/` (CSS com prefixo `.c-` + vitrine com seletor de tema).
+
 ## Imagens de inspiração (observadas)
 
 | Referência | O que levar |

@@ -1,12 +1,13 @@
 # Design Lab
 
-A caixa de ferramentas de design do Meusdados. Junta três coisas:
+A caixa de ferramentas de design do Meusdados. Junta quatro coisas:
 
 | Peça | Onde | Para quê |
 |---|---|---|
 | **Temas** (tokens) | `tokens/temas.css` | 8 identidades visuais prontas, extraídas das suas referências. Troque o visual inteiro mudando `data-tema`. |
 | **Catálogo** | `catalogo.md` | O que cada referência ensina: cores e fontes medidas, padrões de tela, qual tema usar em cada tipo de projeto. |
 | **Vitrine** | `index.html` | O mesmo app desenhado nos 8 temas, para comparar e escolher. |
+| **Componentes** | `componentes/` | Botões, campos, menus, cartões, elevação: classes `.c-*` que funcionam nos 8 temas (inspiradas no DesignCode UI). |
 
 E as automações em `.claude/` e `ferramentas/`:
 

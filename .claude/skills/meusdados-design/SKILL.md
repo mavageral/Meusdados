@@ -30,7 +30,8 @@ Use dele: **padrão de página** (ordem das seções, CTA), **regras de UX**, **
 As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. As referências da usuária têm prioridade.
 
 ## 4. Construir
-- Importe `design-lab/tokens/temas.css` e aplique `data-tema="<tema>"` no elemento raiz.
+- Importe `design-lab/tokens/temas.css`, depois `design-lab/componentes/componentes.css`, e aplique `data-tema="<tema>"` no elemento raiz.
+- **Reaproveite os componentes `.c-*`** (botões, campos, menus, cartões, elevação 1/2/3) antes de criar estilos novos. Veja `design-lab/componentes/index.html`. Se criar um componente reutilizável novo, adicione-o lá.
 - Componentes usam **só tokens**: `--bg --surface --surface-2 --line --text --text-muted --accent --on-accent --accent-soft --accent-2 --success --warning --danger --hero --g1..--g4 --font-display --font-body --font-num`, espaçamento `--s-*`, raios `--r-*`, tipografia `--t-*`, movimento `--d-*`. Nada de hex solto no componente.
 - Carregue as fontes do tema pelo Google Fonts (lista no topo de `temas.css`).
 - Reaproveite os padrões do catálogo: número grande + unidade pequena, tab bar em pílula, semana em 7 colunas, um só destaque.
