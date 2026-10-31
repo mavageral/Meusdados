@@ -1770,6 +1770,7 @@ function openMenu(){
     ${(()=>{ const pr=proximidade(); return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${XP()} pontos de domínio</small></div>`; })()}
     <div class="list">
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="diag"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Diagnóstico</b><small>${P().diag?`Feito em ${fmtD(P().diag.data)} · ${P().diag.dom}% do caminho`:"Onde você está hoje e o prazo realista"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="mapa"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Mapa do alvo</b><small>Edital, datas, requisitos, custo, mercado e oportunidades ao vivo</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="direcao" style="border-color:rgb(255 106 26 / .5)"><svg class="icon" style="color:var(--c)"><use href="#i-spark"/></svg><span class="grow"><b>Novo projeto · quiz de direção</b><small>O Claude entende você, mostra caminhos e monta a rotina</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       ${(M.projetos||[]).length>1?`<button class="item" data-m="projetos"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Meus projetos</b><small>${M.projetos.length} projetos · trocar o projeto ativo</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
@@ -1785,6 +1786,7 @@ function openMenu(){
     else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
     else if(m==="docs") openDocs();
     else if(m==="mapa") openMapa();
+    else if(m==="diag") openDiagnostico();
     else if(m==="direcao") openDirecao();
     else if(m==="editor") openEditor();
     else if(m==="projetos") openProjetos();
@@ -1898,6 +1900,87 @@ Responda só com JSON: {"lido":true,"nome":"nome curto do edital","banca":"","re
       }catch(e){ falha(e); } finally{ MAPA_BUSY[pid]=0; } return; }
   };
   openSheet("radial-gradient(120% 60% at 0% 0%,rgb(80 140 255 / .25),transparent 60%),linear-gradient(170deg,#060A1A,#05060A 60%)");
+  draw();
+}
+/* ====================================================================
+   DIAGNÓSTICO (fase C): nivelamento por matéria, distância e prazo realista
+   ==================================================================== */
+const vn = x => String(x).replace(".",",");
+const NIVEIS_AUTO = ["Nunca estudei","Sei pouco","Mais ou menos","Sei bem","Domino"];
+const HORAS_0_100 = 100; /* horas para ir de 0% a 100% de domínio numa matéria de peso normal */
+function pesoMateria(nome){ const mp=P().mapa; const m=mp&&(mp.materias||[]).find(x=>parecida(x.n,nome)); const t=norm(m&&m.peso);
+  return !t ? 1 : /alt|maior|muito|princip/.test(t) ? 1.5 : /baix|menor|pouc/.test(t) ? 0.7 : 1; }
+function horasSemana(){ const w=weekFor(today()); let min=0; for(let d=0;d<7;d++) (w[d].b||[]).forEach(b=>{ if(["grad","tech","anbima"].includes(b.c)) min+=toMin(b.b)-toMin(b.a); }); return Math.round(min/6)/10; }
+function prazoRestante(){ let r=Math.max(1, TOTAL-dayIdx(today())); const nx=proximaData(P().mapa); if(nx && /prova|exame|teste/i.test(nx.rotulo||"")) r=Math.min(r, Math.max(1,nx.dias)); return r; }
+function calcDiag(mats, meta){ const hSem=horasSemana(), prazo=prazoRestante();
+  const L=mats.map(m=>{ const gap=Math.max(0, meta-m.dom), h=gap/100*HORAS_0_100*m.w; return {...m, gap, h:Math.round(h)}; }).sort((a,b)=>b.gap*b.w-a.gap*a.w);
+  const hNec=L.reduce((s,x)=>s+x.h,0), porDia=hSem/7, diasPrev=porDia>0?Math.ceil(hNec/porDia):null, tw=L.reduce((s,x)=>s+x.w,0)||1;
+  const dom=Math.round(L.reduce((s,x)=>s+Math.min(x.dom,meta)/meta*x.w,0)/tw*100);
+  return {mats:L, meta, hSem, hNec, diasPrev, prazo, dom, hDiaNec:Math.round(hNec/prazo*10)/10}; }
+function openDiagnostico(){
+  const keys=Object.keys(SUBJ).slice(0,9), meta=70;
+  const D = {at:0, auto:{}, qs:{}, ans:{}, skip:{}, erro:{}, escolha:"", carregando:{}};
+  const steps = () => ["intro"].concat(keys.map(k=>"m:"+k)).concat(["resultado"]);
+  const F = FLOW = {kind:"diag", next:()=>go(1), back:()=>go(-1),
+    guard:()=>{ if(D.at===0 || F.sair || D.salvo) return false; F.sair=true; $("#shb")?.insertAdjacentHTML("afterbegin",`<div class="ponte" id="dg-sair"><b style="font-weight:600">Sair do diagnóstico?</b><p style="margin:0">As respostas desta vez serão perdidas.</p><div class="row wrap"><button class="btn sm" id="dg-ficar">Continuar</button><button class="btn sm ghost" id="dg-sim">Sair</button></div></div>`);
+      $("#dg-ficar").onclick=()=>{ F.sair=false; $("#dg-sair").remove(); }; $("#dg-sim").onclick=()=>{ F.guard=null; closeSheet(); }; $("#dg-ficar").focus(); return true; }};
+  const kOf = s => s.slice(2);
+  const pedir = k => { if(!aiOn() || D.qs[k] || D.carregando[k] || !SUBJ[k]) return; D.carregando[k]=1; const pj=P(), ed=pj.mapa&&pj.mapa.edital;
+    aiJson(`Teste de NIVELAMENTO (diagnóstico inicial) de "${SUBJ[k].n}" para o alvo "${pj.meta}"${ed&&ed.banca?`, banca ${ed.banca}`:""}. Faça 5 questões de múltipla escolha no estilo e no nível da prova desse alvo, em ordem crescente de dificuldade (2 fáceis, 2 médias, 1 difícil), cobrindo temas diferentes e centrais da matéria${ed&&ed.materias?` (conteúdo do edital: ${JSON.stringify((ed.materias.find(m=>parecida(m.n,SUBJ[k].n))||{}).obs||"")})`:""}. 4 alternativas, uma correta, sem pegadinha de português. Em "tema", o assunto da questão.
+Responda só com JSON: {"qs":[{"tema":"","nivel":"fácil|médio|difícil","p":"","o":["","","",""],"c":0}]}`, {modelTier:"default"})
+      .then(r=>{ D.carregando[k]=0; const qs=(r&&Array.isArray(r.qs)?r.qs:[]).filter(q=>q&&q.p&&Array.isArray(q.o)&&q.o.length===4&&q.c>=0&&q.c<4).slice(0,5); if(qs.length<3) throw {code:"invalid_json"}; D.qs[k]=qs; if(FLOW===F && steps()[D.at]==="m:"+k) draw(); })
+      .catch(e=>{ D.carregando[k]=0; D.erro[k]=aiErr(e); if(FLOW===F && steps()[D.at]==="m:"+k) draw(); }); };
+  const testeOk = k => D.skip[k] || !aiOn() || !!D.erro[k] && !D.qs[k] || (D.qs[k] && D.qs[k].every((q,i)=>(D.ans[k]||{})[i]!=null));
+  const ok = () => { const s=steps()[D.at]; if(s.startsWith("m:")){ const k=kOf(s); return D.auto[k]!=null && testeOk(k); } if(s==="resultado") return !!D.escolha; return true; };
+  const upd = () => { const b=SH.querySelector('[data-sh="next"]'); if(b) b.disabled=!ok(); };
+  const domDe = k => { const a=D.auto[k]*25, q=D.qs[k], r=D.ans[k]||{}; if(D.skip[k]||!q||!q.length||!q.every((x,i)=>r[i]!=null)) return {dom:Math.round(a), teste:false, acertos:null};
+    const ac=q.filter((x,i)=>r[i]===x.c).length; return {dom:Math.round(.75*ac/q.length*100+.25*a), teste:true, acertos:ac, total:q.length}; };
+  const resultado = () => calcDiag(keys.map(k=>({k, n:SUBJ[k].n, auto:D.auto[k], w:pesoMateria(SUBJ[k].n), ...domDe(k)})), meta);
+  const go = d => { const S=steps(); if(d>0 && S[D.at]==="resultado") return salvar(); if(d>0 && !ok()) return; D.at=Math.max(0,Math.min(S.length-1,D.at+d)); draw(); };
+  const draw = () => { const S=steps(), s=S[D.at], base={title:"Diagnóstico", steps:S.length, at:D.at};
+    if(s==="intro") sheetHTML({...base, next:"Começar", body:`<h2 class="q">Onde você está hoje?<small>Para o caminho ser realista, o app precisa saber o seu ponto de partida. Em cada matéria: como você se sente${aiOn()?" e 5 questões rápidas no nível da prova":""}. Leva uns ${aiOn()?Math.round(keys.length*2.5):keys.length} minutos.</small></h2>
+      <div class="glass pad" style="display:grid;gap:6px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><small class="muted">${keys.length} matérias · meta de domínio ${meta}% em cada uma</small></div>
+      ${aiOn()?"":`<p class="note">Sem o Claude ligado, o diagnóstico usa só a sua autoavaliação.</p>`}
+      <p class="faint" style="font-size:13px">Responda sem consultar. "Não sei" é melhor que chutar: o diagnóstico serve para você, não é prova.</p>`});
+    if(s.startsWith("m:")){ const k=kOf(s), i=keys.indexOf(k), q=D.qs[k], r=D.ans[k]||{}; pedir(k); if(keys[i+1]) pedir(keys[i+1]);
+      sheetHTML({...base, next:i===keys.length-1?"Ver resultado":"Próxima matéria", body:`<h2 class="q">${esc(SUBJ[k].n)}<small>Matéria ${i+1} de ${keys.length}.</small></h2>
+        <div class="field"><span>Como você se sente nessa matéria?</span>${`<div class="pick" role="group" data-pick="dga">${NIVEIS_AUTO.map((x,j)=>`<button data-v="${j}" aria-pressed="${D.auto[k]===j}">${x}</button>`).join("")}</div>`}</div>
+        ${!aiOn()||D.skip[k]?(D.skip[k]?`<p class="note">Teste pulado. Vale a sua autoavaliação.</p>`:""):
+          D.erro[k]&&!q?`<p class="note">${esc(D.erro[k])} Vale a sua autoavaliação nesta matéria.</p>`:
+          !q?thinking("Preparando 5 questões…"):
+          q.map((x,qi)=>`<div class="mcq"><span class="tag">Questão ${qi+1} de ${q.length} · ${esc(x.nivel||"")}</span><p class="p">${esc(x.p)}</p>
+            ${x.o.map((o,j)=>`<button class="opt" data-dq="${qi}" data-do="${j}" aria-pressed="${r[qi]===j}"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`).join("")}
+            <button class="opt" data-dq="${qi}" data-do="-1" aria-pressed="${r[qi]===-1}" style="border-style:dashed"><span class="k">?</span><span>Não sei</span></button></div>`).join("")}
+        ${aiOn()&&!D.skip[k]&&!(D.erro[k]&&!q)?`<button class="btn sm ghost" style="min-height:44px;justify-self:start" data-dskip="1">Pular o teste desta matéria</button>`:""}`});
+      SH.querySelectorAll("[data-dq]").forEach(b=>b.addEventListener("click",()=>{ const qi=+b.dataset.dq, o=+b.dataset.do; (D.ans[k]=D.ans[k]||{})[qi]=o; SH.querySelectorAll(`[data-dq="${qi}"]`).forEach(x=>x.setAttribute("aria-pressed",String(x===b))); upd(); }));
+      SH.querySelector("[data-dskip]")?.addEventListener("click",()=>{ D.skip[k]=true; draw(); }); }
+    if(s==="resultado"){ const R=resultado(), atras=R.diasPrev==null||R.diasPrev>R.prazo, novoPrazo=R.diasPrev?Math.min(365, Math.max(14, R.diasPrev + dayIdx(today()))):null;
+      const opc=[]; if(atras){ opc.push(["horas",`Aumentar para ${vn(Math.max(R.hDiaNec, Math.round(R.hSem/7*10)/10))} h de estudo por dia`]); if(novoPrazo && R.diasPrev+dayIdx(today())<=365) opc.push(["prazo",`Mudar o prazo do projeto para ${novoPrazo} dias`]); }
+      opc.push(["priorizar","Priorizar as matérias de maior peso e distância"], ["manter", atras?"Manter como está, sabendo do risco":"Manter a rotina: ela já cabe no prazo"]);
+      sheetHTML({...base, next:"Salvar diagnóstico", body:`<h2 class="q">Seu ponto de partida<small>${R.dom}% do caminho até a meta de ${meta}% em todas as matérias.</small></h2>
+        <div class="glass pad" style="display:grid;gap:4px"><span class="tag">No ritmo da sua rotina</span>
+          <b style="font-weight:300;font-size:clamp(44px,14vw,64px);line-height:1">${R.diasPrev==null?"—":"~"+R.diasPrev}<small style="font-size:16px;font-weight:400"> dias</small></b>
+          <span>${R.diasPrev==null?"A sua rotina ainda não tem blocos de estudo.":`para chegar à meta, com ${vn(R.hSem)} h de estudo por semana (cerca de ${R.hNec} h no total).`}</span>
+          <span class="${atras?"":"muted"}" style="${atras?"color:var(--warn,var(--text))":""}">Seu prazo: ${R.prazo} dias. ${atras?`Para caber, seriam ${vn(R.hDiaNec)} h por dia.`:"Você chega a tempo se mantiver o ritmo."}</span></div>
+        <div class="glass pad" style="display:grid;gap:12px"><h3 class="tag" style="margin:0">Por matéria (da maior prioridade para a menor)</h3>${R.mats.map(m=>`<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.n)}${m.w>1?' <span class="chip" style="font-size:12px;min-height:0;padding:2px 8px">peso alto</span>':""}</span><span class="mono muted">${m.dom}%</span></div>
+          <div class="bar" style="position:relative"><i style="width:${m.dom}%"></i><em style="position:absolute;left:${meta}%;top:-3px;bottom:-3px;width:2px;background:var(--text);opacity:.6"></em></div>
+          <small class="faint">${m.teste?`${m.acertos} de ${m.total} no teste · `:""}você: ${NIVEIS_AUTO[m.auto].toLowerCase()}${m.h?` · cerca de ${m.h} h para a meta`:" · já na meta"}</small></div>`).join("")}</div>
+        <div class="field"><span>O que você decide?</span><div class="pick" role="group" data-pick="dgesc" style="display:grid;gap:8px">${opc.map(([v,t])=>`<button data-v="${v}" aria-pressed="${D.escolha===v}" style="text-align:left;border-radius:16px">${esc(t)}</button>`).join("")}</div></div>
+        <p class="faint" style="font-size:12px">Estimativa: cerca de ${HORAS_0_100} h de estudo para sair do zero e dominar uma matéria de peso normal; matérias de peso alto contam 1,5×. O diagnóstico se refaz quando você quiser.</p>`});
+      F.R=R; F.novoPrazo=novoPrazo; }
+    upd(); const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
+  };
+  F.pick = (g,v) => { const s=steps()[D.at]; if(g==="dga"&&s.startsWith("m:")) D.auto[kOf(s)]=+v; if(g==="dgesc") D.escolha=v; upd(); };
+  const salvar = () => { const R=F.R, top=R.mats.filter(m=>m.gap>0).slice(0,3).map(m=>m.n);
+    const diag={data:iso(today()), meta, dom:R.dom, hSem:R.hSem, hNec:R.hNec, diasPrev:R.diasPrev, prazo:R.prazo, escolha:D.escolha, mats:R.mats.map(m=>({k:m.k, n:m.n, dom:m.dom, auto:m.auto, teste:m.teste, acertos:m.acertos, w:m.w}))};
+    const hist=((P().diags)||[]).concat([diag]).slice(-12);
+    M.projeto=Object.assign({}, M.projeto||{}, {diag, diags:hist});
+    if(D.escolha==="prazo" && F.novoPrazo){ M.projeto.dias=F.novoPrazo; }
+    syncProjetos(); applyProjeto(); saveMain(); D.salvo=true; F.guard=null; closeSheet(); render();
+    if(D.escolha==="horas"){ EDITOR_PEDIDO=`Quero estudar cerca de ${vn(Math.max(R.hDiaNec, Math.round(R.hSem/7*10)/10))} h por dia para chegar no prazo. Dê mais tempo para ${top.join(", ")||"as matérias mais fracas"}, sem tirar os compromissos fixos e o descanso.`; openEditor("claude"); }
+    else if(D.escolha==="priorizar"){ EDITOR_PEDIDO=`Reorganize a semana dando prioridade a ${top.join(", ")||"as matérias de maior peso"} (maior peso e maior distância da meta), sem aumentar o total de horas de estudo.`; openEditor("claude"); }
+    else toast(D.escolha==="prazo"?`Prazo do projeto: ${F.novoPrazo} dias. Diagnóstico salvo.`:"Diagnóstico salvo."); };
+  openSheet("radial-gradient(120% 60% at 50% 0%,rgb(94 230 160 / .22),transparent 60%),linear-gradient(170deg,#06140F,#05060A 60%)");
   draw();
 }
 function openDocs(){
@@ -2211,7 +2294,7 @@ Responda só com JSON: {"contexto":"","materias":[{"k":"","n":"","area":"grad","
     if(A.nome && !M.profile.name) M.profile.name=A.nome;
     if(desc()){ const pl=placarBussola(A.int,A.tal,A.aj); M.profile.bussola={...pl, conf:A.conf, data:iso(today()), proj:id}; }
     syncProjetos(); (M.projetos=M.projetos||[]).push(proj); M.projeto=proj; M.sessao=null;
-    F.guard=null; applyProjeto(); saveMain(); closeSheet(); TAB="hoje"; render(); window.scrollTo({top:0}); toast("Projeto criado. A rotina começa hoje.");
+    F.guard=null; applyProjeto(); saveMain(); closeSheet(); TAB="hoje"; render(); window.scrollTo({top:0}); toast("Projeto criado. Próximo passo: o Diagnóstico, no menu ⋯.");
   };
   openSheet("radial-gradient(120% 60% at 50% 0%,rgb(255 106 26 / .35),transparent 60%),linear-gradient(170deg,#1A0C05,#05060A 60%)");
   draw();
@@ -2279,10 +2362,11 @@ function cleanDay(list, keys, dorme){
 }
 const isEod = b => /integral|antes de dormir|ora[çc][ãa]o (da )?noite/i.test(b.l);
 const toM = s => { const [h,m]=s.split(":").map(Number); return h*60+m; }, fromM = m => `${p2(Math.floor(m/60))}:${p2(m%60)}`;
+let EDITOR_PEDIDO="";
 function openEditor(tab){
   const pj=P(), custom=!!pj.custom, hoje=today();
-  const ED = {tab:tab||"agenda", dia:hoje.getDay(), week:clone(weekFor(hoje)), subj:clone(SUBJ), metas:custom?clone(pj.custom.metas||[]):[], pedido:"", proposta:null, dirty:false, erro:null, confirm:null, undo:null};
-  const orig = clone(ED.week);
+  const ED = {tab:tab||"agenda", dia:hoje.getDay(), week:clone(weekFor(hoje)), subj:clone(SUBJ), metas:custom?clone(pj.custom.metas||[]):[], pedido:EDITOR_PEDIDO, proposta:null, dirty:false, erro:null, confirm:null, undo:null};
+  const orig = clone(ED.week); EDITOR_PEDIDO="";
   const keys = () => new Set(Object.keys(ED.subj));
   const F = FLOW = {kind:"editor", back:()=>{}, next:()=>salvar(),
     guard:()=>{ read(); if(!ED.dirty || F.sair) return false; F.sair=true; const b=$("#shb"); b.insertAdjacentHTML("afterbegin",`<div class="ponte" id="ed-sair"><b style="font-weight:600">Sair sem salvar?</b><p style="margin:0">As mudanças feitas aqui serão perdidas.</p><div class="row wrap"><button class="btn sm primary" id="ed-salvar">Salvar e sair</button><button class="btn sm" id="ed-ficar">Continuar editando</button><button class="btn sm ghost" id="ed-sim">Descartar</button></div></div>`); b.scrollTop=0;
