@@ -91,6 +91,8 @@ O foco é virar um **aplicativo lançado na Play Store e na App Store**. Até l�
 | **2. Site** | URL própria (Vercel) | Primeiras pessoas de fora | Cadastro com e-mail e telefone, banco de dados (Supabase ou Neon), IA e **busca na internet pelo servidor**, para todos, sem a pessoa ligar conectores. |
 | **3. Lojas** | Play Store e App Store | Público | O mesmo app empacotado (PWA + Capacitor), com notificações reais (lembretes da rotina) e assinatura. |
 
+**Andamento (31/10/2026):** a fase 2 começou. O site está no ar em https://yaad1-mavageralcorp-6011s-projects.vercel.app, com login próprio (e-mail e senha, 2 etapas, criar conta, esqueci a senha, sair), banco Supabase `yaad1` em São Paulo e a IA pela API da Anthropic (falta a chave da dona). Detalhes em `projetos/yaad1-site/README.md`.
+
 **Regras para não travar a passagem:** a lógica do método (quiz, plano, metas, medidor) fica separada da tela e do armazenamento; tudo que hoje depende do claude.ai (IA, banco, busca) passa por funções pequenas que poderão ser trocadas por um servidor próprio.
 
 ## Login e compartilhamento

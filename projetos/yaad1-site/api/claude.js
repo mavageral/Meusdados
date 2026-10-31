@@ -4,7 +4,8 @@ import Anthropic from "@anthropic-ai/sdk";
 
 const SUPA_URL = process.env.SUPABASE_URL;
 const SUPA_KEY = process.env.SUPABASE_PUBLISHABLE_KEY;
-const LIMITE = Math.max(1, Number(process.env.LIMITE_DIARIO) || 150);
+const LIMITE = Math.max(1, Number(process.env.LIMITE_DIARIO) || 60);
+const MAX_CHARS = 60000, MAX_MSGS = 40;
 const MODELO = "claude-opus-5-5";
 const ESFORCO = { quick: "low", default: "medium", complex: "high" };
 const client = new Anthropic();
@@ -38,14 +39,17 @@ export default async function handler(req, res) {
   if (!token || !SUPA_URL || !SUPA_KEY) return res.status(401).json({ code: "not_granted" });
   const quem = await supa("/auth/v1/user", token);
   if (!quem || !quem.id) return res.status(401).json({ code: "not_granted" });
+  const { input, tier, web, images } = req.body || {};
+  const base = Array.isArray(input) ? input.slice(-MAX_MSGS).filter((m) => m && (m.role === "user" || m.role === "assistant")).map((m) => ({ role: m.role, content: String(m.content || "") }))
+    : [{ role: "user", content: String(input || "") }];
+  const tamanho = base.reduce((t, m) => t + m.content.length, 0);
+  if (!base.length || base[base.length - 1].role !== "user" || tamanho === 0) return res.status(400).json({ code: "invalid_request" });
+  if (tamanho > MAX_CHARS) return res.status(413).json({ code: "invalid_request", message: "Pedido grande demais. Encurte o texto e tente de novo." });
+  const imgs = (Array.isArray(images) ? images : []).slice(0, 3).filter((s) => typeof s === "string" && s.length < 6_000_000);
+
   const permitido = await supa("/rest/v1/rpc/registrar_uso", token, { limite: LIMITE });
   if (permitido !== true) return res.status(429).json({ code: "rate_limited", message: "Limite diário de uso da IA atingido. Volte amanhã." });
 
-  const { input, tier, web, images } = req.body || {};
-  const base = Array.isArray(input) ? input.filter((m) => m && (m.role === "user" || m.role === "assistant")).map((m) => ({ role: m.role, content: String(m.content || "") }))
-    : [{ role: "user", content: String(input || "") }];
-  if (!base.length || base[base.length - 1].role !== "user") return res.status(400).json({ code: "invalid_request" });
-  const imgs = (Array.isArray(images) ? images : []).slice(0, 3).filter((s) => typeof s === "string" && s.length < 8_000_000);
   if (imgs.length) {
     const ultimo = base[base.length - 1];
     ultimo.content = imgs.map((data) => ({ type: "image", source: { type: "base64", media_type: "image/jpeg", data } })).concat([{ type: "text", text: ultimo.content }]);
@@ -54,12 +58,14 @@ export default async function handler(req, res) {
 
   res.writeHead(200, { "Content-Type": "application/x-ndjson; charset=utf-8", "Cache-Control": "no-store" });
   const linha = (o) => res.write(JSON.stringify(o) + "\n");
-  let messages = base, texto = "", urls = [], final = null;
+  let messages = base, texto = "", urls = [], final = null, atual = null, fechado = false;
+  req.on("close", () => { fechado = true; if (atual) atual.abort(); });
   try {
     for (let volta = 0; volta < 4; volta++) {
-      const stream = client.beta.messages.stream({
+      if (fechado) break;
+      const stream = atual = client.beta.messages.stream({
         model: MODELO,
-        max_tokens: 32000,
+        max_tokens: 16000,
         system: SISTEMA + (web ? SISTEMA_BUSCA : ""),
         output_config: { effort: ESFORCO[tier] || "medium" },
         betas: ["server-side-fallback-2026-07-01"],
@@ -80,7 +86,7 @@ export default async function handler(req, res) {
     if (error instanceof Anthropic.RateLimitError) code = "rate_limited";
     else if (error instanceof Anthropic.AuthenticationError) code = "not_granted";
     else if (error instanceof Anthropic.BadRequestError) code = "invalid_request";
-    linha({ erro: code, message: "O Claude não respondeu agora. Tente de novo em instantes." });
+    if (!fechado) linha({ erro: code, message: "O Claude não respondeu agora. Tente de novo em instantes." });
   }
   res.end();
 }

@@ -13,7 +13,7 @@ O site é o mesmo app do claude.ai (`projetos/sala-caverna/index.html`), com log
 - `ANTHROPIC_API_KEY`: chave da API da Anthropic (custo por uso). **Só a dona coloca, no painel da Vercel.**
 - `SUPABASE_URL` = `https://yjladiqrabbzulpzteqy.supabase.co`
 - `SUPABASE_PUBLISHABLE_KEY` = a chave pública do Supabase (a mesma do `yaad1-shim.js`)
-- `LIMITE_DIARIO` (opcional): chamadas de IA por pessoa por dia (padrão 150).
+- `LIMITE_DIARIO` (opcional): chamadas de IA por pessoa por dia (padrão 60; o banco limita a 200 por pessoa e 1.500 no total por dia).
 
 ## A conta da dona
 1. A Edna cria a conta no site com o e-mail dela e a senha que ela escolher.

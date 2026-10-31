@@ -7,9 +7,16 @@
   const SUPA_KEY = "sb_publishable_0f7-1I2ak8vqvqhqzIfCzA_kN15Bcff"; /* chave pública por natureza */
   const CHAVE_SESSAO = "sb-yjladiqrabbzulpzteqy-auth-token";
 
-  /* Sem sessão salva, apaga o cache local do app antes de ele ler (aparelho compartilhado). */
-  const limparCache = () => { try { Object.keys(localStorage).filter((k) => k.startsWith("cav:")).forEach((k) => localStorage.removeItem(k)); } catch (e) {} };
-  try { if (!localStorage.getItem(CHAVE_SESSAO)) limparCache(); } catch (e) {}
+  const CHAVE_DONO_CACHE = "yaad:uid"; /* de quem é o cache local do app (cav:*) */
+
+  /* Aparelho compartilhado: o cache local do app só vale para a pessoa da sessão salva e ainda válida. */
+  const limparCache = () => { try { Object.keys(localStorage).filter((k) => k.startsWith("cav:") || k === CHAVE_DONO_CACHE).forEach((k) => localStorage.removeItem(k)); } catch (e) {} };
+  try {
+    const salva = JSON.parse(localStorage.getItem(CHAVE_SESSAO) || "null"), id = salva && salva.user && salva.user.id;
+    const valida = salva && (!salva.expires_at || salva.expires_at * 1000 > Date.now() - 7 * 864e5);
+    if (!id || !valida || localStorage.getItem(CHAVE_DONO_CACHE) !== id) limparCache();
+  } catch (e) { limparCache(); }
+  let cacheInicial = false; try { cacheInicial = !!localStorage.getItem("cav:main"); } catch (e) {}
 
   window.YAAD_SITE = true;
   let sb = null, sessao = null, liberar;
@@ -22,7 +29,15 @@
     "Email not confirmed": "Confirme o seu e-mail pelo link que enviamos antes de entrar.",
     "User already registered": "Já existe uma conta com este e-mail. Use Entrar.",
   };
-  const traduz = (e) => MSG[e && e.message] || (e && /password/i.test(e.message || "") ? "A senha precisa ter pelo menos 8 caracteres, com letras e números." : "Não deu certo agora. Tente de novo.");
+  const POR_CODIGO = {
+    invalid_credentials: "E-mail ou senha incorretos.", email_not_confirmed: "Confirme o seu e-mail pelo link que enviamos antes de entrar.",
+    user_already_exists: "Já existe uma conta com este e-mail. Use Entrar.", weak_password: "Senha fraca: use pelo menos 8 caracteres, com letras e números.",
+    same_password: "A senha nova precisa ser diferente da atual.", insufficient_aal: "Confirme primeiro o código das 2 etapas.",
+    over_email_send_rate_limit: "Muitos e-mails em pouco tempo. Espere alguns minutos e tente de novo.", email_address_invalid: "Este e-mail não é válido.",
+    over_request_rate_limit: "Muitas tentativas. Espere um pouco e tente de novo.",
+  };
+  const traduz = (e) => (e && POR_CODIGO[e.code]) || MSG[e && e.message] || "Não deu certo agora. Tente de novo.";
+  const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
   /* ---------- tela de login ---------- */
   let caixa = null;
@@ -30,17 +45,21 @@
     if (caixa) return caixa;
     caixa = el(`<div id="yaad-auth" role="dialog" aria-modal="true" aria-labelledby="ya-t" style="position:fixed;inset:0;z-index:9999;overflow:auto;background:radial-gradient(120% 70% at 50% 0%,rgb(255 106 26 / .30),transparent 60%),var(--bg,#05060A);color:var(--text,#fff);font-family:inherit">
       <div style="max-width:420px;margin:0 auto;padding:48px 16px 32px;display:grid;gap:16px" id="ya-in"></div></div>`);
+    focoAntes = document.activeElement;
+    [...document.body.children].forEach((x) => { if (x !== caixa) x.inert = true; });
     document.body.append(caixa);
+    caixa.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && caixa && caixa.dataset.fechavel) fecharCaixa(); });
     return caixa;
   }
-  function fecharCaixa() { if (caixa) { caixa.remove(); caixa = null; } }
+  let focoAntes = null;
+  function fecharCaixa() { if (caixa) { caixa.remove(); caixa = null; [...document.body.children].forEach((x) => { x.inert = false; }); if (focoAntes && focoAntes.isConnected) focoAntes.focus(); } }
   function tela(titulo, sub, corpo, aoMontar) {
     abrirCaixa();
     const box = caixa.querySelector("#ya-in");
     box.innerHTML = `<div class="lema" style="font-size:13px;letter-spacing:.12em;text-transform:uppercase;opacity:.8">Yaad1 · um alvo, um caminho</div>
       <h1 id="ya-t" tabindex="-1" style="outline:none;font-weight:300;font-size:clamp(34px,9vw,48px);line-height:1.05;margin:0">${titulo}</h1>
       ${sub ? `<p class="muted" style="margin:0">${sub}</p>` : ""}
-      <div role="alert" id="ya-erro" class="note" hidden></div>${corpo}`;
+      <div role="alert" id="ya-erro" hidden style="border:1px solid var(--bad,#ff6b6b);color:var(--bad,#ff6b6b);border-radius:14px;padding:10px 14px"></div>${corpo}`;
     box.querySelector("#ya-t").focus();
     if (aoMontar) aoMontar(box);
   }
@@ -55,6 +74,7 @@
       <div class="row wrap" style="gap:8px;justify-content:space-between"><button class="btn ghost" style="min-height:44px" id="ya-criar">Criar conta</button><button class="btn ghost" style="min-height:44px" id="ya-esq">Esqueci a senha</button></div>`, (b) => {
       b.querySelector("#ya-criar").onclick = telaCriar; b.querySelector("#ya-esq").onclick = telaEsqueci;
       b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro(""); const btn = b.querySelector("#ya-ok"); ocupado(btn, true, "Entrando…");
+        if (!emailOk(b.querySelector("#ya-e").value.trim())) { ocupado(btn, false, "Entrar"); return erro("Digite um e-mail válido."); }
         const { error } = await sb.auth.signInWithPassword({ email: b.querySelector("#ya-e").value.trim(), password: b.querySelector("#ya-s").value });
         ocupado(btn, false, "Entrar"); if (error) return erro(traduz(error)); await depoisDeEntrar(); };
     });
@@ -67,6 +87,7 @@
       <button class="btn ghost" style="min-height:44px;justify-self:start" id="ya-volta">Já tenho conta</button>`, (b) => {
       b.querySelector("#ya-volta").onclick = telaEntrar;
       b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro("");
+        if (!emailOk(b.querySelector("#ya-e").value.trim())) return erro("Digite um e-mail válido.");
         const s = b.querySelector("#ya-s").value; if (s.length < 8) return erro("A senha precisa ter pelo menos 8 caracteres."); if (s !== b.querySelector("#ya-s2").value) return erro("As duas senhas não são iguais.");
         const btn = b.querySelector("#ya-ok"); ocupado(btn, true, "Criando…");
         const { data, error } = await sb.auth.signUp({ email: b.querySelector("#ya-e").value.trim(), password: s, options: { data: { nome: b.querySelector("#ya-n").value.trim() }, emailRedirectTo: location.origin + location.pathname } });
@@ -88,21 +109,29 @@
       };
     });
   }
-  function telaNovaSenha() {
+  function telaNovaSenha(daConta) {
     tela("Senha nova", "Crie a sua senha nova.", `
-      <form id="ya-f" style="display:grid;gap:12px" novalidate>${campo("ya-s", "Senha nova (mínimo 8 caracteres)", "password", "new-password", 'minlength="8" required')}<button class="btn primary" style="min-height:48px" id="ya-ok">Salvar senha</button></form>`, (b) => {
-      b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro(""); const s = b.querySelector("#ya-s").value; if (s.length < 8) return erro("A senha precisa ter pelo menos 8 caracteres.");
-        const { error } = await sb.auth.updateUser({ password: s }); if (error) return erro(traduz(error)); await depoisDeEntrar(); };
+      <form id="ya-f" style="display:grid;gap:12px" novalidate>${campo("ya-s", "Senha nova (mínimo 8 caracteres)", "password", "new-password", 'minlength="8" required')}${campo("ya-s2", "Repita a senha nova", "password", "new-password", "required")}<button class="btn primary" style="min-height:48px" id="ya-ok">Salvar senha</button></form>
+      ${daConta ? `<button class="btn ghost" style="min-height:44px;justify-self:start" id="ya-cancel">Cancelar</button>` : ""}`, (b) => {
+      b.querySelector("#ya-cancel")?.addEventListener("click", minhaConta);
+      b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro(""); const s = b.querySelector("#ya-s").value; if (s.length < 8) return erro("A senha precisa ter pelo menos 8 caracteres."); if (s !== b.querySelector("#ya-s2").value) return erro("As duas senhas não são iguais.");
+        const btn = b.querySelector("#ya-ok"); ocupado(btn, true, "Salvando…"); const { error } = await sb.auth.updateUser({ password: s }); ocupado(btn, false, "Salvar senha"); if (error) return erro(traduz(error));
+        if (daConta) { await minhaConta(); return erro(""); } await depoisDeEntrar(); };
     });
   }
-  function telaCodigo(fatorId) {
+  async function aoRecuperar() { clearTimeout(esperaRecuperacao);
+    const { data: aal } = await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+    if (aal && aal.nextLevel === "aal2" && aal.currentLevel !== "aal2") { const { data: f } = await sb.auth.mfa.listFactors(); const totp = (f && f.totp || []).find((x) => x.status === "verified"); if (totp) return telaCodigo(totp.id, () => telaNovaSenha()); }
+    telaNovaSenha(); }
+  let esperaRecuperacao = null;
+  function telaCodigo(fatorId, depois) {
     tela("Verificação em 2 etapas", "Digite o código de 6 números do seu aplicativo autenticador.", `
       <form id="ya-f" style="display:grid;gap:12px" novalidate>${campo("ya-c", "Código", "text", "one-time-code", 'inputmode="numeric" maxlength="6" pattern="[0-9]*"')}<button class="btn primary" style="min-height:48px" id="ya-ok">Confirmar</button></form>
       <button class="btn ghost" style="min-height:44px;justify-self:start" id="ya-sair">Sair</button>`, (b) => {
       b.querySelector("#ya-sair").onclick = sair;
       b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro("");
         const { error } = await sb.auth.mfa.challengeAndVerify({ factorId: fatorId, code: b.querySelector("#ya-c").value.trim() });
-        if (error) return erro("Código incorreto ou vencido. Tente o próximo."); await depoisDeEntrar(); };
+        if (error) return erro("Código incorreto ou vencido. Tente o próximo."); if (depois) return depois(); await depoisDeEntrar(); };
     });
   }
 
@@ -114,6 +143,8 @@
     }
     const { data } = await sb.auth.getSession(); sessao = data.session;
     if (!sessao) return telaEntrar();
+    let dono = null; try { dono = localStorage.getItem(CHAVE_DONO_CACHE); } catch (e) {}
+    if (dono !== sessao.user.id) { limparCache(); try { localStorage.setItem(CHAVE_DONO_CACHE, sessao.user.id); } catch (e) {} if (cacheInicial) { location.reload(); return; } }
     fecharCaixa(); liberar();
   }
   async function sair() { limparCache(); try { await sb.auth.signOut(); } catch (e) {} location.reload(); }
@@ -131,20 +162,24 @@
         <p class="muted" style="margin:0">No Yaad1 do claude.ai, abra Perfil e projeto e toque em "Baixar backup dos registros". Depois escolha o arquivo aqui.</p>
         <button class="btn ghost" style="min-height:44px;justify-self:start" id="ya-imp">Importar backup</button><input type="file" id="ya-arq" accept="application/json,.json" hidden></div>
       <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" id="ya-sair">Sair da conta</button><button class="btn ghost" style="min-height:48px" id="ya-fechar">Voltar ao app</button></div>`, (b) => {
+      caixa.dataset.fechavel = "1";
       b.querySelector("#ya-fechar").onclick = fecharCaixa; b.querySelector("#ya-sair").onclick = sair;
-      b.querySelector("#ya-senha").onclick = telaNovaSenha;
+      b.querySelector("#ya-senha").onclick = () => telaNovaSenha(true);
       b.querySelector("#ya-mfa").onclick = async () => { if (totp) { const { error } = await sb.auth.mfa.unenroll({ factorId: totp.id }); if (error) return erro("Para desativar, entre de novo com o código e tente outra vez."); return minhaConta(); } ativarMfa(); };
       b.querySelector("#ya-imp").onclick = () => b.querySelector("#ya-arq").click();
       b.querySelector("#ya-arq").onchange = (ev) => importar(ev.target.files && ev.target.files[0]);
     });
   }
   async function ativarMfa() {
-    const { data, error } = await sb.auth.mfa.enroll({ factorType: "totp", friendlyName: "Yaad1 " + new Date().toISOString().slice(0, 10) });
+    try { const { data: fs } = await sb.auth.mfa.listFactors(); for (const f of (fs && fs.all) || []) if (f.factor_type === "totp" && f.status !== "verified") await sb.auth.mfa.unenroll({ factorId: f.id }); } catch (e) {}
+    const { data, error } = await sb.auth.mfa.enroll({ factorType: "totp", friendlyName: "Yaad1 " + new Date().toISOString().slice(0, 16).replace("T", " ") });
     if (error) return erro("Não foi possível ativar agora.");
     tela("Ativar 2 etapas", "1. Abra o seu aplicativo autenticador e leia o código abaixo. 2. Digite o número de 6 dígitos que ele mostrar.", `
       <img alt="Código QR para o aplicativo autenticador" src="${esc(data.totp.qr_code)}" style="width:220px;height:220px;background:#fff;border-radius:16px;padding:8px;justify-self:center">
       <p class="faint" style="font-size:13px;overflow-wrap:anywhere;margin:0">Ou digite a chave: <span class="mono">${esc(data.totp.secret)}</span></p>
-      <form id="ya-f" style="display:grid;gap:12px" novalidate>${campo("ya-c", "Código de 6 números", "text", "one-time-code", 'inputmode="numeric" maxlength="6"')}<button class="btn primary" style="min-height:48px" id="ya-ok">Ativar</button></form>`, (b) => {
+      <form id="ya-f" style="display:grid;gap:12px" novalidate>${campo("ya-c", "Código de 6 números", "text", "one-time-code", 'inputmode="numeric" maxlength="6"')}<button class="btn primary" style="min-height:48px" id="ya-ok">Ativar</button></form>
+      <button class="btn ghost" style="min-height:44px;justify-self:start" id="ya-cancel">Cancelar</button>`, (b) => {
+      b.querySelector("#ya-cancel").onclick = async () => { try { await sb.auth.mfa.unenroll({ factorId: data.id }); } catch (e) {} minhaConta(); };
       b.querySelector("#ya-f").onsubmit = async (ev) => { ev.preventDefault(); erro("");
         const { error: e2 } = await sb.auth.mfa.challengeAndVerify({ factorId: data.id, code: b.querySelector("#ya-c").value.trim() });
         if (e2) return erro("Código incorreto. Confira o horário do celular e tente o próximo código."); minhaConta(); };
@@ -152,10 +187,15 @@
   }
   async function importar(arq) {
     if (!arq) return; erro("");
+    if (arq.size > 5 * 1024 * 1024) return erro("Arquivo grande demais para um backup do Yaad1.");
     let j; try { j = JSON.parse(await arq.text()); } catch (e) { return erro("Este arquivo não é um backup do Yaad1."); }
-    if (!j || typeof j.M !== "object") return erro("Este arquivo não é um backup do Yaad1.");
-    const linhas = [{ id: "main", data: j.M }].concat(Object.entries(j.DAYS || {}).filter(([k]) => /^\d{4}-\d{2}-\d{2}$/.test(k)).map(([k, v]) => ({ id: "d_" + k, data: { ...v, date: k } })));
-    for (let i = 0; i < linhas.length; i += 200) { const { error } = await sb.from("user_docs").upsert(linhas.slice(i, i + 200)); if (error) return erro("A importação parou no meio. Tente de novo."); }
+    const obj = (x) => x && typeof x === "object" && !Array.isArray(x);
+    if (!obj(j) || !obj(j.M) || (j.DAYS != null && !obj(j.DAYS))) return erro("Este arquivo não é um backup do Yaad1.");
+    const dias = Object.entries(j.DAYS || {}).filter(([k, v]) => /^\d{4}-\d{2}-\d{2}$/.test(k) && obj(v));
+    if (!confirm(`Importar o backup? Ele substitui os dados atuais desta conta (${dias.length} dia(s) de registros).`)) return;
+    const btn = document.getElementById("ya-imp"); ocupado(btn, true, "Importando…");
+    const linhas = [{ id: "main", data: j.M }].concat(dias.map(([k, v]) => ({ id: "d_" + k, data: { ...v, date: k } })));
+    for (let i = 0; i < linhas.length; i += 200) { const { error } = await sb.from("user_docs").upsert(linhas.slice(i, i + 200)); if (error) { ocupado(btn, false, "Importar backup"); return erro("A importação parou no meio. Tente de novo."); } }
     limparCache(); location.reload();
   }
   window.YAAD_CONTA = { abrir: () => minhaConta(), sair };
@@ -215,8 +255,10 @@
   async function iniciar() {
     if (!window.supabase || !window.supabase.createClient) { tela("Sem conexão", "Não foi possível carregar o Yaad1. Confira a internet e recarregue a página.", ""); return; }
     sb = window.supabase.createClient(SUPA_URL, SUPA_KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
-    sb.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") telaNovaSenha(); });
-    if (/type=recovery/.test(location.hash)) return;
+    sb.auth.onAuthStateChange((ev) => { if (ev === "PASSWORD_RECOVERY") aoRecuperar(); if (ev === "SIGNED_OUT" && sessao) { limparCache(); location.reload(); } });
+    const hash = new URLSearchParams(location.hash.replace(/^#/, ""));
+    if (hash.get("error_code") || hash.get("error")) { history.replaceState(null, "", location.pathname); telaEntrar(); return erro(hash.get("error_code") === "otp_expired" ? "Este link venceu. Peça outro em Esqueci a senha." : "Este link não é mais válido. Peça outro em Esqueci a senha."); }
+    if (hash.get("type") === "recovery") { esperaRecuperacao = setTimeout(() => { telaEntrar(); erro("Não consegui abrir o link. Peça outro em Esqueci a senha."); }, 6000); return; }
     const { data } = await sb.auth.getSession();
     if (data.session) { sessao = data.session; return depoisDeEntrar(); }
     telaEntrar();
