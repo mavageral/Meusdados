@@ -285,7 +285,7 @@ h1,h2,h3,p{margin:0}
 @keyframes cta{50%{box-shadow:0 0 0 6px rgb(255 255 255 / .12),0 0 30px rgb(255 255 255 / .25)}}
 /* fita do tempo */
 .ribbon{padding:12px 14px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:8px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.ribbon .rh{display:flex;align-items:center;gap:8px}
+.ribbon .rh{display:flex;align-items:center;gap:14px}
 .ribbon .rh b{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
 .ribbon .rh span{font-size:12px;color:var(--muted);margin-left:auto;text-align:right;min-width:0}
 .ribbon .zb{width:30px;height:30px;border-radius:50%;border:1px solid var(--edge-2);background:none;display:grid;place-items:center;padding:0;font:500 16px/1 var(--mono);color:var(--muted);position:relative}
@@ -297,13 +297,14 @@ h1,h2,h3,p{margin:0}
 @keyframes glow{50%{opacity:.55}}
 .track.hundred{gap:1px}.track.hundred>i{min-width:0;border-radius:1px}
 .track .nowm{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);border-radius:2px;pointer-events:none}
-.track.days>i{position:relative;overflow:hidden;background:rgb(255 255 255 / .08)}
-.track.days>i>u{position:absolute;inset:auto 0 0 0;background:var(--ok);text-decoration:none}
+.track.days>button{position:relative;overflow:hidden;background:rgb(255 255 255 / .08);border:0;border-radius:6px;padding:0}
+.track.days>button.today{outline:1px solid var(--text);outline-offset:1px}
+.track.days>button>u{position:absolute;inset:auto 0 0 0;background:var(--ok);text-decoration:none}
 .track.days>i.today{outline:1px solid var(--text);outline-offset:1px}
 .rl{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted)}
 .going{animation:pulseb 2s ease-in-out infinite;border-color:rgb(255 106 26 / .55)!important;background:linear-gradient(90deg,rgb(255 106 26 / .18),var(--glass))!important}
 @keyframes pulseb{50%{box-shadow:0 0 0 6px rgb(255 106 26 / .08)}}
-.quadro{white-space:pre;overflow-x:auto;font:14px/1.45 var(--mono);padding:14px;border-radius:16px;background:#020306;border:1px solid var(--edge-2);color:#E8F0FF}
+.quadro{white-space:pre;overflow-x:auto;font:14px/1.45 var(--mono);padding:14px;border-radius:16px;background:var(--bg);border:1px solid var(--edge-2);color:var(--text)}
 .lvl{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--edge-2)}
 /* três dias em escadinha */
 .days3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:8px}
@@ -312,6 +313,8 @@ h1,h2,h3,p{margin:0}
 .dcard:active{transform:scale(.98)}
 .dcard.dots{min-height:120px;padding:8px}
 .dcard.past{background:linear-gradient(170deg,rgb(94 230 160 / .22),rgb(94 230 160 / .08));border:1px solid rgb(94 230 160 / .42)}
+.dcard.past.part{background:linear-gradient(170deg,rgb(255 194 75 / .16),rgb(255 194 75 / .04));border-color:rgb(255 194 75 / .4)}
+.dcard.past.zero{background:rgb(255 255 255 / .03);border-color:rgb(255 107 129 / .35)}
 .dcard.today{background:linear-gradient(170deg,rgb(94 230 160 / .12),rgb(94 230 160 / .03));border:1px solid rgb(94 230 160 / .3);box-shadow:0 0 24px rgb(94 230 160 / .12)}
 .dcard.future{background:linear-gradient(170deg,rgb(255 255 255 / .09),rgb(255 255 255 / .02));border:1px solid rgb(255 255 255 / .16)}
 .dcard .dh{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
@@ -714,7 +717,7 @@ function vHoje(){
         </div>
         <div class="acts">${heroAct}${cur&&nxt?`<span class="chip" style="background:rgb(0 0 0 / .25)">Depois: ${esc(nxt.l)} ${fmtH(nxt.a)}</span>`:""}</div>
       </section>
-      ${M.sessao?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${M.sessao?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button><button class="link" data-act="descartar" style="justify-self:start;margin-top:-10px">Descartar este estudo</button>`:""}
       ${missaoHTML()}
       ${ribbonHTML()}
       ${manhaPend()?`<button class="item" data-act="manha" style="border-color:rgb(154 165 255 / .45)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
@@ -1074,11 +1077,12 @@ function lessonHTML(L){
     <p class="idea">${esc(L.ideia||"")}</p>
     ${L.analogia?`<div class="glass pad"><span class="tag">Imagine assim</span><p style="margin-top:6px">${esc(L.analogia)}</p></div>`:""}
     <div class="steps">${(L.passos||[]).map((p,i)=>`<div class="step"><span class="tag">Passo ${i+1}</span><b>${esc(p.t)}</b><p>${esc(p.txt)}</p></div>`).join("")}</div>
-    ${L.quadro?`<div style="display:grid;gap:6px"><span class="tag">Quadro</span><div class="quadro" role="img" aria-label="Ilustração em texto">${esc(L.quadro)}</div></div>`:""}
+    ${L.quadro?`<div style="display:grid;gap:6px"><span class="tag">Quadro</span><div class="quadro" tabindex="0" aria-label="Quadro: ${esc(L.titulo||"")}">${esc(L.quadro)}</div></div>`:""}
     ${L.exemplo?`<div class="ex"><span class="tag">Exemplo resolvido</span><p style="margin-top:6px;font-weight:500">${esc(L.exemplo.enunciado)}</p><pre>${esc(L.exemplo.resolucao)}</pre></div>`:""}
     ${(L.armadilhas||[]).length?`<div class="glass pad"><span class="tag">Cuidado com</span><ul style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.armadilhas.map(a=>`<li>${esc(a)}</li>`).join("")}</ul></div>`:""}
     ${(L.treino||[]).length?`<div class="glass pad"><span class="tag">Treine no caderno (sem consultar)</span><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.treino.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div>`:""}
-    ${yt||rec?`<div class="links"><span class="tag">Videoaulas</span>${yt}</div><div class="links"><span class="tag">Pesquise e aprofunde</span>${pesq}${rec}</div>`:""}
+    ${yt?`<div class="links"><span class="tag">Videoaulas</span>${yt}</div>`:""}
+    <div class="links"><span class="tag">Pesquise e aprofunde</span>${pesq}${rec}</div>
     <div class="row wrap"><button class="btn sm" data-act="ouvir" data-txt="${esc((L.ideia||"")+". "+(L.passos||[]).map(p=>p.t+". "+p.txt).join(" "))}"><svg class="icon"><use href="#i-sound"/></svg>Ouvir a aula</button><button class="btn sm ghost" data-act="aula-retry">Gerar outra explicação</button></div>
   </div>`;
 }
@@ -1147,23 +1151,23 @@ Seja justo e encorajador. Corrija equívocos com precisão. Responda só com JSO
   const pass = score >= 0.6;
   D.result = {score, pass, feedback:open.feedback, lacunas:open.lacunas||[], desc:cl(open.descricao), xp: pass?Math.round(20+score*20):0,
     msg: pass ? (score>=0.9?"Excelente. Domínio demonstrado.":"Bloco confirmado. O que errou foi para a Forja.") : "Ainda abaixo de 60%. Releia a aula, veja as lacunas abaixo e faça outra prova. Aprender é isso."};
-  if(pass) saveStudy(score); else saveMain();
-  if(FLOW===F) drawStudy();
+  if(pass) saveStudy(score, false, F); else saveMain();
+  if(FLOW===F) drawStudy(); else if(pass) toast("Prova corrigida e bloco confirmado.");
 }
 function finishStudy(score){
   const F=FLOW; F.at=F.steps.indexOf("fim");
   F.data.result = {score, pass:true, xp:10, msg: score==null ? "Estudo registrado com a sua descrição. Quando o Claude estiver ligado, cada bloco ganha prova." : ""};
   saveStudy(score); drawStudy();
 }
-function saveStudy(score, partial){
+function saveStudy(score, partial, FL){
   M.sessao=null;
-  const F=FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
+  const F=FL||FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
   const rec = {st:"feito", mat:F.mat, topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs.slice(0,2), conta:D.conta, notes:D.notes, score, parcial:!!partial,
     aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.focus ? Math.max(5, Math.round((F.focus.total-F.focus.left)/60)) || Math.min(mins, F.b?toMin(F.b.b)-toMin(F.b.a):mins) : Math.min(Math.max(10,mins), F.b?toMin(F.b.b)-toMin(F.b.a):120), ts:Date.now()};
   if(F.b){ day(F.dstr).blocks[bkey(F.b)] = rec; saveDay(F.dstr); }
   else { (M.livres=M.livres||[]).push({...rec, d:iso(today())}); }
   if(D.topic && !F.isBib){ (M.revisoes=M.revisoes||[]).push({id:"r"+Date.now(), mat:F.mat, topic:D.topic, d0:iso(today()), step:1, due:iso(addDays(today(),1)), done:false, conta:D.conta.slice(0,600)}); }
-  addXP(F.data.result ? F.data.result.xp : 10);
+  addXP(D.result ? D.result.xp : 10);
 }
 
 /* ---------- bloco simples ---------- */
@@ -1400,8 +1404,9 @@ const SHORT = l => l.replace(/^Oração (da manhã|das 18h|antes de dormir)$/,(m
   .replace("Exercícios de ","Exerc. ").replace("Exercícios da ","Exerc. ").replace("Projeto, Excel ou Power BI","Projeto/BI").replace("Python, SQL ou projeto","Python/SQL").replace("Python ou SQL","Python/SQL")
   .replace(/^ANBIMA: .*/,"ANBIMA").replace("Revisão espaçada","Revisões").replace("Projeto prático","Projeto").replace("Visitas e comunhão","Visitas").replace("Revisão de código","Código").replace("Família e lanche","Família").replace("Jantar e família","Família").replace("Descanso e família","Família").replace("Convivência familiar","Família").replace("Revisão semanal","Semana").replace("Estruturar a mensagem","Mensagem").replace("Concluir o estudo da mensagem","Mensagem").replace(/^Preparação /,"Prep. ");
 function dayCard(d, mode){
-  const s=iso(d), t=today(), rel = s<iso(t) ? "past" : s===iso(t) ? "today" : "future";
+  const s=iso(d), t=today(), rel0 = s<iso(t) ? "past" : s===iso(t) ? "today" : "future";
   const bs=blocksOf(d).filter(b=>kindOf(b)!=="pausa"), rec=(DAYS[s]||{}).blocks||{}, st=dayStats(s), n=bs.length;
+  const rel = rel0!=="past" ? rel0 : st.pct>=.8 ? "past" : st.pct>0 ? "past part" : "past zero";
   const name = s===iso(t) ? "Hoje" : s===iso(addDays(t,-1)) ? "Ontem" : s===iso(addDays(t,1)) ? "Amanhã" : WD[d.getDay()][0]+WD[d.getDay()].slice(1).toLowerCase();
   const inRange = dayIdx(d)>=0 && dayIdx(d)<TOTAL;
   let inner = "";
@@ -1441,15 +1446,15 @@ function ribbonInner(){
   if(ZOOM===2) return head(`hoje ${st.done} de ${st.total}`)+`<div class="days5">${[-2,-1,0,1,2].map(i=>dayCard(addDays(t,i),"dots")).join("")}</div>`;
   if(ZOOM===3){
     let cols="", lbl=""; for(let i=-3;i<=3;i++){ const d=addDays(t,i), s=iso(d), sd=dayStats(s), fut=i>0;
-      cols+=`<i class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" title="${d.getDate()}/${d.getMonth()+1}">${fut?"":`<u style="height:${Math.round(sd.pct*100)}%"></u>`}</i>`;
+      cols+=`<button class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" aria-label="${d.getDate()}/${d.getMonth()+1}: ${sd.done} de ${sd.total}">${fut?"":`<u style="height:${Math.round(sd.pct*100)}%"></u>`}</button>`;
       lbl+=`<span style="flex:1;text-align:center">${i===0?"hoje":WD[d.getDay()]}</span>`; }
     const w=[-3,-2,-1,0].map(i=>dayStats(iso(addDays(t,i))).pct); const m=Math.round(w.reduce((a,b)=>a+b,0)/w.length*100);
     return head(`média de ${m}% nos últimos 4 dias`)+`<div class="track days" style="height:44px">${cols}</div><div class="rl" style="display:flex">${lbl}</div>`;
   }
   const di=dayIdx(t); let cells="", full=0;
   for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), sd=dayStats(s); if(i<=di&&sd.pct>=.8) full++; const cls = i>di?"":sd.pct>=.8?"f":sd.pct>0?"p":"";
-    cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}"></i>`; }
-  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
+    cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}" aria-hidden="true"></i>`; }
+  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário dos 100 dias</button><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
 }
 function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
 (function(){
@@ -1507,7 +1512,7 @@ function evoProvas(){
   const sims=(M.simulados||[]).map(x=>({...x,tipo:x.tipo||"anbima"})), last=k=>sims.filter(x=>x.tipo===k).slice(-3), avg=k=>{ const l=last(k); return l.length?l.reduce((a,x)=>a+x.score,0)/l.length:null; };
   const an=avg("anbima"), ph=phaseOf(today()), fase=ph?PHASES.indexOf(ph)+1:1;
   return `<section class="now" style="--g1:var(--a-anbima-1);--g2:var(--a-anbima-2);min-height:auto">
-      <span class="eyebrow" style="color:rgb(255 255 255 / .8);position:relative">ANBIMA · CPA · ter, qui e sex, 14h–16h</span>
+      <span class="eyebrow" style="color:rgb(255 255 255 / .8);position:relative">ANBIMA · CPA · ter, qui e sex, <span style="white-space:nowrap">14h–16h</span></span>
       <div style="position:relative"><div class="score" style="font-size:72px">${an==null?"--":Math.round(an*100)}</div><span style="color:rgb(255 255 255 / .85)">% média dos últimos simulados · meta 70% · prova depois de 23/01</span></div>
       <div class="bar" style="position:relative"><i style="width:${an==null?0:Math.round(an*100)}%"></i></div>
       <div class="acts"><button class="btn primary" data-act="simulado" data-k="anbima">Simulado ANBIMA</button></div></section>
@@ -1516,7 +1521,7 @@ function evoProvas(){
       <button class="item" data-act="semana"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Tudo o que você estudou nos últimos 7 dias, com desempenho por assunto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button></div></section>
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Simulados</h2><span class="mono muted" style="font-size:13px">fase ${fase} de 3</span></div><div class="list">
       ${["dados","enem","eco"].map(k=>{ const a=avg(k), rec=k==="dados"||fase>=2; return `<button class="item" data-act="simulado" data-k="${k}"><span class="grow"><b>${esc(SIMS[k].n)}</b><small>${a==null?"ainda não feito":"média "+Math.round(a*100)+"%"}${rec?"":" · recomendado a partir da Fase 2"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}
-      <a class="item" href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" target="_blank" rel="noopener" style="text-decoration:none"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Provas e gabaritos oficiais do ENEM (INEP)</b><small>Para treinar com provas reais a partir da Fase 2</small></span></a>
+      <a class="item" href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" target="_blank" rel="noopener" style="text-decoration:none"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Provas e gabaritos oficiais do ENEM (INEP)</b><small>Para treinar com provas reais a partir da Fase 2</small></span><svg class="icon"><use href="#i-arrow"/></svg></a>
     </div></section>
     ${sims.length?`<section style="display:grid;gap:8px"><h2 class="title-m">Histórico</h2><div class="list">${sims.slice().reverse().slice(0,12).map(x=>`<div class="item"><span class="grow"><b>${Math.round(x.score*100)}% · ${esc((SIMS[x.tipo]||SIMS.anbima).n)}</b><small>${fromIso(x.d).getDate()}/${fromIso(x.d).getMonth()+1} · ${x.n} questões</small></span></div>`).join("")}</div></section>`:""}`;
 }
@@ -1554,7 +1559,7 @@ function forjaGrupos(){ const g={}; (M.erros||[]).filter(e=>!e.ok).forEach(e=>{ 
 function forjaHTML(){
   const g=forjaGrupos(), fixed=(M.erros||[]).filter(e=>e.ok).length;
   return `<section class="glass pad" style="display:grid;gap:12px;background:radial-gradient(90% 70% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),var(--glass)">
-    <div class="sec-h"><div><span class="eyebrow">Forja</span><h2 class="title-m" style="margin-top:4px">Onde o erro vira domínio</h2></div><span class="mono muted" style="font-size:13px">${fixed} forjados</span></div>
+    <div class="sec-h"><div><span class="eyebrow">Forja</span><h2 class="title-m" style="margin-top:4px">Onde o erro vira domínio</h2></div><span class="mono muted" style="font-size:13px">${fixed} ${fixed===1?"forjado":"forjados"}</span></div>
     ${g.length?`<div class="list">${g.slice(0,6).map(x=>`<button class="item" data-act="forja" data-t="${esc(x.t)}" data-m="${x.mat}"><span class="chip" style="color:var(--bad)">${x.n}</span><span class="grow"><b>${esc(x.t)}</b><small>${esc(SUBJ[x.mat]?SUBJ[x.mat].n:"")} · ${x.n} erro(s) · treinar até acertar</small></span><svg class="icon"><use href="#i-flame"/></svg></button>`).join("")}</div>`
       :`<p class="muted">Cada questão errada em aula, revisão ou simulado entra aqui agrupada por assunto. Treinar um assunto gera uma explicação nova e questões inéditas; acertando, o erro é forjado em domínio.</p>`}
   </section>`;
@@ -1584,7 +1589,9 @@ function openPrograma(k){
     <label class="field"><span>Disciplina</span><input class="inp" id="pg-d" placeholder="Ex.: Álgebra Linear" value="${esc(((M.programa||{})[k]||{}).disciplina||"")}"></label>
     <label class="field"><span>Conteúdo</span><textarea class="ta" id="pg-t" style="min-height:180px" placeholder="Cole aqui a ementa ou os tópicos, um por linha"></textarea></label>
     ${canImg()?`<button class="drop" id="pg-f"><svg class="icon"><use href="#i-cam"/></svg><span class="grow" id="pg-fl">Mandar print da ementa</span></button><div class="thumbs" id="pg-th"></div>`:""}
+    ${aiOn()?"":`<p class="note">Sem o Claude nesta cópia: cada linha vira um tópico, na ordem em que foi colada.</p>`}
     <div id="pg-out"></div>`});
+  const cur=((M.programa||{})[k]||{}).topicos; if(cur&&cur.length) $("#pg-t").value=cur.map(t=>t.t).join("\n");
   $("#pg-f")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); fotos=p.blobs; $("#pg-th").innerHTML=p.thumbs.map(t=>`<img src="${t}" alt="Print da ementa">`).join(""); $("#pg-fl").textContent=`${p.thumbs.length} imagem(ns) anexada(s)`; });
 }
 
@@ -1675,6 +1682,8 @@ document.addEventListener("click", e => {
   else if(act==="zoom"){ ZOOM=Math.max(0,Math.min(4,ZOOM+(+a.dataset.z))); paintRibbon(); }
   else if(act==="rseg"){ const k=a.dataset.k; if(a.dataset.d){ SELDAY=a.dataset.d===iso(today())?null:a.dataset.d; render(); } else if(k) openBlock(iso(today()),k); }
   else if(act==="rday") openDay(a.dataset.d);
+  else if(act==="tabdiario"){ TAB="diario"; render(); window.scrollTo({top:0}); }
+  else if(act==="descartar"){ M.sessao=null; saveMain(); render(); toast("Estudo em andamento descartado."); }
   else if(act==="erro"){ const er=(M.erros||[]).find(x=>x.id===a.dataset.id); if(!er) return; FLOW={kind:"erro", next:()=>{ er.ok=true; er.porque=$("#er-t").value; saveMain(); closeSheet(); toast("Erro resolvido."); }, back:()=>{}}; openSheet("linear-gradient(170deg,#2A0A10,#05060A 60%)");
     sheetHTML({title:"Caderno de erros", next:"Entendi, resolver", body:`<h2 class="q" style="font-size:30px">${esc(er.p)}</h2><div class="opt wrong"><span class="k">✗</span><span>${esc(er.minha||"(sem resposta)")}</span></div><div class="opt right"><span class="k">✓</span><span>${esc(er.certa)}</span></div><p class="explain">${esc(er.e||"")}</p><label class="field"><span>Por que errei e como reconheço da próxima vez</span><textarea class="ta" id="er-t">${esc(er.porque||"")}</textarea></label>`}); }
   else if(act==="nova-vaga"){ FLOW={kind:"vaga", next:()=>{ const n=$("#vg-n").value.trim(), v=$("#vg-v").value.trim(); if(!n) return; M.vagas.push({id:"v"+Date.now(), n, v, st:"interesse"}); saveMain(); closeSheet(); }, back:()=>{}}; openSheet();
