@@ -15,6 +15,7 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
 | IA, chat, onboarding, social | `brasa` | Aurora UI, Dark Mode, Vibrant |
 | Métricas de saúde, mídia, painel pessoal | `aurora` | Aurora UI, Bento Grid |
 | Reservas, viagens, serviços, utilitários | `oceano` | Flat Design, Minimalism |
+| Painel de estudos, agenda, escola | `oceano` (layout do Student Activities) ou `sol-grafite` | Data-Dense Dashboard |
 | Mensagens, comunidade, perfis | `lavanda` | Flat Design, Soft UI |
 
 ## Arquivos de design (medidos)
@@ -70,6 +71,19 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
 - **Menus e campos**: barra de navegação em pílula (marca · links · Entrar · Criar conta), controle segmentado Mensal/Anual, abas (CSS/React/Tailwind), busca, e-mail com ícone, campo de inscrição com botão embutido, menu lateral de conta, calendário.
 - **Cartões**: preço com checklist, confirmação, cartão de crédito, notificações, anéis de progresso, gráficos de barras e clima.
 - Implementado em `design-lab/componentes/` (CSS com prefixo `.c-` + vitrine com seletor de tema).
+
+### Dashboard Student Activities (community): **painel de estudos**, aproxima-se do tema `oceano`
+- Arquivo: `figma.com/design/8TkilVdtDw1DEIOX37Cn4n`. Uma tela desktop de 1430×880, lida com 2 leituras do conector.
+- **Layout de 3 colunas**, o padrão clássico de painel: trilho de ícones à esquerda (98px, com avatar e nome no topo) → área central (título "Timeline", navegação de data `‹ Nov 02 ›`, filtros "Sort by / Week View", busca, sino) → painel lateral direito de 340px ("Events", abas Activities/Remainders, "Next Day", "See all").
+- **Cores medidas no print**: azul `#0997D9` (primária), salmão `#F99393` (secundária), fundos `#FFFFFF` e `#F8F9FA`, gradientes nos cartões de evento (verde, lilás, laranja-amarelo).
+- **Tipografia**: Poppins (títulos 32–36 semibold, cartões 16–18).
+- **Padrões que valem a pena**:
+  - cartões de matéria com uma "gota" de gradiente no canto e ícone da disciplina;
+  - calendário mensal com dias de evento marcados por círculos (cheio = evento, contorno = semana anterior);
+  - bloco "dia em destaque" (número enorme `02` + mês) ao lado de to-do e agenda por horário;
+  - cartões de evento com faixa de cor por categoria + horário, local e responsável com ícone.
+- **Cuidados (não copiar)**: texto branco sobre salmão `#F99393` tem contraste ~2,2:1 e texto branco pequeno sobre o azul fica em ~3,4:1, os dois abaixo do AA. Placeholders muito claros. Ao implementar, usar as cores do tema `oceano` (azul `#0773C0`, que passa AA) e reservar o salmão para fundos de destaque com texto escuro.
+- **Uso sugerido**: base de layout para o **painel de estudos ANBIMA** (matérias, simulados, agenda, revisões).
 
 ## Imagens de inspiração (observadas)
 
