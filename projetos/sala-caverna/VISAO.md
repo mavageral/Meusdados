@@ -74,6 +74,10 @@ Um app próprio, com cadastro por e-mail e telefone fora do claude.ai, é outro 
 - **Vagas "em tempo real":** dentro do app, o Claude não navega na internet. O app pode montar buscas prontas (LinkedIn, Gupy, Vagas.com, portais de concursos) e o Claude orienta com o que sabe. Dados realmente ao vivo exigem uma fonte externa (API ou integração), a decidir.
 - **Prazos de concursos e vestibulares** mudam: o app sempre manda confirmar no site oficial.
 
+## A jornada
+
+O que o app entrega, alvo por alvo, e o que o quiz precisa perguntar para isso: [JORNADA.md](JORNADA.md). A ordem de construção atualizada também está lá (fases A a E).
+
 ## Ordem de construção sugerida
 
 1. **Carteira + menu ⋯ + Perfil e projeto** (dados, foto, e-mail, telefone). O Projeto Caverna vira o projeto da Edna, editável.
