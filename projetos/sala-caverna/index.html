@@ -624,16 +624,21 @@ function perfil(){
 async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; const o=Object.assign({cache:false}, opts||{}); if(o.tools&&o.tools.length) delete o.cache; else delete o.tools; return SAMPLE.json(perfil()+"\n\n"+prompt, o); }
 /* Busca ao vivo: conector "Parallel Search" do claude.ai da própria pessoa (capacidade mcp).
    O formato dos argumentos é lido do próprio conector (describeTool); sem conector, o app segue sem busca. */
-const BUSCA_SERVER="Parallel Search", BUSCA_TOOL="web_search"; let BUSCA_SCHEMA;
+const BUSCA_SERVER="Parallel Search", BUSCA_TOOL="web_search"; let BUSCA_SCHEMA, BUSCA_SID;
 async function ferramentasBusca(){
   if(!MCP || !(LIMITS&&LIMITS.tools)) return [];
   if(BUSCA_SCHEMA===undefined){ try{ const d=await MCP.describeTool(BUSCA_SERVER, BUSCA_TOOL); BUSCA_SCHEMA=(d&&d.inputSchema)||{}; }catch(e){ BUSCA_SCHEMA=null; } }
   if(!BUSCA_SCHEMA) return [];
   const props=BUSCA_SCHEMA.properties||{}, req=(BUSCA_SCHEMA.required&&BUSCA_SCHEMA.required.length)?BUSCA_SCHEMA.required:Object.keys(props).slice(0,1);
-  const montar = q => { const o={}; req.forEach(k=>{ const t=(props[k]||{}).type; o[k] = t==="array" ? [q] : (t==="number"||t==="integer") ? 5 : q; }); return o; };
-  return [{name:"buscar_na_internet", description:"Pesquisa na internet, em tempo real: editais, datas de provas, vagas, salários, cursos, preços, bolsas e notas de corte no Brasil. Devolve trechos com os links das fontes.",
-    inputSchema:{type:"object", properties:{consulta:{type:"string", description:"o que pesquisar, em português"}}, required:["consulta"]},
-    execute: async ({consulta}) => { const r=await MCP.callTool(BUSCA_SERVER, BUSCA_TOOL, montar(String(consulta||"").slice(0,300))); const t=typeof r.payload==="string"?r.payload:JSON.stringify(r.payload ?? r.content); return String(t).slice(0,6000); }}];
+  const sid = BUSCA_SID || (BUSCA_SID = "yaad1-"+Array.from(crypto.getRandomValues(new Uint8Array(16)),x=>x.toString(16).padStart(2,"0")).join(""));
+  const montar = (obj, qs) => { const o={}; req.forEach(k=>{ const t=(props[k]||{}).type; o[k] = t==="array" ? (qs.length?qs:[obj]) : (t==="number"||t==="integer") ? 5 : obj; }); if(props.session_id && !o.session_id) o.session_id=sid; return o; };
+  const resumir = pl => { const R = pl && Array.isArray(pl.results) ? pl.results : null;
+    if(!R) return String(typeof pl==="string"?pl:JSON.stringify(pl)).slice(0,6000);
+    return JSON.stringify(R.slice(0,6).map(r=>({titulo:r.title, url:r.url, data:r.publish_date||"", trecho:(r.excerpts||[]).join(" ").replace(/\s+/g," ").slice(0,700)}))); };
+  return [{name:"buscar_na_internet", description:"Pesquisa na internet, em tempo real: editais, datas de provas, vagas, salários, cursos, preços, bolsas e notas de corte no Brasil. Devolve resultados com título, link, data e trechos.",
+    inputSchema:{type:"object", properties:{objetivo:{type:"string", description:"o que você quer descobrir, em uma frase"}, consultas:{type:"array", items:{type:"string"}, description:"2 a 3 buscas curtas de 3 a 6 palavras"}}, required:["objetivo","consultas"]},
+    execute: async ({objetivo, consultas}) => { const obj=String(objetivo||"").slice(0,200), qs=(Array.isArray(consultas)?consultas:[]).map(String).filter(Boolean).slice(0,3);
+      const r=await MCP.callTool(BUSCA_SERVER, BUSCA_TOOL, montar(obj, qs)); return resumir(r.payload ?? r.content); }}];
 }
 
 /* ====================================================================
