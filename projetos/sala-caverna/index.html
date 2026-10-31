@@ -212,7 +212,13 @@ h1,h2,h3,p{margin:0}
 .card .shape{position:absolute;right:-30px;top:40px;width:150px;height:150px;border-radius:50%;background:rgb(255 255 255 / .08);border:1px solid rgb(255 255 255 / .14)}
 
 /* segmentos */
-.sh-body>.seg{min-height:50px;flex:none}
+.sh-body>.seg{min-height:54px;flex:none}
+.seg button{min-height:44px}
+.edb{display:grid;gap:8px;padding:12px}
+.edt{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;gap:8px;align-items:center}
+.edt .inp{padding:10px 8px;min-width:0}
+.edb>.inp{padding:10px 14px}
+.ins{width:auto;max-width:100%;min-height:44px;padding:8px 12px}
 .seg{display:flex;gap:4px;padding:4px;border-radius:var(--pill);background:var(--glass);border:1px solid var(--edge);overflow-x:auto;scrollbar-width:none}
 .seg button{flex:1 0 auto;min-height:40px;padding:0 14px;border-radius:var(--pill);border:0;background:none;color:var(--muted);font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
@@ -399,14 +405,15 @@ const P = () => Object.assign({id:"caverna"}, PROJ0, M.projeto||{});
 function ensureProjetos(){ if(!M.projetos||!M.projetos.length){ M.projetos=[{id:"caverna", ...PROJ0, ...(M.projeto||{}), custom:null}]; } if(!M.projeto||!M.projeto.id) M.projeto={...(M.projeto||{}), id:(M.projeto&&M.projeto.custom)?("p"+Date.now()):"caverna"}; }
 function syncProjetos(){ const pj=P(); const i=(M.projetos||[]).findIndex(x=>x.id===pj.id); if(i>=0) M.projetos[i]={...pj}; else (M.projetos=M.projetos||[]).push({...pj}); }
 let LEMA = PROJ0.lema;
-function applyProjeto(){ const pj=P(); const [y,m,d]=pj.inicio.split("-").map(Number); START=new Date(y,m-1,d); TOTAL=Math.max(7,Math.min(730,+pj.dias||100)); LEMA=pj.lema||"";
+function applyProjeto(){ const pj=P(); if(pj.weekOverride && !pj.weekHist){ M.projeto={...M.projeto, weekHist:[{desde:iso(today()), week:pj.weekOverride}]}; } const [y,m,d]=pj.inicio.split("-").map(Number); START=new Date(y,m-1,d); TOTAL=Math.max(7,Math.min(730,+pj.dias||100)); LEMA=pj.lema||"";
   const c = pj.custom;
   if(c && c.week && c.subj){
     CUSTOM = true; WEEK = c.week; SUBJ = c.subj;
     GOALS = (c.metas||[]).map((g,i)=>({id:g.id||("g"+i), n:g.n, due:iso(addDays(START, Math.max(0,Math.min(TOTAL-1, g.dia ?? TOTAL-1)))), mats:(g.mats||[]).filter(k=>SUBJ[k]), need:g.need||undefined, marco:g.marco?("m_"+(pj.id||"p")+"_"+(g.id||i)):undefined, how:g.how||""}));
     PHASES = (c.fases||[]).map(f=>({n:f.n, a:iso(addDays(START, Math.max(0,Math.min(TOTAL-1, f.de ?? 0)))), b:iso(addDays(START, Math.max(0,Math.min(TOTAL-1, f.ate ?? TOTAL-1)))), f:f.f||""})).filter(f=>f.a<=f.b).sort((x,y)=>x.a<y.a?-1:1);
     FRASES = (c.frases&&c.frases.length) ? c.frases : [pj.lema||"Um passo por dia até o alvo.", "Constância vence a pressa.", "Conhecimento demonstrado vale mais que hora contada."];
-  } else { CUSTOM=false; WEEK=pj.weekOverride||BASE.WEEK; SUBJ=BASE.SUBJ; GOALS=BASE.GOALS; PHASES=BASE.PHASES; FRASES=BASE.FRASES; }
+  } else { CUSTOM=false; WEEK=BASE.WEEK; SUBJ=BASE.SUBJ; GOALS=BASE.GOALS; PHASES=BASE.PHASES; FRASES=BASE.FRASES; }
+  WEEK = weekFor(today());
 }
 
 const AREAS = {
@@ -616,7 +623,9 @@ async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; return SA
    CÁLCULOS
    ==================================================================== */
 function phaseOf(d){ const s=iso(d); return PHASES.find(p => s>=p.a && s<=p.b) || null; }
-function blocksOf(d){ return WEEK[d.getDay()].b; }
+function baseWeek(){ const c=P().custom; return (c&&c.week) ? c.week : (P().weekOverride || BASE.WEEK); }
+function weekFor(d){ const s=iso(d); let w=baseWeek(); (P().weekHist||[]).slice().sort((x,y)=>x.desde<y.desde?-1:1).forEach(h=>{ if(h.desde<=s) w=h.week; }); return w; }
+function blocksOf(d){ return weekFor(d)[d.getDay()].b; }
 function kindOf(b){
   if(b.c==="rev") return /integral/.test(b.l) ? "final" : /espaçada/.test(b.l) ? "revisao" : "simples";
   if(b.c==="biblia") return "biblia";
@@ -701,7 +710,7 @@ function carteiraHTML(){
 /* ---------------- HOJE ---------------- */
 function vHoje(){
   const t = today(), sel = SELDAY ? fromIso(SELDAY) : t, isToday = iso(sel)===iso(t);
-  const di = dayIdx(t)+1, ph = phaseOf(t), W = WEEK[sel.getDay()], bs = W.b, rec = day(iso(sel)).blocks, nm = nowMin();
+  const di = dayIdx(t)+1, ph = phaseOf(t), W = weekFor(sel)[sel.getDay()], bs = W.b, rec = day(iso(sel)).blocks, nm = nowMin();
   const hour = new Date().getHours(), hi = hour<12?"Bom dia":hour<18?"Boa tarde":"Boa noite";
   let cur = isToday ? bs.find(b => nm>=toMin(b.a) && nm<toMin(b.b)) : null;
   let nxt = isToday ? bs.find(b => toMin(b.a)>nm) : bs[0];
@@ -1426,7 +1435,7 @@ function openDay(dstr){
   const items = bs.filter(b=>Dy.blocks[bkey(b)]).map(b=>{ const r=Dy.blocks[bkey(b)]; return `<button class="item" data-act5="rec" data-k="${esc(bkey(b))}"><span class="st ${r.st==="feito"?"done":"miss"}" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:${r.st==="feito"?"var(--ok)":"var(--bad)"};color:#05060A"><svg class="icon" style="width:14px;height:14px"><use href="#i-${r.st==="feito"?"check":"x"}"/></svg></span><span class="grow"><b>${esc(b.l)}</b><small>${fmtH(b.a)} · ${esc(r.topic||r.motivo||AREAS[b.c].n)}${r.score!=null?` · ${Math.round(r.score*100)}%`:""}</small></span></button>`; }).join("");
   const studied = bs.some(b=>Dy.blocks[bkey(b)]&&Dy.blocks[bkey(b)].mat);
   sheetHTML({title:`Dia ${dayIdx(d)+1} de ${TOTAL}`, next:"Fechar", body:`
-    <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${WEEK[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
+    <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${weekFor(d)[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
     ${f&&f.sint?`<div class="glass pad"><span class="tag">Síntese do dia</span><p class="title-m" style="margin-top:6px;font-weight:400">${esc(f.sint.titulo||"")}</p>${(f.sint.blocos||[]).map(b=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(b.area)}:</b> ${esc(b.resumo)}</p>`).join("")}</div>`:""}
     ${f&&((f.frases||[]).some(Boolean)||f.geral)?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
     ${items?`<div class="list">${items}</div>`:`<p class="note">Nada registrado neste dia.</p>`}
@@ -1947,44 +1956,55 @@ function openProjetos(){
 const CAT_N = {oracao:"Oração",biblia:"Bíblia",min:"Trabalho ou compromisso",saude:"Saúde ou família",grad:"Estudo teórico",tech:"Estudo prático",anbima:"Certificação",pausa:"Pausa ou refeição",rev:"Revisão"};
 const DIAS = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
 const clone = o => JSON.parse(JSON.stringify(o));
-function cleanDay(list, keys){
+function cleanDay(list, keys, dorme){
   const T=/^([01]\d|2[0-3]):[0-5]\d$/;
   let L=(list||[]).filter(b=>b&&T.test(b.a)&&T.test(b.b)&&b.a<b.b&&String(b.l||"").trim()).map(b=>({a:b.a,b:b.b,l:String(b.l).trim().slice(0,60),c:CATS.includes(b.c)?b.c:"pausa",s:String(b.s||"").slice(0,80),m:keys.has(b.m)?b.m:undefined}));
   L.sort((x,y)=>x.a<y.a?-1:1); const out=[]; L.forEach(b=>{ if(!out.length||b.a>=out[out.length-1].b) out.push(b); });
-  if(!out.some(b=>/integral/i.test(b.l))) out.push(revAt(out, ((P().custom||{}).respostas||{}).dorme || "22:30"));
+  if(!out.some(b=>/integral/i.test(b.l))) out.push(revAt(out, dorme || ((P().custom||{}).respostas||{}).dorme || "22:30"));
   return out;
 }
+const isEod = b => /integral|antes de dormir|ora[çc][ãa]o (da )?noite/i.test(b.l);
+const toM = s => { const [h,m]=s.split(":").map(Number); return h*60+m; }, fromM = m => `${p2(Math.floor(m/60))}:${p2(m%60)}`;
 function openEditor(tab){
-  const pj=P(), custom=!!pj.custom;
-  const ED = {tab:tab||"agenda", dia:today().getDay(), week:clone(WEEK), subj:clone(SUBJ), metas:custom?clone(pj.custom.metas||[]):[], pedido:"", proposta:null, dirty:false};
+  const pj=P(), custom=!!pj.custom, hoje=today();
+  const ED = {tab:tab||"agenda", dia:hoje.getDay(), week:clone(weekFor(hoje)), subj:clone(SUBJ), metas:custom?clone(pj.custom.metas||[]):[], pedido:"", proposta:null, dirty:false, erro:null, confirm:null, undo:null};
+  const orig = clone(ED.week);
   const keys = () => new Set(Object.keys(ED.subj));
-  const F = FLOW = {kind:"editor", back:()=>{}, next:()=>salvar()};
-  const tabs = [["agenda","Agenda"]].concat(custom?[["materias","Matérias"],["metas","Metas"]]:[]).concat([["claude","Ajustar com o Claude"]]);
-  const draw = () => {
-    let body = `<h2 class="q" style="font-size:clamp(28px,7vw,40px)">Editar o projeto<small>${esc(pj.nome)}. As mudanças valem a partir de hoje; os registros já feitos ficam como estão.</small></h2>
+  const F = FLOW = {kind:"editor", back:()=>{}, next:()=>salvar(),
+    guard:()=>{ read(); if(!ED.dirty || F.sair) return false; F.sair=true; const b=$("#shb"); b.insertAdjacentHTML("afterbegin",`<div class="ponte" id="ed-sair"><b style="font-weight:600">Sair sem salvar?</b><p style="margin:0">As mudanças feitas aqui serão perdidas.</p><div class="row wrap"><button class="btn sm primary" id="ed-salvar">Salvar e sair</button><button class="btn sm" id="ed-ficar">Continuar editando</button><button class="btn sm ghost" id="ed-sim">Descartar</button></div></div>`); b.scrollTop=0;
+      $("#ed-salvar").onclick=()=>{ F.sair=false; salvar(); }; $("#ed-ficar").onclick=()=>{ F.sair=false; $("#ed-sair").remove(); }; $("#ed-sim").onclick=()=>{ F.guard=null; closeSheet(); }; $("#ed-ficar").focus(); return true; }};
+  const tabs = [["agenda","Agenda"]].concat(custom?[["materias","Matérias"],["metas","Metas"]]:[]).concat([["claude","Claude"]]);
+  const usos = k => { let nb=0; for(let i=0;i<7;i++) nb+=ED.week[i].b.filter(b=>b.m===k).length; return {nb, nm:ED.metas.filter(g=>(g.mats||[]).includes(k)).length}; };
+  const draw = (focusSel) => {
+    const prevScroll = ($("#shb")||{}).scrollTop||0, act=document.activeElement, actId=act&&act.id;
+    let body = `<h2 class="q" style="font-size:clamp(28px,7vw,40px)">Editar o projeto<small>${esc(pj.nome)}. As mudanças valem a partir de hoje; os dias anteriores continuam com a agenda que valia neles.</small></h2>
+      ${ED.erro?`<div class="ponte" role="alert" style="border-color:var(--bad)"><b style="font-weight:600">Revise antes de salvar</b><p style="margin:0">${esc(ED.erro)}</p></div>`:""}
       <div class="seg" role="group" aria-label="Seções">${tabs.map(([k,n])=>`<button data-et="${k}" aria-pressed="${ED.tab===k}">${n}</button>`).join("")}</div>`;
     if(ED.tab==="agenda"){
       const d=ED.week[ED.dia], K=keys();
       body += `<div class="pick" role="group" aria-label="Dia da semana">${[1,2,3,4,5,6,0].map(i=>`<button data-ed="${i}" aria-pressed="${ED.dia===i}">${DIAS[i].slice(0,3)}</button>`).join("")}</div>
-        <div class="list">${d.b.map((b,i)=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px">
-          <div class="row" style="gap:8px"><label class="sr" for="ea${i}">Início</label><input class="inp" id="ea${i}" type="time" data-f="a" data-i="${i}" value="${b.a}" style="padding:10px;width:auto"><span class="muted">até</span><label class="sr" for="eb${i}">Fim</label><input class="inp" id="eb${i}" type="time" data-f="b" data-i="${i}" value="${b.b}" style="padding:10px;width:auto"><button class="x" data-del="${i}" aria-label="Apagar ${esc(b.l)}" style="margin-left:auto"><svg class="icon"><use href="#i-x"/></svg></button></div>
-          <label class="sr" for="el${i}">Nome do bloco</label><input class="inp" id="el${i}" data-f="l" data-i="${i}" value="${esc(b.l)}" style="padding:10px 14px">
-          <div class="row wrap" style="gap:8px"><label class="sr" for="ec${i}">Tipo</label><select class="inp" id="ec${i}" data-f="c" data-i="${i}" style="width:auto;padding:8px 12px">${CATS.map(c=>`<option value="${c}" ${b.c===c?"selected":""}>${CAT_N[c]}</option>`).join("")}</select>
-          ${["grad","tech","anbima"].includes(b.c)&&K.size?`<label class="sr" for="em${i}">Matéria</label><select class="inp" id="em${i}" data-f="m" data-i="${i}" style="width:auto;padding:8px 12px"><option value="">matéria automática</option>${[...K].map(k=>`<option value="${k}" ${b.m===k?"selected":""}>${esc(ED.subj[k].n)}</option>`).join("")}</select>`:""}</div>
-        </div>`).join("")}</div>
-        <div class="row wrap"><button class="btn sm" data-add="1">Adicionar bloco</button><button class="btn sm ghost" data-copy="1">Copiar ${DIAS[ED.dia].toLowerCase()} para os dias úteis</button></div>`;
+        <div class="list">${d.b.map((b,i)=>{ const bad=ED.bad&&ED.bad.dia===ED.dia&&ED.bad.i.includes(i); return `<div class="glass pad edb" style="${bad?"border-color:var(--bad)":""}">
+          <div class="edt"><label class="sr" for="ea${i}">Início</label><input class="inp" id="ea${i}" type="time" data-f="a" data-i="${i}" value="${b.a}"><span class="muted">até</span><label class="sr" for="eb${i}">Fim</label><input class="inp" id="eb${i}" type="time" data-f="b" data-i="${i}" value="${b.b}"><button class="x" data-del="${i}" aria-label="Apagar ${esc(b.l)}"><svg class="icon"><use href="#i-x"/></svg></button></div>
+          <label class="sr" for="el${i}">Nome do bloco</label><input class="inp" id="el${i}" data-f="l" data-i="${i}" value="${esc(b.l)}">
+          <div class="row wrap" style="gap:8px"><label class="sr" for="ec${i}">Tipo</label><select class="inp ins" id="ec${i}" data-f="c" data-i="${i}">${CATS.map(c=>`<option value="${c}" ${b.c===c?"selected":""}>${CAT_N[c]}</option>`).join("")}</select>
+          ${["grad","tech","anbima"].includes(b.c)&&K.size?`<label class="sr" for="em${i}">Matéria</label><select class="inp ins" id="em${i}" data-f="m" data-i="${i}"><option value="">matéria pelo nome do bloco</option>${[...K].map(k=>`<option value="${k}" ${b.m===k?"selected":""}>${esc(ED.subj[k].n)}</option>`).join("")}</select>`:""}</div>
+        </div>`; }).join("")}</div>
+        ${ED.confirm==="copy"?`<div class="ponte"><b style="font-weight:600">Substituir segunda a sexta pela agenda de ${DIAS[ED.dia].toLowerCase()}?</b><div class="row wrap"><button class="btn sm primary" data-copyok="1">Substituir</button><button class="btn sm ghost" data-copyno="1">Cancelar</button></div></div>`:""}
+        ${ED.undo?`<div class="row" style="gap:8px"><span class="muted" style="font-size:13px">${esc(ED.undo.msg)}</span><button class="btn sm" data-undo="1">Desfazer</button></div>`:""}
+        <div class="row wrap"><button class="btn sm" data-add="1">Adicionar bloco</button>${ED.confirm==="copy"?"":`<button class="btn sm ghost" data-copy="1">Copiar ${DIAS[ED.dia].toLowerCase()} para seg–sex</button>`}</div>`;
     }
     if(ED.tab==="materias"){
-      body += `<div class="list">${Object.entries(ED.subj).map(([k,v])=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="sn-${k}">Nome</label><input class="inp" id="sn-${k}" data-sk="${k}" data-sf="n" value="${esc(v.n)}" style="padding:10px 14px"><button class="x" data-sdel="${k}" aria-label="Remover ${esc(v.n)}"><svg class="icon"><use href="#i-x"/></svg></button></div>
-        <label class="field"><span>Níveis, do básico ao avançado (separe por vírgula)</span><input class="inp" data-sk="${k}" data-sf="lv" value="${esc(v.lv.join(", "))}" style="padding:10px 14px"></label></div>`).join("")}</div>
+      body += `<div class="list">${Object.entries(ED.subj).map(([k,v])=>{ const u=usos(k); return `<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="sn-${k}">Nome</label><input class="inp" id="sn-${k}" data-sk="${k}" data-sf="n" value="${esc(v.n)}" style="padding:10px 14px;min-width:0"><button class="x" data-sdel="${k}" aria-label="Remover ${esc(v.n)}"><svg class="icon"><use href="#i-x"/></svg></button></div>
+        ${ED.confirm==="del:"+k?`<div class="ponte"><b style="font-weight:600">Remover ${esc(v.n)}?</b><p style="margin:0">Usada por ${u.nb} bloco(s) e ${u.nm} meta(s). Os blocos passam para ${esc(Object.values(ED.subj).find((x,i)=>Object.keys(ED.subj)[i]!==k)?.n||"outra matéria")} e saem das metas.</p><div class="row wrap"><button class="btn sm primary" data-sdelok="${k}">Remover</button><button class="btn sm ghost" data-sdelno="1">Cancelar</button></div></div>`:""}
+        <label class="field"><span>Níveis, do básico ao avançado (separe por vírgula)</span><input class="inp" data-sk="${k}" data-sf="lv" value="${esc(v.lv.join(", "))}" style="padding:10px 14px"></label></div>`; }).join("")}</div>
         <button class="btn sm" data-sadd="1">Adicionar matéria</button>`;
     }
     if(ED.tab==="metas"){
       const K=[...keys()];
-      body += `<div class="list">${ED.metas.map((g,i)=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="gn${i}">Meta</label><input class="inp" id="gn${i}" data-gi="${i}" data-gf="n" value="${esc(g.n)}" style="padding:10px 14px"><button class="x" data-gdel="${i}" aria-label="Remover meta"><svg class="icon"><use href="#i-x"/></svg></button></div>
+      body += `<div class="list">${ED.metas.map((g,i)=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="gn${i}">Meta</label><input class="inp" id="gn${i}" data-gi="${i}" data-gf="n" value="${esc(g.n)}" style="padding:10px 14px;min-width:0"><button class="x" data-gdel="${i}" aria-label="Remover meta"><svg class="icon"><use href="#i-x"/></svg></button></div>
         <div class="grid2"><label class="field"><span>Dia do projeto</span><input class="inp" type="number" min="1" max="${TOTAL}" data-gi="${i}" data-gf="dia" value="${(g.dia||0)+1}" style="padding:10px"></label>
         <label class="field"><span>${g.marco?"Ação única":"Blocos aprovados"}</span>${g.marco?`<button class="btn sm" data-gmarco="${i}">Virar meta de estudo</button>`:`<input class="inp" type="number" min="1" data-gi="${i}" data-gf="need" value="${g.need||6}" style="padding:10px">`}</label></div>
-        ${g.marco?"":`<div class="pick" aria-label="Matérias que alimentam">${K.map(k=>`<button data-gmat="${i}" data-k="${k}" aria-pressed="${(g.mats||[]).includes(k)}">${esc(ED.subj[k].n)}</button>`).join("")}</div>`}</div>`).join("")}</div>
+        ${g.marco?"":`<div class="pick" role="group" aria-label="Matérias que alimentam">${K.map(k=>`<button data-gmat="${i}" data-k="${k}" aria-pressed="${(g.mats||[]).includes(k)}">${esc(ED.subj[k].n)}</button>`).join("")}</div>${(g.mats||[]).length?"":`<small style="color:var(--warn)">Escolha ao menos uma matéria, ou a meta não avança.</small>`}`}</div>`).join("")}</div>
         <div class="row wrap"><button class="btn sm" data-gadd="estudo">Nova meta de estudo</button><button class="btn sm" data-gadd="marco">Nova ação única</button></div>`;
     }
     if(ED.tab==="claude"){
@@ -1995,46 +2015,73 @@ function openEditor(tab){
     }
     sheetHTML({title:"Editar projeto", next:"Salvar mudanças", body});
     bind();
+    const sb=$("#shb"); if(sb) sb.scrollTop = focusSel==="top" ? 0 : prevScroll;
+    const el = (focusSel && focusSel!=="top" && SH.querySelector(focusSel)) || (actId && document.getElementById(actId));
+    if(el){ el.focus({preventScroll:focusSel==null}); if(focusSel && focusSel!=="top") el.scrollIntoView({block:"center"}); }
   };
-  const propHTML = () => `<div class="ponte"><span class="tag" style="color:#FFD2B0">Proposta do Claude</span>${ED.proposta.resumo?`<p style="margin:0">${esc(ED.proposta.resumo)}</p>`:""}${[1,2,3,4,5,6,0].map(i=>`<p class="mono" style="font-size:12px;margin:0">${DIAS[i].slice(0,3)}: ${ED.proposta.semana[i].filter(b=>["grad","tech","anbima"].includes(b.c)).map(b=>b.a+" "+b.l).join(" · ")||"sem estudo"}</p>`).join("")}<div class="row wrap"><button class="btn sm primary" data-apply="1">Aplicar esta agenda</button><button class="btn sm ghost" data-discard="1">Descartar</button></div></div>`;
+  const propHTML = () => `<div class="ponte"><span class="tag" style="color:var(--c-2)">Proposta do Claude</span>${ED.proposta.resumo?`<p style="margin:0">${esc(ED.proposta.resumo)}</p>`:""}${[1,2,3,4,5,6,0].map(i=>`<p class="mono" style="font-size:12px;margin:0">${DIAS[i].slice(0,3)}: ${ED.proposta.semana[i].filter(b=>["grad","tech","anbima"].includes(b.c)).map(b=>b.a+" "+b.l).join(" · ")||"sem estudo"}</p>`).join("")}<div class="row wrap"><button class="btn sm primary" data-apply="1">Aplicar esta agenda</button><button class="btn sm ghost" data-discard="1">Descartar</button></div></div>`;
   const read = () => {
-    SH.querySelectorAll("[data-f]").forEach(x=>{ const b=ED.week[ED.dia].b[+x.dataset.i]; if(b) b[x.dataset.f]=x.value||(x.dataset.f==="m"?undefined:x.value); });
-    SH.querySelectorAll("[data-sf]").forEach(x=>{ const v=ED.subj[x.dataset.sk]; if(!v) return; if(x.dataset.sf==="n") v.n=x.value.trim()||v.n; else { const L=x.value.split(",").map(t=>t.trim()).filter(Boolean); v.lv=[0,1,2,3,4].map(j=>L[j]||v.lv[j]); } });
-    SH.querySelectorAll("[data-gf]").forEach(x=>{ const g=ED.metas[+x.dataset.gi]; if(!g) return; if(x.dataset.gf==="n") g.n=x.value; else if(x.dataset.gf==="dia") g.dia=Math.max(0,Math.min(TOTAL-1,(+x.value||1)-1)); else g.need=Math.max(1,+x.value||1); });
+    SH.querySelectorAll("[data-f]").forEach(x=>{ const b=ED.week[ED.dia].b[+x.dataset.i]; if(!b) return; const v = x.dataset.f==="m" ? (x.value||undefined) : x.value; if(b[x.dataset.f]!==v){ b[x.dataset.f]=v; ED.dirty=true; } });
+    SH.querySelectorAll("[data-sf]").forEach(x=>{ const v=ED.subj[x.dataset.sk]; if(!v) return; if(x.dataset.sf==="n"){ const n=x.value.trim()||v.n; if(n!==v.n){ v.n=n; ED.dirty=true; } } else { const L=x.value.split(",").map(t=>t.trim()).filter(Boolean); const lv=[0,1,2,3,4].map(j=>L[j]||v.lv[j]); if(lv.join()!==v.lv.join()){ v.lv=lv; ED.dirty=true; } } });
+    SH.querySelectorAll("[data-gf]").forEach(x=>{ const g=ED.metas[+x.dataset.gi]; if(!g) return; const f=x.dataset.gf, v = f==="n" ? x.value : f==="dia" ? Math.max(0,Math.min(TOTAL-1,(+x.value||1)-1)) : Math.max(1,+x.value||1); if(g[f]!==v){ g[f]=v; ED.dirty=true; } });
     const t=$("#ed-p"); if(t) ED.pedido=t.value;
   };
+  const addBlock = () => { const L=ED.week[ED.dia].b; L.sort((x,y)=>x.a<y.a?-1:1);
+    const eod = L.find(isEod), lim = eod ? toM(eod.a) : 23*60+45;
+    const occ = L.filter(b=>b!==eod && !isEod(b)).map(b=>[toM(b.a),toM(b.b)]);
+    let start = null; const ini = toM((ED.week[ED.dia].w||"06:00"));
+    for(let t=Math.max(ini,0); t+15<=lim; t+=15){ const e=Math.min(t+60, lim); if(!occ.some(([a,b])=>t<b && e>a)){ const nxt=occ.filter(([a])=>a>=t).map(([a])=>a); start=[t, Math.min(e, nxt.length?Math.min(...nxt):e)]; break; } }
+    if(!start){ toast("Não há horário livre neste dia. Encurte um bloco antes."); return; }
+    L.push({a:fromM(start[0]), b:fromM(start[1]), l:"Novo bloco", c:"grad", s:""}); L.sort((x,y)=>x.a<y.a?-1:1); ED.dirty=true;
+    draw(`#el${L.findIndex(b=>b.l==="Novo bloco"&&b.a===fromM(start[0]))}`); };
   const bind = () => {
-    SH.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{ read(); ED.tab=b.dataset.et; draw(); });
-    SH.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{ read(); ED.dia=+b.dataset.ed; draw(); });
-    SH.querySelectorAll("[data-f]").forEach(x=>x.addEventListener("change",()=>{ ED.dirty=true; if(x.dataset.f==="c"){ read(); draw(); } }));
-    SH.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ read(); ED.week[ED.dia].b.splice(+b.dataset.del,1); ED.dirty=true; draw(); });
-    SH.querySelector("[data-add]")?.addEventListener("click",()=>{ read(); const L=ED.week[ED.dia].b, last=L.filter(b=>!/integral|antes de dormir/i.test(b.l)).slice(-1)[0]; const a=last?last.b:"08:00", [h,m]=a.split(":").map(Number), e=Math.min(23*60+59,h*60+m+60);
-      L.push({a, b:`${p2(Math.floor(e/60))}:${p2(e%60)}`, l:"Novo bloco", c:"grad", s:""}); ED.dirty=true; draw(); });
-    SH.querySelector("[data-copy]")?.addEventListener("click",()=>{ read(); [1,2,3,4,5].filter(i=>i!==ED.dia).forEach(i=>{ ED.week[i]={...ED.week[i], b:clone(ED.week[ED.dia].b)}; }); ED.dirty=true; toast("Copiado para segunda a sexta."); });
-    SH.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=()=>{ read(); if(Object.keys(ED.subj).length<=1){ toast("O projeto precisa de pelo menos uma matéria."); return; } delete ED.subj[b.dataset.sdel]; ED.dirty=true; draw(); });
-    SH.querySelector("[data-sadd]")?.addEventListener("click",()=>{ read(); const k="m"+Date.now().toString(36).slice(-4); ED.subj[k]={n:"Nova matéria", a:"grad", lv:["Fundamentos","Básico","Intermediário","Avançado","Domínio"], st:[0,4,9,15,22], rec:[]}; ED.dirty=true; draw(); });
+    SH.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{ read(); ED.tab=b.dataset.et; ED.confirm=null; draw("top"); });
+    SH.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{ read(); ED.dia=+b.dataset.ed; ED.confirm=null; draw(); });
+    SH.querySelectorAll("[data-f]").forEach(x=>x.onchange=()=>{ read(); if(x.dataset.f==="c") draw(); });
+    SH.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ read(); const L=ED.week[ED.dia].b, r=L.splice(+b.dataset.del,1)[0]; ED.undo={msg:`"${r.l}" apagado.`, week:null, dia:ED.dia, item:r}; ED.dirty=true; draw(); });
+    const q=s=>SH.querySelector(s);
+    if(q("[data-add]")) q("[data-add]").onclick=()=>{ read(); addBlock(); };
+    if(q("[data-copy]")) q("[data-copy]").onclick=()=>{ read(); ED.confirm="copy"; draw("[data-copyok]"); };
+    if(q("[data-copyno]")) q("[data-copyno]").onclick=()=>{ ED.confirm=null; draw(); };
+    if(q("[data-copyok]")) q("[data-copyok]").onclick=()=>{ const back=clone(ED.week), src=ED.week[ED.dia]; [1,2,3,4,5].filter(i=>i!==ED.dia).forEach(i=>{ ED.week[i]={...ED.week[i], s:src.s, w:src.w, b:clone(src.b)}; }); ED.undo={msg:"Segunda a sexta substituídas.", week:back}; ED.confirm=null; ED.dirty=true; draw(); };
+    if(q("[data-undo]")) q("[data-undo]").onclick=()=>{ const u=ED.undo; if(u.week) ED.week=u.week; else if(u.item){ ED.week[u.dia].b.push(u.item); ED.week[u.dia].b.sort((x,y)=>x.a<y.a?-1:1); } ED.undo=null; draw(); };
+    SH.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=()=>{ read(); if(Object.keys(ED.subj).length<=1){ toast("O projeto precisa de pelo menos uma matéria."); return; } ED.confirm="del:"+b.dataset.sdel; draw(); });
+    SH.querySelectorAll("[data-sdelno]").forEach(b=>b.onclick=()=>{ ED.confirm=null; draw(); });
+    SH.querySelectorAll("[data-sdelok]").forEach(b=>b.onclick=()=>{ const k=b.dataset.sdelok; delete ED.subj[k]; const alt=Object.keys(ED.subj)[0];
+      for(let i=0;i<7;i++) ED.week[i].b.forEach(x=>{ if(x.m===k) x.m=alt; });
+      ED.metas.forEach(g=>{ g.mats=(g.mats||[]).filter(x=>x!==k); }); ED.confirm=null; ED.dirty=true; draw(); toast("Matéria removida. Os blocos dela passaram para "+ED.subj[alt].n+"."); });
+    if(q("[data-sadd]")) q("[data-sadd]").onclick=()=>{ read(); const k="m"+Date.now().toString(36).slice(-4); ED.subj[k]={n:"Nova matéria", a:"grad", lv:["Fundamentos","Básico","Intermediário","Avançado","Domínio"], st:[0,4,9,15,22], rec:[]}; ED.dirty=true; draw(`#sn-${k}`); };
     SH.querySelectorAll("[data-gdel]").forEach(b=>b.onclick=()=>{ read(); ED.metas.splice(+b.dataset.gdel,1); ED.dirty=true; draw(); });
-    SH.querySelectorAll("[data-gadd]").forEach(b=>b.onclick=()=>{ read(); const mar=b.dataset.gadd==="marco"; ED.metas.push({id:"g"+Date.now().toString(36), n:mar?"Nova ação":"Nova meta", dia:Math.min(TOTAL-1,dayIdx(today())+30), mats:[], need:mar?undefined:6, how:"", marco:mar}); ED.dirty=true; draw(); });
-    SH.querySelectorAll("[data-gmarco]").forEach(b=>b.onclick=()=>{ read(); const g=ED.metas[+b.dataset.gmarco]; g.marco=false; g.need=6; draw(); });
+    SH.querySelectorAll("[data-gadd]").forEach(b=>b.onclick=()=>{ read(); const mar=b.dataset.gadd==="marco"; ED.metas.push({id:"g"+Date.now().toString(36), n:mar?"Nova ação":"Nova meta", dia:Math.min(TOTAL-1,dayIdx(today())+30), mats:mar?[]:[Object.keys(ED.subj)[0]], need:mar?undefined:6, how:"", marco:mar}); ED.dirty=true; draw(`#gn${ED.metas.length-1}`); });
+    SH.querySelectorAll("[data-gmarco]").forEach(b=>b.onclick=()=>{ read(); const g=ED.metas[+b.dataset.gmarco]; g.marco=false; g.need=6; g.mats=g.mats&&g.mats.length?g.mats:[Object.keys(ED.subj)[0]]; ED.dirty=true; draw(); });
     SH.querySelectorAll("[data-gmat]").forEach(b=>b.onclick=()=>{ read(); const g=ED.metas[+b.dataset.gmat]; g.mats=g.mats||[]; const k=b.dataset.k; g.mats=g.mats.includes(k)?g.mats.filter(x=>x!==k):g.mats.concat(k); ED.dirty=true; draw(); });
-    SH.querySelector("[data-ask]")?.addEventListener("click",ask);
-    SH.querySelector("[data-apply]")?.addEventListener("click",()=>{ for(let i=0;i<7;i++) ED.week[i]={...ED.week[i], b:ED.proposta.semana[i]}; ED.proposta=null; ED.dirty=true; ED.tab="agenda"; draw(); toast("Agenda aplicada. Revise e toque em Salvar mudanças."); });
-    SH.querySelector("[data-discard]")?.addEventListener("click",()=>{ ED.proposta=null; draw(); });
+    if(q("[data-ask]")) q("[data-ask]").onclick=ask;
+    if(q("[data-apply]")) q("[data-apply]").onclick=()=>{ const back=clone(ED.week); for(let i=0;i<7;i++) ED.week[i]={...ED.week[i], b:ED.proposta.semana[i]}; ED.undo={msg:"Agenda do Claude aplicada.", week:back}; ED.proposta=null; ED.dirty=true; ED.tab="agenda"; draw("top"); };
+    if(q("[data-discard]")) q("[data-discard]").onclick=()=>{ ED.proposta=null; draw(); };
   };
   const ask = async () => { read(); if(ED.pedido.trim().length<8){ toast("Conte o que mudou em uma frase."); return; }
     const box=$("#ed-prop"); box.innerHTML=thinking("O Claude está refazendo a sua agenda…");
     const atual={}; for(let i=0;i<7;i++) atual[i]=ED.week[i].b.map(b=>({a:b.a,b:b.b,l:b.l,c:b.c,m:b.m}));
     try{ const r=await aiJson(`Ajuste a AGENDA SEMANAL deste projeto ao pedido da pessoa, mudando só o necessário e mantendo o equilíbrio (estudo, pausas, prioridades e "Revisão integral do dia" no fim de cada dia). Pedido: """${ED.pedido.slice(0,1500)}""". Matérias (chave: nome): ${JSON.stringify(Object.fromEntries(Object.entries(ED.subj).map(([k,v])=>[k,v.n])))}. Categorias permitidas: ${CATS.join(", ")}. Agenda atual (0 = domingo): ${JSON.stringify(atual)}.
 Responda só com JSON: {"resumo":"1–2 frases do que mudou","semana":{"0":[{"a":"HH:MM","b":"HH:MM","l":"","c":"","m":"chave ou vazio"}],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}}`);
-      const K=keys(), sem={}; for(let i=0;i<7;i++) sem[i]=cleanDay((r.semana||{})[String(i)]||atual[i], K);
+      const K=keys(), sem={}; for(let i=0;i<7;i++) sem[i]=cleanDay((r.semana||{})[String(i)]||atual[i], K, dormeDe(i));
       ED.proposta={resumo:String(r.resumo||""), semana:sem}; if(FLOW===F && ED.tab==="claude"){ $("#ed-prop").innerHTML=propHTML(); bind(); }
     }catch(e){ const b=$("#ed-prop"); if(b) b.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; } };
-  const salvar = () => { read(); const K=keys();
-    for(let i=0;i<7;i++) ED.week[i]={...ED.week[i], b:cleanDay(ED.week[i].b, K)};
-    if(custom){ M.projeto.custom={...M.projeto.custom, week:ED.week, subj:ED.subj, metas:ED.metas.filter(g=>String(g.n).trim())}; }
-    else M.projeto={...(M.projeto||{}), id:"caverna", weekOverride:ED.week};
-    syncProjetos(); applyProjeto(); saveMain(); closeSheet(); toast("Projeto atualizado."); };
-  openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),#05060A");
+  const dormeDe = i => { const ig=orig[i].b.find(b=>/integral/i.test(b.l)); return ig ? fromM(toM(ig.a)+15) : (((pj.custom||{}).respostas||{}).dorme || "22:30"); };
+  const salvar = () => { read(); const K=keys(), probs=[];
+    for(let i=0;i<7;i++){ const L=ED.week[i].b.slice().sort((x,y)=>x.a<y.a?-1:1), bad=[];
+      L.forEach((b,j)=>{ if(!b.a||!b.b||b.a>=b.b) bad.push(ED.week[i].b.indexOf(b)); else if(j && L[j-1].b>b.a && L[j-1].a<L[j-1].b) bad.push(ED.week[i].b.indexOf(b)); if(!String(b.l||"").trim()) bad.push(ED.week[i].b.indexOf(b)); });
+      if(bad.length) probs.push({dia:i, i:bad}); }
+    if(probs.length){ const p0=probs[0]; ED.bad=p0; ED.tab="agenda"; ED.dia=p0.dia; ED.erro=`${DIAS[p0.dia]}: ${p0.i.length} bloco(s) com horário invertido, sobreposto ou sem nome (marcados em vermelho).${probs.length>1?" Há problemas em outros dias também.":""}`; draw("top"); return; }
+    ED.erro=null; ED.bad=null;
+    if(custom && ED.metas.some(g=>!g.marco && !(g.mats||[]).length)){ ED.tab="metas"; ED.erro="Há meta de estudo sem matéria. Escolha ao menos uma."; draw("top"); return; }
+    const nova={}; for(let i=0;i<7;i++) nova[i]={...ED.week[i], b:cleanDay(ED.week[i].b, K, dormeDe(i))};
+    const hist=(M.projeto&&M.projeto.weekHist)||[], hj=iso(today());
+    const weekHist=hist.filter(h=>h.desde!==hj).concat([{desde:hj, week:nova}]);
+    if(custom) M.projeto.custom={...M.projeto.custom, subj:ED.subj, metas:ED.metas.filter(g=>String(g.n).trim())};
+    M.projeto={...(M.projeto||{}), id:pj.id, weekHist}; delete M.projeto.weekOverride;
+    F.guard=null; syncProjetos(); applyProjeto(); saveMain(); closeSheet(); toast("Projeto atualizado. Vale a partir de hoje."); };
+  openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),var(--bg)");
   draw();
 }
 
@@ -2047,7 +2094,7 @@ const MODELOS = {
 };
 function planoModelo(tipo, A){
   const md=MODELOS[tipo], hrs=Math.max(1,parseInt(A.horas)||2), ndias=Math.max(3,Math.min(7,+A.dias||5)), [ah,am]=(A.acorda||"06:00").split(":").map(Number);
-  const hhmm = m => `${p2(Math.floor(m/60)%24)}:${p2(m%60)}`, ini=ah*60+am+(A.prior.includes("Fé")?60:30);
+  const hhmm = m => `${p2(Math.floor(m/60)%24)}:${p2(m%60)}`, ini=Math.max(ah*60+am+(A.prior.includes("Fé")?60:30), A.trabalha==="Período integral"?18*60+30:A.trabalha==="Meio período"?13*60+30:0);
   const estudoDias = [1,2,3,4,5,6,0].slice(0,ndias), semana={};
   for(let d=0;d<7;d++){ const L=[]; let t=ini;
     if(A.prior.includes("Fé")) L.push({a:hhmm(ah*60+am),b:hhmm(ah*60+am+30),l:"Oração",c:"oracao"});
