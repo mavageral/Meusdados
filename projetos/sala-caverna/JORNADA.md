@@ -18,6 +18,7 @@ Pelo anúncio, a pessoa já entra sabendo o que quer: "quero passar no ITA", "qu
 
 | # | Entrega | O que a pessoa vê |
 |---|---|---|
+| 0 | **Um caminho** | O app recomenda **uma** rota, explicada a fundo. A pessoa pode ajustar, mas nunca recebe um cardápio. |
 | 1 | **Alvo claro** | Meta concreta, data e reservas. "Passar no INSS, técnico, prova prevista para 2027." |
 | 2 | **Mapa do alvo** | Tudo o que o alvo exige: edital (salvo no app), banca, matérias e pesos, formato da prova, nota de corte, requisitos (escolaridade, idade, certificação). |
 | 3 | **Diagnóstico** | Onde a pessoa está hoje: nível em cada matéria, medido por um teste curto. A distância até o alvo. |
@@ -100,7 +101,7 @@ A carteira mostra a escada inteira, com o degrau atual em destaque.
 
 ## Limites honestos
 
-- Dentro do app, o Claude **não navega na internet**. Vagas e editais ao vivo exigem uma fonte externa. Até lá, o app mostra links oficiais fixos (gov.br, Sisu, ProUni, sites de bancas e de vagas), buscas prontas e o que o Claude sabe, sempre com "confirme no site oficial".
+- **Busca ao vivo:** com um conector de busca ligado (Parallel Search; Indeed para vagas), o Claude do app pesquisa editais, vagas, cursos e preços na hora e cita as fontes. Sem conector, o app mostra links oficiais fixos (gov.br, Sisu, ProUni, sites de bancas e de vagas) e buscas prontas, sempre com "confirme no site oficial".
 - **Editais:** a pessoa envia a foto, o PDF ou o texto do edital, e o Claude lê e extrai matérias, pesos e datas.
 - **Preços e notas de corte** mudam: o app mostra estimativas e marca a data da informação.
 

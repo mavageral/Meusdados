@@ -21,6 +21,16 @@ Na internet existe conhecimento suficiente para formar qualquer pessoa: passar e
 
 O Projeto Caverna da Edna é o **primeiro projeto** e o modelo de tudo. Outras pessoas têm outras realidades e terão os seus próprios projetos.
 
+## Um alvo, um caminho (31/10/2026)
+
+**Yaad1 = um alvo, um caminho.** O app não entrega um cardápio de caminhos: ele interpreta a pessoa e traça **uma rota única**, explicada a fundo, na qual ela pode confiar todos os dias. A pessoa continua no controle (pode ajustar ou pedir outra rota), mas o app sempre recomenda **um** caminho.
+
+Por quê: esta geração quer resultado imediato, e o resultado real (o salário de 16 mil, o emprego, a aprovação) vem de uma rotina diária de horas de estudo que, no dia a dia, nem sempre parece ligada ao alvo. Por isso o app precisa **destrinchar** o caminho e mostrar, em cada bloco da rotina, **por que ele leva ao alvo**. A confiança na rotina é parte do produto.
+
+**Duas formas de entrar:** responder ao quiz, ou **descrever com as próprias palavras** o que quer, onde quer chegar e do que gosta. Nesse caso o Claude lê, faz perguntas até o alvo ficar claro e segue para a rotina.
+
+**Oportunidades ao vivo:** nem todo mundo chega direcionado, então o app precisa **mostrar oportunidades reais** (editais, vagas, cursos, preços). Isso usa os conectores do claude.ai que a página pode chamar (capacidade `mcp`), como o **Parallel Search** (busca na internet, gratuito e sem conta). Sem o conector, o app volta às buscas prontas e aos links oficiais.
+
 ## Para quem
 
 Qualquer realidade:
@@ -71,7 +81,7 @@ Um app próprio, com cadastro por e-mail e telefone fora do claude.ai, é outro 
 
 ## Limites honestos
 
-- **Vagas "em tempo real":** dentro do app, o Claude não navega na internet. O app pode montar buscas prontas (LinkedIn, Gupy, Vagas.com, portais de concursos) e o Claude orienta com o que sabe. Dados realmente ao vivo exigem uma fonte externa (API ou integração), a decidir.
+- **Busca ao vivo:** o Claude do app só pesquisa na internet quando a pessoa tem um conector de busca ligado no claude.ai (ex.: Parallel Search). Sem ele, o app usa buscas prontas e links oficiais. No app próprio (Vercel), a busca passa a ser do servidor, para todos.
 - **Prazos de concursos e vestibulares** mudam: o app sempre manda confirmar no site oficial.
 
 ## A jornada
