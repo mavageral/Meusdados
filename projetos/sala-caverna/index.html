@@ -106,7 +106,7 @@ h1,h2,h3,p{margin:0}
 .tile.wide{grid-column:span 2}
 
 /* ---------- timeline ---------- */
-.wallet{display:grid;gap:14px;padding:18px;border-radius:26px;border:1px solid rgb(255 255 255 / .16);
+.wallet{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:22px;color:var(--text);border:1px solid rgb(255 255 255 / .16);
   background:radial-gradient(90% 120% at 100% 0%,rgb(255 106 26 / .28),transparent 55%),radial-gradient(80% 100% at 0% 100%,rgb(90 110 255 / .22),transparent 60%),linear-gradient(160deg,#141826,#07080D);
   box-shadow:inset 0 1px 0 rgb(255 255 255 / .1),0 20px 50px rgb(0 0 0 / .45)}
 .tl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -662,25 +662,16 @@ function proximidade(){
 }
 function carteiraHTML(){
   const pj=P(), pr=proximidade(), di=Math.max(1,dayIdx(today())+1), nome=M.profile.full||M.profile.name||NAME_DEFAULT;
-  return `<section class="wallet" aria-label="Carteira do projeto">
-    <div class="row" style="align-items:flex-start">
-      ${avatarHTML(64)}
-      <div class="grow" style="display:grid;gap:4px">
-        <span class="eyebrow" style="color:#FFD2B0">${esc(pj.nome)}</span>
-        <b style="font-weight:500;font-size:19px;line-height:1.2">${esc(nome)}</b>
-        <span class="lema" style="color:var(--muted)">${esc(pj.lema)}</span>
-      </div>
-      <button class="x" data-act="menu" aria-label="Menu: perfil e projeto, evolução, documentos">${DOTS}</button>
-    </div>
-    <div style="display:grid;gap:6px">
-      <div class="row" style="justify-content:space-between;align-items:baseline;gap:8px"><span style="font-size:13px;color:rgb(255 255 255 / .85)"><span class="faint">Alvo · </span>${esc(pj.meta)}</span><span class="mono" style="font-size:12px;white-space:nowrap">dia ${di}/${TOTAL}</span></div>
-      <div class="gbar" aria-label="${pr.tp}% do tempo, ${pr.gp}% das metas comprovadas"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div>
-      <span style="font-size:13px;color:rgb(255 255 255 / .8)">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</span>
-    </div>
-    <span class="faint mono" style="font-size:11px">Nível ${LEVEL()} · ${M.xp||0} pontos de domínio</span>
-  </section>`;
+  return `<button class="wallet" data-act="menu" aria-label="${esc(pj.nome)}, ${esc(nome)}, dia ${di} de ${TOTAL}. Abrir menu">
+    ${avatarHTML(44)}
+    <span class="grow" style="display:grid;gap:3px;min-width:0;text-align:left">
+      <span class="row" style="gap:8px;justify-content:space-between"><span class="eyebrow" style="color:#FFD2B0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(pj.nome)}</span><span class="mono" style="font-size:11px;color:var(--muted);white-space:nowrap">dia ${di}/${TOTAL}</span></span>
+      <b style="font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(nome)}</b>
+      <span class="gbar" style="height:4px" aria-hidden="true"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%;top:-3px;bottom:-3px"></em></span>
+    </span>
+    <span class="x" aria-hidden="true">${DOTS}</span>
+  </button>`;
 }
-
 /* ---------------- HOJE ---------------- */
 function vHoje(){
   const t = today(), sel = SELDAY ? fromIso(SELDAY) : t, isToday = iso(sel)===iso(t);
@@ -1677,7 +1668,8 @@ function openMenu(){
   FLOW={kind:"menu", next:()=>closeSheet(), back:()=>{}};
   openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
   sheetHTML({title:"Yaad", body:`
-    <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||M.profile.name||NAME_DEFAULT)}</b><div class="muted" style="font-size:13px">${esc(P().nome)}</div></div></div>
+    <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||M.profile.name||NAME_DEFAULT)}</b><div class="muted" style="font-size:13px">${esc(P().nome)} · ${esc(P().lema)}</div></div></div>
+    ${(()=>{ const pr=proximidade(); return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${M.xp||0} pontos de domínio</small></div>`; })()}
     <div class="list">
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Minha evolução</b><small>Panorama, provas, metas e árvore</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
