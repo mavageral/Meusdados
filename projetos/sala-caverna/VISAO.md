@@ -31,6 +31,16 @@ Por quê: esta geração quer resultado imediato, e o resultado real (o salário
 
 **Oportunidades ao vivo:** nem todo mundo chega direcionado, então o app precisa **mostrar oportunidades reais** (editais, vagas, cursos, preços). Isso usa os conectores do claude.ai que a página pode chamar (capacidade `mcp`), como o **Parallel Search** (busca na internet, gratuito e sem conta). Sem o conector, o app volta às buscas prontas e aos links oficiais.
 
+## O projeto da Edna e as pessoas novas (31/10/2026)
+
+- **O Projeto Caverna da Edna está consolidado** e não muda com o que é construído para novos usuários. A dona do app abre sempre no Caverna, como antes.
+- **Pessoas novas** (qualquer conta que não seja a dona) entram por uma **apresentação deslizante** do app e caem numa tela inicial vazia que diz: **comece pelo perfil e projeto, responda o quiz**. Não veem nada do Caverna.
+- Cada pessoa tem os próprios dados, privados na conta dela (`data/users/<id>`). Não há conflito com os dados da Edna.
+
+## Nada fica engessado: remodelar projeto
+
+Depois de cada resultado (o plano do quiz, o diagnóstico), a pessoa diz **o que achou**. Se não concordar, ela escreve o que não concordou ou o que o app precisa entender, e toca em **Remodelar projeto**. O Claude refaz rotina, matérias, fases e metas, mostra a proposta e só aplica com o OK dela. As observações se acumulam e ajudam nas próximas vezes. O que já passou fica registrado como era.
+
 ## Para quem
 
 Qualquer realidade:
