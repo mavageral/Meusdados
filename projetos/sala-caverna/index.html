@@ -305,6 +305,36 @@ h1,h2,h3,p{margin:0}
 @keyframes pulseb{50%{box-shadow:0 0 0 6px rgb(255 106 26 / .08)}}
 .quadro{white-space:pre;overflow-x:auto;font:14px/1.45 var(--mono);padding:14px;border-radius:16px;background:#020306;border:1px solid var(--edge-2);color:#E8F0FF}
 .lvl{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--edge-2)}
+/* três dias em escadinha */
+.days3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:8px}
+.days5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dcard{display:grid;grid-template-rows:auto 1fr auto;gap:6px;text-align:left;padding:10px 8px;min-width:0;overflow:hidden;border-radius:18px;min-height:210px;color:var(--text);transition:transform .2s var(--ease)}
+.dcard:active{transform:scale(.98)}
+.dcard.dots{min-height:120px;padding:8px}
+.dcard.past{background:linear-gradient(170deg,rgb(94 230 160 / .22),rgb(94 230 160 / .08));border:1px solid rgb(94 230 160 / .42)}
+.dcard.today{background:linear-gradient(170deg,rgb(94 230 160 / .12),rgb(94 230 160 / .03));border:1px solid rgb(94 230 160 / .3);box-shadow:0 0 24px rgb(94 230 160 / .12)}
+.dcard.future{background:linear-gradient(170deg,rgb(255 255 255 / .09),rgb(255 255 255 / .02));border:1px solid rgb(255 255 255 / .16)}
+.dcard .dh{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.dcard .dh b{font-weight:600;font-size:13px;white-space:nowrap}
+.dcard .dh small{white-space:nowrap}
+.dcard .dh small{font:500 11px var(--mono);color:var(--muted)}
+.dcard .dp{font:500 11px var(--mono);color:var(--muted);justify-self:end}
+.stair{display:flex;flex-direction:column-reverse;justify-content:flex-start;gap:2px;min-width:0}
+.st-row{display:flex;align-items:center;gap:4px;padding-left:calc(var(--x) * 22%);min-width:0;height:15px}
+.stair.dots .st-row{padding-left:calc(var(--x) * 60%);height:8px}
+.st-row em{font-style:normal;font-size:11px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgb(255 255 255 / .82);min-width:0}
+.dcard.future .st-row em{color:rgb(255 255 255 / .6)}
+.ck{flex:none;width:12px;height:12px;border-radius:50%;border:1px solid rgb(255 255 255 / .35);display:grid;place-items:center}
+.stair.dots .ck{width:7px;height:7px}
+.ck .icon{width:9px;height:9px;color:var(--on-ok)}
+.ck.ok{background:var(--ok);border-color:transparent}
+.ck.no{background:var(--bad);border-color:transparent}
+.ck.no .icon{color:var(--on-bad)}
+.dcard.today .ck:not(.ok):not(.no){border-color:rgb(94 230 160 / .45);background:rgb(94 230 160 / .08)}
+.dcard.future .ck{border-color:rgb(255 255 255 / .28)}
+.grid100{display:grid;grid-template-columns:repeat(20,1fr);gap:3px}
+.grid100 i{aspect-ratio:1;border-radius:3px;background:rgb(255 255 255 / .07);cursor:pointer}
+.grid100 i.f{background:var(--ok)} .grid100 i.p{background:rgb(94 230 160 / .35)} .grid100 i.td{outline:1.5px solid var(--text);outline-offset:1px}
 /* desktop: duas colunas no Hoje */
 .hoje-grid{display:flex;flex-direction:column;gap:18px}
 .hoje-grid .h-top{order:1}.hoje-grid .h-side{order:2}.hoje-grid .h-tl{order:3}
@@ -1363,7 +1393,29 @@ function openSubject(k){
    FITA DO TEMPO (pinça para afastar: agora → dia → semana → 100 dias)
    ==================================================================== */
 let ZOOM = 1;
-const ZN = ["Agora","Hoje","Semana","100 dias"];
+const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","100 dias"];
+const SHORT = l => l.replace(/^Oração (da manhã|das 18h|antes de dormir)$/,(m,x)=>x==="da manhã"?"Oração":x==="das 18h"?"Oração 18h":"Oração noite")
+  .replace(/Bíblia e (teologia|texto do ensinamento)/,"Bíblia").replace("Graduação com maior necessidade","Graduação").replace("Ciências Econômicas","Economia")
+  .replace("Revisão integral do dia","Revisão do dia").replace(/^Culto de .*/,"Culto").replace("Programação da igreja","Igreja").replace("Escola Bíblica Dominical","EBD")
+  .replace("Exercícios de ","Exerc. ").replace("Exercícios da ","Exerc. ").replace("Projeto, Excel ou Power BI","Projeto/BI").replace("Python, SQL ou projeto","Python/SQL").replace("Python ou SQL","Python/SQL")
+  .replace(/^ANBIMA: .*/,"ANBIMA").replace("Revisão espaçada","Revisões").replace("Projeto prático","Projeto").replace("Visitas e comunhão","Visitas").replace("Revisão de código","Código").replace("Família e lanche","Família").replace("Jantar e família","Família").replace("Descanso e família","Família").replace("Convivência familiar","Família").replace("Revisão semanal","Semana").replace("Estruturar a mensagem","Mensagem").replace("Concluir o estudo da mensagem","Mensagem").replace(/^Preparação /,"Prep. ");
+function dayCard(d, mode){
+  const s=iso(d), t=today(), rel = s<iso(t) ? "past" : s===iso(t) ? "today" : "future";
+  const bs=blocksOf(d).filter(b=>kindOf(b)!=="pausa"), rec=(DAYS[s]||{}).blocks||{}, st=dayStats(s), n=bs.length;
+  const name = s===iso(t) ? "Hoje" : s===iso(addDays(t,-1)) ? "Ontem" : s===iso(addDays(t,1)) ? "Amanhã" : WD[d.getDay()][0]+WD[d.getDay()].slice(1).toLowerCase();
+  const inRange = dayIdx(d)>=0 && dayIdx(d)<TOTAL;
+  let inner = "";
+  if(mode==="full" || mode==="dots"){
+    inner = `<div class="stair ${mode}">` + bs.map((b,i)=>{ const r=rec[bkey(b)], ok=r&&r.st==="feito", no=r&&r.st==="nao";
+      const ic = ok ? `<svg class="icon"><use href="#i-check"/></svg>` : no ? `<svg class="icon"><use href="#i-x"/></svg>` : "";
+      return `<span class="st-row" style="--x:${n>1?(i/(n-1)):0}"><i class="ck ${ok?"ok":no?"no":""}">${ic}</i>${mode==="full"?`<em>${esc(SHORT(b.l))}</em>`:""}</span>`; }).join("") + `</div>`;
+  }
+  return `<button class="dcard ${rel} ${mode}" data-act="rseg" data-d="${s}" aria-label="${name}, ${st.done} de ${st.total} feitos">
+    <span class="dh">${mode==="dots"?`<b>${s===iso(t)?"Hoje":WD[d.getDay()]}</b><small>${d.getDate()}</small>`:`<b>${name}</b><small>${d.getDate()}/${d.getMonth()+1}</small>`}</span>
+    ${inRange?inner:`<span class="faint" style="font-size:12px">fora dos 100 dias</span>`}
+    ${rel!=="future"&&inRange?`<span class="dp">${st.done}/${st.total}</span>`:""}
+  </button>`;
+}
 function missaoHTML(){
   const x=topGoal(); if(!x) return "";
   const g=x.g, isMarco=g.marco&&!g.need, hojeTxt = isMarco ? g.how : (()=>{ const hb=blocksOf(today()).filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))); return hb.length?`Hoje alimentam esta meta: ${hb.map(b=>`${b.l} (${fmtH(b.a)})`).join(", ")}.`:`Hoje a agenda não tem bloco para esta meta. ${g.how}`; })();
@@ -1375,35 +1427,29 @@ function missaoHTML(){
     <div class="row wrap">${isMarco?`<button class="btn sm primary" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" data-act="metas">Ver todas as metas</button></div>
   </section>`;
 }
-function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Linha do tempo">${ribbonInner()}</section>`; }
+function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Sua evolução no tempo">${ribbonInner()}</section>`; }
 function ribbonInner(){
-  const t=today(), ts=iso(t), nm=nowMin(), bs=blocksOf(t).filter(b=>!["pausa"].includes(kindOf(b))), rec=day(ts).blocks;
-  const head = (sub) => `<div class="rh"><b>${ZN[ZOOM]}</b><span>${sub}</span><button class="zb" data-act="zoom" data-z="1" aria-label="Afastar (ver mais tempo)" ${ZOOM===3?"disabled":""}>−</button><button class="zb" data-act="zoom" data-z="-1" aria-label="Aproximar" ${ZOOM===0?"disabled":""}>+</button></div>`;
+  const t=today(), ts=iso(t), nm=nowMin(), st=dayStats(ts);
+  const head = (sub) => `<div class="rh"><b>${ZN[ZOOM]}</b><span>${sub}</span><button class="zb" data-act="zoom" data-z="1" aria-label="Afastar e ver mais dias" ${ZOOM===4?"disabled":""}>−</button><button class="zb" data-act="zoom" data-z="-1" aria-label="Aproximar" ${ZOOM===0?"disabled":""}>+</button></div>`;
   if(ZOOM===0){
     const cur=blocksOf(t).find(b=>nm>=toMin(b.a)&&nm<toMin(b.b));
     if(!cur) return head("Nenhum bloco agora")+`<div class="track"><i style="flex:1"></i></div>`;
     const p=Math.round((nm-toMin(cur.a))/(toMin(cur.b)-toMin(cur.a))*100);
-    return head(`faltam ${toMin(cur.b)-nm} min`)+`<div class="track" style="--g1:${g1(cur.c)}"><i class="cur" style="flex:${p}"></i><i style="flex:${100-p}"></i></div><div class="rl"><span>${fmtH(cur.a)}</span><span>${fmtH(cur.b)}</span></div>`;
+    return head(`faltam ${toMin(cur.b)-nm} min`)+`<div class="track" style="--g1:${g1(cur.c)}"><i class="cur" style="flex:${p}"></i><i style="flex:${100-p}"></i></div><div class="rl"><span>${fmtH(cur.a)} · ${esc(SHORT(cur.l))}</span><span>${fmtH(cur.b)}</span></div>`;
   }
-  if(ZOOM===1){
-    const a0=toMin(bs[0].a), a1=toMin(bs[bs.length-1].b), st=dayStats(ts);
-    let seg=bs.map(b=>{ const r=rec[bkey(b)], k=bkey(b), past=toMin(b.b)<=nm, cur=nm>=toMin(b.a)&&nm<toMin(b.b);
-      const cls = r ? (r.st==="feito"?"f":"n") : cur ? "cur" : past ? "w" : "";
-      return `<i class="${cls}" style="flex:${toMin(b.b)-toMin(b.a)};--g1:${g1(b.c)}" data-act="rseg" data-k="${esc(k)}" title="${esc(b.l)} ${fmtH(b.a)}"></i>`; }).join("");
-    const pos = Math.max(0,Math.min(100,(nm-a0)/(a1-a0)*100));
-    return head(`${st.done} de ${st.total} feitos · ${Math.round(st.pct*100)}%`)+`<div class="track">${seg}${nm>=a0&&nm<=a1?`<span class="nowm" style="left:${pos}%"></span>`:""}</div><div class="rl"><span>${fmtH(bs[0].a)}</span><span>agora ${fmtH(p2(Math.floor(nm/60))+":"+p2(nm%60))}</span><span>${fmtH(bs[bs.length-1].b)}</span></div>`;
-  }
-  if(ZOOM===2){
-    let cols="", lbl=""; for(let i=-3;i<=3;i++){ const d=addDays(t,i), s=iso(d), st=dayStats(s), fut=i>0;
-      cols+=`<i class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" title="${d.getDate()}/${d.getMonth()+1}">${fut?"":`<u style="height:${Math.round(st.pct*100)}%"></u>`}</i>`;
+  if(ZOOM===1) return head(`hoje ${st.done} de ${st.total}`)+`<div class="days3">${[-1,0,1].map(i=>dayCard(addDays(t,i),"full")).join("")}</div>`;
+  if(ZOOM===2) return head(`hoje ${st.done} de ${st.total}`)+`<div class="days5">${[-2,-1,0,1,2].map(i=>dayCard(addDays(t,i),"dots")).join("")}</div>`;
+  if(ZOOM===3){
+    let cols="", lbl=""; for(let i=-3;i<=3;i++){ const d=addDays(t,i), s=iso(d), sd=dayStats(s), fut=i>0;
+      cols+=`<i class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" title="${d.getDate()}/${d.getMonth()+1}">${fut?"":`<u style="height:${Math.round(sd.pct*100)}%"></u>`}</i>`;
       lbl+=`<span style="flex:1;text-align:center">${i===0?"hoje":WD[d.getDay()]}</span>`; }
     const w=[-3,-2,-1,0].map(i=>dayStats(iso(addDays(t,i))).pct); const m=Math.round(w.reduce((a,b)=>a+b,0)/w.length*100);
-    return head(`média de ${m}% nos últimos 4 dias`)+`<div class="track days" style="height:36px">${cols}</div><div class="rl" style="display:flex">${lbl}</div>`;
+    return head(`média de ${m}% nos últimos 4 dias`)+`<div class="track days" style="height:44px">${cols}</div><div class="rl" style="display:flex">${lbl}</div>`;
   }
-  const di=dayIdx(t); let cells="";
-  for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), st=dayStats(s); const cls = i>di?"":st.pct>=.8?"f":st.pct>0?"w":"";
-    cells+=`<i class="${cls}" style="flex:1;${i===di?"outline:1px solid var(--text);outline-offset:1px;":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}"></i>`; }
-  return head(`dia ${di+1} de 100 · ${Math.round((di+1)/TOTAL*100)}% do caminho`)+`<div class="track hundred">${cells}</div><div class="rl"><span>16/10</span><span>Fase 2 · 20/11</span><span>Fase 3 · 25/12</span><span>23/01</span></div>`;
+  const di=dayIdx(t); let cells="", full=0;
+  for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), sd=dayStats(s); if(i<=di&&sd.pct>=.8) full++; const cls = i>di?"":sd.pct>=.8?"f":sd.pct>0?"p":"";
+    cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}"></i>`; }
+  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
 }
 function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
 (function(){
@@ -1411,10 +1457,10 @@ function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
   const dist = e => Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
   document.addEventListener("touchstart", e=>{ if(e.touches.length===2 && e.target.closest("#ribbon")){ d0=dist(e); done=false; } }, {passive:true});
   document.addEventListener("touchmove", e=>{ if(!d0||e.touches.length!==2||done) return; const r=dist(e)/d0;
-    if(r<0.75){ ZOOM=Math.min(3,ZOOM+1); done=true; paintRibbon(); } else if(r>1.33){ ZOOM=Math.max(0,ZOOM-1); done=true; paintRibbon(); } }, {passive:true});
+    if(r<0.75){ ZOOM=Math.min(4,ZOOM+1); done=true; paintRibbon(); } else if(r>1.33){ ZOOM=Math.max(0,ZOOM-1); done=true; paintRibbon(); } }, {passive:true});
   document.addEventListener("touchend", ()=>{ d0=0; }, {passive:true});
-  document.addEventListener("wheel", e=>{ if(!e.ctrlKey || !e.target.closest("#ribbon")) return; e.preventDefault(); ZOOM=Math.max(0,Math.min(3,ZOOM+(e.deltaY>0?1:-1))); paintRibbon(); }, {passive:false});
-  document.addEventListener("dblclick", e=>{ if(e.target.closest("#ribbon")){ ZOOM=0; paintRibbon(); } });
+  document.addEventListener("wheel", e=>{ if(!e.ctrlKey || !e.target.closest("#ribbon")) return; e.preventDefault(); ZOOM=Math.max(0,Math.min(4,ZOOM+(e.deltaY>0?1:-1))); paintRibbon(); }, {passive:false});
+  document.addEventListener("dblclick", e=>{ if(e.target.closest("#ribbon")){ ZOOM = ZOOM===1 ? 0 : 1; paintRibbon(); } });
 })();
 
 /* ====================================================================
@@ -1626,7 +1672,7 @@ document.addEventListener("click", e => {
   else if(act==="manha") openManha();
   else if(act==="semana") openSemana();
   else if(act==="forja") openForja(a.dataset.t, a.dataset.m);
-  else if(act==="zoom"){ ZOOM=Math.max(0,Math.min(3,ZOOM+(+a.dataset.z))); paintRibbon(); }
+  else if(act==="zoom"){ ZOOM=Math.max(0,Math.min(4,ZOOM+(+a.dataset.z))); paintRibbon(); }
   else if(act==="rseg"){ const k=a.dataset.k; if(a.dataset.d){ SELDAY=a.dataset.d===iso(today())?null:a.dataset.d; render(); } else if(k) openBlock(iso(today()),k); }
   else if(act==="rday") openDay(a.dataset.d);
   else if(act==="erro"){ const er=(M.erros||[]).find(x=>x.id===a.dataset.id); if(!er) return; FLOW={kind:"erro", next:()=>{ er.ok=true; er.porque=$("#er-t").value; saveMain(); closeSheet(); toast("Erro resolvido."); }, back:()=>{}}; openSheet("linear-gradient(170deg,#2A0A10,#05060A 60%)");
