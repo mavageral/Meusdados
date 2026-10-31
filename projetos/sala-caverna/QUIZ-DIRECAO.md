@@ -27,18 +27,26 @@ Quem decide é sempre a pessoa. O app mostra, explica e organiza.
 
 Nota honesta: as **Inteligências Múltiplas (Gardner)** são populares, mas têm pouca base científica como teste. O modelo de interesses mais validado é o **RIASEC (Holland)**, usado pelo governo dos EUA no O\*NET. A Bússola usa o RIASEC como base e o Gardner como lente de **talentos**, porque as pessoas se reconhecem nele.
 
+## O alvo é o centro
+
+Tudo no quiz serve para uma coisa: **traçar o alvo da pessoa** (o *ya'ad*). O alvo é a meta concreta que vira o projeto. A descoberta, as perguntas e os caminhos existem para chegar a ele.
+
 ## As portas de entrada
 
-Primeira pergunta, uma tela: **"O que te trouxe aqui hoje?"**
+Primeira pergunta, uma tela: **"Qual é o seu alvo?"** Logo em seguida, **"Qual?"**: o app já pergunta o alvo específico e, a partir dele, mostra tudo (requisitos, prova, matérias, prazo, oportunidades).
 
-| Porta | Para quem | Caminho no quiz |
+| Porta | "Qual?" (exemplos em botões + campo livre) | O que o app já mostra |
 |---|---|---|
-| **Já sei o meu alvo** | "Quero passar no concurso do BB", "quero o estágio da Serasa" | Realidade → confirma o alvo → requisitos e prazo → projeto. Rápido (cerca de 10 telas). A descoberta fica opcional. |
-| **Quero trabalhar** | Precisa de emprego ou quer mudar de emprego | Realidade → área já pensada? (sim: confirma; não: descoberta curta) → requisitos (exige faculdade? certificação?) → caminhos com degrau de entrada imediato. |
-| **Quero estudar** | ENEM, vestibular, faculdade, concurso, curso | Realidade → qual estudo → (não sabe o curso? descoberta) → caminhos. |
-| **Não sei ainda** | Quer se descobrir ou recomeçar | Percurso completo. |
+| **Passar em um concurso** | Banco do Brasil, Caixa, INSS, polícias, tribunais, Receita, prefeitura… ou a área (bancário, policial, tribunais, fiscal, saúde, educação) e o nível (médio ou superior) | Banca, edital, matérias, formato da prova, prazo realista |
+| **Estudar para o ENEM** | O curso e a faculdade que quer, e a nota que precisa | Áreas da prova, redação, nota de corte, ano da prova |
+| **Passar num vestibular** | ITA, Fuvest, Unicamp, UERJ, outro… e o curso | Matérias e estilo da prova, provas passadas |
+| **Entrar ou crescer na faculdade** | O curso (presencial ou EAD), ou o curso que já faz e o período | Grade, disciplinas do semestre, estágio |
+| **Conseguir um emprego** | O cargo ou a área (dados, administrativo, vendas, saúde…) | Requisitos, se exige faculdade (e qual), emprego de entrada |
+| **Fazer um curso ou certificação** | ANBIMA, idiomas, TI, técnico… | Conteúdo, prova, custo, onde fazer |
+| **Mudar de carreira ou crescer onde estou** | Para onde quer ir | Ponte entre o que já sabe e o novo alvo |
+| **Ainda não sei** | — | Percurso completo de descoberta |
 
-Qualquer porta pode abrir a descoberta com um toque ("quero me conhecer melhor antes").
+Em todas as portas existe o botão **"Ainda não sei qual"**: ele abre a descoberta (interesses, talentos, valores) para escolher o alvo dentro daquela porta, por exemplo qual concurso combina com a pessoa. Quem já sabe o alvo faz um caminho curto (cerca de 10 telas) e pode abrir a descoberta com um toque ("quero me conhecer melhor antes").
 
 ## O percurso completo
 

@@ -146,6 +146,9 @@ h1,h2,h3,p{margin:0}
 .dots i{width:8px;height:8px;border-radius:50%;border:1px solid var(--muted)}
 .dots i.on{background:var(--text);border-color:var(--text);width:22px;border-radius:99px}
 .dots i.done{background:var(--muted);border-color:var(--muted)}
+.prog{display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:180px;font-size:12px;color:var(--muted)}
+.prog b{flex:1;height:4px;border-radius:99px;background:rgb(255 255 255 / .14);overflow:hidden}
+.prog i{display:block;height:100%;background:var(--text);border-radius:inherit}
 .next{margin-left:auto;display:inline-flex;align-items:center;gap:12px;background:none;border:0;font:300 clamp(24px,6.6vw,38px)/1 var(--font);letter-spacing:-.03em;padding:6px 0;min-height:56px;white-space:nowrap}
 .next .arrow{width:40px;height:40px;border-radius:50%;background:var(--text);color:#000;display:grid;place-items:center}
 .next:disabled{opacity:.35}
@@ -981,7 +984,8 @@ function closeSheet(){ if(FLOW && FLOW.guard && FLOW.guard()) return; keepSessio
   SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
   const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); else if(o && o.dataset && o.dataset.act){ const n=document.querySelector(`[data-act="${o.dataset.act}"]`); if(n) n.focus(); } }
 function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
-  const dots = steps ? `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>` : "";
+  const dots = !steps ? "" : steps>9 ? `<div class="prog" role="img" aria-label="Passo ${at+1} de ${steps}"><span class="mono">${at+1}/${steps}</span><b><i style="width:${Math.round((at+1)/steps*100)}%"></i></b></div>`
+    : `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>`;
   SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
     <div class="sh-body" id="shb">${body}</div>
     <div class="sh-foot"><div class="in">${dots}${next?`<button class="next" data-sh="next" ${nextOk?"":"disabled"}>${esc(next)} <span class="arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></button>`:""}</div></div>`;
@@ -1807,25 +1811,69 @@ const MOMENTOS = ["Ensino médio","Cursinho","Faculdade em andamento","Já me fo
 const DESEJOS = ["Passar em concurso","Conseguir emprego","Entrar na faculdade (ENEM ou vestibular)","Fazer um curso ou certificação","Mudar de carreira","Crescer onde estou","Ainda não sei"];
 const AFINIDADES = ["Exatas e números","Tecnologia","Pessoas e comunicação","Negócios e dinheiro","Saúde","Leis e direito","Artes e criatividade","Natureza e ciência","Ensino","Fé e ministério"];
 const PRIORIDADES = ["Fé","Família","Saúde e academia","Trabalho","Ministério","Descanso"];
+/* Bússola (QUIZ-DIRECAO.md): o alvo é o centro; amplitude antes de profundidade */
+const PORTAS = [
+  {k:"concurso", n:"Passar em um concurso", q:"Qual concurso?", ex:["Banco do Brasil","Caixa","INSS","Polícia","Tribunais","Receita Federal","Prefeitura"], ph:"Ex.: Banco do Brasil, escriturário, nível médio", modelo:"concurso"},
+  {k:"enem", n:"Estudar para o ENEM", q:"Para qual curso e faculdade?", ex:["Medicina","Direito","Engenharia","Administração","Psicologia","Pedagogia"], ph:"Ex.: Engenharia na UFMG, preciso de 750 pontos", modelo:"enem"},
+  {k:"vest", n:"Passar num vestibular", q:"Qual vestibular e qual curso?", ex:["ITA","Fuvest (USP)","Unicamp","UERJ","IME"], ph:"Ex.: ITA, Engenharia de Computação", modelo:"enem"},
+  {k:"facul", n:"Entrar ou crescer na faculdade", q:"Qual curso?", ex:["Administração","Ciências Contábeis","Matemática","Pedagogia","Análise e Desenvolvimento de Sistemas","Enfermagem"], ph:"Ex.: Matemática EAD, 3º período", modelo:"faculdade"},
+  {k:"emprego", n:"Conseguir um emprego", q:"Qual cargo ou área?", ex:["Dados e tecnologia","Administrativo","Bancos e finanças","Vendas e atendimento","Saúde","Educação"], ph:"Ex.: estágio em dados num banco", modelo:"emprego"},
+  {k:"curso", n:"Fazer um curso ou certificação", q:"Qual curso ou certificação?", ex:["ANBIMA (CPA)","Inglês","Programação","Excel e Power BI","Curso técnico"], ph:"Ex.: CPA-20 da ANBIMA", modelo:"emprego"},
+  {k:"mudar", n:"Mudar de carreira ou crescer onde estou", q:"Para onde você quer ir?", ex:[], ph:"Ex.: sair do comércio e ir para a área de dados", modelo:"emprego"},
+  {k:"nsei", n:"Ainda não sei", q:"", ex:[], ph:"", modelo:null}];
+const ESCOLAR = ["Fundamental","Médio cursando","Médio completo","Superior cursando","Superior completo","Pós-graduação"];
+const RIASEC = [
+  {k:"R", n:"Fazer", it:["Montar ou consertar aparelhos e máquinas","Trabalhar ao ar livre, com plantas, animais ou obras","Usar ferramentas e o corpo para produzir algo concreto"]},
+  {k:"I", n:"Investigar", it:["Descobrir por que as coisas acontecem","Resolver problemas difíceis com números e lógica","Pesquisar e testar ideias (ciência, dados, saúde)"]},
+  {k:"A", n:"Criar", it:["Criar imagens, vídeos, músicas ou textos","Desenhar ambientes, produtos ou telas de apps","Inventar jeitos novos de fazer algo"]},
+  {k:"S", n:"Cuidar e ensinar", it:["Ensinar ou explicar algo a alguém","Cuidar da saúde e do bem-estar das pessoas","Ouvir pessoas e ajudar a resolver problemas"]},
+  {k:"E", n:"Liderar e vender", it:["Convencer e negociar","Liderar uma equipe ou um projeto","Abrir e fazer crescer um negócio"]},
+  {k:"C", n:"Organizar e analisar", it:["Organizar planilhas, documentos e processos","Controlar dinheiro, contas e números","Garantir que regras e normas sejam cumpridas"]}];
+const ESC_INT = ["Não é pra mim","Talvez","Gosto","Amo","Nunca experimentei"];
+const TALENTOS = [["Linguística","Eu me expresso bem falando ou escrevendo."],["Lógico-matemática","Eu raciocino rápido com números e lógica."],["Espacial","Eu visualizo as coisas antes de fazer: formas, mapas, layouts."],["Corporal","Eu aprendo melhor fazendo, com as mãos ou o corpo."],["Musical","Eu percebo ritmo, tom e som com facilidade."],["Interpessoal","Eu entendo o que as pessoas sentem e me dou bem em grupo."],["Intrapessoal","Eu me conheço bem e sei o que me motiva."],["Naturalista","Eu reparo na natureza e gosto de observar e classificar coisas."]];
+const ESC_TAL = ["Não sou eu","Um pouco","Sou eu","Muito eu"];
+function ordemCartoes(){ /* intercala as 6 áreas a cada rodada; nunca duas da mesma área seguidas */
+  const out=[]; for(let r=0;r<3;r++){ const perm=[0,1,2,3,4,5].sort(()=>Math.random()-.5); if(out.length && perm[0]===out[out.length-1].a){ const x=perm[0]; perm[0]=perm[1]; perm[1]=x; } perm.forEach(a=>out.push({a,r})); }
+  return out; }
+function placarBussola(int, tal, aj){
+  const areas = RIASEC.map((x,ai)=>{ let s=0,n=0,nunca=0; [0,1,2].forEach(r=>{ const v=int[ai+"_"+r]; if(v==null) return; if(v===4) nunca++; else { s+=v; n++; } });
+    const v = n ? Math.max(0,Math.min(100,Math.round(s/(3*n)*100)+((aj||{})[x.k]||0))) : null; return {k:x.k, n:x.n, v, explorar:nunca>=2||n===0}; });
+  const talentos = TALENTOS.map(([n],i)=>({n, v:tal[i]==null?null:Math.round(tal[i]/3*100)}));
+  const codigo = areas.filter(x=>x.v!=null&&x.v>0).sort((a,b)=>b.v-a.v).slice(0,3).map(x=>x.n);
+  return {areas, talentos, codigo}; }
 const CATS = ["oracao","biblia","min","saude","grad","tech","anbima","pausa","rev"];
 function openDirecao(){
-  const A = {nome:M.profile.name||"", idade:"", momento:"", acorda:"06:00", dorme:"22:30", trabalha:"Não", horas:"2h", dias:"5", prior:[], desejo:[], afin:[], livre:"", desc:null, descAns:{}, cam:null, esc:null, proprio:"", pnome:"", plema:"", pdias:90, plano:null};
-  const steps = () => ["intro","momento","rotina","desejo","afin"].concat(aiOn()&&(A.desejo.includes("Ainda não sei")||A.afin.length<2)?["descoberta"]:[]).concat(["caminhos","projeto","plano"]);
+  const A = {nome:M.profile.name||"", idade:"", momento:"", acorda:"06:00", dorme:"22:30", trabalha:"Não", horas:"2h", dias:"5", prior:[], porta:"", qual:"", nsQual:false, descobrir:false, escolar:"", curso:"", invest:"", cidade:"", mob:"", ord:ordemCartoes(), int:{}, tal:{}, aj:{}, conf:"", livre:"", cam:null, esc:null, proprio:"", pnome:"", plema:"", pdias:90, plano:null};
+  const porta = () => PORTAS.find(x=>x.k===A.porta);
+  const desc = () => A.porta==="nsei" || A.nsQual || A.descobrir;
+  const steps = () => ["intro","porta"].concat(A.porta&&A.porta!=="nsei"?["qual"]:[]).concat(["momento","rotina","recursos"])
+    .concat(desc()?["i0","i1","i2","i3","i4","i5","t0","t1","espelho"]:[]).concat(["caminhos","projeto","plano"]);
   const F = FLOW = {kind:"direcao", at:0, A,
     guard:()=>{ if(F.at<2 || F.sair) return false; F.sair=true; const b=$("#shb"); if(b) b.insertAdjacentHTML("afterbegin",`<div class="ponte" id="dq-sair"><b style="font-weight:600">Sair do quiz?</b><p style="margin:0">As respostas e o plano gerado serão perdidos.</p><div class="row wrap"><button class="btn sm" id="dq-ficar">Continuar o quiz</button><button class="btn sm ghost" id="dq-sim">Sair</button></div></div>`); $("#shb").scrollTop=0;
       $("#dq-ficar").onclick=()=>{ F.sair=false; $("#dq-sair").remove(); }; $("#dq-sim").onclick=()=>{ F.guard=null; closeSheet(); }; $("#dq-ficar").focus(); return true; },
     pick:(g,v,on)=>{ if(g==="momento") A.momento=v; else if(g==="trabalha") A.trabalha=v; else if(g==="horas") A.horas=v; else if(g==="dias") A.dias=v;
       else if(["prior","desejo","afin"].includes(g)){ const L=A[g]; if(on){ if(!L.includes(v)) L.push(v); } else A[g]=L.filter(x=>x!==v); }
       else if(g==="modelo"){ A.modelo=v; A.esc=-2; A.pnome=""; }
-      else if(g.startsWith("dq")) A.descAns[g.slice(2)]=v; upd(); },
+      else if(g==="nsq"){ keep(); if(v==="1") A.nsQual=on; else A.descobrir=on; return draw(); }
+      else if(g==="porta"){ if(A.porta!==v){ A.qual=""; A.nsQual=false; A.cam=null; A.plano=null; A.esc=null; A.pnome=""; A.proprio=""; } A.porta=v; A.modelo=(porta()||{}).modelo||undefined; return draw(); }
+      else if(g==="qualex"){ const t=$("#dq-q"); if(t){ t.value=v; A.qual=v; } A.nsQual=false; return draw(); }
+      else if(g==="escolar"){ keep(); A.escolar=v; return draw(); }
+      else if(g==="invest") A.invest=v; else if(g==="mob") A.mob=v;
+      else if(g.startsWith("ii")) A.int[g.slice(2)]=+v;
+      else if(g.startsWith("tt")) A.tal[g.slice(2)]=+v;
+      else if(g==="conf"){ keep(); A.conf=v; const sc=($("#shb")||{}).scrollTop||0; draw(); $("#shb").scrollTop=sc; return; }
+      upd(); },
     next:()=>go(+1), back:()=>go(-1)};
   const upd = () => { const b=SH.querySelector('[data-sh="next"]'); if(b) b.disabled=!ok(); };
   const ok = () => { const s=steps()[F.at];
     if(s==="intro") return ($("#dq-n")||{}).value?.trim().length>0;
-    if(s==="momento") return !!A.momento;
-    if(s==="desejo") return A.desejo.length>0;
-    if(s==="afin") return A.afin.length>0 || (($("#dq-l")||{}).value||A.livre).trim().length>10;
-    if(s==="descoberta") return !!A.desc && A.desc.qs.every((q,i)=>A.descAns[i]!=null);
+    if(s==="porta") return !!A.porta;
+    if(s==="qual") return A.nsQual || (($("#dq-q")||{}).value||"").trim().length>1;
+    if(s==="momento") return !!A.momento && !!A.escolar;
+    if(s==="recursos") return !!A.invest;
+    if(/^i\d$/.test(s)) return A.ord.slice(+s[1]*3,+s[1]*3+3).every(c=>A.int[c.a+"_"+c.r]!=null);
+    if(/^t\d$/.test(s)) return [0,1,2,3].every(j=>A.tal[+s[1]*4+j]!=null);
+    if(s==="espelho") return A.conf==="Sim, sou eu" || A.conf==="Mais ou menos";
     if(s==="caminhos") return A.esc!=null || (($("#dq-p")||{}).value||"").trim().length>10;
     if(s==="projeto") return (($("#dq-pn")||{}).value||"").trim().length>1;
     if(s==="plano") return !!A.plano;
@@ -1833,39 +1881,58 @@ function openDirecao(){
   const keep = () => { const v=id=>($("#"+id)||{}).value; const s=steps()[F.at];
     if(s==="intro"){ A.nome=v("dq-n").trim(); A.idade=v("dq-i"); }
     if(s==="rotina"){ A.acorda=v("dq-a")||A.acorda; A.dorme=v("dq-d")||A.dorme; }
-    if(s==="afin") A.livre=v("dq-l")||"";
+    if(s==="qual"){ A.qual=(v("dq-q")||"").trim(); A.livre=v("dq-l")||""; }
+    if(s==="momento") A.curso=(v("dq-c")||"").trim();
+    if(s==="recursos") A.cidade=(v("dq-cid")||"").trim();
+    if(s==="espelho") A.livre=v("dq-l")||A.livre;
     if(s==="caminhos"){ const t=(v("dq-p")||"").trim(); if(t.length>10){ A.proprio=t; if(A.esc==null) A.esc=-1; } }
     if(s==="projeto"){ A.pnome=v("dq-pn").trim(); A.plema=v("dq-pl").trim(); A.pdias=Math.max(14,Math.min(365,Math.round(+v("dq-pd")||A.pdias))); } };
   const go = d => { keep(); const S=steps();
     if(d>0 && S[F.at]==="plano") return salvar();
     if(d>0 && !ok()) return;
     F.at=Math.max(0,Math.min(S.length-1,F.at+d)); draw(); };
-  const respostas = () => ({nome:A.nome, idade:A.idade, momento:A.momento, acorda:A.acorda, dorme:A.dorme, trabalha:A.trabalha, horas_estudo_dia:A.horas, dias_semana:A.dias, prioridades:A.prior, deseja:A.desejo, afinidades:A.afin, em_palavras:A.livre,
-    autodescoberta: A.desc ? A.desc.qs.map((q,i)=>q.p+" → "+(q.o[A.descAns[i]]||{}).t).join(" | ") : ""});
+  const respostas = () => { const pl=desc()?placarBussola(A.int,A.tal,A.aj):null, pt=porta()||{};
+    return {nome:A.nome, idade:A.idade, alvo_porta:pt.n||"", alvo_qual:A.nsQual?"ainda não sabe qual":A.qual, momento:A.momento, escolaridade:A.escolar, curso_atual:A.curso, acorda:A.acorda, dorme:A.dorme, trabalha:A.trabalha, horas_estudo_dia:A.horas, dias_semana:A.dias, prioridades:A.prior,
+      investimento_mensal:A.invest, cidade:A.cidade, mobilidade:A.mob, em_palavras:A.livre,
+      perfil: pl ? {interesses:pl.areas.map(x=>x.n+": "+(x.v==null?"a explorar":x.v+"%")+(x.explorar&&x.v!=null?" (pouco explorada)":"")).join(", "), talentos:pl.talentos.map(x=>x.n+": "+x.v+"%").join(", "), codigo:pl.codigo.join(" · "), conferencia:A.conf} : null}; };
   const pk = (g, list, sel, multi) => `<div class="pick" role="group" data-pick="${g}" ${multi?"data-multi":""}>${list.map(x=>`<button data-v="${esc(x)}" aria-pressed="${multi?sel.includes(x):sel===x}">${esc(x)}</button>`).join("")}</div>`;
   const draw = () => {
     const S=steps(), s=S[F.at], base={title:"Direção", steps:S.length, at:F.at};
-    if(s==="intro") sheetHTML({...base, next:"Começar", body:`<h2 class="q">Vamos encontrar o seu alvo<small>Perguntas rápidas, uma por tela. O Claude entende a sua realidade, mostra caminhos possíveis e monta o seu projeto com rotina, matérias, provas e metas.</small></h2>
+    if(s==="intro") sheetHTML({...base, next:"Começar", body:`<h2 class="q">Vamos traçar o seu alvo<small>Perguntas rápidas, uma por tela. Primeiro o alvo, depois a sua realidade. Se ainda não souber o que quer, a gente descobre junto. No fim, o app monta o seu projeto com rotina, matérias, provas e metas.</small></h2>
       <label class="field"><span>Como você quer ser chamado(a)</span><input class="inp" id="dq-n" value="${esc(A.nome)}"></label>
       <label class="field"><span>Idade (opcional)</span><input class="inp" id="dq-i" type="number" min="10" max="99" value="${esc(A.idade)}"></label>
-      ${aiOn()?"":`<p class="note">O quiz precisa do Claude ligado (versão publicada) para sugerir caminhos e montar a rotina.</p>`}`});
-    if(s==="momento") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Qual é o seu momento hoje?</h2>${pk("momento",MOMENTOS,A.momento)}`});
+      ${aiOn()?"":`<p class="note">Sem o Claude ligado, o seu retrato funciona normalmente e o projeto sai de um modelo pronto.</p>`}`});
+    if(s==="porta") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Qual é o seu alvo?<small>Escolha o que você quer alcançar agora. Se ainda não souber, tudo bem: a gente descobre junto.</small></h2>
+      <div class="pick" role="group" data-pick="porta" style="display:grid;gap:8px">${PORTAS.map(x=>`<button data-v="${x.k}" aria-pressed="${A.porta===x.k}" style="text-align:left;border-radius:16px">${esc(x.n)}</button>`).join("")}</div>`});
+    if(s==="qual"){ const pt=porta(); sheetHTML({...base, next:"Próximo", body:`<h2 class="q">${esc(pt.q)}<small>${esc(pt.n)}. Quanto mais específico, melhor o app mostra requisitos, prova, matérias e prazo.</small></h2>
+      ${pt.ex.length?pk("qualex",pt.ex,A.nsQual?"":A.qual):""}
+      <label class="field"><span>O seu alvo</span><input class="inp" id="dq-q" value="${esc(A.qual)}" placeholder="${esc(pt.ph)}"></label>
+      <div class="pick" role="group" data-pick="nsq" data-multi><button data-v="1" aria-pressed="${A.nsQual}">Ainda não sei qual</button><button data-v="2" aria-pressed="${A.descobrir}">Quero me conhecer melhor antes</button></div>
+      ${A.nsQual||A.descobrir?`<p class="note">Depois da sua rotina, vêm perguntas rápidas de interesses e talentos para escolher o alvo que combina com você.</p>`:""}
+      <label class="field"><span>Com as suas palavras (opcional)</span><textarea class="ta" id="dq-l" placeholder="Ex.: quero estabilidade, me interesso por bancos, preciso de renda logo…">${esc(A.livre)}</textarea></label>`}); }
+    if(s==="momento") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Qual é o seu momento hoje?</h2>${pk("momento",MOMENTOS,A.momento)}
+      <div class="field"><span>Escolaridade</span>${pk("escolar",ESCOLAR,A.escolar)}</div>
+      ${/Superior|Pós/.test(A.escolar)?`<label class="field"><span>Qual curso? (e período, se estiver cursando)</span><input class="inp" id="dq-c" value="${esc(A.curso)}" placeholder="Ex.: Matemática EAD, 3º período"></label>`:""}`});
+    if(s==="recursos") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Recursos e lugar<small>Para os caminhos caberem no seu bolso e na sua cidade.</small></h2>
+      <div class="field"><span>Quanto pode investir por mês em estudo</span>${pk("invest",["Só gratuito","Até R$ 100","Até R$ 500","Mais que isso"],A.invest)}</div>
+      <label class="field"><span>Cidade e estado (opcional)</span><input class="inp" id="dq-cid" value="${esc(A.cidade)}" placeholder="Ex.: Uberlândia, MG"></label>
+      <div class="field"><span>Para trabalhar ou estudar</span>${pk("mob",["Só na minha cidade","Aceito remoto","Aceito me mudar"],A.mob)}</div>`});
+    if(/^i\d$/.test(s)){ const n=+s[1], cs=A.ord.slice(n*3,n*3+3); sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Eu gostaria de…<small>Interesses, ${n+1} de 6. Responda pelo que você sente, não pelo que dá dinheiro. "Nunca experimentei" não conta contra.</small></h2>
+      ${cs.map(c=>{ const g="ii"+c.a+"_"+c.r; return `<div class="mcq"><p class="p">${esc(RIASEC[c.a].it[c.r])}</p>${pkI(g,ESC_INT,A.int[c.a+"_"+c.r])}</div>`; }).join("")}`}); }
+    if(/^t\d$/.test(s)){ const n=+s[1]; sheetHTML({...base, next:n?"Ver meu retrato":"Próximo", body:`<h2 class="q">Isso sou eu?<small>Talentos, ${n+1} de 2.</small></h2>
+      ${[0,1,2,3].map(j=>{ const i=n*4+j; return `<div class="mcq"><p class="p">${esc(TALENTOS[i][1])}</p>${pkI("tt"+i,ESC_TAL,A.tal[i])}</div>`; }).join("")}`}); }
+    if(s==="espelho") sheetHTML({...base, next:"Ver caminhos", body:espelhoHTML()});
     if(s==="rotina") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Como é a sua rotina?<small>Para a agenda caber na sua vida real.</small></h2>
       <div class="grid2"><label class="field"><span>Acordo às</span><input class="inp" type="time" id="dq-a" value="${esc(A.acorda)}"></label><label class="field"><span>Durmo às</span><input class="inp" type="time" id="dq-d" value="${esc(A.dorme)}"></label></div>
       <div class="field"><span>Trabalho</span>${pk("trabalha",["Não","Meio período","Período integral"],A.trabalha)}</div>
       <div class="field"><span>Horas para estudar por dia</span>${pk("horas",["1h","2h","3h","4h","5h ou mais"],A.horas)}</div>
       <div class="field"><span>Dias de estudo por semana</span>${pk("dias",["3","4","5","6","7"],A.dias)}</div>
       <div class="field"><span>Prioridades que a rotina deve respeitar</span>${pk("prior",PRIORIDADES,A.prior,true)}</div>`});
-    if(s==="desejo") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">O que você deseja alcançar?<small>Pode marcar mais de um. Se não souber, tudo bem: a gente descobre junto.</small></h2>${pk("desejo",DESEJOS,A.desejo,true)}`});
-    if(s==="afin") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Do que você gosta?<small>Marque o que mais combina com você, ou conte com as suas palavras.</small></h2>${pk("afin",AFINIDADES,A.afin,true)}
-      <label class="field"><span>Com as suas palavras (opcional)</span><textarea class="ta" id="dq-l" placeholder="Ex.: gosto de resolver problemas, quero estabilidade, me interesso por bancos…">${esc(A.livre)}</textarea></label>`});
-    if(s==="descoberta"){ sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Vamos descobrir juntos<small>Escolha o que mais parece com você em cada situação. Não há resposta certa.</small></h2><div id="dq-desc">${A.desc?descHTML():aiOn()?thinking("Preparando perguntas de autodescoberta…"):`<p class="note">Precisa do Claude ligado.</p>`}</div>`});
-      if(!A.desc && aiOn()) aiJson(`Crie 5 perguntas de AUTODESCOBERTA vocacional para alguém que ainda não sabe o que quer. Situações do dia a dia, linguagem simples, 4 opções cada; cada opção revela uma inclinação (exatas, tecnologia, pessoas, negócios, saúde, direito, artes, natureza, ensino). Respostas já dadas: ${JSON.stringify(respostas())}. Responda só com JSON: {"qs":[{"p":"pergunta","o":[{"t":"opção","area":"área"}]}]}`, {modelTier:"quick"})
-        .then(r=>{ A.desc=r; if(FLOW===F && steps()[F.at]==="descoberta") draw(); }).catch(e=>{ const el=$("#dq-desc"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; }); }
-    if(s==="caminhos"){ sheetHTML({...base, next:"Escolher", body:`<h2 class="q">Seus caminhos<small>O Claude leu as suas respostas. Escolha um alvo, ou escreva o seu.</small></h2><div id="dq-cam">${A.cam?camHTML():aiOn()?thinking("O Claude está pensando nos seus caminhos…"):`<p class="note">Precisa do Claude ligado.</p>`}</div>
+    if(s==="caminhos"){ if(!aiOn() && !A.proprio && A.qual && !A.nsQual) A.proprio=(porta()||{}).n+": "+A.qual;
+      sheetHTML({...base, next:"Escolher", body:`<h2 class="q">Seus caminhos<small>O Claude leu as suas respostas. Escolha um alvo, ou escreva o seu.</small></h2><div id="dq-cam">${A.cam?camHTML():aiOn()?thinking("O Claude está pensando nos seus caminhos…"):`<p class="note">Precisa do Claude ligado.</p>`}</div>
       ${aiOn()?"":`<div class="glass pad" style="display:grid;gap:10px"><span class="tag">Sem o Claude agora? Comece por um modelo</span><div class="pick" data-pick="modelo">${Object.entries(MODELOS).map(([k,v])=>`<button data-v="${k}" aria-pressed="${A.modelo===k}">${esc(v.titulo)}</button>`).join("")}</div></div>`}
       <label class="field"><span>Ou escreva o seu próprio alvo</span><textarea class="ta" id="dq-p" style="min-height:90px" placeholder="Ex.: passar no concurso do Banco do Brasil em 2027">${esc(A.proprio)}</textarea></label>`});
-      if(!A.cam && aiOn()) aiJson(`Você é um orientador de carreira e estudos, empático e realista, para o Brasil. Com base nas respostas, explique a pessoa para ela mesma e proponha 3 CAMINHOS concretos e diferentes entre si (por exemplo: um concurso, um emprego, uma faculdade ou curso), adequados à idade, ao momento, ao tempo disponível e às afinidades. Para cada caminho dê um alvo específico, o porquê, um prazo realista em dias (entre 30 e 365) com a dedicação informada, oportunidades típicas e 3 buscas prontas (frases de busca) para encontrar vagas, editais ou processos. Não invente datas nem números de edital; diga para confirmar no site oficial. Respostas: ${JSON.stringify(respostas())}.
+      if(!A.cam && aiOn()) aiJson(`Você é um orientador de carreira e estudos, empático e realista, para o Brasil. Com base nas respostas, explique a pessoa para ela mesma e proponha 3 CAMINHOS concretos e diferentes entre si (por exemplo: um concurso, um emprego, uma faculdade ou curso), adequados à idade, ao momento, ao tempo disponível e às afinidades. Para cada caminho dê um alvo específico, o porquê, um prazo realista em dias (entre 30 e 365) com a dedicação informada, oportunidades típicas e 3 buscas prontas (frases de busca) para encontrar vagas, editais ou processos. Regras da Bússola: (1) o ALVO é o centro; se a pessoa já disse o alvo específico (alvo_qual), o 1º caminho DEVE ser exatamente esse alvo, com requisitos reais (exige faculdade? qual? certificação?) e prazo honesto, e os outros são alternativas ou degraus; (2) se o emprego exige faculdade, diga qual e sugira um emprego de entrada que não exige, para fazer enquanto estuda; (3) respeite o investimento possível (com "Só gratuito", só caminhos gratuitos ou públicos) e a cidade e a mobilidade; (4) use o perfil de interesses e talentos, mas não transforme em alvo o que parece hobby, e considere áreas pouco exploradas; (5) caminhos de tipos diferentes. Não invente datas nem números de edital; diga para confirmar no site oficial. Respostas: ${JSON.stringify(respostas())}.
 Responda só com JSON: {"leitura":"2–3 frases sobre quem a pessoa é e onde se encaixa","caminhos":[{"titulo":"","tipo":"concurso|emprego|faculdade|curso|carreira","alvo":"meta concreta","porque":"2 frases","prazo_dias":90,"realismo":"1 frase sobre a chance com a dedicação informada","oportunidades":["",""],"buscas":[{"rotulo":"","q":"","onde":"vagas|geral"}],"nome_projeto":"nome inspirador curto","lema":"lema curto"}]}`)
         .then(r=>{ A.cam=r; if(FLOW===F && steps()[F.at]==="caminhos") draw(); }).catch(e=>{ const el=$("#dq-cam"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; }); }
     if(s==="projeto"){ const c=cam(); if(!A.pnome){ A.pnome=c.nome_projeto||"Meu projeto"; A.plema=c.lema||""; A.pdias=Math.max(14,Math.min(365,+c.prazo_dias||90)); }
@@ -1880,10 +1947,22 @@ Responda só com JSON: {"leitura":"2–3 frases sobre quem a pessoa é e onde se
     upd();
     const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
     SH.querySelectorAll("input,textarea").forEach(x=>x.addEventListener("input",upd));
-    if(s==="descoberta"||s==="caminhos") bindLocal();
+    if(s==="caminhos") bindLocal();
+    if(s==="espelho"){ SH.querySelectorAll("[data-aj]").forEach(b=>b.addEventListener("click",()=>{ A.livre=($("#dq-l")||{}).value||A.livre; const k=b.dataset.aj; A.aj[k]=Math.max(-50,Math.min(50,(A.aj[k]||0)+(+b.dataset.d))); const sc=$("#shb").scrollTop; draw(); $("#shb").scrollTop=sc; }));
+      SH.querySelector("[data-refazer]")?.addEventListener("click",()=>{ A.int={}; A.aj={}; A.conf=""; A.ord=ordemCartoes(); F.at=steps().indexOf("i0"); draw(); }); }
   };
   const cam = () => A.esc===-2&&A.modelo ? {alvo:MODELOS[A.modelo].alvo, titulo:MODELOS[A.modelo].titulo, nome_projeto:"Projeto "+MODELOS[A.modelo].titulo, lema:MODELOS[A.modelo].lema, prazo_dias:MODELOS[A.modelo].dias, buscas:[], oportunidades:[]} : A.esc===-1||A.esc==null ? {alvo:A.proprio, titulo:"Meu alvo", nome_projeto:"", lema:"", prazo_dias:90, buscas:[], oportunidades:[]} : A.cam.caminhos[A.esc];
-  const descHTML = () => A.desc.qs.map((q,i)=>`<div class="mcq"><p class="p">${esc(q.p)}</p><div class="pick" data-pick="dq${i}" style="display:grid;gap:8px">${q.o.map((o,j)=>`<button data-v="${j}" aria-pressed="${A.descAns[i]===j||A.descAns[i]===String(j)}" style="text-align:left;border-radius:16px;min-height:48px;padding:10px 14px">${esc(o.t)}</button>`).join("")}</div></div>`).join("");
+  const pkI = (g, labels, sel) => `<div class="pick" role="group" data-pick="${g}">${labels.map((x,i)=>`<button data-v="${i}" aria-pressed="${sel===i}">${esc(x)}</button>`).join("")}</div>`;
+  const espelhoHTML = () => { const pl=placarBussola(A.int,A.tal,A.aj), ar=pl.areas.slice().sort((a,b)=>(b.v??-1)-(a.v??-1)), tl=pl.talentos.slice().sort((a,b)=>b.v-a.v), expl=pl.areas.filter(x=>x.explorar);
+    const barra = (n,v,extra) => `<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(n)}${extra||""}</span><span class="mono muted">${v==null?"—":v+"%"}</span></div><div class="bar"><i style="width:${v||0}%"></i></div></div>`;
+    return `<h2 class="q">Seu retrato<small>${pl.codigo.length?`Você se destaca em <b style="font-weight:600">${esc(pl.codigo.slice(0,2).join(" e "))}</b>, com talento ${esc(tl[0].n.toLowerCase())} e ${esc(tl[1].n.toLowerCase())}.`:"Você marcou pouca coisa como interesse. Tudo bem: vamos olhar caminhos amplos."} Confira se isso parece você.</small></h2>
+      <div class="glass pad" style="display:grid;gap:12px"><span class="tag">Interesses</span>${ar.map(x=>`${barra(x.n,x.v,x.explorar?' <span class="chip" style="font-size:11px;min-height:0;padding:2px 8px">a explorar</span>':"")}${A.conf==="Mais ou menos"&&x.v!=null?`<div class="row" style="gap:8px"><button class="btn sm ghost" data-aj="${x.k}" data-d="-10" aria-label="Diminuir ${esc(x.n)}">−10</button><button class="btn sm ghost" data-aj="${x.k}" data-d="10" aria-label="Aumentar ${esc(x.n)}">+10</button></div>`:""}`).join("")}</div>
+      <div class="glass pad" style="display:grid;gap:12px"><span class="tag">Talentos</span>${tl.map(x=>barra(x.n,x.v)).join("")}</div>
+      ${expl.length?`<p class="faint" style="font-size:13px">A explorar: ${esc(expl.map(x=>x.n).join(", "))}. Você quase não experimentou essas áreas, então elas continuam abertas.</p>`:""}
+      <div class="field"><span>Isso parece você?</span>${pk("conf",["Sim, sou eu","Mais ou menos","Não"],A.conf)}</div>
+      ${A.conf==="Mais ou menos"?`<p class="note">Use −10 e +10 nas áreas para o retrato ficar do seu jeito.</p>`:""}
+      ${A.conf==="Não"?`<div class="ponte"><b style="font-weight:600">Vamos refazer os interesses</b><p style="margin:0">Responda de novo, pensando no que você faria mesmo sem ganhar nada por isso.</p><button class="btn sm primary" data-refazer="1">Refazer interesses</button></div>`:""}
+      <label class="field"><span>Quer acrescentar algo com as suas palavras? (opcional)</span><textarea class="ta" id="dq-l" placeholder="Ex.: gosto de música, mas como hobby; quero estabilidade…">${esc(A.livre)}</textarea></label>`; };
   const camHTML = () => `${A.cam.leitura?`<p class="title-m" style="font-weight:300;font-size:20px">${esc(A.cam.leitura)}</p>`:""}<div style="display:grid;gap:12px">${A.cam.caminhos.map((c,i)=>`<button class="mcq" data-cam="${i}" aria-pressed="${A.esc===i}" style="text-align:left;${A.esc===i?"border-color:var(--c);background:rgb(255 106 26 / .12)":""}">
       <span class="tag">${esc(c.tipo||"")} · ${c.prazo_dias||"?"} dias</span><b style="font-weight:600;font-size:18px">${esc(c.titulo)}</b><span>${esc(c.alvo)}</span><small class="muted">${esc(c.porque||"")}</small></button>`).join("")}</div>`;
   const bindLocal = () => { SH.querySelectorAll("[data-cam]").forEach(b=>b.addEventListener("click",()=>{ A.esc=+b.dataset.cam; const t=$("#dq-p"); if(t){ t.value=""; A.proprio=""; } $("#dq-cam").innerHTML=camHTML(); bindLocal(); upd(); })); };
@@ -1907,6 +1986,7 @@ Responda só com JSON: {"contexto":"","materias":[{"k":"","n":"","area":"grad","
     const proj={id, nome:A.pnome||"Meu projeto", lema:A.plema, meta:c.alvo, inicio:iso(today()), dias:A.pdias,
       custom:{week, subj, metas:P2.metas.map((m,i)=>({...m, id:"g"+i})), fases:P2.fases, frases:P2.frases, contexto:P2.contexto, leitura:A.cam?A.cam.leitura:"", buscas:c.buscas||[], respostas:respostas()}};
     if(A.nome && !M.profile.name) M.profile.name=A.nome;
+    if(desc()){ const pl=placarBussola(A.int,A.tal,A.aj); M.profile.bussola={...pl, conf:A.conf, data:iso(today()), proj:id}; }
     syncProjetos(); (M.projetos=M.projetos||[]).push(proj); M.projeto=proj; M.sessao=null;
     F.guard=null; applyProjeto(); saveMain(); closeSheet(); TAB="hoje"; render(); window.scrollTo({top:0}); toast("Projeto criado. A rotina começa hoje.");
   };
