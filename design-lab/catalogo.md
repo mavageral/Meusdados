@@ -1,0 +1,83 @@
+# Catálogo de referências
+
+Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.sketch` foram **medidas** (decodificando os arquivos e contando o uso de cada cor ou fonte). As das imagens foram **observadas**.
+
+> Os arquivos originais (`.fig`, `.sketch`, `.ai`, `.eps`) e as imagens de inspiração **não estão no repositório**. Ele é público, e as licenças (Symu, Freepik, Dribbble/Pinterest) proíbem redistribuir. Guarde-os em `design-lab/fontes-privadas/`, que o Git ignora.
+
+## Mapa rápido: projeto → tema
+
+| Se o projeto é… | Tema | Estilo no ui-ux-pro-max |
+|---|---|---|
+| Painel de carro, IoT, jogo, quiz | `neon-noir` | Dark Mode (OLED), Gamification |
+| Hábitos, metas, produtividade | `sol-grafite` | Dark Mode, Data-Dense Dashboard |
+| Finanças pessoais, assinaturas | `ardosia-coral` | Dark Mode, Fintech |
+| Saúde, bem-estar, fitness, clínica | `salvia-vidro` | Glassmorphism, Soft UI |
+| IA, chat, onboarding, social | `brasa` | Aurora UI, Dark Mode, Vibrant |
+| Métricas de saúde, mídia, painel pessoal | `aurora` | Aurora UI, Bento Grid |
+| Reservas, viagens, serviços, utilitários | `oceano` | Flat Design, Minimalism |
+| Mensagens, comunidade, perfis | `lavanda` | Flat Design, Soft UI |
+
+## Arquivos de design (medidos)
+
+### Car Assistant Dashboard UI Design (`.fig`): base do **neon-noir**
+- Tela única 1440×1024, painel de carro em grade de cartões.
+- Cores: `#1E1E1E` (fundo e cartões), **`#CFF80B`** (verde-limão, único destaque), `#87888C` (texto secundário), `#FF2257` (alerta).
+- Fonte: **Poppins** (Medium predominante), tamanhos 10–16 e números grandes de 30+.
+- Padrões: velocímetro em arco, mapa com rota em gradiente, controles de clima com slider, player de música, ícones redondos na barra inferior.
+
+### Bolt Runner Fitness (`.fig`)
+- 55 imagens, telas `01_splash`, `02_login`, `03_home`, `04 ecommerce`, `05 details`, `06 categories`, `07 listing`.
+- Cores: `#180F20` (roxo quase preto), **`#68B7C1`** (turquesa, primária), **`#F8B800`** (amarelo, secundária), `#774C9E`.
+- Fontes: **Circular Std** (substituto livre: DM Sans), Poppins, Bebas Neue em títulos.
+- Tem um guia de estilo próprio: H1 30, H2 24, H3 20, H4 18, Title 16, Body 14, Label 13, Caption 12. **Essa escala inspirou a nossa.**
+
+### Trackizer (`.fig`, Symu): base do **ardosia-coral**
+- 40+ telas completas: login, cadastro, home de assinaturas, calendário, cartões, orçamentos por categoria, configurações e segurança.
+- Cores: `#1C1C23` (superfície), `#353542` (borda), `#A2A2B5` e `#83839C` (cinzas azulados), **`#FF7966`** (coral), `#1ED760` (verde Spotify).
+- Fonte: **Inter** (Semi Bold dominante), tamanhos 12/14/16/20/24/40/56/72.
+- Padrões: arco de orçamento no topo, lista de assinaturas com logo, abas "assinaturas / próximas contas", badges de dias.
+- Licença: uso comercial permitido. Pode ser convertido em HTML/CSS e publicado. **Não pode ser redistribuído.**
+
+### Messenger App Screen (`.fig`, community): base do **lavanda**
+- Telas: Chats, Chat (conversa), Chat info, tab bar, barra de texto.
+- Cores: `#200E32` (texto, roxo profundo), **`#8667F2`** (lavanda, primária), `#8C8098` (texto secundário), `#FA6969` (badge), `#F4F0FA` (fundo).
+- Fonte: **General Sans** (substituto no Google Fonts: Plus Jakarta Sans), SF Pro nos elementos do iOS.
+
+### Tesla Model 3 GUI (`.sketch`, Tom John)
+- 4 páginas de painel 16:9 de carro: mapa, controles, mídia, configurações.
+- Cores: `#0E0E0E` e `#000000` (modo escuro), `#F0F0F0` e `#FAFAFA` (modo claro), **`#007BE4`** (azul de ação), `#E82127` (vermelho Tesla).
+- Fonte: **Montserrat** (Medium 20 dominante), números grandes até 110.
+- Lição: o mesmo layout em modo claro **e** escuro. Inspirou o azul do tema `oceano`.
+
+### Travel Booking App Concept (`.ai`/`.eps`, Freepik)
+- 3 telas: home com categorias (voo, hotel, trem), bilhete com trajeto pontilhado, seleção de assento.
+- Cores: ciano `#18B4E8` → azul `#0773C0`, amarelo `#FFD23F` no CTA. Fontes: **Oswald + Raleway**.
+- Padrões: ticket com picote, mapa de assentos, chips de status.
+
+### COVID-19 Tracking App (`.eps`, Freepik)
+- 8 telas: contadores grandes, mapa de calor, check-in, questionário de sintomas, resultado com ilustração.
+- Azul claro e gradientes suaves, números grandes como herói da tela. Bom modelo para **painéis de dados públicos**.
+
+## Imagens de inspiração (observadas)
+
+| Referência | O que levar |
+|---|---|
+| Quiz **BrainBucks** (preto + verde-limão) | Gamificação: streak semanal com check, moedas e XP no topo, cartões de modo de jogo, barra de progresso de tarefa. Encaixa no `neon-noir`. |
+| App de saúde **glassmorphism sálvia** | Cartões de vidro sobre fundo esverdeado, tab bar flutuante em pílula, botão escuro sobre fundo claro. Virou o `salvia-vidro`. |
+| **Habit tracker** amarelo | Heatmap de dias, ações "Done / Add note" lado a lado, três números-resumo por hábito. Virou o `sol-grafite`. |
+| **Assistente de IA laranja** | Fundo com brilho radial, orbe animado ao ouvir, cartões de sugestão, campo de pergunta fixo embaixo. Virou o `brasa`. |
+| **Chat laranja** "Let's Stay Connected" | Cabeçalho em gradiente com stories, lista escura embaixo, balões de mensagem translúcidos. |
+| **Observatory** | Grade bento de cartões com gradientes diferentes, números em matriz de pontos, fundo com grade de pontos. Base do `aurora`. |
+| **Glicose** | Cartões coloridos com indicadores em régua ou triângulo, valor grande e unidade pequena. |
+| **Quiz comportamental** (laranja/azul) | Tipografia gigante como herói, uma pergunta por tela, rodapé preto com progresso e "Next". |
+| **Ascendant** (astrologia/cripto) | Gradientes iridescentes, linhas finas, títulos grandes e leves, gráfico de linha minimalista. |
+| **Audio Sphere** (podcast) | Leque de capas coloridas, botão circular de rolagem, controles grandes de player. |
+
+## Padrões que se repetem em quase todas as referências
+
+1. **Número grande + unidade pequena** como herói do cartão (`412 km`, `84 mg/dL`, `5.400 passos`).
+2. **Tab bar flutuante em pílula** com o item ativo preenchido pela cor de destaque.
+3. **Uma única cor de destaque** forte sobre neutros. Nunca duas competindo.
+4. **Cartões com raio grande** (16–32px) e bordas de 1px quase invisíveis.
+5. **Semana em 7 colunas** (S T Q Q S S D) para hábitos e progresso.
+6. **Gradiente radial no topo** para dar profundidade sem poluir.
