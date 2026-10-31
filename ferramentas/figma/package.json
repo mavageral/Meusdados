@@ -1,0 +1,10 @@
+{
+  "name": "meusdados-figma-tools",
+  "private": true,
+  "description": "Decodifica arquivos .fig (formato fig-kiwi) para extrair cores, fontes e telas.",
+  "dependencies": {
+    "fflate": "0.8.2",
+    "fzstd": "0.1.1",
+    "kiwi-schema": "0.5.0"
+  }
+}

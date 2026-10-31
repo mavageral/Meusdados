@@ -1,0 +1,229 @@
+<title>Meusdados Design Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter+Tight:wght@500;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&family=Poppins:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<link rel="stylesheet" href="tokens/temas.css">
+<style>
+  /* Vitrine: uma bancada escura e neutra, onde cada tema aparece no mesmo celular com o mesmo conjunto de componentes. */
+  :root {
+    --lab-bg: #0E0E10;
+    --lab-panel: #17171A;
+    --lab-line: #2A2A2F;
+    --lab-text: #EDEDF0;
+    --lab-muted: #9A9AA3;
+    --lab-display: "Fraunces", Georgia, serif;
+    --lab-body: "Inter", system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  html { background: var(--lab-bg); }
+  body {
+    background: var(--lab-bg); color: var(--lab-text); font: 15px/1.55 var(--lab-body);
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 1320px; margin: 0 auto; padding-block: 40px 64px; display: grid; gap: 32px; }
+  header.lab { display: grid; gap: 12px; max-width: 70ch; }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--lab-muted); }
+  h1 { font: 600 clamp(34px, 6vw, 56px)/1.05 var(--lab-display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+  header.lab p { margin: 0; color: var(--lab-muted); }
+  nav.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  nav.chips a {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px;
+    border: 1px solid var(--lab-line); border-radius: 999px; color: var(--lab-text); text-decoration: none; font-size: 14px;
+    transition: border-color .2s, background .2s;
+  }
+  nav.chips a:hover { border-color: var(--lab-muted); background: var(--lab-panel); }
+  nav.chips a:focus-visible { outline: 2px solid var(--lab-text); outline-offset: 2px; }
+  nav.chips i { width: 10px; height: 10px; border-radius: 50%; display: block; }
+
+  .grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+  .spec {
+    background: var(--lab-panel); border: 1px solid var(--lab-line); border-radius: 22px;
+    padding: 18px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-content: start; min-width: 0; scroll-margin-top: 16px;
+  }
+  .spec h2 { margin: 0; font: 600 22px/1.2 var(--lab-display); }
+  .spec .code { font: 12px/1 ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--lab-muted); }
+  .spec .meta { display: grid; gap: 4px; font-size: 13px; color: var(--lab-muted); }
+  .spec .meta b { color: var(--lab-text); font-weight: 500; }
+  .swatches { display: flex; gap: 6px; }
+  .swatches span { flex: 1; min-width: 0; height: 26px; border-radius: 8px; border: 1px solid rgb(255 255 255 / .08); }
+
+  /* ---------- celular: tudo aqui dentro usa só os tokens do tema ---------- */
+  .phone {
+    border-radius: 34px; padding: 6px; background: #000; box-shadow: 0 0 0 1px #2c2c30, 0 30px 60px rgb(0 0 0 / .5);
+  }
+  .screen {
+    border-radius: 29px; overflow: hidden; background: var(--hero); color: var(--text);
+    font-family: var(--font-body); font-size: var(--t-sm); line-height: var(--lh-body);
+    padding: 14px 16px 12px; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-4); position: relative;
+  }
+  .status { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; opacity: .9; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .top small { display: block; color: var(--text-muted); font-size: var(--t-xs); }
+  .top h3 { margin: 0; font: 700 var(--t-lg)/var(--lh-tight) var(--font-display); letter-spacing: -.01em; }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; flex: none;
+    background: var(--accent-soft); color: var(--text); font-weight: 700; font-size: 13px; border: 1px solid var(--line);
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+  }
+  .heroCard { background: var(--g1); padding: var(--s-4); display: grid; gap: var(--s-2); }
+  .heroCard .lbl { font-size: var(--t-xs); color: var(--text-muted); display: flex; justify-content: space-between; }
+  [data-tema="aurora"] .heroCard .lbl, [data-tema="oceano"] .heroCard .lbl, [data-tema="lavanda"] .heroCard .lbl { color: rgb(255 255 255 / .82); }
+  [data-tema="oceano"] .heroCard, [data-tema="lavanda"] .heroCard { color: #fff; border-color: transparent; }
+  .big { font: 600 var(--t-3xl)/1 var(--font-num); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+  .big small { font: 500 var(--t-md) var(--font-body); margin-left: 4px; opacity: .8; }
+  .bars { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; align-items: end; height: 54px; }
+  .bars span { border-radius: 6px; background: currentColor; opacity: .22; }
+  .bars span.on { background: var(--accent); opacity: 1; }
+  [data-tema="oceano"] .bars span.on, [data-tema="lavanda"] .bars span.on { background: #fff; }
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); font-size: 11px; text-align: center; opacity: .7; }
+
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  .tile { padding: var(--s-3) var(--s-4); display: grid; gap: 2px; min-width: 0; }
+  .tile:nth-child(1) { background: var(--g2); }
+  .tile:nth-child(2) { background: var(--g3); }
+  .tile .lbl { font-size: var(--t-xs); color: var(--text-muted); }
+  [data-tema="aurora"] .tile .lbl { color: rgb(255 255 255 / .8); }
+  .tile .val { font: 600 var(--t-xl)/1.15 var(--font-num); font-variant-numeric: tabular-nums; }
+  .tile .val small { font: 500 var(--t-xs) var(--font-body); color: var(--text-muted); margin-left: 3px; }
+  [data-tema="aurora"] .tile .val small { color: rgb(255 255 255 / .75); }
+  .meter { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; margin-top: 6px; }
+  .meter i { display: block; height: 100%; background: var(--accent); border-radius: inherit; }
+
+  .list { padding: var(--s-1) var(--s-4); }
+  .row { display: flex; align-items: center; gap: var(--s-3); padding: 10px 0; border-bottom: 1px solid var(--line); min-height: var(--touch); }
+  .row:last-child { border-bottom: 0; }
+  .row .ic { width: 34px; height: 34px; border-radius: 11px; display: grid; place-items: center; flex: none; background: var(--accent-soft); color: var(--accent); }
+  [data-tema="salvia-vidro"] .row .ic, [data-tema="oceano"] .row .ic, [data-tema="lavanda"] .row .ic { color: var(--accent); }
+  .row .ic svg { width: 17px; height: 17px; }
+  .row .tx { flex: 1; min-width: 0; }
+  .row .tx b { display: block; font-weight: 600; font-size: var(--t-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .row .tx small { color: var(--text-muted); font-size: var(--t-xs); }
+  .row .amt { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .cta {
+    min-height: 48px; border: 0; border-radius: var(--r-pill); background: var(--accent); color: var(--on-accent);
+    font: 600 var(--t-md) var(--font-body); cursor: pointer; transition: transform var(--d-fast) var(--ease-out), filter var(--d-fast);
+  }
+  .cta:hover { filter: brightness(1.06); }
+  .cta:active { transform: scale(.98); }
+
+  .tabbar { display: flex; justify-content: space-between; padding: 6px; border-radius: var(--r-pill); background: var(--surface-2); border: 1px solid var(--line); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur); }
+  .tabbar span { flex: 1; height: 40px; display: grid; place-items: center; border-radius: var(--r-pill); color: var(--text-muted); }
+  .tabbar span.on { background: var(--accent); color: var(--on-accent); }
+  .tabbar svg { width: 19px; height: 19px; }
+
+  footer.lab { color: var(--lab-muted); font-size: 13px; max-width: 75ch; display: grid; gap: 6px; }
+  footer.lab code { color: var(--lab-text); }
+  @media (max-width: 420px) { .big { font-size: 38px; } }
+</style>
+
+<div class="wrap">
+  <header class="lab">
+    <span class="eyebrow">Meusdados · Design Lab</span>
+    <h1>Nove direções visuais, um mesmo app</h1>
+    <p>Cada tema foi extraído das suas referências: cores e fontes medidas nos arquivos Figma e Sketch, padrões observados nos mockups. O celular abaixo é idêntico em todos. Só muda o atributo <code>data-tema</code>.</p>
+  </header>
+  <nav class="chips" id="chips" aria-label="Temas"></nav>
+  <main class="grid" id="grid"></main>
+  <footer class="lab">
+    <span>Para usar num projeto: importe <code>design-lab/tokens/temas.css</code>, coloque <code>data-tema="nome"</code> no elemento raiz e escreva os componentes só com os tokens (<code>--bg</code>, <code>--surface</code>, <code>--text</code>, <code>--accent</code>…).</span>
+    <span>Contraste verificado: todo texto principal e secundário passa WCAG AA (4,5:1) no fundo do próprio tema.</span>
+  </footer>
+</div>
+
+<script>
+const I = {
+  home: '<path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/>',
+  bolt: '<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  card: '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/>',
+  heart: '<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/>',
+  chat: '<path d="M4 5h16v11H8l-4 4z"/>',
+  pin: '<path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+  check: '<path d="M5 12l4 4L19 6"/>',
+  wave: '<path d="M2 12h3l3-7 4 14 3-7h7"/>'
+};
+const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${I[k]}</svg>`;
+
+const temas = [
+  { id:'neon-noir', nome:'Neon Noir', fontes:'Poppins', de:'Car Assistant Dashboard · quiz BrainBucks', uso:'Painéis automotivos, IoT, gamificação',
+    oi:'Boa noite, Edna', titulo:'Painel do carro', ini:'EB', kpiL:'Autonomia', kpi:'412', un:'km', bars:[5,7,4,8,6,9,7], on:5,
+    t:[['Bateria','82','%',82],['Cabine','23','°C',60]], ic:'bolt', rows:[['Carregar em casa','Hoje, 22:00','6h'],['Rota até o trabalho','18 km · trânsito leve','24 min'],['Revisão','Em 1.200 km','agendar']], cta:'Iniciar viagem' },
+  { id:'sol-grafite', nome:'Sol Grafite', fontes:'Inter', de:'Habit tracker amarelo', uso:'Hábitos, produtividade, metas',
+    oi:'Hoje, 31 out', titulo:'Seus hábitos', ini:'EB', kpiL:'Sequência atual', kpi:'12', un:'dias', bars:[6,8,8,3,9,9,7], on:6,
+    t:[['Concluído','68','%',68],['Estudo','14','h',45]], ic:'check', rows:[['Caminhada','4.000 passos · 3x semana','feito'],['Leitura','20 páginas','2/5'],['Inglês','30 min por dia','pendente']], cta:'Marcar como feito' },
+  { id:'ardosia-coral', nome:'Ardósia Coral', fontes:'Inter', de:'Trackizer (Symu)', uso:'Finanças pessoais, assinaturas, orçamento',
+    oi:'Novembro', titulo:'Minhas assinaturas', ini:'EB', kpiL:'Gasto no mês', kpi:'R$ 287', un:',40', bars:[4,6,5,7,9,5,6], on:4,
+    t:[['Orçamento','72','%',72],['Ativas','9','',30]], ic:'card', rows:[['Spotify','Vence dia 05','R$ 21,90'],['Netflix','Vence dia 12','R$ 39,90'],['Google One','Vence dia 18','R$ 9,99']], cta:'Nova assinatura' },
+  { id:'salvia-vidro', nome:'Sálvia Vidro', fontes:'Plus Jakarta Sans', de:'App de saúde glassmorphism', uso:'Saúde, bem-estar, fitness',
+    oi:'Bem-vinda de volta', titulo:'Sua saúde hoje', ini:'EB', kpiL:'Passos', kpi:'5.400', un:'passos', bars:[5,6,4,7,9,6,5], on:4,
+    t:[['Calorias','312','kcal',55],['Sono','7,2','h',80]], ic:'heart', rows:[['Treino de força','16 exercícios · 45 min','350 kcal'],['Frequência cardíaca','Repouso','62 bpm'],['Hidratação','Meta 2 L','1,4 L']], cta:'Começar treino' },
+  { id:'brasa', nome:'Brasa', fontes:'Inter Tight + Inter', de:'Assistente de IA e chat laranja', uso:'IA, chat, social, onboarding',
+    oi:'Bem-vinda de volta', titulo:'O que vamos criar hoje?', ini:'EB', kpiL:'Projetos ativos', kpi:'3', un:'em andamento', bars:[3,5,7,9,6,8,9], on:6,
+    t:[['Tarefas','24','',64],['Respostas','1,2','mil',40]], ic:'chat', rows:[['Painel de estudos ANBIMA','Atualizado há 2 h','abrir'],['Análise em SQL','Rascunho','abrir'],['Relatório Power BI','Aguardando dados','abrir']], cta:'Pergunte ou descreva sua ideia' },
+  { id:'aurora', nome:'Aurora', fontes:'Manrope + DotGothic16', de:'Observatory · glicose · Ascendant · podcast', uso:'Métricas de saúde, mídia, cartões vivos',
+    oi:'Observatório', titulo:'Seus sinais', ini:'EB', kpiL:'Glicose média', kpi:'84', un:'mg/dL', bars:[6,5,7,6,5,6,6], on:3,
+    t:[['No alvo','100','%',100],['Variação','6,8','%',35]], ic:'wave', rows:[['Diário offline','67 notas','novo'],['Foco profundo','Restam 2 h','ativo'],['Vitamina D','Bom','83']], cta:'Ver relatório' },
+  { id:'oceano', nome:'Oceano', fontes:'Montserrat', de:'Travel booking · COVID tracker · Tesla Model 3 GUI', uso:'Reservas, serviços, utilitários',
+    oi:'Olá, Edna', titulo:'Para onde vamos?', ini:'EB', kpiL:'Próxima viagem', kpi:'12', un:'dias', bars:[4,5,6,5,8,7,9], on:6,
+    t:[['Milhas','8.240','',55],['Reservas','2','',20]], ic:'pin', rows:[['São Paulo → Rio','08:00 · trem','R$ 89'],['Hotel Copacabana','2 noites','R$ 640'],['Passeio no Pão de Açúcar','Sábado','R$ 160']], cta:'Finalizar reserva' },
+  { id:'lavanda', nome:'Lavanda', fontes:'Plus Jakarta Sans', de:'Messenger App (community)', uso:'Mensagens, comunidade, perfis',
+    oi:'Vamos conversar', titulo:'Conversas', ini:'EB', kpiL:'Não lidas', kpi:'18', un:'mensagens', bars:[5,7,6,9,8,4,6], on:3,
+    t:[['Grupos','6','',40],['Online','23','',60]], ic:'chat', rows:[['Grupo de estudos','Ana: mandei o resumo','2'],['Projeto Caverna','Você: revisão feita','ontem'],['Família','Foto nova','5']], cta:'Nova conversa' },
+  { id:'cinema', nome:'Cinema', fontes:'Manrope', de:'OTT Dark Theme (streaming, community)', uso:'Streaming, mídia, eventos, landing escura',
+    oi:'Boa noite, Edna', titulo:'Continue assistindo', ini:'EB', kpiL:'Assistido no mês', kpi:'18', un:'horas', bars:[3,5,4,8,9,6,7], on:4,
+    t:[['Séries','4','em dia',60],['Filmes','7','',35]], ic:'wave', rows:[['Aula 3: SQL com janelas','Curso de dados · 42 min','68%'],['Documentário: Bolsa','1 h 32 min','novo'],['Palestra ANBIMA','Gravada ontem','assistir']], cta:'Continuar de onde parei' }
+];
+
+const days = ['S','T','Q','Q','S','S','D'];
+const chips = document.getElementById('chips'), grid = document.getElementById('grid');
+
+temas.forEach(t => {
+  const a = document.createElement('a');
+  a.href = '#' + t.id;
+  a.innerHTML = `<i data-tema="${t.id}" style="background:var(--accent)"></i>${t.nome}`;
+  chips.append(a);
+
+  const max = Math.max(...t.bars);
+  const s = document.createElement('section');
+  s.className = 'spec'; s.id = t.id;
+  s.innerHTML = `
+    <div style="display:grid;gap:4px">
+      <h2>${t.nome}</h2>
+      <span class="code">data-tema="${t.id}"</span>
+    </div>
+    <div class="meta">
+      <span><b>Origem:</b> ${t.de}</span>
+      <span><b>Serve para:</b> ${t.uso}</span>
+      <span><b>Fonte:</b> ${t.fontes}</span>
+    </div>
+    <div class="swatches" data-tema="${t.id}">
+      <span style="background:var(--bg)"></span><span style="background:var(--surface-2)"></span>
+      <span style="background:var(--text)"></span><span style="background:var(--accent)"></span><span style="background:var(--accent-2)"></span>
+    </div>
+    <div class="phone">
+      <div class="screen" data-tema="${t.id}">
+        <div class="status"><span>9:41</span><span>5G ▮▮▮</span></div>
+        <div class="top"><div><small>${t.oi}</small><h3>${t.titulo}</h3></div><div class="avatar">${t.ini}</div></div>
+        <div class="card heroCard">
+          <div class="lbl"><span>${t.kpiL}</span><span>esta semana</span></div>
+          <div class="big">${t.kpi}<small>${t.un}</small></div>
+          <div class="bars">${t.bars.map((b,i)=>`<span class="${i===t.on?'on':''}" style="height:${Math.round(b/max*100)}%"></span>`).join('')}</div>
+          <div class="days">${days.map(d=>`<span>${d}</span>`).join('')}</div>
+        </div>
+        <div class="tiles">${t.t.map(x=>`<div class="card tile"><span class="lbl">${x[0]}</span><span class="val">${x[1]}<small>${x[2]}</small></span><div class="meter"><i style="width:${x[3]}%"></i></div></div>`).join('')}</div>
+        <div class="card list">${t.rows.map(r=>`<div class="row"><span class="ic">${svg(t.ic)}</span><span class="tx"><b>${r[0]}</b><small>${r[1]}</small></span><span class="amt">${r[2]}</span></div>`).join('')}</div>
+        <button class="cta" type="button">${t.cta}</button>
+        <div class="tabbar"><span class="on">${svg('home')}</span><span>${svg('chart')}</span><span>${svg('plus')}</span><span>${svg('user')}</span></div>
+      </div>
+    </div>`;
+  grid.append(s);
+});
+</script>

@@ -1,0 +1,261 @@
+/*
+ * Meusdados Design Lab: biblioteca de componentes
+ *
+ * Requer design-lab/tokens/temas.css antes deste arquivo.
+ * Todos os componentes usam só tokens do tema, então funcionam em todos os temas.
+ * Anatomia, estados e sistema de elevação inspirados no DesignCode UI (Meng To);
+ * ver design-lab/catalogo.md. Prefixo de classe: .c-
+ */
+
+:root, [data-tema] {
+  /* elevação em 3 níveis (DesignCode: subtle / regular / strong) */
+  --elev-1: 0 1px 2px rgb(0 0 0 / .12), 0 2px 8px rgb(0 0 0 / .08);
+  --elev-2: 0 6px 16px rgb(0 0 0 / .16), 0 12px 32px rgb(0 0 0 / .12);
+  --elev-3: 0 16px 40px rgb(0 0 0 / .24), 0 32px 80px rgb(0 0 0 / .18);
+  /* brilho interno: no escuro, substitui a sombra que some no fundo */
+  --glow-inner: inset 0 1px 0 rgb(255 255 255 / .10), inset 0 0 0 1px rgb(255 255 255 / .05);
+  /* vidro: superfície translúcida + desfoque */
+  --glass-bg: color-mix(in srgb, var(--surface-2) 72%, transparent);
+  --glass-blur: blur(20px) saturate(150%);
+  /* borda em gradiente para botões "glow" */
+  --edge-grad: linear-gradient(120deg, var(--accent), var(--accent-2), var(--accent));
+}
+
+/* ---------------------------------------------------------------- base */
+.c-scope {
+  font-family: var(--font-body);
+  font-size: var(--t-md);
+  line-height: var(--lh-body);
+  color: var(--text);
+}
+.c-scope *, .c-scope *::before, .c-scope *::after { box-sizing: border-box; }
+.c-icon { width: 18px; height: 18px; flex: none; }
+.c-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------------------------------------------------------------- botões
+   variantes: primary · secondary · ghost · glow · danger      tamanhos: sm · md · lg */
+.c-btn {
+  --h: var(--touch);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--s-2);
+  min-height: var(--h); padding: 0 var(--s-5);
+  border: 1px solid transparent; border-radius: var(--r-pill);
+  font: 600 var(--t-sm)/1 var(--font-body); letter-spacing: .01em;
+  color: var(--text); background: transparent; cursor: pointer; text-decoration: none; white-space: nowrap;
+  transition: transform var(--d-fast) var(--ease-out), filter var(--d-fast), background var(--d-fast), box-shadow var(--d-base);
+}
+.c-btn:active { transform: scale(.97); }
+.c-btn:disabled, .c-btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; transform: none; }
+.c-btn--sm { --h: 36px; padding: 0 var(--s-4); font-size: var(--t-xs); }
+.c-btn--lg { --h: 56px; padding: 0 var(--s-8); font-size: var(--t-md); }
+.c-btn--primary { background: var(--accent); color: var(--on-accent); box-shadow: var(--elev-1); }
+.c-btn--primary:hover { filter: brightness(1.07); box-shadow: var(--elev-2); }
+.c-btn--secondary { background: var(--surface-2); border-color: var(--line); box-shadow: var(--glow-inner); }
+.c-btn--secondary:hover { background: color-mix(in srgb, var(--surface-2) 85%, var(--text)); }
+.c-btn--ghost { color: var(--text-muted); }
+.c-btn--ghost:hover { color: var(--text); background: var(--accent-soft); }
+.c-btn--glow {
+  background: linear-gradient(var(--surface), var(--surface)) padding-box, var(--edge-grad) border-box;
+  box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+.c-btn--glow:hover { box-shadow: 0 0 36px color-mix(in srgb, var(--accent) 55%, transparent); }
+.c-btn--danger { background: var(--danger); color: var(--on-danger); }
+.c-btn--icon { width: var(--h); padding: 0; }
+/* carregando: <button class="c-btn c-btn--primary" aria-busy="true" disabled> */
+.c-btn[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.c-btn[aria-busy="true"]::after {
+  content: ""; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid currentColor; border-color: var(--on-accent) var(--on-accent) transparent transparent;
+  animation: c-spin .8s linear infinite;
+}
+.c-btn--secondary[aria-busy="true"]::after, .c-btn--ghost[aria-busy="true"]::after { border-color: var(--text) var(--text) transparent transparent; }
+@keyframes c-spin { to { transform: rotate(1turn); } }
+
+/* ---------------------------------------------------------------- controle segmentado e abas */
+.c-segment {
+  display: inline-flex; padding: 4px; gap: 4px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-pill);
+}
+.c-segment button {
+  min-height: 36px; padding: 0 var(--s-4); border: 0; border-radius: var(--r-pill);
+  background: transparent; color: var(--text-muted); font: 600 var(--t-sm) var(--font-body); cursor: pointer;
+  transition: background var(--d-base) var(--ease-out), color var(--d-fast);
+}
+.c-segment button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: var(--elev-1), var(--glow-inner); }
+
+.c-tabs { display: flex; gap: var(--s-1); border-bottom: 1px solid var(--line); overflow-x: auto; }
+.c-tabs button {
+  min-height: var(--touch); padding: 0 var(--s-4); border: 0; background: none; cursor: pointer;
+  color: var(--text-muted); font: 600 var(--t-sm) var(--font-body); border-bottom: 2px solid transparent; margin-bottom: -1px;
+}
+.c-tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+
+/* ---------------------------------------------------------------- etiquetas */
+.c-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 28px; padding: 0 var(--s-3);
+  border-radius: var(--r-pill); background: var(--surface-2); border: 1px solid var(--line);
+  font: 500 var(--t-xs)/1 var(--font-body); color: var(--text-muted);
+}
+.c-chip--accent { background: var(--accent-soft); border-color: transparent; color: var(--text); }
+.c-chip--success { color: var(--success); }
+.c-chip--danger { color: var(--danger); }
+.c-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: none; }
+.c-chip--dot::before { display: block; }
+
+/* ---------------------------------------------------------------- barra de navegação em pílula
+   abaixo de 640px os links somem: o projeto deve oferecer um botão de menu (.c-btn--icon) que abre um .c-menu */
+.c-navbar {
+  display: flex; align-items: center; gap: var(--s-2); padding: 6px 6px 6px var(--s-4);
+  background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--line); border-radius: var(--r-pill); box-shadow: var(--elev-2), var(--glow-inner);
+}
+.c-navbar__brand { display: flex; align-items: center; gap: var(--s-2); font: 700 var(--t-sm) var(--font-display); margin-right: auto; white-space: nowrap; }
+.c-navbar__links { display: flex; gap: var(--s-1); }
+.c-navbar__links a {
+  display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--s-3); border-radius: var(--r-pill);
+  color: var(--text-muted); font-size: var(--t-sm); text-decoration: none;
+}
+.c-navbar__links a:hover, .c-navbar__links a[aria-current="page"] { color: var(--text); background: var(--accent-soft); }
+@media (max-width: 640px) { .c-navbar__links { display: none; } }
+
+/* ---------------------------------------------------------------- campos */
+.c-field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; }
+.c-field label { font: 600 var(--t-xs) var(--font-body); color: var(--text-muted); }
+.c-input {
+  display: flex; align-items: center; gap: var(--s-2); min-height: var(--touch); padding: 0 var(--s-4);
+  background: var(--surface-2); border: 1px solid color-mix(in srgb, var(--line) 55%, var(--text-muted)); border-radius: var(--r-md);
+  box-shadow: var(--glow-inner); transition: border-color var(--d-fast), box-shadow var(--d-fast);
+}
+.c-input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.c-input input {
+  flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text);
+  font: 400 var(--t-md) var(--font-body);
+}
+.c-input input::placeholder { color: var(--text-muted); }
+.c-input .c-icon { color: var(--text-muted); }
+.c-input--pill { border-radius: var(--r-pill); }
+.c-input--action { padding-right: 4px; }
+.c-field__hint { font-size: var(--t-xs); color: var(--text-muted); }
+.c-field--error .c-input { border-color: var(--danger); }
+.c-field--error .c-field__hint { color: var(--danger); }
+
+/* ---------------------------------------------------------------- interruptor */
+.c-switch { display: inline-flex; align-items: center; gap: var(--s-3); cursor: pointer; min-height: var(--touch); }
+.c-switch input { position: absolute; opacity: 0; pointer-events: none; }
+.c-switch__track {
+  width: 46px; height: 28px; border-radius: var(--r-pill); background: var(--surface-2); border: 1px solid var(--line);
+  position: relative; transition: background var(--d-base) var(--ease-out); flex: none;
+}
+.c-switch__track::after {
+  content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--text); box-shadow: var(--elev-1); transition: transform var(--d-base) var(--ease-spring);
+}
+.c-switch input:checked + .c-switch__track { background: var(--accent); border-color: transparent; }
+.c-switch input:checked + .c-switch__track::after { transform: translateX(18px); background: var(--on-accent); }
+.c-switch input:focus-visible + .c-switch__track { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- cartões
+   níveis de elevação: 1 conteúdo · 2 flutuante · 3 modal/alerta */
+.c-card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: var(--s-5); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s-3); align-content: start;
+  box-shadow: var(--elev-1), var(--glow-inner);
+  -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+}
+.c-card--2 { box-shadow: var(--elev-2), var(--glow-inner); }
+.c-card--3 { box-shadow: var(--elev-3), var(--glow-inner); }
+.c-card--glass { background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur); }
+.c-card__eyebrow { font: 600 var(--t-xs)/1.2 var(--font-body); letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); }
+.c-card__title { margin: 0; font: 700 var(--t-lg)/1.2 var(--font-display); text-wrap: balance; }
+.c-card__text { margin: 0; color: var(--text-muted); font-size: var(--t-sm); }
+.c-card__actions { display: flex; gap: var(--s-2); flex-wrap: wrap; margin-top: var(--s-2); }
+
+/* preço */
+.c-price { display: flex; align-items: baseline; gap: 2px; font: 700 var(--t-3xl)/1 var(--font-num); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.c-price small { font: 500 var(--t-sm) var(--font-body); color: var(--text-muted); letter-spacing: 0; }
+.c-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--t-sm); }
+.c-checklist li { display: flex; gap: var(--s-2); align-items: center; }
+.c-checklist .c-icon { color: var(--accent); width: 16px; height: 16px; }
+
+/* estatística */
+.c-stat { display: grid; gap: 2px; }
+.c-stat__label { font-size: var(--t-xs); color: var(--text-muted); }
+.c-stat__value { font: 600 var(--t-2xl)/1.1 var(--font-num); font-variant-numeric: tabular-nums; }
+.c-stat__value small { font: 500 var(--t-sm) var(--font-body); color: var(--text-muted); margin-left: 3px; }
+.c-delta { font: 600 var(--t-xs) var(--font-body); }
+.c-delta--up { color: var(--success); }
+.c-delta--down { color: var(--danger); }
+
+/* anel de progresso: --p de 0 a 100 */
+.c-ring {
+  --p: 50; --size: 96px;
+  width: var(--size); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
+  background:
+    radial-gradient(closest-side, var(--surface) 78%, transparent 79% 100%),
+    conic-gradient(var(--accent) calc(var(--p) * 1%), var(--surface-2) 0);
+  font: 700 var(--t-lg) var(--font-num); font-variant-numeric: tabular-nums;
+}
+
+/* barra de progresso */
+.c-progress { height: 8px; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; }
+.c-progress > i { display: block; height: 100%; border-radius: inherit; background: var(--accent); }
+
+/* ---------------------------------------------------------------- listas e menus */
+.c-list { list-style: none; margin: 0; padding: var(--s-1) 0; }
+.c-list__item {
+  display: flex; align-items: center; gap: var(--s-3); min-height: 56px; padding: var(--s-2) var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+.c-list__item:last-child { border-bottom: 0; }
+.c-list__body { flex: 1; min-width: 0; }
+.c-list__title { display: block; font-weight: 600; font-size: var(--t-sm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.c-list__meta { font-size: var(--t-xs); color: var(--text-muted); }
+.c-list__end { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.c-menu {
+  list-style: none; margin: 0; padding: 6px; display: grid; gap: 2px;
+  background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--elev-2), var(--glow-inner);
+}
+.c-menu a, .c-menu button {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); width: 100%;
+  min-height: 40px; padding: 0 var(--s-3); border: 0; border-radius: var(--r-sm); background: none;
+  color: var(--text); font: 500 var(--t-sm) var(--font-body); text-decoration: none; cursor: pointer;
+}
+.c-menu a:hover, .c-menu button:hover { background: var(--accent-soft); }
+.c-menu [aria-current="page"] { background: var(--accent-soft); color: var(--text); font-weight: 600; }
+.c-menu .c-icon { color: var(--text-muted); width: 16px; height: 16px; }
+.c-menu hr { border: 0; border-top: 1px solid var(--line); margin: 4px 6px; }
+
+/* ---------------------------------------------------------------- avatar */
+.c-avatar {
+  --size: 40px; width: var(--size); height: var(--size); border-radius: 50%; flex: none;
+  display: grid; place-items: center; overflow: hidden;
+  background: var(--accent-soft); color: var(--text); border: 1px solid var(--line);
+  font: 700 max(11px, calc(var(--size) * .34)) var(--font-body);
+}
+.c-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.c-avatars { display: flex; }
+.c-avatars .c-avatar { margin-left: -10px; border: 2px solid var(--surface); }
+.c-avatars .c-avatar:first-child { margin-left: 0; }
+
+/* ---------------------------------------------------------------- diálogo de confirmação */
+.c-dialog { max-width: 360px; text-align: center; justify-items: center; }
+.c-dialog .c-card__actions { justify-content: center; }
+
+/* ---------------------------------------------------------------- dica (tooltip) */
+.c-tip {
+  display: inline-flex; align-items: center; min-height: 28px; padding: 0 var(--s-3); border-radius: var(--r-sm);
+  background: var(--text); color: var(--bg); font: 600 var(--t-xs) var(--font-body); box-shadow: var(--elev-2);
+}
+
+/* ---------------------------------------------------------------- texto em gradiente (destaques de título) */
+.c-grad-text {
+  background: linear-gradient(100deg, var(--text) 30%, var(--accent) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---------------------------------------------------------------- toque
+   em telas de toque, todo alvo compacto ganha 44px de altura */
+@media (pointer: coarse) {
+  .c-btn--sm, .c-segment button, .c-navbar__links a, .c-menu a, .c-menu button { min-height: var(--touch); }
+}

@@ -1,0 +1,221 @@
+/*
+ * Meusdados Design Lab: tokens base + 8 temas
+ *
+ * Uso:
+ *   <link rel="stylesheet" href="design-lab/tokens/temas.css">
+ *   <html data-tema="neon-noir">   (ou em qualquer contêiner)
+ *
+ * Cada tema veio de uma referência real (ver design-lab/catalogo.md).
+ * Componentes devem usar SÓ os tokens semânticos (--bg, --surface, --text, --accent…),
+ * nunca hex direto. Assim, trocar data-tema troca o visual inteiro.
+ *
+ * Fontes (Google Fonts) usadas pelos temas:
+ *   Poppins, Inter, Plus Jakarta Sans, Inter Tight, Manrope, Montserrat, DotGothic16
+ */
+
+/* ------------------------------------------------------------------ base */
+:root {
+  /* espaçamento: grade de 4px */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 20px; --s-6: 24px; --s-8: 32px; --s-10: 40px; --s-12: 48px; --s-16: 64px;
+
+  /* raios */
+  --r-sm: 10px; --r-md: 16px; --r-lg: 24px; --r-xl: 32px; --r-pill: 999px;
+
+  /* escala tipográfica (corpo nunca abaixo de 14px; 16px padrão) */
+  --t-xs: 12px; --t-sm: 14px; --t-md: 16px; --t-lg: 20px;
+  --t-xl: 24px; --t-2xl: 32px; --t-3xl: 44px; --t-4xl: 64px;
+  --lh-tight: 1.1; --lh-body: 1.5;
+
+  /* movimento */
+  --d-fast: 150ms; --d-base: 240ms; --d-slow: 400ms;
+  --ease-out: cubic-bezier(.2, .8, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+
+  /* alvos de toque */
+  --touch: 44px;
+
+  /* padrão = neon-noir */
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-body: "Poppins", system-ui, sans-serif;
+  --font-num: var(--font-display);
+  --bg: #0B0B0B; --surface: #1A1A1A; --surface-2: #262626; --line: #2E2E2E;
+  --text: #FFFFFF; --text-muted: #9A9BA0;
+  --accent: #CFF80B; --on-accent: #0B0B0B; --accent-soft: rgb(207 248 11 / .14);
+  --accent-2: #FF2257;
+  --success: #6EE7A0; --warning: #FFC24B; --danger: #FF5C7A; --on-danger: #1A0A0E;
+  --hero: radial-gradient(120% 80% at 50% -10%, rgb(207 248 11 / .28), transparent 60%), var(--bg);
+  --blur: none;
+  --shadow: 0 1px 0 rgb(255 255 255 / .04) inset, 0 12px 32px rgb(0 0 0 / .45);
+  --g1: linear-gradient(160deg, #262626, #1A1A1A);
+  --g2: var(--g1); --g3: var(--g1); --g4: var(--g1);
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ temas */
+
+/* 1. Neon Noir: Car Assistant Dashboard + quiz "BrainBucks"
+      painéis automotivos, IoT, gamificação, dashboards à noite */
+[data-tema="neon-noir"] {
+  --font-display: "Poppins", system-ui, sans-serif;
+  --font-body: "Poppins", system-ui, sans-serif;
+  --bg: #0B0B0B; --surface: #1A1A1A; --surface-2: #262626; --line: #2E2E2E;
+  --text: #FFFFFF; --text-muted: #9A9BA0;
+  --accent: #CFF80B; --on-accent: #0B0B0B; --accent-soft: rgb(207 248 11 / .14);
+  --accent-2: #FF2257;
+  --hero: radial-gradient(120% 80% at 50% -10%, rgb(207 248 11 / .28), transparent 60%), var(--bg);
+  --g1: linear-gradient(160deg, #2A2F12, #1A1A1A);
+  --g2: linear-gradient(160deg, #262626, #161616);
+  --g3: var(--g2); --g4: var(--g2);
+  color-scheme: dark;
+}
+
+/* 2. Sol Grafite: habit tracker amarelo
+      hábitos, produtividade, metas, heatmaps */
+[data-tema="sol-grafite"] {
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --bg: #000000; --surface: #17171A; --surface-2: #232327; --line: #2C2C31;
+  --text: #F5F5F7; --text-muted: #9C9CA3;
+  --accent: #F7D23E; --on-accent: #111111; --accent-soft: rgb(247 210 62 / .16);
+  --accent-2: #FFFFFF;
+  --hero: var(--bg);
+  --shadow: 0 0 0 1px rgb(255 255 255 / .04) inset;
+  --g1: var(--surface); --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: dark;
+}
+
+/* 3. Ardósia Coral: Trackizer (Symu)
+      finanças pessoais, assinaturas, orçamento */
+[data-tema="ardosia-coral"] {
+  --font-display: "Inter", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --bg: #0E0E12; --surface: #1C1C23; --surface-2: #272730; --line: #353542;
+  --text: #FFFFFF; --text-muted: #A2A2B5;
+  --accent: #FF7966; --on-accent: #1C1C23; --accent-soft: rgb(255 121 102 / .15);
+  --accent-2: #7DFFEE;
+  --hero: radial-gradient(90% 70% at 50% 0%, #353542, transparent 70%), var(--bg);
+  --shadow: 0 1px 0 rgb(255 255 255 / .06) inset, 0 16px 40px rgb(0 0 0 / .5);
+  --g1: linear-gradient(180deg, #353542, #1C1C23);
+  --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: dark;
+}
+
+/* 4. Sálvia Vidro: app de saúde em glassmorphism claro
+      saúde, bem-estar, fitness, clínicas */
+[data-tema="salvia-vidro"] {
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --bg: #C9D6D1; --surface: rgb(255 255 255 / .55); --surface-2: rgb(255 255 255 / .78);
+  --line: rgb(255 255 255 / .75);
+  --text: #16302B; --text-muted: #44605A;
+  --accent: #1F3D36; --on-accent: #FFFFFF; --accent-soft: rgb(31 61 54 / .1);
+  --accent-2: #E8702A;
+  --success: #1E6B3E; --warning: #B7791F; --danger: #9E2A24; --on-danger: #FFFFFF;
+  --hero: linear-gradient(170deg, #E6EEEA 0%, #B9CBC4 55%, #8FA69E 100%);
+  --blur: blur(18px) saturate(140%);
+  --shadow: 0 1px 0 rgb(255 255 255 / .8) inset, 0 10px 30px rgb(31 61 54 / .12);
+  --g1: linear-gradient(160deg, rgb(255 255 255 / .7), rgb(255 255 255 / .4));
+  --g2: var(--g1); --g3: var(--g1); --g4: var(--g1);
+  color-scheme: light;
+}
+
+/* 5. Brasa: assistente de IA e chat em laranja incandescente
+      IA, chat, social, onboarding marcante */
+[data-tema="brasa"] {
+  --font-display: "Inter Tight", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --bg: #0A0605; --surface: rgb(42 18 9 / .72); --surface-2: #2E160C; --line: rgb(255 140 80 / .2);
+  --text: #FFF4EE; --text-muted: #D9AE9C;
+  --accent: #FF6A1A; --on-accent: #1A0A04; --accent-soft: rgb(255 106 26 / .18);
+  --accent-2: #FFC2A0;
+  --hero: radial-gradient(140% 90% at 50% 0%, #FF7A1A 0%, #C2300A 38%, #3A0E04 68%, #0A0605 100%);
+  --blur: blur(14px);
+  --shadow: 0 1px 0 rgb(255 200 160 / .08) inset, 0 20px 50px rgb(0 0 0 / .5);
+  --g1: linear-gradient(160deg, rgb(255 106 26 / .35), rgb(42 18 9 / .8));
+  --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: dark;
+}
+
+/* 6. Aurora: Observatory, glicose, Ascendant, podcast
+      métricas de saúde, mídia, cartões com gradientes vivos */
+[data-tema="aurora"] {
+  --font-display: "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
+  --font-num: "DotGothic16", ui-monospace, monospace;
+  --bg: #050508; --surface: #121218; --surface-2: #1C1C26; --line: #2A2A38;
+  --text: #F2F2F7; --text-muted: #A0A0B2;
+  --accent: #A99BFF; --on-accent: #0B0A1A; --accent-soft: rgb(169 155 255 / .16);
+  --accent-2: #5EE6D0;
+  --hero: radial-gradient(circle at 1px 1px, rgb(255 255 255 / .07) 1px, transparent 0) 0 0 / 14px 14px, var(--bg);
+  --shadow: 0 1px 0 rgb(255 255 255 / .08) inset, 0 20px 50px rgb(0 0 0 / .5);
+  --g1: linear-gradient(155deg, #6372F2, #7A3FC8);
+  --g2: linear-gradient(155deg, #1F9C93, #0D3B42);
+  --g3: linear-gradient(155deg, #D9739F, #6E2550);
+  --g4: linear-gradient(155deg, #C9644F, #3D2A5E);
+  color-scheme: dark;
+}
+
+/* 7. Oceano: travel booking, COVID tracker, Tesla Model 3 GUI
+      reservas, serviços, utilitários, painéis claros */
+[data-tema="oceano"] {
+  --font-display: "Montserrat", system-ui, sans-serif;
+  --font-body: "Montserrat", system-ui, sans-serif;
+  --bg: #EEF6FB; --surface: #FFFFFF; --surface-2: #E2EFF7; --line: #D3E4EE;
+  --text: #0B2A3C; --text-muted: #4E6B7C;
+  --accent: #0773C0; --on-accent: #FFFFFF; --accent-soft: rgb(7 115 192 / .1);
+  --accent-2: #FFD23F;
+  --success: #0E6E4F; --warning: #A86500; --danger: #B32A31; --on-danger: #FFFFFF;
+  --hero: linear-gradient(180deg, #D6EEFA 0%, #EEF6FB 45%);
+  --shadow: 0 1px 2px rgb(11 42 60 / .06), 0 8px 24px rgb(11 42 60 / .08);
+  --g1: linear-gradient(160deg, #18B4E8, #0773C0);
+  --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: light;
+}
+
+/* 8. Lavanda: Messenger App (community)
+      mensagens, comunidade, perfis, social claro */
+[data-tema="lavanda"] {
+  --font-display: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --bg: #F4F0FA; --surface: #FFFFFF; --surface-2: #EEE9F7; --line: #E2DCEC;
+  --text: #200E32; --text-muted: #6B6080;
+  --accent: #6A4BE6; --on-accent: #FFFFFF; --accent-soft: rgb(106 75 230 / .1);
+  --accent-2: #E5484D;
+  --success: #16704A; --warning: #A86500; --danger: #B3262C; --on-danger: #FFFFFF;
+  --hero: linear-gradient(170deg, #FFFFFF 0%, #F4F0FA 100%);
+  --shadow: 0 1px 2px rgb(32 14 50 / .05), 0 10px 30px rgb(32 14 50 / .08);
+  --g1: linear-gradient(150deg, #8667F2, #5A3BD6);
+  --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: light;
+}
+
+/* 9. Cinema: OTT Dark Theme (streaming de filmes e séries, community)
+      streaming, mídia, eventos, portfólio audiovisual, landing escura */
+[data-tema="cinema"] {
+  --font-display: "Manrope", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
+  --bg: #0F0F0F; --surface: #1A1A1A; --surface-2: #262626; --line: #333333;
+  --text: #FFFFFF; --text-muted: #A3A3A3;
+  --accent: #E50000; --on-accent: #FFFFFF; --accent-soft: rgb(229 0 0 / .16);
+  --accent-2: #FF4D4D;
+  --hero: radial-gradient(120% 70% at 50% 0%, rgb(229 0 0 / .22), transparent 60%), var(--bg);
+  --shadow: 0 1px 0 rgb(255 255 255 / .05) inset, 0 16px 40px rgb(0 0 0 / .55);
+  --g1: linear-gradient(120deg, #3A0000 0%, #1A1A1A 70%);
+  --g2: var(--surface); --g3: var(--surface); --g4: var(--surface);
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------ regras globais */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+:where([data-tema]) :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
