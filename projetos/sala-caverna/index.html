@@ -1,0 +1,1711 @@
+<title>Caverna</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@400;500&family=DotGothic16&display=swap">
+<style>
+/* Caverna: app de estudos em uma coluna de celular (expande para 2 colunas no desktop).
+   Base escura profunda, vidro, tipografia gigante, cada área com seu gradiente (referências pétreas 1–9). */
+:root{
+  --bg:#05060A; --bg-2:#0B0D14;
+  --glass:rgb(255 255 255 / .055); --glass-2:rgb(255 255 255 / .09); --edge:rgb(255 255 255 / .10); --edge-2:rgb(255 255 255 / .18);
+  --text:#F3F4F8; --muted:#A3A8BA; --faint:#8A8FA6;
+  --ok:#5EE6A0; --warn:#FFC24B; --bad:#FF6B81;
+  --c:#FF6A1A; --c-2:#FFB37A; --on-light:#08090D; --on-c:#1A0A04; --on-ok:#05220F; --on-bad:#2A0509;           /* laranja do assistente C */
+  --font:"Geist",system-ui,-apple-system,sans-serif; --mono:"Geist Mono",ui-monospace,monospace; --dot:"DotGothic16",var(--mono);
+  --r:22px; --r-sm:14px; --pill:999px;
+  --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  /* áreas: [claro, escuro] */
+  --a-oracao-1:#FFB547; --a-oracao-2:#7A2E0E;
+  --a-biblia-1:#A88BFF; --a-biblia-2:#33186E;
+  --a-min-1:#FF7BA5;    --a-min-2:#5E1236;
+  --a-saude-1:#5EE6A0;  --a-saude-2:#0F4A33;
+  --a-grad-1:#6E9BFF;   --a-grad-2:#132C7A;
+  --a-tech-1:#46E3F2;   --a-tech-2:#06485E;
+  --a-anbima-1:#F7D23E; --a-anbima-2:#5C4500;
+  --a-pausa-1:#9AA2B8;  --a-pausa-2:#1D2230;
+  --a-rev-1:#9AA5FF;    --a-rev-2:#222C77;
+  color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{background:var(--bg);-webkit-text-size-adjust:100%;scroll-padding-bottom:110px}
+body{margin:0;background:radial-gradient(120% 60% at 50% -10%,rgb(70 80 200 / .18),transparent 60%),var(--bg);color:var(--text);
+  font:15px/1.5 var(--font);min-height:100dvh;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:8px}
+h1,h2,h3,p{margin:0}
+.app{max-width:1180px;margin:0 auto;padding-top:calc(env(safe-area-inset-top,0px) + 14px)}
+.view{display:grid;gap:18px;animation:in .45s var(--ease)}
+@keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.muted{color:var(--muted)} .faint{color:var(--faint)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.eyebrow{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.row{display:flex;gap:10px;align-items:center}
+.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0}
+.glass{background:var(--glass);border:1px solid var(--edge);border-radius:var(--r);box-shadow:inset 0 1px 0 rgb(255 255 255 / .07);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.pad{padding:18px}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 12px;border-radius:var(--pill);border:1px solid var(--edge);background:var(--glass);font-size:13px;white-space:nowrap}
+.chip i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--pill);border:1px solid var(--edge-2);background:var(--glass-2);font-weight:600;white-space:nowrap;transition:transform .15s var(--ease),filter .15s}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--text);color:var(--on-light);border-color:transparent}
+.btn.c{background:var(--c);color:var(--on-c);border-color:transparent;box-shadow:0 8px 30px rgb(255 106 26 / .35)}
+.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
+.btn.sm{min-height:38px;padding:0 14px;font-size:13px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.icon{width:20px;height:20px;flex:none}
+.grid2{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.title-xl{font-weight:300;font-size:clamp(44px,13vw,76px);line-height:.95;letter-spacing:-.04em;text-wrap:balance}
+.title-l{font-weight:400;font-size:clamp(28px,7vw,40px);line-height:1.05;letter-spacing:-.03em;text-wrap:balance}
+.title-m{font-weight:500;font-size:20px;line-height:1.2;letter-spacing:-.01em}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec-h h2{font-weight:500;font-size:17px}
+.link{background:none;border:0;color:var(--muted);font-size:13px;padding:6px 0;text-decoration:underline;text-underline-offset:3px}
+
+/* ---------- topo ---------- */
+.top{display:flex;align-items:center;gap:12px;justify-content:space-between}
+.avatar{width:44px;height:44px;border-radius:50%;border:1px solid var(--edge-2);background:linear-gradient(135deg,var(--c),#7A2E0E);display:grid;place-items:center;font-weight:700;overflow:hidden;flex:none;padding:0}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.lema{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hello{display:grid;gap:6px}
+.dayline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ring{--p:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:radial-gradient(closest-side,var(--bg-2) 80%,transparent 81% 100%),conic-gradient(var(--c) calc(var(--p)*1%),rgb(255 255 255 / .1) 0)}
+.ring b{font:400 20px/1 var(--dot)}
+.weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.weekstrip button{min-height:56px;border-radius:16px;border:1px solid var(--edge);background:var(--glass);display:grid;place-items:center;gap:2px;padding:6px 0}
+.weekstrip button small{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em}
+.weekstrip button b{font-weight:500;font-size:16px}
+.weekstrip button[aria-pressed="true"]{background:var(--text);color:var(--on-light);border-color:transparent}
+.weekstrip button[aria-pressed="true"] small{color:#3a3d48}
+.weekstrip button .dot{width:5px;height:5px;border-radius:50%;background:var(--ok)}
+
+/* ---------- agora ---------- */
+.now{position:relative;overflow:hidden;border-radius:28px;padding:22px;min-height:220px;display:grid;align-content:space-between;gap:18px;
+  background:radial-gradient(120% 90% at 100% 100%,var(--g1) 0%,transparent 55%),linear-gradient(160deg,var(--g2),#06070C 85%);border:1px solid var(--edge-2)}
+.now::after{content:"";position:absolute;inset:auto -20% -60% auto;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--g1),transparent 70%);opacity:.35;filter:blur(10px);pointer-events:none}
+.now .label{font-weight:400;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing:-.03em;text-wrap:balance;position:relative}
+.now .meta{display:flex;gap:8px;flex-wrap:wrap;position:relative}
+.now .acts{display:flex;gap:10px;flex-wrap:wrap;position:relative}
+.bar{height:6px;border-radius:99px;background:rgb(255 255 255 / .12);overflow:hidden;position:relative}
+.bar>i{display:block;height:100%;border-radius:inherit;background:var(--text)}
+
+/* ---------- bento ---------- */
+.bento{display:grid;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.tile{position:relative;overflow:hidden;border-radius:24px;padding:16px;min-height:138px;display:grid;align-content:space-between;gap:8px;border:1px solid var(--edge);text-align:left;
+  background:radial-gradient(90% 80% at 85% 10%,var(--g1),transparent 65%),linear-gradient(160deg,var(--g2),#07080D)}
+.tile .big{font:400 34px/1 var(--dot);letter-spacing:.02em}
+.tile .lbl{font-size:13px;color:rgb(255 255 255 / .82)}
+.tile .sub{font-size:12px;color:rgb(255 255 255 / .66)}
+.tile.wide{grid-column:span 2}
+
+/* ---------- timeline ---------- */
+.tl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.tl button{width:100%;display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:18px;border:1px solid var(--edge);background:var(--glass);min-height:60px}
+.tl time{font:500 12px/1.25 var(--mono);color:var(--muted)}
+.tl .t{min-width:0}
+.tl .t b{display:block;font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tl .t small{color:var(--muted);font-size:12px}
+.tl .st{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--edge-2)}
+.tl .st.done{background:var(--ok);border-color:transparent;color:var(--on-ok)}
+.tl .st.miss{background:var(--bad);border-color:transparent;color:var(--on-bad)}
+.tl li.isnow button{border-color:var(--edge-2);background:linear-gradient(90deg,color-mix(in srgb,var(--g1) 22%,transparent),var(--glass))}
+.tl li.past:not(.closed) button{opacity:.78}
+.tl .bul{width:8px;height:8px;border-radius:50%;background:var(--g1);display:inline-block;margin-right:6px;vertical-align:middle}
+
+/* ---------- tabs ---------- */
+.tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:40;display:flex;align-items:center;gap:4px;padding:6px;border-radius:var(--pill);
+  background:rgb(14 16 24 / .82);border:1px solid var(--edge-2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 20px 50px rgb(0 0 0 / .55)}
+.tabbar button{border:0;background:none;color:var(--muted);min-width:52px;height:50px;border-radius:var(--pill);display:grid;place-items:center;gap:0;padding:0 10px}
+.tabbar button span{font-size:11px;font-weight:500}
+.tabbar button[aria-current="page"]{background:var(--glass-2);color:var(--text)}
+.tabbar .cbtn{width:58px;height:58px;margin:0 4px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFB37A,var(--c) 55%,#B83A00);color:var(--on-c);font:700 24px/1 var(--font);box-shadow:0 0 0 4px rgb(255 106 26 / .16),0 10px 30px rgb(255 106 26 / .45)}
+.tabbar .cbtn.pulse{animation:pulse 2.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 10px rgb(255 106 26 / .08),0 10px 30px rgb(255 106 26 / .55)}}
+
+/* ---------- sheet (tela cheia em passos, referência 4) ---------- */
+.sheet{position:fixed;inset:0;z-index:60;display:grid;grid-template-rows:auto 1fr auto;background:var(--sbg,linear-gradient(170deg,#1A0C05,#05060A 55%));
+  padding:calc(env(safe-area-inset-top,0px) + 14px) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px));animation:up .35s var(--ease)}
+@keyframes up{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+.sheet[hidden]{display:none!important}
+.sh-top{display:flex;align-items:center;gap:10px;max-width:760px;width:100%;margin:0 auto}
+.sh-body{overflow-y:auto;overscroll-behavior:contain;max-width:760px;width:100%;margin:0 auto;padding:18px 0 28px;display:grid;align-content:start;gap:18px}
+.sh-foot{margin:0 calc(-1 * max(16px,env(safe-area-inset-left,0px)));background:#000;border-radius:28px 28px 0 0;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 16px) max(16px,env(safe-area-inset-left,0px));border-top:1px solid var(--edge)}
+.sh-foot .in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.dots{display:flex;gap:6px;align-items:center}
+.dots i{width:8px;height:8px;border-radius:50%;border:1px solid var(--muted)}
+.dots i.on{background:var(--text);border-color:var(--text);width:22px;border-radius:99px}
+.dots i.done{background:var(--muted);border-color:var(--muted)}
+.next{margin-left:auto;display:inline-flex;align-items:center;gap:12px;background:none;border:0;font:300 clamp(24px,6.6vw,38px)/1 var(--font);letter-spacing:-.03em;padding:6px 0;min-height:56px;white-space:nowrap}
+.next .arrow{width:40px;height:40px;border-radius:50%;background:var(--text);color:#000;display:grid;place-items:center}
+.next:disabled{opacity:.35}
+.x{width:44px;height:44px;border-radius:50%;border:1px solid var(--edge-2);background:var(--glass);display:grid;place-items:center;padding:0;flex:none}
+.q{font-weight:300;font-size:clamp(34px,9.5vw,58px);line-height:1;letter-spacing:-.04em;text-wrap:balance}
+.q small{display:block;font-size:15px;letter-spacing:0;color:var(--muted);font-weight:400;margin-top:12px;line-height:1.45}
+
+/* campos */
+.field{display:grid;gap:8px}
+.field>span{font:500 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.inp,.ta{width:100%;border-radius:18px;border:1px solid var(--edge-2);background:rgb(255 255 255 / .06);padding:14px 16px;outline:0;font-size:16px}
+.ta{min-height:130px;resize:vertical;line-height:1.5}
+.inp:focus,.ta:focus{border-color:var(--c);box-shadow:0 0 0 3px rgb(255 106 26 / .2)}
+.pick{display:flex;flex-wrap:wrap;gap:8px}
+.pick button{min-height:44px;padding:0 16px;border-radius:var(--pill);border:1px solid var(--edge-2);background:var(--glass)}
+.pick button[aria-pressed="true"]{background:var(--text);color:var(--on-light);border-color:transparent}
+.choice{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.choice button{min-height:120px;text-align:left;padding:16px;border-radius:22px;border:1px solid var(--edge-2);background:rgb(255 255 255 / .07);display:grid;align-content:space-between;gap:10px}
+.choice button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
+.thumbs{display:flex;gap:8px;flex-wrap:wrap}
+.thumbs img{width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid var(--edge-2)}
+.drop{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:1px dashed var(--edge-2);background:rgb(255 255 255 / .03);cursor:pointer;min-height:56px}
+
+/* aula */
+.lesson{display:grid;gap:14px}
+.idea{font-weight:300;font-size:clamp(24px,6.4vw,34px);line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
+.steps{display:grid;gap:10px;counter-reset:s}
+.step{padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:6px}
+.step b{font-weight:600}
+.step p,.lesson p{color:#D8DBE6;line-height:1.6}
+.ex{padding:16px;border-radius:20px;background:linear-gradient(160deg,rgb(110 155 255 / .14),rgb(255 255 255 / .03));border:1px solid var(--edge-2)}
+.ex pre{white-space:pre-wrap;font:14px/1.6 var(--mono);margin:8px 0 0;color:#E6E8F0}
+.tag{display:inline-block;font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.links{display:grid;gap:8px}
+.links a{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--glass);border:1px solid var(--edge);text-decoration:none;min-height:52px}
+.links a .yt{width:30px;height:30px;border-radius:9px;background:#FF3D3D;display:grid;place-items:center;flex:none;color:#fff}
+.links a .rs{width:30px;height:30px;border-radius:9px;background:var(--glass-2);display:grid;place-items:center;flex:none}
+
+/* prova */
+.mcq{display:grid;gap:10px;padding:16px;border-radius:22px;background:var(--glass);border:1px solid var(--edge)}
+.mcq .p{font-weight:500;font-size:17px;line-height:1.35}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;min-height:48px;padding:12px 14px;border-radius:16px;border:1px solid var(--edge-2);background:rgb(255 255 255 / .04)}
+.opt .k{width:26px;height:26px;border-radius:50%;border:1px solid var(--edge-2);display:grid;place-items:center;font:500 12px var(--mono);flex:none}
+.opt[aria-pressed="true"]{border-color:var(--text);background:rgb(255 255 255 / .12)}
+.opt.right{border-color:var(--ok);background:rgb(94 230 160 / .12)}
+.opt.wrong{border-color:var(--bad);background:rgb(255 107 129 / .12)}
+.explain{font-size:14px;color:#D8DBE6;padding:10px 12px;border-radius:12px;background:rgb(255 255 255 / .05)}
+.score{font:400 clamp(72px,24vw,120px)/1 var(--dot)}
+
+/* timer */
+.timer{width:min(76vw,300px);aspect-ratio:1;margin:8px auto;border-radius:50%;display:grid;place-items:center;--p:0;
+  background:radial-gradient(closest-side,#07080D 88%,transparent 89% 100%),conic-gradient(var(--g1,var(--c)) calc(var(--p)*1%),rgb(255 255 255 / .08) 0)}
+.timer b{font:400 clamp(48px,15vw,72px)/1 var(--dot)}
+
+/* cartas (referência 1) */
+.fan{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:10px 4px 18px;margin:0 -4px;scrollbar-width:none}
+.fan::-webkit-scrollbar{display:none}
+.card{scroll-snap-align:center;flex:0 0 min(64vw,240px);aspect-ratio:3/4;border-radius:26px;padding:18px;display:grid;align-content:space-between;text-align:left;border:1px solid rgb(255 255 255 / .2);
+  background:radial-gradient(100% 70% at 80% 20%,var(--g1),transparent 70%),linear-gradient(165deg,var(--g2),#07080D 90%);transition:transform .3s var(--ease);position:relative;overflow:hidden}
+.card:nth-child(odd){transform:rotate(-2deg)} .card:nth-child(even){transform:rotate(2deg)}
+.card:hover,.card:focus-visible{transform:rotate(0) translateY(-6px)}
+.card h3{font-weight:500;font-size:26px;line-height:1;letter-spacing:-.02em}
+.card .lv{font:400 40px/1 var(--dot)}
+.card .shape{position:absolute;right:-30px;top:40px;width:150px;height:150px;border-radius:50%;background:rgb(255 255 255 / .08);border:1px solid rgb(255 255 255 / .14)}
+
+/* segmentos */
+.seg{display:flex;gap:4px;padding:4px;border-radius:var(--pill);background:var(--glass);border:1px solid var(--edge);overflow-x:auto;scrollbar-width:none}
+.seg button{flex:1 0 auto;min-height:40px;padding:0 14px;border-radius:var(--pill);border:0;background:none;color:var(--muted);font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
+
+/* heatmap (referência 8) */
+.heat{display:grid;grid-template-columns:repeat(15,1fr);gap:4px}
+.heat i{aspect-ratio:1;border-radius:4px;background:rgb(255 255 255 / .06)}
+.heat i.l1{background:rgb(255 106 26 / .3)} .heat i.l2{background:rgb(255 106 26 / .6)} .heat i.l3{background:var(--c)}
+.heat i.today{outline:1px solid var(--text)}
+
+/* diário (referência 3) */
+.months{display:grid;gap:22px}
+.month h3{font-weight:300;font-size:clamp(40px,11vw,60px);letter-spacing:-.04em;line-height:1;margin-bottom:12px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal .wd{font:500 11px var(--mono);color:var(--faint);text-align:center;padding-bottom:4px}
+.cal button{aspect-ratio:1;border-radius:14px;border:1px solid var(--edge);background:var(--glass);display:grid;place-items:center;font-weight:500;padding:0;min-height:40px;position:relative}
+.cal button.out{opacity:.25;pointer-events:none;border-style:dashed}
+.cal button.p1{background:rgb(255 106 26 / .22)} .cal button.p2{background:rgb(255 106 26 / .5)} .cal button.p3{background:var(--c);color:var(--on-c)}
+.cal button.closed::after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:currentColor}
+.cal button.today{outline:2px solid var(--text);outline-offset:1px}
+.cal button.future{color:var(--faint)}
+
+/* árvore */
+.tree{display:grid;gap:14px}
+.branch{padding:16px;border-radius:24px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:12px}
+.nodes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.node{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:var(--pill);border:1px solid var(--edge-2);background:rgb(255 255 255 / .04);color:var(--faint);font-size:13px}
+.node.on{color:var(--on-light);background:var(--g1);border-color:transparent;font-weight:600;box-shadow:0 0 18px color-mix(in srgb,var(--g1) 45%,transparent)}
+.node.is-next{color:var(--text);border-style:dashed;border-color:var(--g1)}
+.link-l{width:14px;height:1px;background:var(--edge-2)}
+
+/* chat (referência 7) */
+.chat{display:grid;gap:12px;align-content:start}
+.msg{max-width:86%;padding:12px 14px;border-radius:20px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.msg.me{justify-self:end;background:var(--c);color:var(--on-c);border-bottom-right-radius:6px}
+.msg.ai{justify-self:start;background:rgb(255 255 255 / .07);border:1px solid var(--edge);border-bottom-left-radius:6px}
+.orb{width:140px;height:140px;border-radius:50%;margin:10px auto;background:radial-gradient(circle at 35% 30%,#FFD2A8,#FF7A1A 45%,#7A1E00 80%);box-shadow:0 0 80px rgb(255 106 26 / .5);animation:breathe 4s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(1.05);box-shadow:0 0 120px rgb(255 106 26 / .65)}}
+.composer{display:flex;gap:8px;align-items:flex-end;width:100%}
+.composer .ta{min-height:52px;max-height:160px;border-radius:26px;padding:14px 18px}
+.sugs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.sugs button{flex:none;min-height:40px;padding:0 14px;border-radius:var(--pill);border:1px solid rgb(255 179 122 / .35);background:rgb(255 106 26 / .12);color:#FFD9BD;font-size:13px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);transform:translateX(-50%);z-index:90;background:var(--text);color:var(--on-light);padding:10px 16px;border-radius:var(--pill);font-weight:600;font-size:14px;box-shadow:0 10px 30px rgb(0 0 0 / .4);max-width:calc(100vw - 32px)}
+.thinking{display:flex;align-items:center;gap:10px;color:var(--muted)}
+.thinking i{width:8px;height:8px;border-radius:50%;background:var(--c);animation:blink 1s infinite}
+.thinking i:nth-child(2){animation-delay:.2s}.thinking i:nth-child(3){animation-delay:.4s}
+@keyframes blink{50%{opacity:.2}}
+.note{padding:12px 14px;border-radius:16px;border:1px dashed var(--edge-2);color:var(--muted);font-size:14px}
+.kpis{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.kpi{padding:14px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:4px}
+.kpi b{font:400 28px/1 var(--dot)} .kpi span{font-size:12px;color:var(--muted)}
+.list{display:grid;gap:8px}
+.item{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:var(--glass);border:1px solid var(--edge);min-height:56px;text-align:left;width:100%}
+.item .grow b{display:block;font-weight:500}
+.item .grow small{color:var(--muted)}
+.tline{display:grid;gap:0}
+.tline .ev{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--edge)}
+.tline .ev:last-child{border:0}
+.tline .ev.done b{color:var(--ok)}
+.tline .ev.hot{background:linear-gradient(90deg,rgb(255 106 26 / .14),transparent);border-radius:12px;padding-left:10px}
+
+/* metas */
+.missao{position:relative;overflow:hidden;display:grid;gap:10px;padding:16px;border-radius:22px;border:1px solid rgb(255 106 26 / .45);background:radial-gradient(100% 120% at 0% 0%,rgb(255 106 26 / .28),transparent 60%),var(--glass)}
+.missao.urg{animation:pulseb 1.8s ease-in-out infinite}
+.missao .mh{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.missao .dd{font:400 30px/1 var(--dot);color:var(--c-2)}
+.gtag{display:inline-block;font:500 11px var(--mono);color:#FFD2B0;margin-left:6px}
+.ponte{display:grid;gap:6px;padding:14px;border-radius:18px;border:1px solid rgb(255 106 26 / .5);background:linear-gradient(120deg,rgb(255 106 26 / .16),rgb(255 255 255 / .03));animation:pulseb 2.4s ease-in-out infinite}
+.gbar{position:relative;height:8px;border-radius:99px;background:rgb(255 255 255 / .1);overflow:visible}
+.gbar>i{display:block;height:100%;border-radius:inherit;background:var(--ok)}
+.gbar>em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);border-radius:2px}
+.now .btn.primary{animation:cta 2.4s ease-in-out infinite}
+@keyframes cta{50%{box-shadow:0 0 0 6px rgb(255 255 255 / .12),0 0 30px rgb(255 255 255 / .25)}}
+/* fita do tempo */
+.ribbon{padding:12px 14px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:8px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ribbon .rh{display:flex;align-items:center;gap:14px}
+.ribbon .rh b{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ribbon .rh span{font-size:12px;color:var(--muted);margin-left:auto;text-align:right;min-width:0}
+.ribbon .zb{width:30px;height:30px;border-radius:50%;border:1px solid var(--edge-2);background:none;display:grid;place-items:center;padding:0;font:500 16px/1 var(--mono);color:var(--muted);position:relative}
+.ribbon .zb::after{content:"";position:absolute;inset:-7px}
+.track{display:flex;gap:3px;height:12px;align-items:stretch;position:relative}
+.track>i{display:block;border-radius:4px;background:rgb(255 255 255 / .12);min-width:3px;cursor:pointer}
+.track>i.f{background:var(--ok)} .track>i.n{background:var(--bad)} .track>i.w{background:color-mix(in srgb,var(--warn) 60%,transparent)}
+.track>i.cur{background:var(--g1,var(--c));animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{opacity:.55}}
+.track.hundred{gap:1px}.track.hundred>i{min-width:0;border-radius:1px}
+.track .nowm{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);border-radius:2px;pointer-events:none}
+.track.days>button{position:relative;overflow:hidden;background:rgb(255 255 255 / .08);border:0;border-radius:6px;padding:0}
+.track.days>button.today{outline:1px solid var(--text);outline-offset:1px}
+.track.days>button>u{position:absolute;inset:auto 0 0 0;background:var(--ok);text-decoration:none}
+.track.days>i.today{outline:1px solid var(--text);outline-offset:1px}
+.rl{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted)}
+.going{animation:pulseb 2s ease-in-out infinite;border-color:rgb(255 106 26 / .55)!important;background:linear-gradient(90deg,rgb(255 106 26 / .18),var(--glass))!important}
+@keyframes pulseb{50%{box-shadow:0 0 0 6px rgb(255 106 26 / .08)}}
+.quadro{white-space:pre;overflow-x:auto;font:14px/1.45 var(--mono);padding:14px;border-radius:16px;background:var(--bg);border:1px solid var(--edge-2);color:var(--text)}
+.lvl{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--edge-2)}
+/* três dias em escadinha */
+.days3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:8px}
+.days5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.dcard{display:grid;grid-template-rows:auto 1fr auto;gap:6px;text-align:left;padding:10px 8px;min-width:0;overflow:hidden;border-radius:18px;min-height:210px;color:var(--text);transition:transform .2s var(--ease)}
+.dcard:active{transform:scale(.98)}
+.dcard.dots{min-height:120px;padding:8px}
+.dcard.past{background:linear-gradient(170deg,rgb(94 230 160 / .22),rgb(94 230 160 / .08));border:1px solid rgb(94 230 160 / .42)}
+.dcard.past.part{background:linear-gradient(170deg,rgb(255 194 75 / .16),rgb(255 194 75 / .04));border-color:rgb(255 194 75 / .4)}
+.dcard.past.zero{background:rgb(255 255 255 / .03);border-color:rgb(255 107 129 / .35)}
+.dcard.today{background:linear-gradient(170deg,rgb(94 230 160 / .12),rgb(94 230 160 / .03));border:1px solid rgb(94 230 160 / .3);box-shadow:0 0 24px rgb(94 230 160 / .12)}
+.dcard.future{background:linear-gradient(170deg,rgb(255 255 255 / .09),rgb(255 255 255 / .02));border:1px solid rgb(255 255 255 / .16)}
+.dcard .dh{display:flex;justify-content:space-between;align-items:baseline;gap:4px}
+.dcard .dh b{font-weight:600;font-size:13px;white-space:nowrap}
+.dcard .dh small{white-space:nowrap}
+.dcard .dh small{font:500 11px var(--mono);color:var(--muted)}
+.dcard .dp{font:500 11px var(--mono);color:var(--muted);justify-self:end}
+.stair{display:flex;flex-direction:column-reverse;justify-content:flex-start;gap:2px;min-width:0}
+.st-row{display:flex;align-items:center;gap:4px;padding-left:calc(var(--x) * 22%);min-width:0;height:15px}
+.stair.dots .st-row{padding-left:calc(var(--x) * 60%);height:8px}
+.st-row em{font-style:normal;font-size:11px;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgb(255 255 255 / .82);min-width:0}
+.dcard.future .st-row em{color:rgb(255 255 255 / .6)}
+.ck{flex:none;width:12px;height:12px;border-radius:50%;border:1px solid rgb(255 255 255 / .35);display:grid;place-items:center}
+.stair.dots .ck{width:7px;height:7px}
+.ck .icon{width:9px;height:9px;color:var(--on-ok)}
+.ck.ok{background:var(--ok);border-color:transparent}
+.ck.no{background:var(--bad);border-color:transparent}
+.ck.no .icon{color:var(--on-bad)}
+.dcard.today .ck:not(.ok):not(.no){border-color:rgb(94 230 160 / .45);background:rgb(94 230 160 / .08)}
+.dcard.future .ck{border-color:rgb(255 255 255 / .28)}
+.grid100{display:grid;grid-template-columns:repeat(20,1fr);gap:3px}
+.grid100 i{aspect-ratio:1;border-radius:3px;background:rgb(255 255 255 / .07);cursor:pointer}
+.grid100 i.f{background:var(--ok)} .grid100 i.p{background:rgb(94 230 160 / .35)} .grid100 i.td{outline:1.5px solid var(--text);outline-offset:1px}
+/* desktop: duas colunas no Hoje */
+.hoje-grid{display:flex;flex-direction:column;gap:18px}
+.hoje-grid .h-top{order:1}.hoje-grid .h-side{order:2}.hoje-grid .h-tl{order:3}
+@media (min-width:980px){
+  .hoje-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);grid-template-areas:"top side" "tl side";gap:22px;align-items:start}
+  .hoje-grid .h-top{grid-area:top}.hoje-grid .h-side{grid-area:side;grid-row:1 / span 2}.hoje-grid .h-tl{grid-area:tl}
+  .side-sticky{position:sticky;top:16px;display:grid;gap:18px}
+  .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:640px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4L19 6"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></symbol>
+  <symbol id="i-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 12l16-8-6 16-2-7z"/></symbol>
+  <symbol id="i-sound" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 8a5 5 0 0 1 0 8"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 14a4 4 0 0 0 6 0l3-3a4 4 0 0 0-6-6l-1 1M14 10a4 4 0 0 0-6 0l-3 3a4 4 0 0 0 6 6l1-1"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></symbol>
+  <symbol id="i-flame" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 2-7 2 1 3 2 3 4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/></symbol>
+</svg>
+
+<div class="app" id="app"></div>
+
+<nav class="tabbar" aria-label="Navegação principal">
+  <button data-tab="hoje" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>Hoje</span></button>
+  <button data-tab="estudar"><svg class="icon"><use href="#i-book"/></svg><span>Estudar</span></button>
+  <button class="cbtn pulse" id="cbtn" aria-label="Falar com o Claude">C</button>
+  <button data-tab="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span>Evolução</span></button>
+  <button data-tab="diario"><svg class="icon"><use href="#i-cal"/></svg><span>Diário</span></button>
+</nav>
+
+<section class="sheet" id="sheet" hidden aria-modal="true" role="dialog" aria-label="Painel"></section>
+<input type="file" id="filepick" accept="image/*" multiple hidden>
+
+<script>
+"use strict";
+/* ====================================================================
+   DADOS FIXOS DO PROJETO CAVERNA
+   ==================================================================== */
+const START = new Date(2026, 9, 16), TOTAL = 100;
+const NAME_DEFAULT = "Edna";
+const LEMA = "Deus · Disciplina · Conhecimento · Propósito";
+
+const AREAS = {
+  oracao:{n:"Oração"}, biblia:{n:"Bíblia"}, min:{n:"Ministério"}, saude:{n:"Saúde e família"},
+  grad:{n:"Graduação"}, tech:{n:"Dados e programação"}, anbima:{n:"ANBIMA"}, pausa:{n:"Pausa"}, rev:{n:"Revisão"}
+};
+const g1 = a => `var(--a-${a}-1)`, g2 = a => `var(--a-${a}-2)`;
+
+/* Agenda semanal (Agenda Caverna) */
+const M_ = (a,b,l,c,s) => ({a,b,l,c,s:s||""});
+const manha4 = [M_("04:00","06:30","Oração da manhã","oracao","Sem redes sociais"), M_("06:30","07:00","Higiene e café","pausa")];
+const manha5 = [M_("05:30","06:40","Oração da manhã","oracao","Dormiu após o culto: 5h30"), M_("06:40","07:00","Higiene e café","pausa")];
+const BIB = M_("07:00","08:00","Bíblia e teologia","biblia","Livro, capítulo e aplicação"), ACAD = M_("08:00","09:00","Academia","saude"), BAN = M_("09:00","09:45","Banho e lanche","pausa");
+const NOITE = (r,o) => [M_(r[0],r[1],"Revisão integral do dia","rev","Finalizar o dia"), M_(o[0],o[1],"Oração antes de dormir","oracao")];
+const WEEK = {
+ 1:{n:"Segunda",s:"Alta performance",w:"05:30",b:[...manha5,BIB,ACAD,BAN,M_("09:45","11:45","Python ou SQL","tech","Escrever código, não só assistir"),M_("11:45","12:00","Pausa","pausa"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","13:30","Descanso","pausa"),M_("13:30","15:00","Matemática","grad","Exercícios sem consultar a solução"),M_("15:00","15:15","Intervalo","pausa"),M_("15:15","16:45","Projeto prático","tech","Painel de crédito com dados do BCB"),M_("16:45","17:30","Revisão espaçada","rev","Revisões do dia"),M_("17:30","18:00","Lanche e transição","pausa"),M_("18:00","18:45","Oração das 18h","oracao"),M_("18:45","19:30","Jantar e família","saude"),M_("19:30","19:45","Preparar terça","pausa"),...NOITE(["20:00","20:15"],["20:15","21:15"])]},
+ 2:{n:"Terça",s:"ANBIMA e culto de ensinamento",w:"04:00",b:[...manha4,M_("07:00","08:00","Bíblia e texto do ensinamento","biblia","Leitura que alimenta a mensagem"),ACAD,BAN,M_("09:45","11:15","Ciências Econômicas","grad"),M_("11:15","12:00","Revisão espaçada","rev","Revisões do dia"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","14:00","Descanso","pausa"),M_("14:00","16:00","ANBIMA: aprender","anbima","Tema do programa oficial"),M_("16:00","17:00","Pausa livre","pausa"),M_("17:00","18:00","Estruturar a mensagem","min"),M_("18:00","18:30","Oração das 18h","oracao"),M_("18:30","19:15","Concluir o estudo da mensagem","min"),M_("19:15","19:30","Deslocamento","pausa"),M_("19:30","21:30","Culto de ensinamento","min"),M_("21:30","22:00","Jantar","pausa"),...NOITE(["22:00","22:15"],["22:15","23:15"])]},
+ 3:{n:"Quarta",s:"Formação e comunhão",w:"05:30",b:[...manha5,BIB,ACAD,BAN,M_("09:45","11:15","Matemática","grad"),M_("11:15","11:30","Intervalo","pausa"),M_("11:30","12:00","Exercícios de Matemática","grad"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","13:30","Descanso","pausa"),M_("13:30","15:00","Ciências Econômicas","grad"),M_("15:00","15:15","Intervalo","pausa"),M_("15:15","16:30","Python, SQL ou projeto","tech"),M_("16:30","17:30","Revisão espaçada","rev","Revisões do dia"),M_("17:30","18:00","Lanche e transição","pausa"),M_("18:00","19:00","Oração das 18h","oracao"),M_("19:00","20:30","Visitas e comunhão","min"),M_("20:30","21:00","Jantar","pausa"),...NOITE(["21:00","21:15"],["21:15","22:15"])]},
+ 4:{n:"Quinta",s:"ANBIMA e culto de cura e libertação",w:"04:00",b:[...manha4,BIB,ACAD,BAN,M_("09:45","11:15","Ciências Econômicas","grad"),M_("11:15","12:00","Exercícios de Economia","grad"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","14:00","Descanso","pausa"),M_("14:00","16:00","ANBIMA: exercitar","anbima","Questões, correção e erros"),M_("16:00","17:00","Pausa livre","pausa"),M_("17:00","18:00","Preparação pastoral","min"),M_("18:00","18:30","Oração das 18h","oracao"),M_("18:30","19:15","Preparação final","min"),M_("19:15","19:30","Deslocamento","pausa"),M_("19:30","21:30","Culto de cura e libertação","min"),M_("21:30","22:00","Jantar","pausa"),...NOITE(["22:00","22:15"],["22:15","23:15"])]},
+ 5:{n:"Sexta",s:"ANBIMA e produção",w:"05:30",b:[...manha5,BIB,ACAD,BAN,M_("09:45","11:15","Python ou SQL","tech"),M_("11:15","12:00","Revisão de código","tech"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","14:00","Descanso","pausa"),M_("14:00","16:00","ANBIMA: consolidar","anbima","Questões misturadas e % de acertos"),M_("16:00","16:30","Pausa","pausa"),M_("16:30","17:30","Projeto, Excel ou Power BI","tech"),M_("17:30","18:00","Lanche e transição","pausa"),M_("18:00","18:45","Oração das 18h","oracao"),M_("18:45","19:30","Jantar e família","saude"),M_("19:30","19:45","Revisão semanal","rev","O que avançou e 3 prioridades"),...NOITE(["20:00","20:15"],["20:15","21:15"])]},
+ 6:{n:"Sábado",s:"Consolidação e igreja",w:"04:00",b:[...manha4,BIB,ACAD,BAN,M_("09:45","11:15","Graduação com maior necessidade","grad"),M_("11:15","12:00","Exercícios da graduação","grad"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","14:00","Descanso e família","saude"),M_("14:00","15:30","Preparação pastoral","min"),M_("15:30","16:30","Descanso e organização","pausa"),M_("16:30","17:30","Família e lanche","saude"),M_("18:00","19:00","Oração das 18h","oracao"),M_("19:00","19:30","Deslocamento","pausa"),M_("19:30","21:30","Programação da igreja","min"),M_("21:30","22:00","Jantar","pausa"),...NOITE(["22:00","22:15"],["22:15","23:15"])]},
+ 0:{n:"Domingo",s:"Igreja, família e recuperação",w:"05:30",b:[M_("05:30","06:30","Oração da manhã","oracao"),M_("06:30","07:15","Higiene e café","pausa"),M_("07:15","08:00","Deslocamento","pausa"),M_("08:00","10:00","Escola Bíblica Dominical","min"),M_("10:00","12:00","Descanso e família","saude"),M_("12:00","13:00","Almoço","pausa"),M_("13:00","15:00","Convivência familiar","saude"),M_("15:00","16:00","Tempo livre","pausa","Estudo opcional"),M_("16:00","17:00","Descanso","pausa"),M_("17:00","18:00","Preparação espiritual","oracao"),M_("18:00","18:30","Oração das 18h","oracao"),M_("18:30","19:00","Deslocamento","pausa"),M_("19:00","21:30","Culto","min"),M_("21:30","22:00","Jantar","pausa"),M_("22:00","22:15","Revisão integral do dia","rev","Finalizar o dia"),M_("22:15","23:15","Oração antes de dormir","oracao")]}
+};
+
+const PHASES = [
+  {n:"Fase 1 · Fundamentos", a:"2026-10-16", b:"2026-11-19", f:"SQL e Python básicos, primeiros dados do BCB, GitHub e inscrição na Serasa"},
+  {n:"Fase 2 · Construção",  a:"2026-11-20", b:"2026-12-24", f:"Pandas, Power BI com DAX, painéis v1 e v2, estatística e regressão linear"},
+  {n:"Fase 3 · Produção",    a:"2026-12-25", b:"2027-01-23", f:"Modelo de crédito, apresentação, currículo, entrevista e fechamento"}
+];
+const SERASA = [
+  {d:"2026-10-31", t:"Meta interna: enviar a inscrição na Eureca", k:"inscricao"},
+  {d:"2026-11-04", t:"Prazo oficial da inscrição e da trilha online"},
+  {d:"2026-11-30", t:"Testes online e dinâmicas", k:"testes", m:"Novembro"},
+  {d:"2026-12-15", t:"Entrevistas", k:"entrevista", m:"Nov e dez"},
+  {d:"2026-12-31", t:"Aprovação", k:"aprovada", m:"Dezembro"},
+  {d:"2027-02-01", t:"Início: 6h por dia, bolsa de R$ 2.150", m:"Fev 2027"}
+];
+const VAGAS0 = [
+  {id:"serasa", n:"Serasa Experian", v:"Estágio 2027 · Analytics", alvo:true, st:"interesse"},
+  {id:"pagbank", n:"PagBank", v:"Cientista de Dados Jr.", st:"interesse"},
+  {id:"mercantil", n:"Mercantil", v:"Dados e crédito", st:"interesse"},
+  {id:"sicoob", n:"Sicoob", v:"Dados e crédito", st:"interesse"},
+  {id:"agibank", n:"Agibank", v:"Dados e crédito", st:"interesse"}
+];
+const VSTATUS = ["interesse","inscrita","testes","entrevista","aprovada","não seguiu"];
+
+/* Matérias, trilhas e recursos (Documento-base e Laudo Educacional) */
+const SUBJ = {
+ mat:{n:"Matemática", a:"grad", lv:["Aritmética","Frações, proporções e potências","Álgebra e geometria","Funções, trigonometria e pré-cálculo","Cálculo e estatística"], st:[0,8,20,35,55],
+   rec:[["Khan Academy","https://pt.khanacademy.org/math"],["GeoGebra","https://www.geogebra.org/"],["Wolfram Alpha","https://www.wolframalpha.com/"],["MIT OCW · Matemática","https://ocw.mit.edu/search/?d=Mathematics"]]},
+ eco:{n:"Economia", a:"grad", lv:["Fundamentos","Microeconomia","Macroeconomia","Matemática financeira","Econometria"], st:[0,8,18,30,45],
+   rec:[["FGV · cursos gratuitos","https://educacao-executiva.fgv.br/Cursos/Gratuitos"],["MIT OCW · Economia","https://ocw.mit.edu/search/?d=Economics"],["Banco Central · SGS","https://www3.bcb.gov.br/sgspub/"]]},
+ sql:{n:"SQL", a:"tech", lv:["SELECT e WHERE","GROUP BY","JOIN","Subconsultas","Modelagem"], st:[0,4,9,15,22],
+   rec:[["CS50 SQL","https://cs50.harvard.edu/sql/"],["Canal CS50","https://www.youtube.com/@cs50"]]},
+ py:{n:"Python", a:"tech", lv:["Variáveis e condições","Laços e funções","Arquivos","Pandas","Análise e gráficos"], st:[0,4,9,15,22],
+   rec:[["CS50 Python","https://cs50.harvard.edu/python/"],["Documentação em português","https://docs.python.org/pt-br/3/"],["freeCodeCamp · Data Analysis","https://www.freecodecamp.org/learn/data-analysis-with-python"]]},
+ bi:{n:"Excel e Power BI", a:"tech", lv:["Tabela dinâmica","Power Query","Modelo de dados","DAX","Painel com KPIs"], st:[0,3,7,12,18],
+   rec:[["Microsoft Learn · Power BI","https://learn.microsoft.com/pt-br/training/powerplatform/power-bi/"],["Suporte Excel","https://support.microsoft.com/pt-br/excel"]]},
+ est:{n:"Estatística", a:"tech", lv:["Descritiva","Probabilidade","Correlação","Regressão linear","Regressão logística"], st:[0,4,9,15,22],
+   rec:[["Khan Academy · Estatística","https://pt.khanacademy.org/math/statistics-probability"],["MIT · Statistics for Applications","https://ocw.mit.edu/search/?q=Statistics%20for%20Applications"]]},
+ proj:{n:"Projeto de crédito", a:"tech", lv:["Pergunta e dados do BCB","Limpeza com SQL e Python","Painel v1","Painel v2 com KPIs","Modelo documentado"], st:[0,3,7,12,18],
+   rec:[["BCB · dados abertos","https://dadosabertos.bcb.gov.br/"],["GitHub Skills","https://skills.github.com/"],["dados.gov.br","https://dados.gov.br/"]]},
+ anbima:{n:"ANBIMA CPA", a:"anbima", lv:["Sistema Financeiro Nacional","Ética e regulação","Economia e finanças","Investimentos e fundos","Simulados"], st:[0,4,9,15,22],
+   rec:[["ANBIMA · certificações","https://anbimaedu.com.br/certificacoes"],["ANBIMA · documentos","https://anbimaedu.com.br/central-documentos"]]},
+ biblia:{n:"Bíblia", a:"biblia", lv:["Leitura diária","Meditação","Estudo temático","Preparação de mensagens","Ensino"], st:[0,10,25,45,70], rec:[]}
+};
+const FROM_LABEL = l => /Matem/.test(l)?"mat": /Econ/.test(l)?"eco": /ANBIMA/.test(l)?"anbima": /Projeto|Power BI/.test(l)?"proj": /Python|SQL|código/.test(l)?"py": /Bíblia/.test(l)?"biblia": null;
+
+const FRASES = [
+  "Não estou construindo apenas um currículo. Estou construindo capacidade.",
+  "Preciso aprender a escolher, aprofundar e concluir.",
+  "A disciplina tem que ser maior que a motivação passageira.",
+  "Não preciso correr para chegar ao futuro. Preciso construir as competências que me levarão até ele.",
+  "Conhecimento demonstrado vale mais que hora contada.",
+  "Executar bem a etapa que está diante de mim.",
+  "Reter mais, compreender melhor, errar menos pelos mesmos motivos."
+];
+
+/* Metas conectadas: prazo, matérias que alimentam, evidência e ritmo */
+const GOALS = [
+  {id:"inscricao", n:"Inscrição na Serasa (Eureca)", due:"2026-11-04", soft:"2026-10-31", mats:[], marco:"inscricao", how:"Entre na plataforma Eureca, complete o cadastro e a trilha online. Reserve 1 hora hoje."},
+  {id:"testes", n:"Testes online da Serasa", due:"2026-11-30", mats:["sql","py","est","mat"], need:14, marco:"testes", how:"Testes de raciocínio lógico, leitura de gráficos e base de dados. Faça o simulado de Dados toda semana."},
+  {id:"painel", n:"Painel de crédito v1 com dados do BCB", due:"2026-12-24", mats:["proj","bi","sql","py"], need:16, marco:"painel1", how:"O SQL extrai, o Python limpa e o Power BI mostra. É a prova de competência que abre as 5 portas."},
+  {id:"cpa", n:"Certificação ANBIMA CPA", due:"2027-01-23", mats:["anbima"], sim:"anbima", how:"Ter, qui e sex, 14h–16h. A data da prova é decidida pela média de 70% nos simulados."},
+  {id:"cs50", n:"Certificados CS50 (SQL e Python)", due:"2027-01-23", mats:["sql","py"], need:30, how:"Estude só os módulos da fase e guarde cada exercício no GitHub."},
+  {id:"base", n:"Base matemática sólida (ITA no horizonte)", due:"2027-01-23", mats:["mat"], need:35, how:"Aritmética e álgebra consolidadas antes de avançar. Cada bloco de Matemática aprovado conta."}
+];
+function matsOfBlock(b){ const l=b.l; if(/Matem/.test(l)) return ["mat"]; if(/Econ/.test(l)) return ["eco"]; if(/ANBIMA/.test(l)) return ["anbima"];
+  if(/Python|SQL|código/.test(l)) return ["py","sql"]; if(/Projeto|Power BI/.test(l)) return ["proj","bi"]; if(/Graduação/.test(l)) return ["mat","eco"]; return []; }
+function goalProgress(g){
+  const parts=[];
+  if(g.marco) parts.push(M.marcos && M.marcos[g.marco] ? 1 : 0);
+  if(g.need) parts.push(Math.min(1, g.mats.reduce((a,m)=>a+countBy(m),0)/g.need));
+  if(g.sim){ const l=(M.simulados||[]).filter(x=>(x.tipo||"anbima")===g.sim).slice(-3); parts.push(l.length?Math.min(1,(l.reduce((a,x)=>a+x.score,0)/l.length)/0.7):0); }
+  if(g.marco && g.need) return (M.marcos&&M.marcos[g.marco]) ? 1 : parts[1]*0.9;
+  return parts.length ? parts.reduce((a,b)=>a+b,0)/parts.length : 0;
+}
+function goalInfo(g){
+  const t=today(), due=fromIso(g.due), left=Math.round((due-t)/864e5), p=goalProgress(g);
+  const base = M.inicio ? fromIso(M.inicio) : t, span=Math.max(1,(due-base)/864e5), exp=Math.max(0,Math.min(1,((t-base)/864e5)/span));
+  const mins = Object.values(WEEK).reduce((a,W)=>a+W.b.filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))).reduce((x,b)=>x+toMin(b.b)-toMin(b.a),0),0);
+  const done = p>=1, late = !done && left<0, behind = !done && !!(g.need||g.sim) && p+0.15<exp;
+  return {g, left, p, exp, mins, done, late, behind, urgent: !done && left<=7};
+}
+function goalsFor(mat){ return GOALS.filter(g=>g.mats.includes(mat)).map(goalInfo).filter(x=>!x.done); }
+function topGoal(){ const all=GOALS.map(goalInfo).filter(x=>!x.done && x.left>=-3); all.sort((a,b)=>(b.urgent-a.urgent)||(b.behind-a.behind)||(a.left-b.left)); return all[0]||null; }
+function goalsText(){ return GOALS.map(goalInfo).map(x=>`${x.g.n}: prazo ${fromIso(x.g.due).getDate()}/${fromIso(x.g.due).getMonth()+1}, faltam ${x.left} dias, progresso ${Math.round(x.p*100)}% (esperado ${Math.round(x.exp*100)}%)${x.done?" CONCLUÍDA":x.behind?" ATRÁS DO RITMO":""}`).join("; "); }
+
+/* ====================================================================
+   ESTADO E MEMÓRIA
+   ==================================================================== */
+let M = {profile:{name:NAME_DEFAULT, photo:""}, xp:0, vagas:VAGAS0.map(v=>({...v})), marcos:{}, revisoes:[], erros:[], simulados:[], chat:[]};
+let DAYS = {};
+let DB=null, UID=null, SAMPLE=null, LIMITS=null, ASSETS=null, DL=null;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const p2 = n => String(n).padStart(2,"0");
+const iso = d => `${d.getFullYear()}-${p2(d.getMonth()+1)}-${p2(d.getDate())}`;
+const fromIso = s => { const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); };
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const today = () => { const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); };
+const dayIdx = d => Math.round((d - START)/864e5);
+const toMin = s => { const [h,m]=s.split(":").map(Number); return h*60+m; };
+const nowMin = () => { const n=new Date(); return n.getHours()*60+n.getMinutes(); };
+const MES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+const WD = ["DOM","SEG","TER","QUA","QUI","SEX","SÁB"];
+const fmtH = s => s.replace(":", "h");
+const bkey = b => b.a + "|" + b.l;
+
+const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch(e) { return null; } };
+const lsSet = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
+function coll(){ return DB && UID ? DB.collection("data/users/" + UID) : null; }
+const qd = {};
+function dbPut(key, val){
+  const c = coll(); if(!c) return;
+  clearTimeout(qd[key]);
+  qd[key] = setTimeout(() => { c.doc(key).set(JSON.parse(JSON.stringify(val))).catch(()=>{}); }, 600);
+}
+function saveMain(){ lsSet("cav:main", M); dbPut("main", M); }
+function day(dstr){ return DAYS[dstr] || (DAYS[dstr] = {blocks:{}, final:null}); }
+function saveDay(dstr){ lsSet("cav:d:"+dstr, DAYS[dstr]); dbPut("d_"+dstr, {...DAYS[dstr], date:dstr}); }
+
+async function boot(){
+  const lm = lsGet("cav:main"); if(lm) M = Object.assign(M, lm);
+  if(!M.inicio){ M.inicio = iso(today()); lsSet("cav:main", M); }
+  for(let i=0;i<TOTAL;i++){ const k=iso(addDays(START,i)); const v=lsGet("cav:d:"+k); if(v) DAYS[k]=v; }
+  render();
+  if(!window.claude || !claude.use) return;
+  try{
+    const u = await claude.use("user");
+    if(u){ try{ UID = await u.id(); }catch(e){} }
+    DB = await claude.use("db");
+    const c = coll();
+    if(c){
+      const timer = setTimeout(()=>{}, 10000);
+      const s = await c.doc("main").get().catch(()=>null);
+      if(s && s.exists){ const loc=M.inicio; M = Object.assign(M, s.data()); if(!M.inicio) M.inicio=loc; }
+      else if(lm) saveMain();
+      const q = await c.get().catch(()=>null);
+      if(q) q.docs.forEach(x => { const v=x.data(); if(v && v.date){ const o={...v}; delete o.date; DAYS[v.date]=o; } });
+      clearTimeout(timer);
+      render();
+    }
+  }catch(e){}
+  try{
+    SAMPLE = await claude.use("sample");
+    if(SAMPLE) LIMITS = await SAMPLE.limits().catch(()=>null);
+    ASSETS = await claude.use("assets");
+    DL = await claude.use("downloads");
+  }catch(e){}
+  render();
+  if(aiOn() && manhaPend() && SH.hidden && (M.manhaVista||"")!==iso(today())){ M.manhaVista=iso(today()); saveMain(); openManha(); }
+}
+
+/* ====================================================================
+   IA (sample)
+   ==================================================================== */
+const aiOn = () => !!SAMPLE;
+const canImg = () => !!(LIMITS && LIMITS.images);
+function aiErr(e){
+  const c = e && e.code;
+  if(c==="no_ai") return "O Claude só funciona na versão publicada desta página.";
+  if(c==="not_granted"||c==="sampling_disabled") return "Sem permissão para usar o Claude nesta página.";
+  if(c==="rate_limited") return "Muitos pedidos seguidos. Espere um minuto e toque de novo.";
+  if(c==="invalid_json") return "O Claude respondeu fora do formato. Toque em tentar de novo.";
+  if(c==="image_rejected") return "Essa imagem não foi aceita. Tente outra foto.";
+  return "Não consegui falar com o Claude agora. Tente de novo em instantes.";
+}
+function perfil(){
+  const d=dayIdx(today())+1, ph=phaseOf(today());
+  return `Contexto fixo: você é o tutor e gestor do Projeto Caverna (${LEMA}), 100 dias de 16/10/2026 a 23/01/2027. Hoje é o dia ${d} de 100 (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
+}
+async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; return SAMPLE.json(perfil()+"\n\n"+prompt, Object.assign({cache:false}, opts||{})); }
+
+/* ====================================================================
+   CÁLCULOS
+   ==================================================================== */
+function phaseOf(d){ const s=iso(d); return PHASES.find(p => s>=p.a && s<=p.b) || null; }
+function blocksOf(d){ return WEEK[d.getDay()].b; }
+function kindOf(b){
+  if(b.c==="rev") return /integral/.test(b.l) ? "final" : /espaçada/.test(b.l) ? "revisao" : "simples";
+  if(b.c==="biblia") return "biblia";
+  if(["grad","tech","anbima"].includes(b.c)) return "estudo";
+  if(b.c==="pausa") return "pausa";
+  return "simples";
+}
+function dayStats(dstr){
+  const d = fromIso(dstr), bs = blocksOf(d), rec = (DAYS[dstr]||{}).blocks || {};
+  const relevant = bs.filter(b => !["final","pausa"].includes(kindOf(b)));
+  const done = relevant.filter(b => rec[bkey(b)] && rec[bkey(b)].st==="feito").length;
+  return {done, total:relevant.length, pct: relevant.length ? done/relevant.length : 0, closed: !!((DAYS[dstr]||{}).final && DAYS[dstr].final.closed)};
+}
+function allStudy(){
+  const out=[];
+  Object.entries(DAYS).forEach(([d,v]) => Object.entries(v.blocks||{}).forEach(([k,r]) => { if(r.st==="feito" && r.mat) out.push({d,k,...r}); }));
+  (M.livres||[]).forEach(r => out.push(r));
+  return out;
+}
+function countBy(mat){ return allStudy().filter(r => r.mat===mat && (r.score==null || r.score>=0.6)).length; }
+function levelOf(mat){ const s=SUBJ[mat], n=countBy(mat); let l=0; s.st.forEach((t,i)=>{ if(n>=t) l=i; }); return {l, n, next:s.st[l+1]}; }
+function streak(){
+  let s=0, d=today();
+  if(dayStats(iso(d)).pct<0.5) d=addDays(d,-1);
+  while(dayIdx(d)>=0 && dayStats(iso(d)).pct>=0.5){ s++; d=addDays(d,-1); }
+  return s;
+}
+function quizAvg(){ const q=allStudy().filter(r=>r.score!=null); return q.length ? q.reduce((a,r)=>a+r.score,0)/q.length : null; }
+function dueReviews(){ const t=iso(today()); return (M.revisoes||[]).filter(r => !r.done && r.due<=t); }
+function logErro(mat, topic, q, a){ (M.erros=M.erros||[]).push({id:"e"+Date.now()+Math.random().toString(36).slice(2,6), d:iso(today()), mat, topic:topic||q.tema||"", p:q.p, minha:q.o[a]||"", certa:q.o[q.c], e:q.e, ok:false}); }
+function addXP(n){ M.xp=(M.xp||0)+n; saveMain(); }
+const LEVEL = () => Math.floor((M.xp||0)/250)+1;
+
+/* ====================================================================
+   NAVEGAÇÃO E RENDER
+   ==================================================================== */
+let TAB="hoje", SELDAY=null, EVOTAB="panorama";
+function render(){
+  const v = {hoje:vHoje, estudar:vEstudar, evolucao:vEvolucao, diario:vDiario}[TAB]();
+  $("#app").innerHTML = v;
+  document.querySelectorAll(".tabbar [data-tab]").forEach(b => b.setAttribute("aria-current", b.dataset.tab===TAB ? "page" : "false"));
+  const sa=document.querySelector('.seg [aria-pressed="true"]'); if(sa) sa.scrollIntoView({inline:"nearest",block:"nearest"});
+}
+document.querySelector(".tabbar").addEventListener("click", e => {
+  const b = e.target.closest("[data-tab]"); if(!b) return;
+  TAB = b.dataset.tab; SELDAY=null; render(); window.scrollTo({top:0});
+});
+$("#cbtn").addEventListener("click", () => openChat());
+
+function toast(t){ const el=document.createElement("div"); el.className="toast"; el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(), 2600); }
+
+function topBar(){
+  const ph = M.profile.photo, n = M.profile.name || NAME_DEFAULT;
+  return `<header class="top">
+    <div class="row"><button class="avatar" data-act="perfil" aria-label="Seu perfil">${ph?`<img src="${esc(ph)}" alt="">`:esc(n[0])}</button>
+      <div><div class="lema">${LEMA}</div><div class="faint mono" style="font-size:12px;margin-top:4px">Nível ${LEVEL()} · ${M.xp||0} XP</div></div></div>
+  </header>`;
+}
+
+/* ---------------- HOJE ---------------- */
+function vHoje(){
+  const t = today(), sel = SELDAY ? fromIso(SELDAY) : t, isToday = iso(sel)===iso(t);
+  const di = dayIdx(t)+1, ph = phaseOf(t), W = WEEK[sel.getDay()], bs = W.b, rec = day(iso(sel)).blocks, nm = nowMin();
+  const hour = new Date().getHours(), hi = hour<12?"Bom dia":hour<18?"Boa tarde":"Boa noite";
+  let cur = isToday ? bs.find(b => nm>=toMin(b.a) && nm<toMin(b.b)) : null;
+  let nxt = isToday ? bs.find(b => toMin(b.a)>nm) : bs[0];
+  const pendNow = isToday ? bs.find(b => toMin(b.b)<=nm && !rec[bkey(b)] && !["final","simples","pausa"].includes(kindOf(b))) : null;
+
+  // semana
+  const monday = addDays(t, -((t.getDay()+6)%7));
+  let strip = "";
+  for(let i=0;i<7;i++){ const d=addDays(monday,i), s=iso(d), st=dayStats(s);
+    strip += `<button data-act="selday" data-d="${s}" aria-pressed="${s===iso(sel)}"><small>${WD[d.getDay()]}</small><b>${d.getDate()}</b>${st.closed?'<span class="dot"></span>':''}</button>`; }
+
+  const hero = cur || nxt || bs[bs.length-1];
+  const hk = kindOf(hero), hr = rec[bkey(hero)], heroDone = hr && hr.st==="feito";
+  const elapsed = cur ? Math.min(100, Math.round((nm-toMin(cur.a))/(toMin(cur.b)-toMin(cur.a))*100)) : 0;
+  const left = cur ? toMin(cur.b)-nm : toMin(hero.a)-nm;
+  const heroAct = heroDone ? `<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>Feito</span>`
+     : hk==="estudo"||hk==="biblia" ? `<button class="btn primary" data-act="bloco" data-k="${esc(bkey(hero))}">Começar a estudar <svg class="icon"><use href="#i-arrow"/></svg></button>`
+     : hk==="final" ? `<button class="btn primary" data-act="finalizar">Finalizar o dia <svg class="icon"><use href="#i-arrow"/></svg></button>`
+     : hk==="revisao" ? `<button class="btn primary" data-act="bloco" data-k="${esc(bkey(hero))}">Fazer revisões</button>`
+     : `<button class="btn primary" data-act="ok" data-k="${esc(bkey(hero))}"><svg class="icon"><use href="#i-check"/></svg>OK, feito</button>`;
+
+  const s = dayStats(iso(sel)), due = dueReviews().length, stk = streak();
+  const serasaD = Math.max(0, dayIdx(fromIso("2026-11-04")) - dayIdx(t));
+  const insc = M.marcos.inscricao;
+  const frase = FRASES[(di + 3) % FRASES.length];
+
+  let tl = "", nPausa = 0;
+  bs.forEach(b => {
+    if(kindOf(b)==="pausa" && !M.showPausas){ nPausa++; return; }
+    const k=bkey(b), r=rec[k], kd=kindOf(b), past=isToday&&toMin(b.b)<=nm, isn=cur===b;
+    const st = r ? (r.st==="feito" ? `<span class="st done"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg></span>` : `<span class="st miss"><svg class="icon" style="width:14px;height:14px"><use href="#i-x"/></svg></span>`) : `<span class="st"></span>`;
+    const tag = kd==="estudo"?"aula + prova":kd==="biblia"?"leitura + pergunta":kd==="revisao"?"recuperação ativa":"";
+    const gm = matsOfBlock(b).length ? GOALS.find(g=>!goalInfo(g).done && g.mats.some(m=>matsOfBlock(b).includes(m))) : null;
+    tl += `<li class="${isn?"isnow":""} ${past?"past":""} ${r?"closed":""}" style="--g1:${g1(b.c)}"><button data-act="${kd==="final"?"finalizar":kd==="simples"||kd==="pausa"?"ok":"bloco"}" data-k="${esc(k)}" data-d="${iso(sel)}">
+      <time>${fmtH(b.a)}<br>${fmtH(b.b)}</time>
+      <span class="t"><b><span class="bul"></span>${esc(b.l)}</b><small>${esc(b.s || AREAS[b.c].n)}${tag?` · ${tag}`:""}${gm?`<span class="gtag">→ ${esc(gm.n.split(" (")[0])}</span>`:""}</small></span>${st}</button></li>`;
+  });
+
+  return `<div class="view">
+    ${topBar()}
+    <div class="hoje-grid">
+     <div class="h-top" style="display:grid;gap:18px">
+      <section class="hello">
+        <div class="eyebrow">${hi}, ${esc(M.profile.name||NAME_DEFAULT)}</div>
+        <div class="dayline"><h1 class="title-xl">${sel.getDate()} de ${MES[sel.getMonth()]}</h1></div>
+        <div class="row wrap" style="gap:8px">
+          <span class="chip"><i style="color:var(--c)"></i>Dia ${di} de 100</span>
+          ${ph?`<span class="chip">${esc(ph.n)}</span>`:""}
+          <span class="chip">${esc(W.n)} · acordar ${fmtH(W.w)}</span>
+        </div>
+      </section>
+      <div class="weekstrip" role="group" aria-label="Dias da semana">${strip}</div>
+      ${!isToday?`<p class="note">Você está vendo ${esc(W.n)}, ${sel.getDate()}/${sel.getMonth()+1}. <button class="link" data-act="selday" data-d="${iso(t)}">Voltar para hoje</button></p>`:""}
+
+      <section class="now" style="--g1:${g1(hero.c)};--g2:${g2(hero.c)}" aria-label="Agora">
+        <div class="row" style="justify-content:space-between;position:relative">
+          <span class="eyebrow" style="color:rgb(255 255 255 / .8)">${cur?"Agora":"Próximo"} · ${esc(AREAS[hero.c].n)}</span>
+          <span class="mono" style="font-size:13px;color:#fff;background:rgb(0 0 0 / .45);padding:4px 10px;border-radius:99px">${fmtH(hero.a)}–${fmtH(hero.b)}</span>
+        </div>
+        <div style="display:grid;gap:10px;position:relative">
+          <h2 class="label">${esc(hero.l)}</h2>
+          ${hero.s?`<p style="color:rgb(255 255 255 / .78)">${esc(hero.s)}</p>`:""}
+          ${cur?`<div class="bar" aria-label="${elapsed}% do bloco"><i style="width:${elapsed}%"></i></div><span class="mono" style="font-size:12px;color:rgb(255 255 255 / .75)">faltam ${left} min</span>`:(isToday&&left>0?`<span class="mono" style="font-size:12px;color:rgb(255 255 255 / .75)">começa em ${left>=60?Math.floor(left/60)+"h"+p2(left%60):left+" min"}</span>`:"")}
+        </div>
+        <div class="acts">${heroAct}${cur&&nxt?`<span class="chip" style="background:rgb(0 0 0 / .25)">Depois: ${esc(nxt.l)} ${fmtH(nxt.a)}</span>`:""}</div>
+      </section>
+      ${M.sessao?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button><button class="link" data-act="descartar" style="justify-self:start;margin-top:-10px">Descartar este estudo</button>`:""}
+      ${missaoHTML()}
+      ${ribbonHTML()}
+      ${manhaPend()?`<button class="item" data-act="manha" style="border-color:rgb(154 165 255 / .45)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${semanaPend()?`<button class="item" data-act="semana" style="border-color:rgb(255 106 26 / .45)"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Segunda é dia de prova com gabarito sobre a semana</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${pendNow?`<button class="item" data-act="bloco" data-k="${esc(bkey(pendNow))}" style="border-color:rgb(255 194 75 / .4)"><svg class="icon" style="color:var(--warn)"><use href="#i-flame"/></svg><span class="grow"><b>Ainda falta confirmar: ${esc(pendNow.l)}</b><small>Feito ou não feito, registre agora enquanto lembra.</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+
+     </div>
+      <section class="h-tl" style="display:grid;gap:10px">
+        <div class="sec-h"><h2>Seu dia</h2><span class="mono muted" style="font-size:13px">${s.done}/${s.total} confirmados</span></div>
+        <ol class="tl">${tl}</ol>
+        <button class="link" data-act="pausas" style="justify-self:start">${M.showPausas?"Esconder pausas e deslocamentos":`Mostrar ${nPausa} pausas e deslocamentos`}</button>
+      </section>
+
+     <aside class="h-side side-sticky" style="display:grid;gap:18px;align-content:start">
+      <div class="bento">
+        <button class="tile wide" data-act="metas" style="--g1:var(--c);--g2:#3A1204">
+          <span class="lbl">Alvo central · Serasa Experian Analytics</span>
+          <span class="row" style="align-items:flex-end;justify-content:space-between"><span class="big">${insc?"OK":serasaD}</span><span class="sub" style="text-align:right">${insc?"Inscrição enviada.<br>Próximo: testes online":serasaD===0?"Hoje é o prazo oficial<br>da inscrição":"dias até o prazo oficial<br>da inscrição (04/11)"}</span></span>
+        </button>
+        <button class="tile" data-act="revisoes" style="--g1:var(--a-rev-1);--g2:var(--a-rev-2)"><span class="lbl">Revisões de hoje</span><span class="big">${due}</span><span class="sub">${due?"Recuperar sem consultar":"Nada pendente"}</span></button>
+        <button class="tile" data-tabgo="evolucao" style="--g1:var(--a-saude-1);--g2:var(--a-saude-2)"><span class="lbl">Constância</span><span class="big">${stk}</span><span class="sub">dias seguidos acima de 50%</span></button>
+        <button class="tile" data-act="anbima" style="--g1:var(--a-anbima-1);--g2:var(--a-anbima-2)"><span class="lbl">ANBIMA</span><span class="big">${levelOf("anbima").n}</span><span class="sub">blocos com prova aprovada</span></button>
+        <button class="tile" data-tabgo="evolucao" style="--g1:var(--a-grad-1);--g2:var(--a-grad-2)"><span class="lbl">Média nas provas</span><span class="big">${quizAvg()==null?"--":Math.round(quizAvg()*100)}</span><span class="sub">% de acertos</span></button>
+      </div>
+      <div class="glass pad" style="display:grid;gap:10px">
+        <span class="eyebrow">Lembrete do dia</span>
+        <p class="title-m" style="font-weight:300;font-size:22px;line-height:1.25">“${esc(frase)}”</p>
+      </div>
+      <button class="btn c" data-act="finalizar" style="width:100%;min-height:56px">${day(iso(t)).final&&day(iso(t)).final.closed?"Dia registrado · ver resumo":"Finalizar o dia"}</button>
+     </aside>
+    </div>
+  </div>`;
+}
+
+/* ---------------- ESTUDAR ---------------- */
+function vEstudar(){
+  const cards = Object.entries(SUBJ).map(([k,s]) => { const L=levelOf(k);
+    return `<button class="card" data-act="materia" data-m="${k}" style="--g1:${g1(s.a)};--g2:${g2(s.a)}"><span class="shape"></span>
+      <span class="eyebrow" style="color:rgb(255 255 255 / .75);position:relative">${esc(AREAS[s.a].n)}</span>
+      <span style="display:grid;gap:8px;position:relative"><h3>${esc(s.n)}</h3><span class="muted" style="color:rgb(255 255 255 / .8);font-size:13px">${esc(s.lv[L.l])}</span>
+      <span class="row" style="justify-content:space-between;align-items:flex-end"><span class="lv">${["I","II","III","IV","V"][L.l]}</span><span class="mono" style="font-size:12px;color:rgb(255 255 255 / .75)">${L.n} blocos</span></span></span></button>`; }).join("");
+  const due = dueReviews(), er = (M.erros||[]).filter(e=>!e.ok).slice(-5).reverse();
+  return `<div class="view">
+    ${topBar()}
+    <section style="display:grid;gap:8px"><span class="eyebrow">Sala de estudos</span><h1 class="title-l">Explore e aprenda</h1></section>
+    <form class="composer" data-form="livre" autocomplete="off">
+      <label class="sr" for="q-livre">O que você quer aprender agora?</label>
+      <input class="inp" id="q-livre" name="q" placeholder="Aprender agora: ex. potenciação" style="border-radius:var(--pill)">
+      <button class="btn c" type="submit" aria-label="Gerar aula"><svg class="icon"><use href="#i-spark"/></svg></button>
+    </form>
+    <section style="display:grid;gap:4px"><div class="sec-h"><h2>Suas matérias</h2><span class="muted" style="font-size:13px">deslize</span></div>
+      <div class="fan">${cards}</div></section>
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
+      ${due.length?`<div class="list">${due.map(r=>`<button class="item" data-act="revisar" data-id="${r.id}"><span class="chip" style="color:${g1(SUBJ[r.mat]?SUBJ[r.mat].a:"rev")}"><i></i>D${r.step}</span><span class="grow"><b>${esc(r.topic)}</b><small>${esc(SUBJ[r.mat]?SUBJ[r.mat].n:"")} · estudado em ${fromIso(r.d0).getDate()}/${fromIso(r.d0).getMonth()+1}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`).join("")}</div>`:`<p class="note">Nenhuma revisão vencida. Cada assunto aprovado volta para revisão em 1, 3, 7, 14 e 30 dias.</p>`}
+    </section>
+    ${forjaHTML()}
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Erros recentes</h2><span class="mono muted" style="font-size:13px">${(M.erros||[]).filter(e=>!e.ok).length} abertos</span></div>
+      ${er.length?`<div class="list">${er.map(e=>`<button class="item" data-act="erro" data-id="${e.id}"><svg class="icon" style="color:var(--bad)"><use href="#i-x"/></svg><span class="grow"><b>${esc(e.p)}</b><small>Certa: ${esc(e.certa)}</small></span></button>`).join("")}</div>`:`<p class="note">Nenhum erro aberto. Errar é normal; errar duas vezes pelo mesmo motivo é o que vamos evitar.</p>`}
+    </section>
+  </div>`;
+}
+
+/* ---------------- EVOLUÇÃO ---------------- */
+function vEvolucao(){
+  const segs = [["panorama","Panorama"],["provas","Provas"],["metas","Metas"],["arvore","Árvore"]];
+  if(EVOTAB==="anbima") EVOTAB="provas";
+  const body = {panorama:evoPanorama, metas:evoMetas, arvore:evoArvore, provas:evoProvas}[EVOTAB]();
+  return `<div class="view">${topBar()}
+    <section style="display:grid;gap:8px"><span class="eyebrow">Evolução</span><h1 class="title-l">Onde estamos chegando</h1></section>
+    <div class="seg" role="group" aria-label="Seções">${segs.map(([k,n])=>`<button data-act="evotab" data-k="${k}" aria-pressed="${EVOTAB===k}">${n}</button>`).join("")}</div>
+    ${body}</div>`;
+}
+function evoPanorama(){
+  const t=today(), di=Math.max(0,dayIdx(t)), all=allStudy();
+  let heat="", closed=0, hoursByArea={};
+  for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), st=dayStats(s); if(st.closed) closed++;
+    const lv = i>di ? "" : st.pct>=.8?"l3":st.pct>=.5?"l2":st.pct>0?"l1":"";
+    heat += `<i class="${lv} ${i===di?"today":""}" title="Dia ${i+1}"></i>`; }
+  all.forEach(r => { const a=SUBJ[r.mat]?SUBJ[r.mat].n:"Outros"; hoursByArea[a]=(hoursByArea[a]||0)+(r.min||0); });
+  const qa=quizAvg(), maxH=Math.max(60,...Object.values(hoursByArea));
+  const bars = Object.entries(hoursByArea).sort((a,b)=>b[1]-a[1]).map(([a,m])=>`<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between"><span>${esc(a)}</span><span class="mono muted">${(m/60).toFixed(1)} h</span></div><div class="bar"><i style="width:${Math.round(m/maxH*100)}%;background:var(--c)"></i></div></div>`).join("");
+  const p = Math.round(Math.min(1,(di+1)/TOTAL)*100);
+  return `<div class="kpis">
+      <div class="kpi"><b>${di+1}</b><span>dia de 100</span></div>
+      <div class="kpi"><b>${closed}</b><span>dias registrados</span></div>
+      <div class="kpi"><b>${streak()}</b><span>dias de constância</span></div>
+      <div class="kpi"><b>${qa==null?"--":Math.round(qa*100)+"%"}</b><span>média nas provas</span></div>
+    </div>
+    <section class="glass pad" style="display:grid;gap:12px"><div class="sec-h"><h2>100 dias</h2><span class="mono muted" style="font-size:13px">${p}% do caminho</span></div><div class="heat" aria-label="Mapa dos 100 dias">${heat}</div>
+      <div class="row wrap faint" style="font-size:12px;gap:14px"><span>cinza: sem registro</span><span style="color:#FFB37A">laranja: mais forte quanto mais blocos confirmados</span></div></section>
+    <section class="glass pad" style="display:grid;gap:12px"><h2 class="title-m">Tempo de estudo confirmado</h2>${bars||'<p class="muted">Ainda sem blocos de estudo confirmados.</p>'}</section>
+    <section class="glass pad" style="display:grid;gap:12px" id="pan-ai"><div class="sec-h"><h2 class="title-m">Leitura do tutor</h2></div>
+      <p class="muted">O Claude lê os seus registros e diz se estamos indo bem, o que precisa de atenção e as 3 ações da semana.</p>
+      <button class="btn c" data-act="panorama-ai" ${aiOn()?"":"disabled"}><svg class="icon"><use href="#i-spark"/></svg>Analisar meu momento</button>
+      ${aiOn()?"":`<p class="faint" style="font-size:13px">Disponível na versão publicada, com o Claude ligado.</p>`}</section>`;
+}
+function metasConectadasHTML(){
+  const xs=GOALS.map(goalInfo);
+  return `<section style="display:grid;gap:10px"><div class="sec-h"><h2>Metas conectadas à rotina</h2><span class="mono muted" style="font-size:13px">barra: feito · traço: ritmo esperado</span></div>
+    <div class="list">${xs.map(x=>{ const h=(x.mins/60); const warn = x.g.mats.length && x.mins===0 ? "Nenhum horário da agenda alimenta esta meta. Encaixe um bloco na semana." : x.behind ? `Atrás do ritmo: ${Math.round(x.p*100)}% feito, o esperado hoje era ${Math.round(x.exp*100)}%.` : "";
+      return `<div class="glass pad" style="display:grid;gap:8px;${x.urgent&&!x.done?"border-color:rgb(255 106 26 / .5)":""}">
+        <div class="row" style="justify-content:space-between;align-items:baseline"><b style="font-weight:500">${esc(x.g.n)}</b><span class="mono" style="font-size:12px;color:${x.done?"var(--ok)":x.urgent||x.behind?"var(--warn)":"var(--muted)"}">${x.done?"concluída":x.left>=0?`faltam ${x.left} dias`:"prazo passou"}</span></div>
+        <div class="gbar"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>
+        <small class="muted">${x.g.mats.length?`Na agenda: ${h?h.toFixed(1).replace(".",",")+" h por semana":"nenhum bloco"} · alimentada por ${x.g.mats.map(m=>SUBJ[m].n).join(", ")}`:"Marco: confirme quando fizer"}</small>
+        ${warn?`<p style="font-size:14px;color:var(--warn)">${esc(warn)}</p>`:""}
+        <small>${esc(x.g.how)}</small></div>`; }).join("")}</div></section>`;
+}
+function evoMetas(){
+  const t=iso(today());
+  const tl = SERASA.map(s => { const done = s.k && M.marcos[s.k], hot = !done && s.d>=t && !SERASA.some(x=>x.d<s.d && x.d>=t && !(x.k&&M.marcos[x.k]));
+    return `<div class="ev ${done?"done":""} ${hot?"hot":""}"><span class="mono muted" style="font-size:13px">${s.m||fromIso(s.d).getDate()+"/"+(fromIso(s.d).getMonth()+1)}</span><span><b style="font-weight:500">${esc(s.t)}</b>${s.k?`<br><button class="link" data-act="marco" data-k="${s.k}">${done?"Desmarcar":"Marcar como feito"}</button>`:""}</span></div>`; }).join("");
+  const vagas = M.vagas.map(v => `<div class="item"><span class="avatar" style="width:40px;height:40px;background:${v.alvo?"var(--c)":"var(--glass-2)"};color:${v.alvo?"var(--on-c)":"var(--text)"};font-size:14px">${esc(v.n[0])}</span>
+      <span class="grow"><b>${esc(v.n)}${v.alvo?' <span class="chip" style="min-height:22px;font-size:11px;margin-left:6px">alvo</span>':""}</b><small>${esc(v.v)}</small></span>
+      <label class="sr" for="vs-${v.id}">Situação</label><select id="vs-${v.id}" class="inp" data-vaga="${v.id}" style="width:auto;padding:8px 12px;border-radius:12px;font-size:13px">${VSTATUS.map(s=>`<option ${v.st===s?"selected":""}>${s}</option>`).join("")}</select></div>`).join("");
+  return `<section class="glass pad" style="display:grid;gap:6px"><span class="eyebrow">Ponto central do alvo</span><h2 class="title-l" style="font-size:30px">Estágio 2027 · Serasa Experian · Analytics</h2>
+      <p class="muted">Núcleo comum a todas as vagas: SQL, Python, Power BI, estatística aplicada e crédito. Cada bloco confirmado alimenta as cinco portas ao mesmo tempo.</p>
+      <div class="tline" style="margin-top:8px">${tl}</div></section>
+    ${metasConectadasHTML()}
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Portas abertas</h2><button class="link" data-act="nova-vaga">Adicionar vaga</button></div><div class="list">${vagas}</div>
+      <p class="faint" style="font-size:13px">As vagas e prazos vêm do seu plano. Confirme sempre no site de cada empresa antes de se inscrever.</p></section>
+    <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases dos 100 dias</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
+}
+function evoArvore(){
+  const L = k => levelOf(k).l, m = M.marcos, sim = (M.simulados||[]).slice(-3), simAvg = sim.length?sim.reduce((a,s)=>a+s.score,0)/sim.length:0;
+  const B = [
+    {n:"Matemática", a:"grad", nodes: SUBJ.mat.lv.map((x,i)=>({n:x, on:L("mat")>=i}))},
+    {n:"Dados", a:"tech", nodes:[{n:"SQL básico",on:true},{n:"JOIN",on:L("sql")>=2},{n:"Python básico",on:L("py")>=1},{n:"Pandas",on:L("py")>=3},{n:"Power BI e DAX",on:L("bi")>=3},{n:"Estatística e regressão",on:L("est")>=3},{n:"Painel de crédito v1",on:!!m.painel1},{n:"Modelo de crédito",on:!!m.modelo}]},
+    {n:"Carreira", a:"oracao", nodes:[{n:"Inscrição Serasa",on:!!m.inscricao},{n:"Testes online",on:!!m.testes},{n:"Entrevista",on:!!m.entrevista},{n:"Estágio Analytics",on:!!m.aprovada}]},
+    {n:"Portas reservas", a:"min", nodes:["PagBank","Mercantil","Sicoob","Agibank"].map(x=>({n:x,on:!!m.painel1}))},
+    {n:"Certificações", a:"anbima", nodes:[{n:"CS50 SQL",on:L("sql")>=3},{n:"CS50 Python",on:L("py")>=3},{n:"PL-300 Power BI",on:L("bi")>=4},{n:"CPA ANBIMA",on:simAvg>=.7}]},
+    {n:"Horizonte", a:"rev", nodes:[{n:"Graduação em Matemática",on:L("mat")>=4},{n:"Ciências Econômicas",on:L("eco")>=2},{n:"Ciência da Computação",on:false},{n:"Mestrado ITA",on:false}]}
+  ];
+  return `<p class="muted">Cada ramo acende com evidência: blocos aprovados na prova, simulados e marcos que você confirma. O próximo nó a destravar fica tracejado.</p>
+  <div class="tree">${B.map(b=>{ let firstOff=false; return `<div class="branch" style="--g1:${g1(b.a)}"><span class="eyebrow">${esc(b.n)}</span><div class="nodes">${b.nodes.map((x,i)=>{ let cls=x.on?"on":""; if(!x.on&&!firstOff){cls="is-next";firstOff=true;} return `${i?'<span class="link-l"></span>':""}<span class="node ${cls}">${x.on?'<svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>':""}${esc(x.n)}</span>`; }).join("")}</div></div>`; }).join("")}</div>
+  <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Marcos do projeto</h2><div class="pick">${[["painel1","Painel de crédito v1 publicado"],["modelo","Modelo de crédito documentado"],["github","GitHub organizado"],["curriculo","Currículo revisado"]].map(([k,n])=>`<button data-act="marco" data-k="${k}" aria-pressed="${!!m[k]}">${n}</button>`).join("")}</div></section>`;
+}
+function evoAnbima(){
+  const L=levelOf("anbima"), sims=(M.simulados||[]).slice().reverse();
+  const last = sims[0], avg = sims.length ? sims.slice(0,3).reduce((a,s)=>a+s.score,0)/Math.min(3,sims.length) : null;
+  return `<section class="now" style="--g1:var(--a-anbima-1);--g2:var(--a-anbima-2);min-height:auto">
+      <span class="eyebrow" style="color:rgb(255 255 255 / .8);position:relative">ANBIMA · CPA</span>
+      <div class="row" style="justify-content:space-between;align-items:flex-end;position:relative"><div><div class="score" style="font-size:72px">${avg==null?"--":Math.round(avg*100)}</div><span style="color:rgb(255 255 255 / .8)">% média dos últimos simulados · meta 70%</span></div></div>
+      <div class="bar" style="position:relative"><i style="width:${avg==null?0:Math.round(avg*100)}%"></i></div>
+      <div class="acts"><button class="btn primary" data-act="simulado">Fazer simulado de 10 questões</button></div></section>
+    <div class="kpis"><div class="kpi"><b>${L.n}</b><span>blocos aprovados</span></div><div class="kpi"><b>${sims.length}</b><span>simulados feitos</span></div><div class="kpi"><b>${last?Math.round(last.score*100)+"%":"--"}</b><span>último simulado</span></div><div class="kpi"><b>6h</b><span>por semana (ter, qui, sex)</span></div></div>
+    <section class="glass pad" style="display:grid;gap:8px"><h2 class="title-m">Trilha</h2>${SUBJ.anbima.lv.map((x,i)=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--edge)"><span class="chip" style="${i<=L.l?"background:var(--a-anbima-1);color:#1A1400;border:0":""}">${i+1}</span><span>${esc(x)}</span></div>`).join("")}
+      <p class="faint" style="font-size:13px">A prova fica para depois de 23/01, decidida pela média nos simulados. Confirme o programa oficial no site da ANBIMA.</p></section>
+    ${sims.length?`<section style="display:grid;gap:8px"><h2 class="title-m">Histórico</h2><div class="list">${sims.map(s=>`<div class="item"><span class="grow"><b>${Math.round(s.score*100)}%</b><small>${fromIso(s.d).getDate()}/${fromIso(s.d).getMonth()+1} · ${s.n} questões</small></span></div>`).join("")}</div></section>`:""}`;
+}
+
+/* ---------------- DIÁRIO ---------------- */
+function vDiario(){
+  const t=today(); let html="";
+  const months = [[2026,9],[2026,10],[2026,11],[2027,0]];
+  months.forEach(([y,m]) => {
+    const first=new Date(y,m,1), last=new Date(y,m+1,0); let cells=WD.map((w,i)=>`<span class="wd">${WD[(i+1)%7]}</span>`).join("");
+    const pad=(first.getDay()+6)%7; for(let i=0;i<pad;i++) cells+=`<span></span>`;
+    for(let d=1; d<=last.getDate(); d++){ const dt=new Date(y,m,d), i=dayIdx(dt), s=iso(dt);
+      if(i<0||i>=TOTAL){ cells+=`<button class="out" tabindex="-1" aria-hidden="true">${d}</button>`; continue; }
+      const st=dayStats(s), fut=dt>t, cls=fut?"future":st.pct>=.8?"p3":st.pct>=.5?"p2":st.pct>0?"p1":"";
+      cells+=`<button class="${cls} ${st.closed?"closed":""} ${s===iso(t)?"today":""}" data-act="dia" data-d="${s}" aria-label="Dia ${i+1}, ${d} de ${MES[m]}">${d}</button>`; }
+    html += `<div class="month"><h3>${MES[m][0].toUpperCase()+MES[m].slice(1)}</h3><div class="cal">${cells}</div></div>`;
+  });
+  return `<div class="view">${topBar()}
+    <section style="display:grid;gap:8px"><span class="eyebrow">Diário dos 100 dias</span><h1 class="title-l">Volte a qualquer dia</h1>
+    <p class="muted">Toque num dia para ver o que você estudou, o que escreveu, as provas e o resumo. Dá para refazer uma atividade sobre aquele dia.</p></section>
+    <div class="months">${html}</div></div>`;
+}
+
+/* ====================================================================
+   SHEET (telas em passos)
+   ==================================================================== */
+const SH = $("#sheet");
+let FLOW=null;
+let OPENER=null, RETURN=null;
+function openSheet(bg){ if(SH.hidden) OPENER=document.activeElement; SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden";
+  $("#app").inert=true; document.querySelector(".tabbar").inert=true; setTimeout(()=>{ const x=SH.querySelector(".x,[data-sh]"); if(x&&!SH.contains(document.activeElement)) x.focus(); },60); }
+document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) closeSheet(); });
+function keepSession(){
+  const F=FLOW; if(!F||F.kind!=="study") return;
+  const st=F.steps[F.at]; if(st==="fim"||(!F.data.topic&&F.at===0)) { if(st==="fim") M.sessao=null; return; }
+  const D=F.data; M.sessao={dstr:F.dstr, k:F.b?bkey(F.b):null, mat:F.mat, livre:!!F.livre, at:F.at, ts:Date.now(),
+    data:{topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs, notes:($("#st-notes")||{}).value??D.notes, conta:($("#st-conta")||{}).value??D.conta, aula:D.aula, t0:D.t0},
+    focus:F.focus?{total:F.focus.total,left:F.focus.left}:null};
+  saveMain();
+}
+function closeSheet(){ keepSession(); if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
+  if(RETURN){ const r=RETURN; RETURN=null; FLOW=r; r.refresh(); openSheet(r.bg); drawFinal(); return; }
+  SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
+  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); }
+function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
+  const dots = steps ? `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>` : "";
+  SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
+    <div class="sh-body" id="shb">${body}</div>
+    <div class="sh-foot"><div class="in">${dots}${next?`<button class="next" data-sh="next" ${nextOk?"":"disabled"}>${esc(next)} <span class="arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></button>`:""}</div></div>`;
+  $("#shb").scrollTop=0;
+}
+SH.addEventListener("click", e => {
+  const b = e.target.closest("[data-sh]"); if(!b) return;
+  if(b.dataset.sh==="close") return closeSheet();
+  if(FLOW && b.dataset.sh==="next") return FLOW.next();
+  if(FLOW && b.dataset.sh==="back") return FLOW.back();
+});
+function thinking(t){ return `<div class="thinking" role="status"><i></i><i></i><i></i><span>${esc(t||"O Claude está pensando…")}</span></div>`; }
+
+/* ---------- fotos ---------- */
+function pickFiles(){ return new Promise(ok => { const f=$("#filepick"); f.value=""; f.onchange=()=>ok([...f.files]); f.click(); }); }
+function loadImg(file){ return new Promise((ok,no)=>{ const u=URL.createObjectURL(file), i=new Image(); i.onload=()=>{URL.revokeObjectURL(u); ok(i)}; i.onerror=no; i.src=u; }); }
+function scale(img,max){ const r=Math.min(1,max/Math.max(img.width,img.height)), c=document.createElement("canvas"); c.width=Math.round(img.width*r); c.height=Math.round(img.height*r); c.getContext("2d").drawImage(img,0,0,c.width,c.height); return c; }
+async function prepPhotos(files){
+  const out={blobs:[],thumbs:[]}, mx=(LIMITS&&LIMITS.images&&LIMITS.images.maxCount)||3;
+  for(const f of files.slice(0,mx)){ try{ const img=await loadImg(f), big=scale(img,1400), sm=scale(img,160);
+    const b=await new Promise(r=>big.toBlob(r,"image/jpeg",.82)); if(b){ out.blobs.push(b); out.thumbs.push(sm.toDataURL("image/jpeg",.6)); } }catch(e){} }
+  return out;
+}
+
+/* ====================================================================
+   BLOCO DE ESTUDO: plano → aula → foco → conta → prova → fim
+   ==================================================================== */
+function findBlock(dstr,k){ return blocksOf(fromIso(dstr)).find(b=>bkey(b)===k); }
+function openBlock(dstr,k){
+  const b = findBlock(dstr,k); if(!b) return;
+  const kd = kindOf(b);
+  if(kd==="simples"||kd==="pausa") return openSimple(dstr,b);
+  if(kd==="final") return openFinal();
+  if(kd==="revisao") return openReviews();
+  const r = day(dstr).blocks[k];
+  if(r && r.st) return openRecord(dstr,b,r);
+  if(M.sessao && M.sessao.k===k && M.sessao.dstr===dstr) return resumeSession();
+  openStudy({dstr, b, mat: FROM_LABEL(b.l) || (b.c==="anbima"?"anbima":b.c==="tech"?"py":"mat")});
+}
+function resumeSession(){
+  const S=M.sessao; if(!S) return;
+  const b = S.k ? findBlock(S.dstr,S.k) : null;
+  openStudy({dstr:S.dstr, b, mat:S.mat, topic:S.data.topic, livre:S.livre});
+  Object.assign(FLOW.data, S.data, {fotos:[]}); FLOW.at=Math.min(S.at, FLOW.steps.length-2); if(S.focus) FLOW.focus={...S.focus, run:false};
+  drawStudy();
+}
+function openStudy({dstr, b, mat, topic, livre}){
+  const isBib = (b && b.c==="biblia") || mat==="biblia";
+  const area = b ? b.c : (SUBJ[mat]?SUBJ[mat].a:"grad");
+  FLOW = {kind:"study", dstr, b, mat, livre, isBib, at:0, data:{topic:topic||"", fonte:"", link:"", fotos:[], thumbs:[], notes:"", conta:"", aula:null, quiz:null, ans:{}, aberta:"", t0:Date.now()}};
+  FLOW.steps = isBib ? ["plano","conta","prova","fim"] : ["plano","aula","foco","conta","prova","fim"];
+  FLOW.next = () => stepStudy(+1); FLOW.back = () => stepStudy(-1);
+  openSheet(`radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,${g1(area)} 35%,transparent),transparent 60%),linear-gradient(170deg,color-mix(in srgb,${g2(area)} 70%,#05060A),#05060A 60%)`);
+  SH.style.setProperty("--g1", g1(area));
+  if(topic) FLOW.at = 0;
+  drawStudy();
+}
+function stepStudy(d){
+  const F=FLOW; const cur=F.steps[F.at];
+  if(d>0){
+    if(cur==="plano"){ const t=$("#st-topic"); if(t) F.data.topic=t.value.trim(); const l=$("#st-link"); if(l) F.data.link=l.value.trim(); }
+    if(cur==="foco"){ const n=$("#st-notes"); if(n) F.data.notes=n.value; if(F.timer) clearInterval(F.timer); }
+    if(cur==="conta"){ const c=$("#st-conta"); if(c) F.data.conta=c.value.trim(); }
+    if(cur==="prova"){ return gradeQuiz(); }
+    if(cur==="fim"){ return closeSheet(); }
+  }
+  F.at = Math.max(0, Math.min(F.steps.length-1, F.at+d));
+  drawStudy();
+}
+function drawStudy(){
+  const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title = F.b ? `${F.b.l} · ${fmtH(F.b.a)}` : `Estudo livre · ${SUBJ[F.mat]?SUBJ[F.mat].n:""}`;
+  if(s==="plano"){
+    const mats = F.isBib ? [] : Object.entries(SUBJ).filter(([k])=>k!=="biblia");
+    sheetHTML({title, steps:S, at:F.at, next: F.isBib||!aiOn()?"Próximo":"Gerar minha aula", body:`
+      <h2 class="q">${F.isBib?"O que você vai ler hoje?":"O que você vai estudar agora?"}<small>${F.isBib?"Livro, capítulo e o tema. Depois você conta o que aprendeu e responde uma pergunta.":"Diga o assunto e de onde vem: faculdade, vídeo, livro. Se tiver, mande uma foto ou print do material. O Claude monta uma aula curta antes de você começar."}</small></h2>
+      ${mats.length?`<div class="field"><span>Matéria</span><div class="pick" data-pick="mat">${mats.map(([k,v])=>`<button data-v="${k}" aria-pressed="${F.mat===k}">${esc(v.n)}</button>`).join("")}</div></div>`:""}
+      <label class="field"><span>${F.isBib?"Livro e capítulo":"Assunto"}</span><input class="inp" id="st-topic" value="${esc(D.topic)}" placeholder="${F.isBib?"Ex.: Romanos 8":"Ex.: potenciação com expoente negativo"}"></label>
+      ${F.isBib?"":`<div class="field"><span>De onde vem</span><div class="pick" data-pick="fonte">${["Faculdade","YouTube","Livro","Curso","Exercícios"].map(x=>`<button data-v="${x}" aria-pressed="${D.fonte===x}">${x}</button>`).join("")}</div></div>
+      <label class="field"><span>Link do vídeo ou material (opcional)</span><input class="inp" id="st-link" value="${esc(D.link)}" placeholder="https://"></label>`}
+      ${canImg()?`<div class="field"><span>Foto ou print do material</span><button class="drop" data-act="fotos"><svg class="icon"><use href="#i-cam"/></svg><span class="grow">${D.thumbs.length?`${D.thumbs.length} foto(s) anexada(s). Toque para trocar.`:"Tirar foto ou escolher print"}</span></button><div class="thumbs">${D.thumbs.map(t=>`<img src="${t}" alt="Foto anexada">`).join("")}</div></div>`:""}
+      ${!aiOn()?`<p class="note">O Claude não está ligado nesta cópia. A aula e a prova automáticas aparecem na versão publicada. Aqui você ainda registra o estudo e a descrição.</p>`:""}
+      ${contaParaHTML(F.mat)}
+      <button class="link" data-act="nao-fiz" style="justify-self:start">Não vou conseguir fazer este bloco</button>`});
+    return;
+  }
+  if(s==="aula"){
+    sheetHTML({title, steps:S, at:F.at, next:"Começar a estudar", nextOk:!!D.aula||!aiOn(), body:`<div id="aula">${D.aula?lessonHTML(D.aula):aiOn()?thinking("Montando a sua aula…"):`<p class="note">Sem o Claude nesta cópia. Estude pelo seu material e siga para o foco.</p>`}</div>`});
+    if(!D.aula && aiOn()) genLesson();
+    return;
+  }
+  if(s==="foco"){
+    const mins = F.b ? Math.max(15, toMin(F.b.b)-Math.max(toMin(F.b.a), F.dstr===iso(today())?nowMin():0)) : 25;
+    F.focus = F.focus || {total:Math.min(mins,120)*60, left:Math.min(mins,120)*60, run:false};
+    sheetHTML({title, steps:S, at:F.at, next:"Terminei", body:`
+      <h2 class="q" style="font-size:clamp(28px,7vw,40px)">Modo foco<small>Celular só para o estudo. Escreva no caderno; use as anotações abaixo para o que quiser lembrar.</small></h2>
+      <div class="timer" id="tm" style="--p:0"><div style="text-align:center"><b id="tmv">--:--</b><div class="muted mono" style="font-size:12px;margin-top:6px">${esc(D.topic||"")}</div></div></div>
+      <div class="row" style="justify-content:center;gap:10px"><button class="btn primary" data-act="tm-toggle" id="tmb">Iniciar</button><button class="btn sm" data-act="tm-add">+10 min</button></div>
+      ${D.aula?`<details class="glass pad"><summary style="cursor:pointer;font-weight:500">Rever a aula</summary><div style="margin-top:12px">${lessonHTML(D.aula)}</div></details>`:""}
+      <label class="field"><span>Anotações rápidas</span><textarea class="ta" id="st-notes" placeholder="Dúvidas, fórmulas, o que travou…">${esc(D.notes)}</textarea></label>`});
+    tickFocus(); return;
+  }
+  if(s==="conta"){
+    sheetHTML({title, steps:S, at:F.at, next: aiOn()?"Gerar minha prova":"Concluir", body:`
+      <h2 class="q">${F.isBib?"O que você aprendeu na leitura?":"Conte o que você aprendeu"}<small>${F.isBib?"Escreva com as suas palavras: o texto, a mensagem e a aplicação para hoje.":"Sem consultar. Explicar com as próprias palavras é o que fixa na memória. Pelo menos 3 frases."}</small></h2>
+      <label class="field"><span>Com as suas palavras</span><textarea class="ta" id="st-conta" style="min-height:200px" placeholder="${F.isBib?"Ex.: Romanos 8 fala que…":"Ex.: aprendi que a^-n = 1/a^n porque…"}">${esc(D.conta)}</textarea></label>
+      <p class="faint mono" style="font-size:12px" id="cnt">${D.conta.length} caracteres · mínimo 80</p>`, nextOk: D.conta.length>=80});
+    $("#st-conta").addEventListener("input", e => { const n=e.target.value.trim().length; $("#cnt").textContent=`${n} caracteres · mínimo 80`; SH.querySelector('[data-sh="next"]').disabled = n<80; });
+    return;
+  }
+  if(s==="prova"){
+    if(!aiOn()){ finishStudy(null); return; }
+    sheetHTML({title, steps:S, at:F.at, next:"Corrigir", nextOk:false, body:`<div id="prova">${D.quiz?quizHTML(D.quiz,D.ans,false):thinking("Preparando a sua prova…")}</div>`});
+    if(!D.quiz) genQuiz(); else bindQuiz();
+    return;
+  }
+  if(s==="fim"){
+    const r = D.result;
+    sheetHTML({title, steps:S, at:F.at, next:"Voltar para o dia", back:false, body: r ? `
+      <div style="text-align:center;display:grid;gap:10px;justify-items:center;padding-top:12px">
+        <span class="eyebrow">${r.score==null?"Registrado":r.pass?"Bloco confirmado":"Ainda não passou"}</span>
+        ${r.score==null?"":`<div class="score">${Math.round(r.score*100)}<span style="font-size:.4em">%</span></div>`}
+        <p class="title-m" style="max-width:34ch">${esc(r.msg)}</p>
+        ${r.pass?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0">+${r.xp} XP${D.topic&&!FLOW.isBib?" · revisão marcada para amanhã":""}</span>`:""}
+      </div>
+      ${r.feedback?`<div class="glass pad"><span class="tag">Avaliação da sua descrição${r.desc!=null?` · ${Math.round(r.desc*100)}%`:""}</span><p style="margin-top:8px">${esc(r.feedback)}</p>${(r.lacunas||[]).length?`<span class="tag" style="margin-top:10px;display:block">Rever</span><ul style="margin:6px 0 0;padding-left:18px">${r.lacunas.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}</div>`:""}
+      ${D.quiz?`<details class="glass pad" ${r.pass?"":"open"}><summary style="cursor:pointer;font-weight:500">Ver correção das questões</summary><div style="display:grid;gap:12px;margin-top:12px">${quizHTML(D.quiz,D.ans,true)}</div></details>`:""}
+      ${!r.pass&&r.score!=null?`<div class="row wrap"><button class="btn primary" data-act="refazer-prova">Fazer outra prova</button><button class="btn" data-act="aceitar-parcial">Registrar como parcial</button></div>`:""}` : thinking()});
+  }
+}
+SH.addEventListener("click", async e => {
+  const p = e.target.closest("[data-pick] button");
+  if(p && FLOW){ const g=p.parentElement.dataset.pick; p.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", String(x===p)));
+    if(g==="mat") FLOW.mat=p.dataset.v; else if(g==="fonte") FLOW.data.fonte=p.dataset.v; else if(FLOW.pick) FLOW.pick(g,p.dataset.v); return; }
+  const a = e.target.closest("[data-act]"); if(!a || !FLOW) return;
+  const act=a.dataset.act;
+  if(act==="fotos"){ const t=$("#st-topic"); if(t) FLOW.data.topic=t.value; const files=await pickFiles(); if(!files.length) return; const ph=await prepPhotos(files); FLOW.data.fotos=ph.blobs; FLOW.data.thumbs=ph.thumbs; drawStudy(); }
+  if(act==="tm-toggle"){ FLOW.focus.run=!FLOW.focus.run; tickFocus(); }
+  if(act==="tm-add"){ FLOW.focus.total+=600; FLOW.focus.left+=600; tickFocus(); }
+  if(act==="nao-fiz"){ openMiss(FLOW.dstr, FLOW.b); }
+  if(act==="refazer-prova"){ FLOW.data.quiz=null; FLOW.data.ans={}; FLOW.data.aberta=""; FLOW.at=FLOW.steps.indexOf("prova"); drawStudy(); }
+  if(act==="aceitar-parcial"){ FLOW.data.result.pass=true; FLOW.data.result.msg="Registrado como parcial. O assunto volta para revisão amanhã."; saveStudy(FLOW.data.result.score, true); drawStudy(); }
+  if(act==="ouvir"){ speak(a.dataset.txt || ""); }
+  if(act==="aula-retry"){ FLOW.data.aula=null; drawStudy(); }
+  if(act==="quiz-retry"){ FLOW.data.quiz=null; drawStudy(); }
+});
+function tickFocus(){
+  const F=FLOW; if(!F||!F.focus) return; clearInterval(F.timer);
+  const draw=()=>{ const f=F.focus, m=Math.floor(f.left/60), s=f.left%60, tm=$("#tm"); if(!tm) return;
+    $("#tmv").textContent=`${p2(m)}:${p2(s)}`; tm.style.setProperty("--p", Math.round((1-f.left/f.total)*100)); const b=$("#tmb"); if(b) b.textContent=f.run?"Pausar":"Iniciar"; };
+  draw(); if(F.focus.run) F.timer=setInterval(()=>{ if(F.focus.left>0){F.focus.left--; draw();} else { clearInterval(F.timer); F.focus.run=false; draw(); toast("Tempo do bloco concluído."); } },1000);
+}
+function contaParaHTML(mat){
+  const gs=goalsFor(mat); if(!gs.length) return "";
+  return `<div class="ponte"><span class="tag" style="color:#FFD2B0">Este estudo conta para</span>${gs.map(x=>`<div style="display:grid;gap:4px"><div class="row" style="justify-content:space-between"><b style="font-weight:600">${esc(x.g.n)}</b><span class="mono" style="font-size:12px;color:${x.behind?"var(--warn)":"var(--muted)"}">${x.left>=0?`faltam ${x.left} dias`:"prazo passou"}</span></div><div class="gbar" aria-label="${Math.round(x.p*100)}% feito"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div><small class="muted">${x.behind?"Atrás do ritmo. ":""}${esc(x.g.how)}</small></div>`).join("")}</div>`;
+}
+function lessonHTML(L){
+  const yt = (L.buscas||[]).slice(0,3).map(q=>`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener"><span class="yt"><svg class="icon" style="width:14px;height:14px"><use href="#i-play"/></svg></span><span class="grow">${esc(q)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
+  const qq = encodeURIComponent(L.titulo||""), isMat = FLOW && ["mat","est"].includes(FLOW.mat);
+  const pesq = [["Khan Academy: "+(L.titulo||""), "https://pt.khanacademy.org/search?page_search_query="+qq],["Wikipédia: "+(L.titulo||""), "https://pt.wikipedia.org/w/index.php?search="+qq]].concat(isMat?[["Ver no GeoGebra","https://www.geogebra.org/search/"+qq],["Calcular no Wolfram Alpha","https://www.wolframalpha.com/input?i="+qq]]:[])
+    .map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
+  const rec = (SUBJ[FLOW&&FLOW.mat]||{rec:[]}).rec.slice(0,2).map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
+  return `<div class="lesson">
+    ${L.ponte?`<div class="ponte"><span class="tag" style="color:#FFD2B0">Para as suas metas</span><p style="margin:0">${esc(L.ponte)}</p></div>`:""}
+    <span class="tag">Aula · ${esc(L.titulo||"")}</span>
+    <p class="idea">${esc(L.ideia||"")}</p>
+    ${L.analogia?`<div class="glass pad"><span class="tag">Imagine assim</span><p style="margin-top:6px">${esc(L.analogia)}</p></div>`:""}
+    <div class="steps">${(L.passos||[]).map((p,i)=>`<div class="step"><span class="tag">Passo ${i+1}</span><b>${esc(p.t)}</b><p>${esc(p.txt)}</p></div>`).join("")}</div>
+    ${L.quadro?`<div style="display:grid;gap:6px"><span class="tag">Quadro</span><div class="quadro" tabindex="0" aria-label="Quadro: ${esc(L.titulo||"")}">${esc(L.quadro)}</div></div>`:""}
+    ${L.exemplo?`<div class="ex"><span class="tag">Exemplo resolvido</span><p style="margin-top:6px;font-weight:500">${esc(L.exemplo.enunciado)}</p><pre>${esc(L.exemplo.resolucao)}</pre></div>`:""}
+    ${(L.armadilhas||[]).length?`<div class="glass pad"><span class="tag">Cuidado com</span><ul style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.armadilhas.map(a=>`<li>${esc(a)}</li>`).join("")}</ul></div>`:""}
+    ${(L.treino||[]).length?`<div class="glass pad"><span class="tag">Treine no caderno (sem consultar)</span><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.treino.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div>`:""}
+    ${yt?`<div class="links"><span class="tag">Videoaulas</span>${yt}</div>`:""}
+    <div class="links"><span class="tag">Pesquise e aprofunde</span>${pesq}${rec}</div>
+    <div class="row wrap"><button class="btn sm" data-act="ouvir" data-txt="${esc((L.ideia||"")+". "+(L.passos||[]).map(p=>p.t+". "+p.txt).join(" "))}"><svg class="icon"><use href="#i-sound"/></svg>Ouvir a aula</button><button class="btn sm ghost" data-act="aula-retry">Gerar outra explicação</button></div>
+  </div>`;
+}
+async function genLesson(){
+  const F=FLOW, D=F.data, mat=SUBJ[F.mat]?SUBJ[F.mat].n:F.mat, lv=levelOf(F.mat);
+  F.ctl=new AbortController();
+  const prompt = `Monte uma AULA CURTA e visual para estudar agora (${F.b?`bloco "${F.b.l}" de ${fmtH(F.b.a)} a ${fmtH(F.b.b)}`:"estudo livre"}).
+Matéria: ${mat}. Nível atual na trilha: ${SUBJ[F.mat]?SUBJ[F.mat].lv[lv.l]:"-"}. Assunto informado: "${D.topic||"(não informado: escolha o próximo tópico lógico da trilha)"}". Fonte: ${D.fonte||"-"}. ${D.link?"Link: "+D.link:""}
+${D.fotos.length?"As imagens anexadas são o material que será estudado (página, slide ou exercício). Baseie a aula nelas.":""}
+Regras do laudo: explicar o PORQUÊ, partir do concreto para o abstrato, mostrar um exemplo resolvido passo a passo com verificação, e terminar com treino graduado.
+Responda só com JSON neste formato:
+{"titulo":"nome curto do assunto","ideia":"a ideia central em 1–2 frases","analogia":"comparação concreta do dia a dia","passos":[{"t":"título curto","txt":"explicação em 2–3 frases"}],"exemplo":{"enunciado":"...","resolucao":"passo a passo em linhas, com a verificação no final"},"quadro":"desenho em texto monoespaçado (até 12 linhas, até 38 colunas) que ilustre o conceito: reta numérica, barras de fração, tabela, esquema de passos ou diagrama","armadilhas":["erro comum 1","erro comum 2"],"treino":["exercício guiado","exercício independente","problema contextualizado"],"buscas":["busca no YouTube em português 1","busca 2","busca 3"],"ponte":"1–2 frases: como este assunto serve às metas do contexto (Serasa, painel de crédito, ANBIMA, certificados ou base matemática) e como aproveitar este bloco para elas"}
+Use 3 a 5 passos. As buscas devem ser frases de pesquisa (não links).`;
+  try{
+    D.aula = await aiJson(prompt, {signal:F.ctl.signal, images: D.fotos.length?D.fotos:undefined});
+    if(FLOW===F && F.steps[F.at]==="aula") drawStudy();
+  }catch(e){ if(e.code==="cancelled") return; const el=$("#aula"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p><button class="btn sm" data-act="aula-retry">Tentar de novo</button>`; SH.querySelector('[data-sh="next"]').disabled=false; }
+}
+async function genQuiz(){
+  const F=FLOW, D=F.data, mat=SUBJ[F.mat]?SUBJ[F.mat].n:F.mat;
+  F.ctl=new AbortController();
+  const n = F.isBib ? 2 : 4;
+  const prompt = `Crie uma PROVA para confirmar que o estudo foi feito e entendido.
+Matéria: ${mat}. Assunto: "${D.topic}". ${D.aula?"Ideia central da aula: "+D.aula.ideia:""}
+O que a pessoa escreveu que aprendeu (use isso, inclusive para corrigir equívocos): """${D.conta.slice(0,3000)}"""
+${D.notes?"Anotações dela: "+D.notes.slice(0,1500):""}
+Faça ${n} questões de múltipla escolha (4 alternativas, só uma certa, nível de quem acabou de estudar, pelo menos uma de aplicação em situação nova) e 1 pergunta aberta curta que peça para explicar o porquê.
+${F.isBib?"Para Bíblia: perguntas sobre o texto lido e a aplicação, sem inventar versículos; se não souber o texto exato, pergunte sobre o que ela escreveu.":""}
+Responda só com JSON: {"qs":[{"p":"pergunta","o":["A","B","C","D"],"c":0,"e":"explicação curta de por que a certa está certa"}],"aberta":{"p":"pergunta","criterio":"o que uma boa resposta precisa conter"}}`;
+  try{
+    D.quiz = await aiJson(prompt, {signal:F.ctl.signal});
+    if(!D.quiz || !Array.isArray(D.quiz.qs)) throw {code:"invalid_json"};
+    if(FLOW===F && F.steps[F.at]==="prova"){ $("#prova").innerHTML = quizHTML(D.quiz,D.ans,false); bindQuiz(); }
+  }catch(e){ if(e.code==="cancelled") return; const el=$("#prova"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p><div class="row wrap"><button class="btn sm" data-act="quiz-retry">Tentar de novo</button><button class="btn sm ghost" data-act="aceitar-sem-prova">Concluir sem prova</button></div>`;
+    const sb=SH.querySelector('[data-act="aceitar-sem-prova"]'); if(sb) sb.onclick=()=>finishStudy(null); }
+}
+function quizHTML(Q, ans, show){
+  const K="ABCD";
+  return Q.qs.map((q,i)=>`<div class="mcq"><span class="tag">Questão ${i+1} de ${Q.qs.length+1}</span><p class="p">${esc(q.p)}</p>
+    ${q.o.map((o,j)=>{ let cls=""; if(show){ if(j===q.c) cls="right"; else if(ans[i]===j) cls="wrong"; }
+      return `<button class="opt ${cls}" data-q="${i}" data-o="${j}" aria-pressed="${ans[i]===j}" ${show?"disabled":""}><span class="k">${K[j]}</span><span>${esc(o)}</span></button>`; }).join("")}
+    ${show?`<p class="explain">${esc(q.e||"")}</p>`:""}</div>`).join("") +
+    (show?"":`<div class="mcq"><span class="tag">Questão ${Q.qs.length+1} de ${Q.qs.length+1} · aberta</span><p class="p">${esc(Q.aberta.p)}</p><label class="sr" for="st-aberta">Sua resposta</label><textarea class="ta" id="st-aberta" placeholder="Explique com as suas palavras">${esc(FLOW.data.aberta)}</textarea></div>`);
+}
+function bindQuiz(){
+  const F=FLOW, D=F.data, upd=()=>{ const ok=D.quiz.qs.every((q,i)=>D.ans[i]!=null) && (D.aberta||"").trim().length>=20; SH.querySelector('[data-sh="next"]').disabled=!ok; };
+  $("#prova").addEventListener("click", e => { const b=e.target.closest(".opt"); if(!b||b.disabled) return; const i=+b.dataset.q; D.ans[i]=+b.dataset.o;
+    b.parentElement.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed", String(x===b))); upd(); });
+  const ta=$("#st-aberta"); if(ta) ta.addEventListener("input", e=>{ D.aberta=e.target.value; upd(); });
+  upd();
+}
+async function gradeQuiz(){
+  const F=FLOW, D=F.data, Q=D.quiz; const ta=$("#st-aberta"); if(ta) D.aberta=ta.value;
+  const right = Q.qs.filter((q,i)=>D.ans[i]===q.c).length;
+  F.at = F.steps.indexOf("fim"); D.result=null; drawStudy();
+  let open = {nota:0.5, descricao:0.5, feedback:"", lacunas:[]};
+  try{
+    open = await aiJson(`Avalie duas coisas de quem acabou de estudar "${D.topic}" (${SUBJ[F.mat]?SUBJ[F.mat].n:""}).
+1) A DESCRIÇÃO do que aprendeu, escrita sem consultar: """${D.conta.slice(0,2500)}""". Está correta? Mostra compreensão do porquê ou só repete regra?
+2) A resposta à pergunta aberta "${Q.aberta.p}" (critério: "${Q.aberta.criterio}"): """${D.aberta.slice(0,2000)}""".
+Seja justo e encorajador. Corrija equívocos com precisão. Responda só com JSON: {"descricao":0.0 a 1.0,"nota":0.0 a 1.0,"feedback":"3–4 frases sobre o que ela já domina e o que corrigir","lacunas":["ponto a rever 1","ponto 2"]}`, {modelTier:"quick"});
+  }catch(e){ open = {nota:0.5, descricao:0.5, feedback:"Não consegui avaliar a descrição e a pergunta aberta agora; contei meio ponto em cada.", lacunas:[]}; }
+  const cl = v => Math.max(0,Math.min(1,+v||0));
+  const score = (right + cl(open.nota) + cl(open.descricao)) / (Q.qs.length+2);
+  Q.qs.forEach((q,i)=>{ if(D.ans[i]!==q.c) logErro(F.mat, D.topic, q, D.ans[i]); });
+  const pass = score >= 0.6;
+  D.result = {score, pass, feedback:open.feedback, lacunas:open.lacunas||[], desc:cl(open.descricao), xp: pass?Math.round(20+score*20):0,
+    msg: pass ? (score>=0.9?"Excelente. Domínio demonstrado.":"Bloco confirmado. O que errou foi para a Forja.") : "Ainda abaixo de 60%. Releia a aula, veja as lacunas abaixo e faça outra prova. Aprender é isso."};
+  if(pass) saveStudy(score, false, F); else saveMain();
+  if(FLOW===F) drawStudy(); else if(pass) toast("Prova corrigida e bloco confirmado.");
+}
+function finishStudy(score){
+  const F=FLOW; F.at=F.steps.indexOf("fim");
+  F.data.result = {score, pass:true, xp:10, msg: score==null ? "Estudo registrado com a sua descrição. Quando o Claude estiver ligado, cada bloco ganha prova." : ""};
+  saveStudy(score); drawStudy();
+}
+function saveStudy(score, partial, FL){
+  M.sessao=null;
+  const F=FL||FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
+  const rec = {st:"feito", mat:F.mat, topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs.slice(0,2), conta:D.conta, notes:D.notes, score, parcial:!!partial,
+    aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.focus ? Math.max(5, Math.round((F.focus.total-F.focus.left)/60)) || Math.min(mins, F.b?toMin(F.b.b)-toMin(F.b.a):mins) : Math.min(Math.max(10,mins), F.b?toMin(F.b.b)-toMin(F.b.a):120), ts:Date.now()};
+  if(F.b){ day(F.dstr).blocks[bkey(F.b)] = rec; saveDay(F.dstr); }
+  else { (M.livres=M.livres||[]).push({...rec, d:iso(today())}); }
+  if(D.topic && !F.isBib){ (M.revisoes=M.revisoes||[]).push({id:"r"+Date.now(), mat:F.mat, topic:D.topic, d0:iso(today()), step:1, due:iso(addDays(today(),1)), done:false, conta:D.conta.slice(0,600)}); }
+  addXP(D.result ? D.result.xp : 10);
+}
+
+/* ---------- bloco simples ---------- */
+function openSimple(dstr,b){
+  const r = day(dstr).blocks[bkey(b)];
+  FLOW = {kind:"simple", next:()=>{ mark(dstr,b,{st:"feito"}); addXP(5); closeSheet(); toast("Confirmado."); }, back:()=>{}};
+  openSheet(`radial-gradient(100% 60% at 50% 0%,color-mix(in srgb,${g1(b.c)} 40%,transparent),transparent 70%),#05060A`);
+  sheetHTML({title:`${AREAS[b.c].n} · ${fmtH(b.a)}–${fmtH(b.b)}`, next: r&&r.st==="feito" ? null : "OK, feito", body:`
+    <h2 class="q">${esc(b.l)}<small>${b.c==="oracao"?"Confirmação simples. Só você e Deus sabem; não precisa explicar.":"Bloco simples: basta confirmar."}</small></h2>
+    ${r?`<p class="note">${r.st==="feito"?"Já confirmado.":"Marcado como não feito: "+esc(r.motivo||"")}</p><button class="btn sm" data-act2="desfazer">Desfazer</button>`:`<button class="link" data-act2="nao" style="justify-self:start">Não fiz este bloco</button>`}`});
+  SH.querySelector('[data-act2="nao"]')?.addEventListener("click", ()=>openMiss(dstr,b));
+  SH.querySelector('[data-act2="desfazer"]')?.addEventListener("click", ()=>{ delete day(dstr).blocks[bkey(b)]; saveDay(dstr); closeSheet(); });
+}
+function mark(dstr,b,rec){ day(dstr).blocks[bkey(b)] = {...rec, ts:Date.now()}; saveDay(dstr); }
+const MOTIVOS = ["Sono","Imprevisto","Ministério","Cansaço","Distração","Saúde","Família","Subestimei o tempo"];
+function openMiss(dstr,b){
+  let mot="";
+  FLOW = {kind:"miss", pick:(g,v)=>{ mot=v; }, next:()=>{ const t=$("#ms-t").value.trim(); if(!mot && t.length<10){ toast("Escolha um motivo ou escreva um pouco."); return; }
+    mark(dstr,b,{st:"nao", motivo:[mot,t].filter(Boolean).join(" · ")}); closeSheet(); toast("Registrado. Amanhã ajustamos."); }, back:()=>{}};
+  openSheet("linear-gradient(170deg,#2A0A10,#05060A 60%)");
+  sheetHTML({title:`${b.l} · ${fmtH(b.a)}`, next:"Registrar", body:`
+    <h2 class="q">O que aconteceu?<small>Sem culpa. O motivo ajuda a achar a causa em vez de empilhar tarefas.</small></h2>
+    <div class="pick" data-pick="motivo">${MOTIVOS.map(m=>`<button data-v="${m}" aria-pressed="false">${m}</button>`).join("")}</div>
+    <label class="field"><span>Detalhe (opcional)</span><textarea class="ta" id="ms-t" placeholder="Ex.: a visita atrasou e cheguei cansada"></textarea></label>`});
+}
+
+/* ---------- registro de um bloco já feito ---------- */
+function openRecord(dstr,b,r){
+  FLOW={kind:"rec", next:()=>closeSheet(), back:()=>{}};
+  openSheet(`radial-gradient(100% 60% at 50% 0%,color-mix(in srgb,${g1(b.c)} 35%,transparent),transparent 70%),#05060A`);
+  sheetHTML({title:`${fromIso(dstr).getDate()}/${fromIso(dstr).getMonth()+1} · ${b.l}`, next:"Fechar", body: recordHTML(b.l, r) + `<button class="btn sm" data-act2="desfazer" style="justify-self:start">Apagar este registro</button>`});
+  SH.querySelector('[data-act2="desfazer"]').addEventListener("click", ()=>{ delete day(dstr).blocks[bkey(b)]; saveDay(dstr); closeSheet(); toast("Registro apagado."); });
+}
+function recordHTML(label, r){
+  if(r.st!=="feito") return `<h2 class="q" style="font-size:34px">${esc(label)}<small>Não feito: ${esc(r.motivo||"sem motivo")}</small></h2>`;
+  return `<h2 class="q" style="font-size:34px">${esc(r.topic||label)}<small>${esc(SUBJ[r.mat]?SUBJ[r.mat].n:"")}${r.fonte?" · "+esc(r.fonte):""}${r.score!=null?` · prova ${Math.round(r.score*100)}%`:""}</small></h2>
+    ${r.thumbs&&r.thumbs.length?`<div class="thumbs">${r.thumbs.map(t=>`<img src="${t}" alt="Foto do material">`).join("")}</div>`:""}
+    ${r.aula?`<div class="glass pad"><span class="tag">Aula</span><p style="margin-top:6px">${esc(r.aula.ideia)}</p></div>`:""}
+    ${r.conta?`<div class="glass pad"><span class="tag">O que você escreveu</span><p style="margin-top:6px;white-space:pre-wrap">${esc(r.conta)}</p></div>`:""}
+    ${r.quiz?`<details class="glass pad"><summary style="cursor:pointer;font-weight:500">Prova feita</summary><div style="display:grid;gap:10px;margin-top:10px">${r.quiz.qs.map((q,i)=>`<div><b style="font-weight:500">${esc(q.p)}</b><p class="${r.quiz.ans[i]===q.c?"":"muted"}" style="font-size:14px">${r.quiz.ans[i]===q.c?"✓ ":"✗ "}${esc(q.o[r.quiz.ans[i]]||"")}${r.quiz.ans[i]===q.c?"":" · certa: "+esc(q.o[q.c])}</p></div>`).join("")}<div><b style="font-weight:500">${esc(r.quiz.aberta)}</b><p class="muted" style="font-size:14px;white-space:pre-wrap">${esc(r.quiz.resp)}</p></div></div></details>`:""}
+    ${r.link?`<a class="link" href="${esc(r.link)}" target="_blank" rel="noopener">Abrir o material usado</a>`:""}`;
+}
+
+/* ---------- revisões espaçadas ---------- */
+const STEPS = [1,3,7,14,30];
+function openReviews(){
+  const due = dueReviews();
+  if(!due.length){ toast("Nenhuma revisão vencida hoje."); return; }
+  openReview(due[0].id);
+}
+function openReview(id){
+  const r=(M.revisoes||[]).find(x=>x.id===id); if(!r) return;
+  let Q=null, ans={};
+  FLOW={kind:"rev", next:async()=>{ if(!Q){ closeSheet(); return; }
+      const right=Q.qs.filter((q,i)=>ans[i]===q.c).length, sc=right/Q.qs.length;
+      const i=STEPS.indexOf(STEPS.find(s=>s>=r.step)); r.done=true;
+      if(sc>=0.67 && i<STEPS.length-1){ (M.revisoes).push({...r, id:"r"+Date.now(), step:STEPS[i+1], due:iso(addDays(today(),STEPS[i+1]-STEPS[i])), done:false}); }
+      else if(sc<0.67){ (M.revisoes).push({...r, id:"r"+Date.now(), step:1, due:iso(addDays(today(),1)), done:false}); }
+      Q.qs.forEach((q,j)=>{ if(ans[j]!==q.c) (M.erros=M.erros||[]).push({id:"e"+Date.now()+j, d:iso(today()), mat:r.mat, p:q.p, minha:q.o[ans[j]]||"", certa:q.o[q.c], e:q.e, ok:false}); });
+      addXP(Math.round(10*sc)+5); saveMain();
+      SH.querySelector("#rv").innerHTML = `<div style="text-align:center"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${sc>=0.67?`Fixou. Próxima revisão em ${STEPS[Math.min(i+1,STEPS.length-1)]-STEPS[i]} dias.`:"Ainda escapando. Volta amanhã, e os erros foram para o caderno."}</p></div>` + quizHTML(Q,ans,true).replace(/<div class="mcq"><span class="tag">Questão \d+ de \d+ · aberta[\s\S]*$/,"");
+      Q=null; SH.querySelector('[data-sh="next"]').firstChild.textContent="Fechar "; }, back:()=>{}};
+  openSheet("linear-gradient(170deg,#101540,#05060A 60%)");
+  sheetHTML({title:`Revisão D${r.step} · ${SUBJ[r.mat]?SUBJ[r.mat].n:""}`, next:"Corrigir", nextOk:false, body:`
+    <h2 class="q" style="font-size:clamp(30px,8vw,44px)">${esc(r.topic)}<small>Recuperação ativa: responda sem consultar o caderno. É assim que a memória se fortalece.</small></h2><div id="rv">${aiOn()?thinking("Preparando 3 perguntas…"):`<p class="note">Sem o Claude nesta cópia. Escreva no caderno o que lembra de "${esc(r.topic)}" e depois confira.</p>`}</div>`});
+  if(!aiOn()){ SH.querySelector('[data-sh="next"]').disabled=false; FLOW.next=()=>{ r.done=true; (M.revisoes).push({...r,id:"r"+Date.now(),step:STEPS[Math.min(STEPS.indexOf(r.step)+1,4)],due:iso(addDays(today(),3)),done:false}); saveMain(); closeSheet(); }; return; }
+  aiJson(`Revisão espaçada (dia ${r.step}) do assunto "${r.topic}" (${SUBJ[r.mat]?SUBJ[r.mat].n:""}). O que a pessoa tinha escrito quando estudou: """${(r.conta||"").slice(0,800)}""". Faça 3 questões de múltipla escolha de RECUPERAÇÃO (lembrar e aplicar, não reconhecer), 4 alternativas. Responda só com JSON: {"qs":[{"p":"","o":["","","",""],"c":0,"e":""}]}`, {modelTier:"quick"})
+   .then(q=>{ Q={...q, aberta:{p:""}}; const el=$("#rv"); if(!el) return; el.innerHTML = Q.qs.map((q,i)=>`<div class="mcq"><span class="tag">Pergunta ${i+1} de ${Q.qs.length}</span><p class="p">${esc(q.p)}</p>${q.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}" aria-pressed="false"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`).join("")}</div>`).join("");
+     el.addEventListener("click", e=>{ const b=e.target.closest(".opt"); if(!b||b.disabled) return; ans[+b.dataset.q]=+b.dataset.o; b.parentElement.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); SH.querySelector('[data-sh="next"]').disabled = Q.qs.some((q,i)=>ans[i]==null); }); })
+   .catch(e=>{ const el=$("#rv"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; });
+}
+
+/* ====================================================================
+   FINALIZAR O DIA: pendências → recordar → resumo → nota → síntese → gratidão
+   ==================================================================== */
+function openFinal(){
+  const dstr=iso(today()), Dy=day(dstr);
+  if(Dy.final && Dy.final.closed) return openDay(dstr);
+  const bs=blocksOf(today()), rec=Dy.blocks;
+  const fb = bs.find(b=>kindOf(b)==="final");
+  if(fb && nowMin() < toMin(fb.a)-90 && !openFinal.ok){
+    FLOW={kind:"confirm", next:()=>{ openFinal.ok=true; closeSheetSoft(); openFinal(); openFinal.ok=false; }, back:()=>{}};
+    openSheet("linear-gradient(170deg,#0D0A2A,#05060A 60%)");
+    sheetHTML({title:"Finalizar o dia", next:"Finalizar mesmo assim", body:`<h2 class="q">Ainda é cedo<small>A revisão integral de hoje é às ${fmtH(fb.a)}. Finalizar agora encerra o dia com os blocos que faltam. Se for isso mesmo, siga.</small></h2>`});
+    return;
+  }
+  const pend = bs.filter(b=>!rec[bkey(b)] && !["final","pausa"].includes(kindOf(b)) && !/Oração antes de dormir/.test(b.l) && toMin(b.b)<=nowMin());
+  const feitos = bs.filter(b=>rec[bkey(b)] && rec[bkey(b)].st==="feito" && rec[bkey(b)].mat).map(b=>({b, r:rec[bkey(b)]}));
+  const F = FLOW = {kind:"final", at:0, steps:["pendencias","recordar","resumo","nota","sintese","gratidao"], pend, feitos, data:{motivos:{}, recall:null, rans:{}, resumos:{}, geral:"", nota:null, f1:"", f2:"", f3:"", sint:null, grato:false}};
+  F.bg="radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .35),transparent 60%),linear-gradient(170deg,#0D0A2A,#05060A 60%)";
+  F.refresh=()=>{ const r2=day(dstr).blocks; F.pend=F.pend.filter(b=>!r2[bkey(b)]); F.feitos=bs.filter(b=>r2[bkey(b)]&&r2[bkey(b)].st==="feito"&&r2[bkey(b)].mat).map(b=>({b,r:r2[bkey(b)]})); };
+  F.next=()=>stepFinal(+1); F.back=()=>stepFinal(-1);
+  F.pick=(g,v)=>{ if(g.startsWith("pm-")){ F.data.motivos[g.slice(3)]=v; } };
+  openSheet("radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .35),transparent 60%),linear-gradient(170deg,#0D0A2A,#05060A 60%)");
+  drawFinal();
+}
+function stepFinal(d){
+  const F=FLOW, D=F.data, s=F.steps[F.at];
+  if(d>0){
+    if(s==="resumo"){ F.feitos.forEach((x,i)=>{ const t=$("#rs-"+i); if(t) D.resumos[i]=t.value.trim(); }); D.geral=($("#rs-g")||{}).value||""; }
+    if(s==="nota"){ D.nota=+$("#nt").value; D.f1=$("#f1").value; D.f2=$("#f2").value; D.f3=$("#f3").value; }
+    if(s==="gratidao"){ return closeDay(); }
+  }
+  F.at=Math.max(0,Math.min(F.steps.length-1,F.at+d)); drawFinal();
+}
+function drawFinal(){
+  const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title="Finalizar o dia";
+  if(s==="pendencias"){
+    sheetHTML({title, steps:S, at:F.at, next:"Próximo", body:`
+      <h2 class="q">Antes de fechar<small>${F.pend.length?`Ficaram ${F.pend.length} bloco(s) sem registro. Diga o motivo de cada um, ou toque no bloco para confirmar se fez.`:"Todos os blocos têm registro. Muito bem."}</small></h2>
+      ${F.pend.map((b,i)=>`<div class="glass pad" style="display:grid;gap:10px"><div class="row"><span class="grow"><b style="font-weight:500">${esc(b.l)}</b><br><span class="muted mono" style="font-size:12px">${fmtH(b.a)}–${fmtH(b.b)}</span></span><button class="btn sm" data-act3="fiz" data-i="${i}">Eu fiz</button></div><div class="pick" data-pick="pm-${i}">${MOTIVOS.map(m=>`<button data-v="${m}" aria-pressed="${D.motivos[i]===m}">${m}</button>`).join("")}</div></div>`).join("")}`});
+    SH.querySelectorAll('[data-act3="fiz"]').forEach(btn=>btn.addEventListener("click",()=>{ const b=F.pend[+btn.dataset.i]; RETURN=F; closeSheetSoft(); openBlock(iso(today()),bkey(b)); }));
+    return;
+  }
+  if(s==="recordar"){
+    if(!F.feitos.length || !aiOn()){ sheetHTML({title, steps:S, at:F.at, next:"Próximo", body:`<h2 class="q">Recordar<small>${!F.feitos.length?"Nenhum bloco de estudo foi confirmado hoje, então não há o que recordar.":"Sem o Claude nesta cópia. Feche os olhos e lembre de cada assunto do dia antes de seguir."}</small></h2>`}); return; }
+    sheetHTML({title, steps:S, at:F.at, next:"Próximo", nextOk:!!D.recall, body:`<h2 class="q">Lembra disso?<small>Uma pergunta para cada assunto de hoje, em ordem aleatória. Responda sem consultar.</small></h2><div id="rc">${D.recall?recallHTML():thinking("Preparando as perguntas do dia…")}</div>`});
+    if(!D.recall) aiJson(`Fim do dia. Para cada estudo abaixo, faça 1 pergunta de múltipla escolha curta para recordar o principal (4 alternativas). Embaralhe a ordem. Estudos: ${JSON.stringify(F.feitos.map(x=>({assunto:x.r.topic, materia:SUBJ[x.r.mat]?SUBJ[x.r.mat].n:"", escreveu:(x.r.conta||"").slice(0,400)})))}. Responda só com JSON: {"qs":[{"assunto":"","p":"","o":["","","",""],"c":0,"e":""}]}`, {modelTier:"quick"})
+      .then(q=>{ D.recall=q; if(FLOW===F&&F.steps[F.at]==="recordar") drawFinal(); }).catch(e=>{ const el=$("#rc"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; SH.querySelector('[data-sh="next"]').disabled=false; });
+    else bindRecall();
+    return;
+  }
+  if(s==="resumo"){
+    sheetHTML({title, steps:S, at:F.at, next:"Próximo", body:`<h2 class="q">Com as suas palavras<small>O que você fez em cada atividade de hoje? Curto e honesto.</small></h2>
+      ${F.feitos.map((x,i)=>`<label class="field"><span>${esc(x.b.l)} · ${esc(x.r.topic||"")}</span><textarea class="ta" id="rs-${i}" style="min-height:90px">${esc(D.resumos[i]||"")}</textarea></label>`).join("")}
+      <label class="field"><span>Bíblia, ministério e o que aprendi hoje</span><textarea class="ta" id="rs-g" style="min-height:110px" placeholder="Livro que li, o que aprendi, o que pratiquei">${esc(D.geral)}</textarea></label>`});
+    return;
+  }
+  if(s==="nota"){
+    sheetHTML({title, steps:S, at:F.at, next:"Gerar meu resumo", nextOk:D.nota!=null, body:`<h2 class="q">Que nota o dia merece?<small>Arraste ou toque na barra.</small></h2>
+      <div style="text-align:center"><output class="score" id="nto">${D.nota==null?"–":D.nota}</output></div>
+      <label class="sr" for="nt">Nota de 0 a 10</label><input type="range" id="nt" min="0" max="10" step="1" value="${D.nota==null?5:D.nota}" style="width:100%;accent-color:var(--c);height:44px">
+      <label class="field"><span>1 · O que aprendi</span><input class="inp" id="f1" value="${esc(D.f1)}"></label>
+      <label class="field"><span>2 · Onde errei ou travei</span><input class="inp" id="f2" value="${esc(D.f2)}"></label>
+      <label class="field"><span>3 · Prioridade de amanhã</span><input class="inp" id="f3" value="${esc(D.f3)}"></label>`});
+    $("#nt").addEventListener("input",e=>{ $("#nto").textContent=e.target.value; D.nota=+e.target.value; SH.querySelector('[data-sh="next"]').disabled=false; });
+    return;
+  }
+  if(s==="sintese"){
+    sheetHTML({title, steps:S, at:F.at, next:"Próximo", nextOk:!!D.sint||!aiOn(), body:`<div id="sn">${D.sint?sintHTML(D.sint):aiOn()?thinking("O Claude está organizando o seu dia…"):`<p class="note">Sem o Claude nesta cópia, o resumo técnico aparece na versão publicada.</p>`}</div>`});
+    if(!D.sint && aiOn()) genSintese();
+    return;
+  }
+  if(s==="gratidao"){
+    sheetHTML({title, steps:S, at:F.at, next:"Registrar o dia", nextOk:D.grato, body:`
+      <div class="orb" style="background:radial-gradient(circle at 35% 30%,#FFF1D6,#FFB547 45%,#7A2E0E 85%);box-shadow:0 0 80px rgb(255 181 71 / .45)"></div>
+      <h2 class="q" style="text-align:center">Agora, ore e agradeça<small style="text-align:center">Entregue o dia a Deus. Quando terminar, marque abaixo e registre.</small></h2>
+      <button class="btn ${D.grato?"primary":""}" id="gr" style="justify-self:center;min-height:56px"><svg class="icon"><use href="#i-check"/></svg>Agradeci a Deus pelo dia</button>`});
+    $("#gr").addEventListener("click",()=>{ D.grato=!D.grato; drawFinal(); });
+  }
+}
+function closeSheetSoft(){ if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; }
+function recallHTML(){ const F=FLOW, Q=F.data.recall; return Q.qs.map((q,i)=>`<div class="mcq"><span class="tag">${esc(q.assunto||"")}</span><p class="p">${esc(q.p)}</p>${q.o.map((o,j)=>{ const a=F.data.rans[i]; const cls=a==null?"":j===q.c?"right":a===j?"wrong":""; return `<button class="opt ${cls}" data-q="${i}" data-o="${j}" ${a!=null?"disabled":""}><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`; }).join("")}${F.data.rans[i]!=null?`<p class="explain">${esc(q.e||"")}</p>`:""}</div>`).join(""); }
+function bindRecall(){ const F=FLOW; $("#rc").addEventListener("click",e=>{ const b=e.target.closest(".opt"); if(!b||b.disabled) return; F.data.rans[+b.dataset.q]=+b.dataset.o; $("#rc").innerHTML=recallHTML(); }); }
+function sintHTML(S){
+  const txt=[S.titulo, ...(S.blocos||[]).map(b=>b.area+": "+b.resumo), S.tecnica?("Técnica: "+S.tecnica.join(". ")):"", S.objetivo, S.mensagem].filter(Boolean).join(". ");
+  return `<span class="tag">Seu dia, organizado</span><h2 class="q" style="font-size:clamp(30px,8vw,44px)">${esc(S.titulo||"")}</h2>
+    <button class="btn sm" data-act4="ouvir" style="justify-self:start"><svg class="icon"><use href="#i-sound"/></svg>Ouvir em voz alta</button>
+    <div class="steps">${(S.blocos||[]).map(b=>`<div class="step"><span class="tag">${esc(b.area)}</span><p>${esc(b.resumo)}</p></div>`).join("")}</div>
+    ${(S.tecnica||[]).length?`<div class="ex"><span class="tag">Reforço técnico</span><ul style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${S.tecnica.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`:""}
+    ${S.objetivo?`<div class="glass pad" style="border-color:rgb(255 106 26 / .4)"><span class="tag">Perto do objetivo</span><p style="margin-top:6px">${esc(S.objetivo)}</p></div>`:""}
+    ${S.mensagem?`<p class="title-m" style="font-weight:300;font-size:22px">${esc(S.mensagem)}</p>`:""}
+    <span hidden id="sn-txt">${esc(txt)}</span>`;
+}
+SH.addEventListener("click",e=>{ const b=e.target.closest('[data-act4="ouvir"]'); if(b){ const t=$("#sn-txt"); speak(t?t.textContent:""); } });
+async function genSintese(){
+  const F=FLOW, D=F.data;
+  const dados = {estudos:F.feitos.map((x,i)=>({bloco:x.b.l, assunto:x.r.topic, materia:SUBJ[x.r.mat]?SUBJ[x.r.mat].n:"", prova:x.r.score!=null?Math.round(x.r.score*100)+"%":"sem prova", escreveu:(x.r.conta||"").slice(0,500), resumo_noite:D.resumos[i]||""})),
+    biblia_e_ministerio:D.geral, recordacao: D.recall?`${Object.keys(D.rans).filter(i=>D.rans[i]===D.recall.qs[i].c).length}/${D.recall.qs.length} certas`:"-", nota:D.nota, frases:[D.f1,D.f2,D.f3], pendencias:F.pend.map((b,i)=>b.l+(D.motivos[i]?" ("+D.motivos[i]+")":"")),
+    constancia:streak(), media_provas: quizAvg()==null?"-":Math.round(quizAvg()*100)+"%", serasa: M.marcos.inscricao?"inscrição enviada":"inscrição pendente (prazo 04/11)"};
+  F.ctl=new AbortController();
+  try{
+    D.sint = await aiJson(`Escreva a SÍNTESE DO DIA para a pessoa ler em voz alta antes de orar. Organize o que ela estudou, reforce a técnica do que aprendeu (o porquê, fórmulas, regras), diga com honestidade o quanto o dia aproximou do objetivo (Serasa Analytics e base para o ITA) e termine com uma frase curta de encorajamento e o convite para orar e agradecer a Deus. Não invente estudos que não estão nos dados. Dados do dia: ${JSON.stringify(dados)}
+Responda só com JSON: {"titulo":"frase-título do dia","blocos":[{"area":"Bíblia|Matemática|Economia|Dados|ANBIMA|Ministério","resumo":"2–3 frases"}],"tecnica":["reforço técnico 1","2","3"],"objetivo":"2 frases sobre o avanço rumo à meta","mensagem":"1–2 frases finais"}`, {signal:F.ctl.signal});
+    if(FLOW===F && F.steps[F.at]==="sintese") drawFinal();
+  }catch(e){ if(e.code==="cancelled") return; const el=$("#sn"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; SH.querySelector('[data-sh="next"]').disabled=false; }
+}
+function closeDay(){
+  const F=FLOW, D=F.data, dstr=iso(today()), Dy=day(dstr);
+  F.pend.forEach((b,i)=>{ if(D.motivos[i] && !Dy.blocks[bkey(b)]) Dy.blocks[bkey(b)]={st:"nao", motivo:D.motivos[i], ts:Date.now()}; });
+  Dy.final = {closed:true, nota:D.nota, frases:[D.f1,D.f2,D.f3], resumos:F.feitos.map((x,i)=>({bloco:x.b.l, txt:D.resumos[i]||""})), geral:D.geral, recall:D.recall?{acertos:Object.keys(D.rans).filter(i=>D.rans[i]===D.recall.qs[i].c).length, total:D.recall.qs.length}:null, sint:D.sint, grato:D.grato, ts:Date.now()};
+  saveDay(dstr); addXP(30); closeSheet(); toast("Dia registrado. Boa noite.");
+}
+function speak(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="pt-BR"; u.rate=1; speechSynthesis.speak(u); }catch(e){ toast("A leitura em voz alta não está disponível aqui."); } }
+
+/* ---------- um dia do diário ---------- */
+function openDay(dstr){
+  const d=fromIso(dstr), Dy=DAYS[dstr]||{blocks:{}}, bs=blocksOf(d), f=Dy.final;
+  FLOW={kind:"day", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .3),transparent 60%),#05060A");
+  const items = bs.filter(b=>Dy.blocks[bkey(b)]).map(b=>{ const r=Dy.blocks[bkey(b)]; return `<button class="item" data-act5="rec" data-k="${esc(bkey(b))}"><span class="st ${r.st==="feito"?"done":"miss"}" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:${r.st==="feito"?"var(--ok)":"var(--bad)"};color:#05060A"><svg class="icon" style="width:14px;height:14px"><use href="#i-${r.st==="feito"?"check":"x"}"/></svg></span><span class="grow"><b>${esc(b.l)}</b><small>${fmtH(b.a)} · ${esc(r.topic||r.motivo||AREAS[b.c].n)}${r.score!=null?` · ${Math.round(r.score*100)}%`:""}</small></span></button>`; }).join("");
+  const studied = bs.some(b=>Dy.blocks[bkey(b)]&&Dy.blocks[bkey(b)].mat);
+  sheetHTML({title:`Dia ${dayIdx(d)+1} de 100`, next:"Fechar", body:`
+    <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${WEEK[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
+    ${f&&f.sint?`<div class="glass pad"><span class="tag">Síntese do dia</span><p class="title-m" style="margin-top:6px;font-weight:400">${esc(f.sint.titulo||"")}</p>${(f.sint.blocos||[]).map(b=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(b.area)}:</b> ${esc(b.resumo)}</p>`).join("")}</div>`:""}
+    ${f&&((f.frases||[]).some(Boolean)||f.geral)?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
+    ${items?`<div class="list">${items}</div>`:`<p class="note">Nada registrado neste dia.</p>`}
+    ${f&&f.closed&&dstr===iso(today())?`<button class="btn" data-act5="reabrir">Reabrir o dia</button>`:""}
+    ${studied&&aiOn()?`<button class="btn c" data-act5="refazer"><svg class="icon"><use href="#i-spark"/></svg>Fazer uma atividade sobre este dia</button>`:""}`});
+  SH.querySelector('[data-act5="reabrir"]')?.addEventListener("click",()=>{ Dy.final.closed=false; saveDay(dstr); closeSheet(); toast("Dia reaberto."); });
+  SH.querySelectorAll('[data-act5="rec"]').forEach(b=>b.addEventListener("click",()=>{ const bl=bs.find(x=>bkey(x)===b.dataset.k); closeSheetSoft(); openRecord(dstr,bl,Dy.blocks[b.dataset.k]); }));
+  SH.querySelector('[data-act5="refazer"]')?.addEventListener("click",()=>{ const sts=bs.map(b=>Dy.blocks[bkey(b)]).filter(r=>r&&r.mat); const topics=sts.map(r=>r.topic).join("; ");
+    closeSheetSoft(); (M.revisoes=M.revisoes||[]).push({id:"r"+Date.now(), mat:sts[0].mat, topic:topics, d0:dstr, step:1, due:iso(today()), done:false, conta:sts.map(r=>r.conta).join("\n").slice(0,800)}); saveMain(); openReview(M.revisoes[M.revisoes.length-1].id); });
+}
+
+/* ---------- matéria ---------- */
+function openSubject(k){
+  const s=SUBJ[k], L=levelOf(k), hist=allStudy().filter(r=>r.mat===k).slice(-8).reverse();
+  const prog = (M.programa||{})[k], estudados = new Set(allStudy().filter(r=>r.mat===k).map(r=>(r.topic||"").toLowerCase()));
+  FLOW={kind:"subj", next:()=>{ closeSheetSoft(); openStudy({mat:k, livre:true}); }, back:()=>{}};
+  openSheet(`radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,${g1(s.a)} 40%,transparent),transparent 60%),linear-gradient(170deg,color-mix(in srgb,${g2(s.a)} 70%,#05060A),#05060A 60%)`);
+  sheetHTML({title:AREAS[s.a].n, next:"Estudar agora", body:`
+    <h2 class="q">${esc(s.n)}<small>Nível ${["I","II","III","IV","V"][L.l]} · ${esc(s.lv[L.l])} · ${L.n} blocos aprovados${L.next!=null?` · faltam ${L.next-L.n} para o próximo nível`:""}</small></h2>
+    <section class="glass pad" style="display:grid;gap:12px">
+      <span class="tag">Sala de aula · programa da matéria</span>
+      ${prog&&prog.topicos&&prog.topicos.length?`<b style="font-weight:500">${esc(prog.disciplina||s.n)}</b><div class="list">${prog.topicos.map((t,i)=>{ const ok=estudados.has((t.t||"").toLowerCase()); return `<button class="item" data-sub="topico" data-i="${i}"><span class="chip" style="${ok?"background:var(--ok);color:var(--on-ok);border:0":""}">${ok?"✓":i+1}</span><span class="grow"><b>${esc(t.t)}</b><small>${esc(t.r||"")}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}</div><button class="link" data-sub="programa">Trocar o programa</button>`
+      :`<p class="muted">Cole aqui a ementa ou o conteúdo do semestre (ou mande um print). O Claude organiza em tópicos e cada tópico vira uma aula com prova.</p><button class="btn" data-sub="programa">Montar o programa da matéria</button>`}
+    </section>
+    <div class="steps">${s.lv.map((x,i)=>`<div class="step" style="${i===L.l?"border-color:"+g1(s.a):i<L.l?"opacity:.7":""}"><span class="tag">Nível ${["I","II","III","IV","V"][i]} ${i<L.l?"· concluído":i===L.l?"· atual":""}</span><b>${esc(x)}</b></div>`).join("")}</div>
+    ${s.rec.length?`<div class="links"><span class="tag">Materiais escolhidos</span>${s.rec.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("")}</div>`:""}
+    ${hist.length?`<div class="list"><span class="tag">Últimos estudos</span>${hist.map(r=>`<div class="item"><span class="grow"><b>${esc(r.topic||"")}</b><small>${r.d?fromIso(r.d).getDate()+"/"+(fromIso(r.d).getMonth()+1):""}${r.score!=null?" · "+Math.round(r.score*100)+"%":""}</small></span></div>`).join("")}</div>`:""}`});
+  SH.querySelectorAll('[data-sub="topico"]').forEach(b=>b.addEventListener("click",()=>{ const t=prog.topicos[+b.dataset.i]; closeSheetSoft(); openStudy({mat:k, topic:t.t, livre:true}); }));
+  SH.querySelectorAll('[data-sub="programa"]').forEach(b=>b.addEventListener("click",()=>{ closeSheetSoft(); openPrograma(k); }));
+}
+
+/* ====================================================================
+   FITA DO TEMPO (pinça para afastar: agora → dia → semana → 100 dias)
+   ==================================================================== */
+let ZOOM = 1;
+const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","100 dias"];
+const SHORT = l => l.replace(/^Oração (da manhã|das 18h|antes de dormir)$/,(m,x)=>x==="da manhã"?"Oração":x==="das 18h"?"Oração 18h":"Oração noite")
+  .replace(/Bíblia e (teologia|texto do ensinamento)/,"Bíblia").replace("Graduação com maior necessidade","Graduação").replace("Ciências Econômicas","Economia")
+  .replace("Revisão integral do dia","Revisão do dia").replace(/^Culto de .*/,"Culto").replace("Programação da igreja","Igreja").replace("Escola Bíblica Dominical","EBD")
+  .replace("Exercícios de ","Exerc. ").replace("Exercícios da ","Exerc. ").replace("Projeto, Excel ou Power BI","Projeto/BI").replace("Python, SQL ou projeto","Python/SQL").replace("Python ou SQL","Python/SQL")
+  .replace(/^ANBIMA: .*/,"ANBIMA").replace("Revisão espaçada","Revisões").replace("Projeto prático","Projeto").replace("Visitas e comunhão","Visitas").replace("Revisão de código","Código").replace("Família e lanche","Família").replace("Jantar e família","Família").replace("Descanso e família","Família").replace("Convivência familiar","Família").replace("Revisão semanal","Semana").replace("Estruturar a mensagem","Mensagem").replace("Concluir o estudo da mensagem","Mensagem").replace(/^Preparação /,"Prep. ");
+function dayCard(d, mode){
+  const s=iso(d), t=today(), rel0 = s<iso(t) ? "past" : s===iso(t) ? "today" : "future";
+  const bs=blocksOf(d).filter(b=>kindOf(b)!=="pausa"), rec=(DAYS[s]||{}).blocks||{}, st=dayStats(s), n=bs.length;
+  const rel = rel0!=="past" ? rel0 : st.pct>=.8 ? "past" : st.pct>0 ? "past part" : "past zero";
+  const name = s===iso(t) ? "Hoje" : s===iso(addDays(t,-1)) ? "Ontem" : s===iso(addDays(t,1)) ? "Amanhã" : WD[d.getDay()][0]+WD[d.getDay()].slice(1).toLowerCase();
+  const inRange = dayIdx(d)>=0 && dayIdx(d)<TOTAL;
+  let inner = "";
+  if(mode==="full" || mode==="dots"){
+    inner = `<div class="stair ${mode}">` + bs.map((b,i)=>{ const r=rec[bkey(b)], ok=r&&r.st==="feito", no=r&&r.st==="nao";
+      const ic = ok ? `<svg class="icon"><use href="#i-check"/></svg>` : no ? `<svg class="icon"><use href="#i-x"/></svg>` : "";
+      return `<span class="st-row" style="--x:${n>1?(i/(n-1)):0}"><i class="ck ${ok?"ok":no?"no":""}">${ic}</i>${mode==="full"?`<em>${esc(SHORT(b.l))}</em>`:""}</span>`; }).join("") + `</div>`;
+  }
+  return `<button class="dcard ${rel} ${mode}" data-act="rseg" data-d="${s}" aria-label="${name}, ${st.done} de ${st.total} feitos">
+    <span class="dh">${mode==="dots"?`<b>${s===iso(t)?"Hoje":WD[d.getDay()]}</b><small>${d.getDate()}</small>`:`<b>${name}</b><small>${d.getDate()}/${d.getMonth()+1}</small>`}</span>
+    ${inRange?inner:`<span class="faint" style="font-size:12px">fora dos 100 dias</span>`}
+    ${rel!=="future"&&inRange?`<span class="dp">${st.done}/${st.total}</span>`:""}
+  </button>`;
+}
+function missaoHTML(){
+  const x=topGoal(); if(!x) return "";
+  const g=x.g, isMarco=g.marco&&!g.need, hojeTxt = isMarco ? g.how : (()=>{ const hb=blocksOf(today()).filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))); return hb.length?`Hoje alimentam esta meta: ${hb.map(b=>`${b.l} (${fmtH(b.a)})`).join(", ")}.`:`Hoje a agenda não tem bloco para esta meta. ${g.how}`; })();
+  return `<section class="missao ${x.urgent||x.behind?"urg":""}" aria-label="Missão">
+    <div class="mh"><span class="eyebrow" style="color:#FFD2B0">${x.urgent?"Missão urgente":x.behind?"Meta atrás do ritmo":"Missão em foco"}</span><span class="dd">${x.left>=0?x.left:"!"}<small style="font:500 11px var(--mono);color:var(--muted);margin-left:4px">${x.left>=0?"dias":"atrasada"}</small></span></div>
+    <b style="font-weight:500;font-size:18px">${esc(g.n)}</b>
+    <div class="gbar" aria-label="${Math.round(x.p*100)}% feito, esperado ${Math.round(x.exp*100)}%"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>
+    <p class="muted" style="font-size:14px">${esc(hojeTxt)}</p>
+    <div class="row wrap">${isMarco?`<button class="btn sm primary" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" data-act="metas">Ver todas as metas</button></div>
+  </section>`;
+}
+function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Sua evolução no tempo">${ribbonInner()}</section>`; }
+function ribbonInner(){
+  const t=today(), ts=iso(t), nm=nowMin(), st=dayStats(ts);
+  const head = (sub) => `<div class="rh"><b>${ZN[ZOOM]}</b><span>${sub}</span><button class="zb" data-act="zoom" data-z="1" aria-label="Afastar e ver mais dias" ${ZOOM===4?"disabled":""}>−</button><button class="zb" data-act="zoom" data-z="-1" aria-label="Aproximar" ${ZOOM===0?"disabled":""}>+</button></div>`;
+  if(ZOOM===0){
+    const cur=blocksOf(t).find(b=>nm>=toMin(b.a)&&nm<toMin(b.b));
+    if(!cur) return head("Nenhum bloco agora")+`<div class="track"><i style="flex:1"></i></div>`;
+    const p=Math.round((nm-toMin(cur.a))/(toMin(cur.b)-toMin(cur.a))*100);
+    return head(`faltam ${toMin(cur.b)-nm} min`)+`<div class="track" style="--g1:${g1(cur.c)}"><i class="cur" style="flex:${p}"></i><i style="flex:${100-p}"></i></div><div class="rl"><span>${fmtH(cur.a)} · ${esc(SHORT(cur.l))}</span><span>${fmtH(cur.b)}</span></div>`;
+  }
+  if(ZOOM===1) return head(`hoje ${st.done} de ${st.total}`)+`<div class="days3">${[-1,0,1].map(i=>dayCard(addDays(t,i),"full")).join("")}</div>`;
+  if(ZOOM===2) return head(`hoje ${st.done} de ${st.total}`)+`<div class="days5">${[-2,-1,0,1,2].map(i=>dayCard(addDays(t,i),"dots")).join("")}</div>`;
+  if(ZOOM===3){
+    let cols="", lbl=""; for(let i=-3;i<=3;i++){ const d=addDays(t,i), s=iso(d), sd=dayStats(s), fut=i>0;
+      cols+=`<button class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" aria-label="${d.getDate()}/${d.getMonth()+1}: ${sd.done} de ${sd.total}">${fut?"":`<u style="height:${Math.round(sd.pct*100)}%"></u>`}</button>`;
+      lbl+=`<span style="flex:1;text-align:center">${i===0?"hoje":WD[d.getDay()]}</span>`; }
+    const w=[-3,-2,-1,0].map(i=>dayStats(iso(addDays(t,i))).pct); const m=Math.round(w.reduce((a,b)=>a+b,0)/w.length*100);
+    return head(`média de ${m}% nos últimos 4 dias`)+`<div class="track days" style="height:44px">${cols}</div><div class="rl" style="display:flex">${lbl}</div>`;
+  }
+  const di=dayIdx(t); let cells="", full=0;
+  for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), sd=dayStats(s); if(i<=di&&sd.pct>=.8) full++; const cls = i>di?"":sd.pct>=.8?"f":sd.pct>0?"p":"";
+    cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}" aria-hidden="true"></i>`; }
+  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário dos 100 dias</button><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
+}
+function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
+(function(){
+  let d0=0, done=false;
+  const dist = e => Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+  document.addEventListener("touchstart", e=>{ if(e.touches.length===2 && e.target.closest("#ribbon")){ d0=dist(e); done=false; } }, {passive:true});
+  document.addEventListener("touchmove", e=>{ if(!d0||e.touches.length!==2||done) return; const r=dist(e)/d0;
+    if(r<0.75){ ZOOM=Math.min(4,ZOOM+1); done=true; paintRibbon(); } else if(r>1.33){ ZOOM=Math.max(0,ZOOM-1); done=true; paintRibbon(); } }, {passive:true});
+  document.addEventListener("touchend", ()=>{ d0=0; }, {passive:true});
+  document.addEventListener("wheel", e=>{ if(!e.ctrlKey || !e.target.closest("#ribbon")) return; e.preventDefault(); ZOOM=Math.max(0,Math.min(4,ZOOM+(e.deltaY>0?1:-1))); paintRibbon(); }, {passive:false});
+  document.addEventListener("dblclick", e=>{ if(e.target.closest("#ribbon")){ ZOOM = ZOOM===1 ? 0 : 1; paintRibbon(); } });
+})();
+
+/* ====================================================================
+   PROVA GENÉRICA (simulados, revisão de ontem, da semana, forja)
+   ==================================================================== */
+function openProva({title, q, intro, bg, prompt, tier, onDone}){
+  if(!aiOn()){ toast("Esta prova precisa do Claude ligado (versão publicada)."); return; }
+  let Q=null, ans={}, fixed=false;
+  FLOW={kind:"prova", back:()=>{}, next:()=>{
+    if(fixed||!Q) return closeSheet();
+    const right=Q.qs.filter((x,i)=>ans[i]===x.c).length, sc=right/Q.qs.length; fixed=true;
+    const extra = onDone ? onDone(Q, ans, sc) || "" : "";
+    $("#pv").innerHTML=`<div style="text-align:center;display:grid;gap:8px"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${right} de ${Q.qs.length} certas</p></div>${extra}
+      ${Q.qs.map((x,i)=>`<div class="mcq"><div class="row wrap">${x.nivel?`<span class="lvl">${esc(x.nivel)}</span>`:""}${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}</div><p class="p">${esc(x.p)}</p>${x.o.map((o,j)=>`<div class="opt ${j===x.c?"right":ans[i]===j?"wrong":""}"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></div>`).join("")}<p class="explain">${esc(x.e||"")}</p></div>`).join("")}`;
+    $("#shb").scrollTop=0; SH.querySelector('[data-sh="next"]').firstChild.textContent="Fechar "; }};
+  openSheet(bg);
+  sheetHTML({title, next:"Corrigir", nextOk:false, body:`<h2 class="q">${q}<small>${intro}</small></h2><div id="pv">${thinking("Preparando as questões…")}</div>`});
+  aiJson(prompt+`\nResponda só com JSON: {"qs":[{"tema":"assunto","nivel":"fácil|médio|difícil","p":"","o":["","","",""],"c":0,"e":"explicação curta"}]}`, {modelTier:tier||"default"})
+   .then(r=>{ if(!r||!Array.isArray(r.qs)) throw {code:"invalid_json"}; Q=r; const el=$("#pv"); if(!el) return;
+     el.innerHTML=r.qs.map((x,i)=>`<div class="mcq"><div class="row wrap"><span class="tag">${i+1} de ${r.qs.length}</span>${x.nivel?`<span class="lvl">${esc(x.nivel)}</span>`:""}</div><p class="p">${esc(x.p)}</p>${x.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}" aria-pressed="false"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`).join("")}</div>`).join("");
+     el.addEventListener("click",e=>{ const b=e.target.closest("button.opt"); if(!b||fixed) return; ans[+b.dataset.q]=+b.dataset.o; b.parentElement.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); SH.querySelector('[data-sh="next"]').disabled=r.qs.some((x,i)=>ans[i]==null); }); })
+   .catch(e=>{ const el=$("#pv"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; });
+}
+function porTema(Q, ans){ const m={}; Q.qs.forEach((x,i)=>{ const t=x.tema||"Geral"; m[t]=m[t]||{a:0,n:0}; m[t].n++; if(ans[i]===x.c) m[t].a++; }); return m; }
+function temaHTML(m){ const rows=Object.entries(m).sort((a,b)=>a[1].a/a[1].n-b[1].a/b[1].n);
+  return `<div class="glass pad" style="display:grid;gap:10px"><span class="tag">Por assunto (do mais fraco ao mais forte)</span>${rows.map(([t,v])=>{ const p=Math.round(v.a/v.n*100); return `<div style="display:grid;gap:4px"><div class="row" style="justify-content:space-between"><span>${esc(t)}</span><span class="mono muted">${v.a}/${v.n}</span></div><div class="bar"><i style="width:${p}%;background:${p>=67?"var(--ok)":p>=34?"var(--warn)":"var(--bad)"}"></i></div></div>`; }).join("")}</div>`; }
+
+/* ---------- simulados ---------- */
+const SIMS = {
+  anbima:{n:"ANBIMA CPA", meta:.7, bg:"linear-gradient(170deg,#2A2100,#05060A 60%)", p:`Crie um SIMULADO de 10 questões no estilo da certificação ANBIMA CPA (nível de entrada), cobrindo Sistema Financeiro Nacional, ética e regulação, noções de economia e finanças, princípios de investimento, fundos e tributação. 4 alternativas, só uma certa. Use conceitos estáveis e evite números de normas que mudam. Em "tema" ponha o tópico do programa.`},
+  enem:{n:"Matemática estilo ENEM", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de Matemática no estilo do ENEM (situações do cotidiano, leitura de gráficos e tabelas descritas em texto, porcentagem, proporção, funções, geometria, estatística básica). Dificuldade crescente; 4 alternativas. Em "tema" ponha o conteúdo.`},
+  eco:{n:"Economia", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões introdutórias de Ciências Econômicas (micro, macro, matemática financeira, juros, inflação, mercado de crédito). 4 alternativas. Em "tema" ponha o conteúdo.`},
+  dados:{n:"Dados: SQL, Python e estatística", meta:.6, bg:"linear-gradient(170deg,#04323E,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de nível estágio em dados: SQL (SELECT, WHERE, GROUP BY, JOIN), Python básico e pandas, Power BI e estatística descritiva, como em testes de processos seletivos de Analytics. Código curto dentro do enunciado quando ajudar. 4 alternativas. Em "tema" ponha o conteúdo.`}
+};
+function openSimulado(k){
+  const S=SIMS[k]||SIMS.anbima;
+  openProva({title:"Simulado · "+S.n, q:"Simulado", intro:"10 questões, sem consultar. No fim você vê o gabarito e o desempenho por assunto.", bg:S.bg, prompt:S.p,
+    onDone:(Q,ans,sc)=>{ (M.simulados=M.simulados||[]).push({tipo:k, d:iso(today()), score:sc, n:Q.qs.length});
+      Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c) logErro(k==="anbima"?"anbima":k==="dados"?"sql":k==="eco"?"eco":"mat", x.tema, x, ans[i]); });
+      addXP(Math.round(sc*40)); saveMain();
+      return `<p class="note" style="text-align:center">${sc>=S.meta?`Acima da meta de ${S.meta*100}%.`:`Meta: ${S.meta*100}%. Os erros foram para a Forja.`}</p>`+temaHTML(porTema(Q,ans)); }});
+}
+function evoProvas(){
+  const sims=(M.simulados||[]).map(x=>({...x,tipo:x.tipo||"anbima"})), last=k=>sims.filter(x=>x.tipo===k).slice(-3), avg=k=>{ const l=last(k); return l.length?l.reduce((a,x)=>a+x.score,0)/l.length:null; };
+  const an=avg("anbima"), ph=phaseOf(today()), fase=ph?PHASES.indexOf(ph)+1:1;
+  return `<section class="now" style="--g1:var(--a-anbima-1);--g2:var(--a-anbima-2);min-height:auto">
+      <span class="eyebrow" style="color:rgb(255 255 255 / .8);position:relative">ANBIMA · CPA · ter, qui e sex, <span style="white-space:nowrap">14h–16h</span></span>
+      <div style="position:relative"><div class="score" style="font-size:72px">${an==null?"--":Math.round(an*100)}</div><span style="color:rgb(255 255 255 / .85)">% média dos últimos simulados · meta 70% · prova depois de 23/01</span></div>
+      <div class="bar" style="position:relative"><i style="width:${an==null?0:Math.round(an*100)}%"></i></div>
+      <div class="acts"><button class="btn primary" data-act="simulado" data-k="anbima">Simulado ANBIMA</button></div></section>
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões com gabarito</h2></div><div class="list">
+      <button class="item" data-act="manha"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Fácil, médio e difícil sobre o dia anterior</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-act="semana"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Tudo o que você estudou nos últimos 7 dias, com desempenho por assunto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button></div></section>
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Simulados</h2><span class="mono muted" style="font-size:13px">fase ${fase} de 3</span></div><div class="list">
+      ${["dados","enem","eco"].map(k=>{ const a=avg(k), rec=k==="dados"||fase>=2; return `<button class="item" data-act="simulado" data-k="${k}"><span class="grow"><b>${esc(SIMS[k].n)}</b><small>${a==null?"ainda não feito":"média "+Math.round(a*100)+"%"}${rec?"":" · recomendado a partir da Fase 2"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}
+      <a class="item" href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" target="_blank" rel="noopener" style="text-decoration:none"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Provas e gabaritos oficiais do ENEM (INEP)</b><small>Para treinar com provas reais a partir da Fase 2</small></span><svg class="icon"><use href="#i-arrow"/></svg></a>
+    </div></section>
+    ${sims.length?`<section style="display:grid;gap:8px"><h2 class="title-m">Histórico</h2><div class="list">${sims.slice().reverse().slice(0,12).map(x=>`<div class="item"><span class="grow"><b>${Math.round(x.score*100)}% · ${esc((SIMS[x.tipo]||SIMS.anbima).n)}</b><small>${fromIso(x.d).getDate()}/${fromIso(x.d).getMonth()+1} · ${x.n} questões</small></span></div>`).join("")}</div></section>`:""}`;
+}
+
+/* ---------- revisão ao acordar ---------- */
+function estudosDe(dstr){ const v=DAYS[dstr]; return v ? Object.values(v.blocks||{}).filter(r=>r.st==="feito"&&r.mat&&r.topic) : []; }
+function ontemComEstudo(){ for(let i=1;i<=3;i++){ const d=iso(addDays(today(),-i)); if(dayIdx(fromIso(d))<0) return null; if(estudosDe(d).length) return d; } return null; }
+function manhaPend(){ const d=ontemComEstudo(); return !!d && !((M.manha||{})[iso(today())]); }
+function openManha(){
+  const d=ontemComEstudo(); if(!d){ toast("Nenhum estudo registrado nos últimos dias para revisar."); return; }
+  const es=estudosDe(d);
+  openProva({title:`Revisão de ${fromIso(d).getDate()}/${fromIso(d).getMonth()+1}`, q:"Bom dia. Lembra de ontem?", intro:"Perguntas fáceis, médias e difíceis sobre o que você estudou. Responda de memória: é isso que mostra quanto ficou.", bg:"linear-gradient(170deg,#101540,#05060A 60%)", tier:"quick",
+    prompt:`Revisão matinal (recuperação ativa) do que a pessoa estudou ontem. Faça ${Math.min(6,Math.max(3,es.length*2))} questões de múltipla escolha com níveis misturados (fácil, médio e difícil) cobrindo cada assunto. Estudos: ${JSON.stringify(es.map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:"", escreveu:(r.conta||"").slice(0,500)})))}. Em "tema" ponha o assunto.`,
+    onDone:(Q,ans,sc)=>{ (M.manha=M.manha||{})[iso(today())]={d, score:sc}; Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c) logErro(es[0].mat, x.tema, x, ans[i]); }); addXP(Math.round(sc*20)); saveMain();
+      return `<p class="note" style="text-align:center">Absorção de ontem: ${Math.round(sc*100)}%. ${sc>=.67?"Ficou bem.":"Os pontos errados entraram na Forja para treinar."}</p>`+temaHTML(porTema(Q,ans)); }});
+}
+
+/* ---------- revisão da semana ---------- */
+function weekKey(){ const t=today(); return iso(addDays(t,-((t.getDay()+6)%7))); }
+function estudosSemana(){ const out=[]; for(let i=1;i<=7;i++){ const d=iso(addDays(today(),-i)); out.push(...estudosDe(d)); } (M.livres||[]).filter(r=>r.d>=iso(addDays(today(),-7))).forEach(r=>out.push(r)); return out; }
+function semanaPend(){ return today().getDay()===1 && estudosSemana().length>0 && !((M.semanas||{})[weekKey()]); }
+function openSemana(){
+  const es=estudosSemana(); if(!es.length){ toast("Ainda não há estudos registrados nos últimos 7 dias."); return; }
+  const erros=(M.erros||[]).filter(e=>!e.ok).slice(-8).map(e=>e.p);
+  openProva({title:"Revisão da semana", q:"Prova da semana", intro:"10 questões sobre tudo o que você estudou nos últimos 7 dias, com gabarito e desempenho por assunto.", bg:"linear-gradient(170deg,#2A1204,#05060A 60%)",
+    prompt:`Revisão semanal com gabarito. Faça 10 questões de múltipla escolha cobrindo os assuntos da semana, níveis misturados, priorizando os pontos em que houve erro. Assuntos: ${JSON.stringify(es.slice(0,14).map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:""})))}. Erros recentes: ${JSON.stringify(erros)}. Em "tema" ponha o assunto exatamente como listado.`,
+    onDone:(Q,ans,sc)=>{ const m=porTema(Q,ans); (M.semanas=M.semanas||{})[weekKey()]={score:sc, temas:m};
+      Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c){ const r=es.find(z=>z.topic===x.tema)||es[0]; logErro(r.mat, x.tema, x, ans[i]); } }); addXP(Math.round(sc*40)); saveMain();
+      const atr=GOALS.map(goalInfo).filter(x=>x.behind||x.urgent);
+      return temaHTML(m)+`<p class="note">Os assuntos em vermelho são o foco desta semana. Treine-os na Forja.</p>`+(atr.length?`<div class="ponte"><span class="tag" style="color:#FFD2B0">Metas que pedem atenção esta semana</span>${atr.map(x=>`<p style="margin:0"><b style="font-weight:600">${esc(x.g.n)}</b> · ${x.left>=0?"faltam "+x.left+" dias":"prazo passou"} · ${Math.round(x.p*100)}% feito</p>`).join("")}</div>`:""); }});
+}
+
+/* ---------- Forja: onde o erro vira domínio ---------- */
+function forjaGrupos(){ const g={}; (M.erros||[]).filter(e=>!e.ok).forEach(e=>{ const t=e.topic||(SUBJ[e.mat]?SUBJ[e.mat].n:"Geral"); const k=e.mat+"|"+t; g[k]=g[k]||{mat:e.mat, t, n:0, ps:[]}; g[k].n++; g[k].ps.push(e); }); return Object.values(g).sort((a,b)=>b.n-a.n); }
+function forjaHTML(){
+  const g=forjaGrupos(), fixed=(M.erros||[]).filter(e=>e.ok).length;
+  return `<section class="glass pad" style="display:grid;gap:12px;background:radial-gradient(90% 70% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),var(--glass)">
+    <div class="sec-h"><div><span class="eyebrow">Forja</span><h2 class="title-m" style="margin-top:4px">Onde o erro vira domínio</h2></div><span class="mono muted" style="font-size:13px">${fixed} ${fixed===1?"forjado":"forjados"}</span></div>
+    ${g.length?`<div class="list">${g.slice(0,6).map(x=>`<button class="item" data-act="forja" data-t="${esc(x.t)}" data-m="${x.mat}"><span class="chip" style="color:var(--bad)">${x.n}</span><span class="grow"><b>${esc(x.t)}</b><small>${esc(SUBJ[x.mat]?SUBJ[x.mat].n:"")} · ${x.n} erro(s) · treinar até acertar</small></span><svg class="icon"><use href="#i-flame"/></svg></button>`).join("")}</div>`
+      :`<p class="muted">Cada questão errada em aula, revisão ou simulado entra aqui agrupada por assunto. Treinar um assunto gera uma explicação nova e questões inéditas; acertando, o erro é forjado em domínio.</p>`}
+  </section>`;
+}
+function openForja(t, mat){
+  const g=forjaGrupos().find(x=>x.t===t&&x.mat===mat); if(!g) return;
+  openProva({title:"Forja · "+t, q:t, intro:"Primeiro, a explicação do que confundiu. Depois, 4 questões inéditas sobre o mesmo ponto. Com 3 ou mais certas, os erros deste assunto são forjados.", bg:"radial-gradient(120% 60% at 50% 0%,rgb(255 106 26 / .35),transparent 60%),linear-gradient(170deg,#2A0A04,#05060A 60%)",
+    prompt:`Treino de ponto fraco. Assunto: "${t}" (${SUBJ[mat]?SUBJ[mat].n:""}). Erros que a pessoa cometeu: ${JSON.stringify(g.ps.slice(0,6).map(e=>({pergunta:e.p, respondeu:e.minha, certa:e.certa})))}. Faça 4 questões NOVAS (não repita as de cima) que ataquem exatamente a confusão, do fácil ao difícil; na primeira, em "e", explique com clareza o equívoco por trás dos erros.`,
+    onDone:(Q,ans,sc)=>{ const ok=Q.qs.filter((x,i)=>ans[i]===x.c).length>=3; if(ok) g.ps.forEach(e=>e.ok=true); addXP(ok?25:5); saveMain();
+      return `<p class="note" style="text-align:center">${ok?"Forjado. Esses erros viraram domínio.":"Ainda não. Leia as explicações e treine de novo amanhã."}</p>`; }});
+}
+
+/* ---------- programa da matéria (sala de aula) ---------- */
+function openPrograma(k){
+  const s=SUBJ[k]; let fotos=[], thumbs=[];
+  FLOW={kind:"prog", back:()=>{}, next:async()=>{
+    const disc=$("#pg-d").value.trim(), txt=$("#pg-t").value.trim();
+    if(!txt && !fotos.length){ toast("Cole o conteúdo ou mande um print."); return; }
+    if(!aiOn()){ const tps=txt.split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,30).map(x=>({t:x,r:""})); (M.programa=M.programa||{})[k]={disciplina:disc, topicos:tps}; saveMain(); closeSheet(); openSubject(k); return; }
+    const box=$("#pg-out"); box.innerHTML=thinking("Organizando o programa em aulas…"); SH.querySelector('[data-sh="next"]').disabled=true;
+    try{ const r=await aiJson(`Organize o conteúdo de uma disciplina em uma TRILHA DE AULAS, na ordem de pré-requisitos (do fundamento ao avançado), respeitando o laudo (consolidar a base antes de avançar). Disciplina: "${disc||s.n}". Conteúdo colado: \"\"\"${txt.slice(0,6000)}\"\"\" ${fotos.length?"As imagens são a ementa ou o conteúdo do semestre.":""} Gere de 6 a 20 tópicos, cada um do tamanho de uma aula de 60 a 90 minutos. Responda só com JSON: {"disciplina":"nome","topicos":[{"t":"título curto do tópico","r":"o que será aprendido, em 1 frase"}]}`, {images:fotos.length?fotos:undefined});
+      (M.programa=M.programa||{})[k]={disciplina:r.disciplina||disc, topicos:(r.topicos||[]).slice(0,24)}; saveMain(); closeSheetSoft(); openSubject(k);
+    }catch(e){ box.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; SH.querySelector('[data-sh="next"]').disabled=false; } }};
+  openSheet(`linear-gradient(170deg,color-mix(in srgb,${g2(s.a)} 70%,#05060A),#05060A 60%)`);
+  sheetHTML({title:"Sala de aula · "+s.n, next:"Montar a trilha", body:`
+    <h2 class="q">O que você vai estudar nesta matéria?<small>Cole a ementa, o plano de ensino ou a lista de conteúdos do semestre. Também pode mandar um print. O Claude transforma em uma trilha de aulas na ordem certa.</small></h2>
+    <label class="field"><span>Disciplina</span><input class="inp" id="pg-d" placeholder="Ex.: Álgebra Linear" value="${esc(((M.programa||{})[k]||{}).disciplina||"")}"></label>
+    <label class="field"><span>Conteúdo</span><textarea class="ta" id="pg-t" style="min-height:180px" placeholder="Cole aqui a ementa ou os tópicos, um por linha"></textarea></label>
+    ${canImg()?`<button class="drop" id="pg-f"><svg class="icon"><use href="#i-cam"/></svg><span class="grow" id="pg-fl">Mandar print da ementa</span></button><div class="thumbs" id="pg-th"></div>`:""}
+    ${aiOn()?"":`<p class="note">Sem o Claude nesta cópia: cada linha vira um tópico, na ordem em que foi colada.</p>`}
+    <div id="pg-out"></div>`});
+  const cur=((M.programa||{})[k]||{}).topicos; if(cur&&cur.length) $("#pg-t").value=cur.map(t=>t.t).join("\n");
+  $("#pg-f")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); fotos=p.blobs; $("#pg-th").innerHTML=p.thumbs.map(t=>`<img src="${t}" alt="Print da ementa">`).join(""); $("#pg-fl").textContent=`${p.thumbs.length} imagem(ns) anexada(s)`; });
+}
+
+
+/* ---------- chat C ---------- */
+function openChat(prefill){
+  M.chat = M.chat || [];
+  let ctl=null, imgs=[], thumbs=[];
+  FLOW={kind:"chat", next:()=>{}, back:()=>{}};
+  openSheet("radial-gradient(120% 70% at 50% 0%,rgb(255 106 26 / .45),transparent 60%),linear-gradient(180deg,#160904,#05060A 60%)");
+  const cur = blocksOf(today()).find(b=>nowMin()>=toMin(b.a)&&nowMin()<toMin(b.b));
+  const draw = () => {
+    SH.innerHTML = `<div class="sh-top"><span class="eyebrow grow">Claude · seu tutor</span>${M.chat.length?`<button class="btn sm ghost" id="ch-clear">Limpar</button>`:""}<button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
+      <div class="sh-body" id="shb">${M.chat.length?"":`<div class="orb"></div><h2 class="q" style="text-align:center">O que vamos estudar agora?<small style="text-align:center">${cur?`Agora: ${esc(cur.l)}. `:""}Pergunte, mande uma foto do exercício ou peça uma estratégia.</small></h2>`}
+        <div class="chat" id="chl">${M.chat.map(m=>`<div class="msg ${m.role==="user"?"me":"ai"}">${esc(m.content)}</div>`).join("")}</div></div>
+      <div class="sh-foot"><div class="in" style="display:grid;gap:10px">
+        <div class="sugs">${["Explique o assunto deste bloco","Monte 5 exercícios graduais","Como estou indo esta semana?","Me ajude a planejar amanhã","Estratégia para lembrar fórmulas"].map(s=>`<button data-sug="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+        <div class="thumbs">${thumbs.map(t=>`<img src="${t}" alt="Imagem anexada">`).join("")}</div>
+        <form class="composer" id="chf">${canImg()?`<button type="button" class="x" id="ch-img" aria-label="Anexar foto"><svg class="icon"><use href="#i-cam"/></svg></button>`:""}<label class="sr" for="chi">Mensagem</label><textarea class="ta" id="chi" rows="1" placeholder="Pergunte ao Claude">${esc(prefill||"")}</textarea><button class="btn c" style="width:52px;padding:0" aria-label="Enviar"><svg class="icon"><use href="#i-send"/></svg></button></form>
+      </div></div>`;
+    const bd=$("#shb"); bd.scrollTop=bd.scrollHeight;
+    $("#chf").addEventListener("submit", e=>{ e.preventDefault(); send($("#chi").value); });
+    $("#chi").addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); send($("#chi").value); } });
+    SH.querySelectorAll("[data-sug]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.sug)));
+    $("#ch-img")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); imgs=p.blobs; thumbs=p.thumbs; const v=$("#chi").value; draw(); $("#chi").value=v; });
+    $("#ch-clear")?.addEventListener("click",()=>{ M.chat=[]; saveMain(); draw(); });
+  };
+  const send = async (txt) => {
+    txt=(txt||"").trim(); if(!txt) return;
+    if(!aiOn()){ toast("O chat funciona na versão publicada, com o Claude ligado."); return; }
+    M.chat.push({role:"user", content: txt + (thumbs.length?"\n[foto anexada]":"")}); const sendImgs=imgs; imgs=[]; thumbs=[]; draw();
+    const box=document.createElement("div"); box.className="msg ai"; box.innerHTML=thinking(""); $("#chl").append(box);
+    const hoje = blocksOf(today()).map(b=>{ const r=day(iso(today())).blocks[bkey(b)]; return `${b.a} ${b.l}${r?(r.st==="feito"?" ✓"+(r.topic?" ("+r.topic+")":""):" ✗"):""}`; }).join("; ");
+    const ctxTurn = perfil()+`\nAgenda de hoje: ${hoje}. Constância: ${streak()} dias. Média nas provas: ${quizAvg()==null?"-":Math.round(quizAvg()*100)+"%"}. Revisões vencidas: ${dueReviews().map(r=>r.topic).join(", ")||"nenhuma"}. Erros abertos recentes: ${(M.erros||[]).filter(e=>!e.ok).slice(-5).map(e=>e.p).join(" | ")||"nenhum"}.
+Você é o tutor dentro do app Caverna. Ensine com perguntas e pistas antes de dar a resposta pronta (a meta é ela pensar sozinha). Respostas curtas e práticas, em texto simples sem markdown pesado.`;
+    ctl=new AbortController();
+    try{
+      const turns=[{role:"user",content:ctxTurn}, ...M.chat.slice(-12)];
+      const r=await SAMPLE(turns,{cache:false, signal:ctl.signal, images: sendImgs.length?sendImgs:undefined, onText:({text})=>{ box.textContent=text; const bd=$("#shb"); if(bd) bd.scrollTop=bd.scrollHeight; }});
+      M.chat.push({role:"assistant", content:r.text}); M.chat=M.chat.slice(-30); saveMain();
+    }catch(e){ box.textContent = e.text || aiErr(e); }
+  };
+  draw();
+  if(prefill) setTimeout(()=>$("#chi")?.focus(),50);
+}
+
+/* ---------- perfil ---------- */
+function openProfile(){
+  FLOW={kind:"perfil", next:()=>{ M.profile.name=$("#pf-n").value.trim()||NAME_DEFAULT; saveMain(); closeSheet(); }, back:()=>{}};
+  openSheet();
+  sheetHTML({title:"Perfil", next:"Salvar", body:`
+    <div style="display:grid;justify-items:center;gap:12px"><button class="avatar" id="pf-ph" style="width:120px;height:120px;font-size:44px" aria-label="Trocar foto">${M.profile.photo?`<img src="${esc(M.profile.photo)}" alt="Sua foto">`:esc((M.profile.name||"E")[0])}</button><span class="muted" style="font-size:13px">Toque para trocar a foto</span></div>
+    <label class="field"><span>Nome</span><input class="inp" id="pf-n" value="${esc(M.profile.name||"")}"></label>
+    <div class="kpis"><div class="kpi"><b>${LEVEL()}</b><span>nível</span></div><div class="kpi"><b>${M.xp||0}</b><span>XP</span></div><div class="kpi"><b>${allStudy().length}</b><span>estudos</span></div><div class="kpi"><b>${(M.erros||[]).length}</b><span>erros registrados</span></div></div>
+    <p class="note">${DB&&UID?"Seus registros ficam salvos na sua conta e aparecem em qualquer aparelho.":"Seus registros ficam salvos neste navegador. Na versão publicada, ficam na sua conta."}</p>
+    ${DL?`<button class="btn" id="pf-bk">Baixar backup dos registros</button>`:""}`});
+  $("#pf-ph").addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const img=await loadImg(f[0]).catch(()=>null); if(!img) return;
+    const c=scale(img,320); const data=c.toDataURL("image/jpeg",.8);
+    if(ASSETS){ try{ const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)); const up=await ASSETS.upload(b); M.profile.photo=up.url; }catch(e){ M.profile.photo=data; } } else M.profile.photo=data;
+    saveMain(); openProfile(); });
+  $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`caverna-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
+}
+
+/* ---------- ações da página ---------- */
+document.addEventListener("click", e => {
+  if(e.target.closest("#sheet")) return;
+  const g=e.target.closest("[data-tabgo]"); if(g){ TAB=g.dataset.tabgo; render(); window.scrollTo({top:0}); return; }
+  const a=e.target.closest("[data-act]"); if(!a) return;
+  const act=a.dataset.act, dstr=a.dataset.d||iso(today());
+  if(act==="selday"){ SELDAY = a.dataset.d===iso(today()) ? null : a.dataset.d; render(); }
+  else if(act==="bloco") openBlock(dstr, a.dataset.k);
+  else if(act==="ok") openBlock(dstr, a.dataset.k);
+  else if(act==="finalizar") openFinal();
+  else if(act==="metas"){ TAB="evolucao"; EVOTAB="metas"; render(); window.scrollTo({top:0}); }
+  else if(act==="anbima"){ TAB="evolucao"; EVOTAB="provas"; render(); window.scrollTo({top:0}); }
+  else if(act==="revisoes") openReviews();
+  else if(act==="revisar") openReview(a.dataset.id);
+  else if(act==="materia") openSubject(a.dataset.m);
+  else if(act==="evotab"){ EVOTAB=a.dataset.k; render(); }
+  else if(act==="marco"){ M.marcos[a.dataset.k]=!M.marcos[a.dataset.k]; if(M.marcos.inscricao){ const v=M.vagas.find(x=>x.id==="serasa"); if(v&&v.st==="interesse") v.st="inscrita"; } saveMain(); render(); }
+  else if(act==="dia") openDay(a.dataset.d);
+  else if(act==="perfil") openProfile();
+  else if(act==="simulado") openSimulado(a.dataset.k||"anbima");
+  else if(act==="retomar") resumeSession();
+  else if(act==="manha") openManha();
+  else if(act==="semana") openSemana();
+  else if(act==="forja") openForja(a.dataset.t, a.dataset.m);
+  else if(act==="zoom"){ ZOOM=Math.max(0,Math.min(4,ZOOM+(+a.dataset.z))); paintRibbon(); }
+  else if(act==="rseg"){ const k=a.dataset.k; if(a.dataset.d){ SELDAY=a.dataset.d===iso(today())?null:a.dataset.d; render(); } else if(k) openBlock(iso(today()),k); }
+  else if(act==="rday") openDay(a.dataset.d);
+  else if(act==="tabdiario"){ TAB="diario"; render(); window.scrollTo({top:0}); }
+  else if(act==="descartar"){ M.sessao=null; saveMain(); render(); toast("Estudo em andamento descartado."); }
+  else if(act==="erro"){ const er=(M.erros||[]).find(x=>x.id===a.dataset.id); if(!er) return; FLOW={kind:"erro", next:()=>{ er.ok=true; er.porque=$("#er-t").value; saveMain(); closeSheet(); toast("Erro resolvido."); }, back:()=>{}}; openSheet("linear-gradient(170deg,#2A0A10,#05060A 60%)");
+    sheetHTML({title:"Caderno de erros", next:"Entendi, resolver", body:`<h2 class="q" style="font-size:30px">${esc(er.p)}</h2><div class="opt wrong"><span class="k">✗</span><span>${esc(er.minha||"(sem resposta)")}</span></div><div class="opt right"><span class="k">✓</span><span>${esc(er.certa)}</span></div><p class="explain">${esc(er.e||"")}</p><label class="field"><span>Por que errei e como reconheço da próxima vez</span><textarea class="ta" id="er-t">${esc(er.porque||"")}</textarea></label>`}); }
+  else if(act==="nova-vaga"){ FLOW={kind:"vaga", next:()=>{ const n=$("#vg-n").value.trim(), v=$("#vg-v").value.trim(); if(!n) return; M.vagas.push({id:"v"+Date.now(), n, v, st:"interesse"}); saveMain(); closeSheet(); }, back:()=>{}}; openSheet();
+    sheetHTML({title:"Nova vaga", next:"Adicionar", body:`<h2 class="q">Qual porta abrir?</h2><label class="field"><span>Empresa</span><input class="inp" id="vg-n"></label><label class="field"><span>Vaga</span><input class="inp" id="vg-v" placeholder="Ex.: Estágio em dados"></label>`}); }
+  else if(act==="panorama-ai") panoramaAI(a);
+  else if(act==="pausas"){ M.showPausas=!M.showPausas; saveMain(); render(); }
+});
+document.addEventListener("change", e => { const s=e.target.closest("[data-vaga]"); if(!s) return; const v=M.vagas.find(x=>x.id===s.dataset.vaga); if(v){ v.st=s.value; saveMain(); } });
+document.addEventListener("submit", e => { const f=e.target.closest('[data-form="livre"]'); if(!f) return; e.preventDefault(); const q=f.q.value.trim(); if(!q) return; openStudy({mat:"mat", topic:q, livre:true}); });
+async function panoramaAI(btn){
+  const box=$("#pan-ai"); btn.disabled=true; const out=document.createElement("div"); out.innerHTML=thinking("Lendo os seus registros…"); box.append(out);
+  const last = Object.keys(DAYS).sort().slice(-14).map(d=>({d, ...dayStats(d), nota:DAYS[d].final?DAYS[d].final.nota:null, faltas:Object.values(DAYS[d].blocks||{}).filter(r=>r.st==="nao").map(r=>r.motivo)}));
+  const niveis = Object.fromEntries(Object.keys(SUBJ).map(k=>[SUBJ[k].n, levelOf(k).n]));
+  try{
+    const r = await aiJson(`Faça o PANORAMA honesto do Projeto Caverna com base só nestes dados: últimos dias ${JSON.stringify(last)}; blocos aprovados por matéria ${JSON.stringify(niveis)}; média nas provas ${quizAvg()==null?"-":Math.round(quizAvg()*100)+"%"}; erros abertos ${(M.erros||[]).filter(e=>!e.ok).length}; simulados ANBIMA ${JSON.stringify((M.simulados||[]).slice(-3))}; marcos ${JSON.stringify(M.marcos)}. Responda só com JSON: {"status":"indo bem|atenção|reajustar","resumo":"2 frases","fortes":["",""],"atencao":["",""],"acoes":["ação concreta 1","2","3"]}`);
+    out.innerHTML = `<div class="row"><span class="chip" style="background:${r.status==="indo bem"?"var(--ok)":r.status==="atenção"?"var(--warn)":"var(--bad)"};color:#05060A;border:0">${esc(r.status)}</span></div><p>${esc(r.resumo)}</p>
+      <div class="grid2"><div><span class="tag">Pontos fortes</span><ul style="padding-left:18px">${(r.fortes||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div><div><span class="tag">Atenção</span><ul style="padding-left:18px">${(r.atencao||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div></div>
+      <div class="ex"><span class="tag">3 ações desta semana</span><ol style="padding-left:18px;margin:8px 0 0">${(r.acoes||[]).map(x=>`<li>${esc(x)}</li>`).join("")}</ol></div>`;
+  }catch(e){ out.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; }
+  btn.disabled=false;
+}
+
+boot();
+setInterval(()=>{ const a=document.activeElement; if(SH.hidden && TAB==="hoje" && !(a && a!==document.body && $("#app").contains(a))) render(); }, 60000);
+</script>
