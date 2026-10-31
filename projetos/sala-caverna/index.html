@@ -617,6 +617,7 @@ const aiOn = () => !!SAMPLE;
 const canImg = () => !!(LIMITS && LIMITS.images);
 function aiErr(e){
   const c = e && e.code;
+  if(window.YAAD_SITE && e && e.message && /^(no_ai|rate_limited|invalid_request)$/.test(c)) return e.message;
   if(c==="no_ai") return "O Claude só funciona na versão publicada desta página.";
   if(c==="not_granted"||c==="sampling_disabled") return "Sem permissão para usar o Claude nesta página.";
   if(c==="rate_limited") return "Muitos pedidos seguidos. Espere um minuto e toque de novo.";
