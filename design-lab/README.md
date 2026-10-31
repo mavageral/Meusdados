@@ -4,10 +4,10 @@ A caixa de ferramentas de design do Meusdados. Junta quatro coisas:
 
 | Peça | Onde | Para quê |
 |---|---|---|
-| **Temas** (tokens) | `tokens/temas.css` | 8 identidades visuais prontas, extraídas das suas referências. Troque o visual inteiro mudando `data-tema`. |
+| **Temas** (tokens) | `tokens/temas.css` | 9 identidades visuais prontas, extraídas das suas referências. Troque o visual inteiro mudando `data-tema`. |
 | **Catálogo** | `catalogo.md` | O que cada referência ensina: cores e fontes medidas, padrões de tela, qual tema usar em cada tipo de projeto. |
-| **Vitrine** | `index.html` | O mesmo app desenhado nos 8 temas, para comparar e escolher. |
-| **Componentes** | `componentes/` | Botões, campos, menus, cartões, elevação: classes `.c-*` que funcionam nos 8 temas (inspiradas no DesignCode UI). |
+| **Vitrine** | `index.html` | O mesmo app desenhado em todos os temas, para comparar e escolher. |
+| **Componentes** | `componentes/` | Botões, campos, menus, cartões, elevação: classes `.c-*` que funcionam em todos os temas (inspiradas no DesignCode UI). |
 
 E as automações em `.claude/` e `ferramentas/`:
 
@@ -26,9 +26,9 @@ Basta descrever, por exemplo:
 
 O Claude segue o método, sugere o tema (nesse caso, `sol-grafite` ou `aurora`) e entrega a página publicada com link.
 
-## Os 8 temas
+## Os 9 temas
 
-`neon-noir` · `sol-grafite` · `ardosia-coral` · `salvia-vidro` · `brasa` · `aurora` · `oceano` · `lavanda`
+`neon-noir` · `sol-grafite` · `ardosia-coral` · `salvia-vidro` · `brasa` · `aurora` · `oceano` · `lavanda` · `cinema`
 
 ## Arquivos originais
 

@@ -16,7 +16,7 @@ Se der para inferir, não pergunte. Decida e diga o que decidiu.
 
 ## 2. Escolher a direção visual
 Leia `design-lab/catalogo.md` (seção "Mapa rápido") e escolha **um** dos temas:
-`neon-noir`, `sol-grafite`, `ardosia-coral`, `salvia-vidro`, `brasa`, `aurora`, `oceano`, `lavanda`.
+`neon-noir`, `sol-grafite`, `ardosia-coral`, `salvia-vidro`, `brasa`, `aurora`, `oceano`, `lavanda`, `cinema`.
 - Se a usuária mandar uma referência nova, compare com o catálogo e diga qual tema está mais perto. Se nenhum servir, crie um tema novo no mesmo formato em `temas.css` e registre a origem no catálogo.
 - A vitrine `design-lab/index.html` mostra todos os temas lado a lado.
 

@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter+Tight:wght@500;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&family=Poppins:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter+Tight:wght@500;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700;800&family=Montserrat:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;700&family=Poppins:wght@400;500;600&family=Fraunces:opsz,wght@9..144,600&display=swap">
 <link rel="stylesheet" href="tokens/temas.css">
 <style>
   /* Vitrine: uma bancada escura e neutra, onde cada tema aparece no mesmo celular com o mesmo conjunto de componentes. */
@@ -125,7 +125,7 @@
 <div class="wrap">
   <header class="lab">
     <span class="eyebrow">Meusdados · Design Lab</span>
-    <h1>Oito direções visuais, um mesmo app</h1>
+    <h1>Nove direções visuais, um mesmo app</h1>
     <p>Cada tema foi extraído das suas referências: cores e fontes medidas nos arquivos Figma e Sketch, padrões observados nos mockups. O celular abaixo é idêntico em todos. Só muda o atributo <code>data-tema</code>.</p>
   </header>
   <nav class="chips" id="chips" aria-label="Temas"></nav>
@@ -176,7 +176,10 @@ const temas = [
     t:[['Milhas','8.240','',55],['Reservas','2','',20]], ic:'pin', rows:[['São Paulo → Rio','08:00 · trem','R$ 89'],['Hotel Copacabana','2 noites','R$ 640'],['Passeio no Pão de Açúcar','Sábado','R$ 160']], cta:'Finalizar reserva' },
   { id:'lavanda', nome:'Lavanda', fontes:'Plus Jakarta Sans', de:'Messenger App (community)', uso:'Mensagens, comunidade, perfis',
     oi:'Vamos conversar', titulo:'Conversas', ini:'EB', kpiL:'Não lidas', kpi:'18', un:'mensagens', bars:[5,7,6,9,8,4,6], on:3,
-    t:[['Grupos','6','',40],['Online','23','',60]], ic:'chat', rows:[['Grupo de estudos','Ana: mandei o resumo','2'],['Projeto Caverna','Você: revisão feita','ontem'],['Família','Foto nova','5']], cta:'Nova conversa' }
+    t:[['Grupos','6','',40],['Online','23','',60]], ic:'chat', rows:[['Grupo de estudos','Ana: mandei o resumo','2'],['Projeto Caverna','Você: revisão feita','ontem'],['Família','Foto nova','5']], cta:'Nova conversa' },
+  { id:'cinema', nome:'Cinema', fontes:'Manrope', de:'OTT Dark Theme (streaming, community)', uso:'Streaming, mídia, eventos, landing escura',
+    oi:'Boa noite, Edna', titulo:'Continue assistindo', ini:'EB', kpiL:'Assistido no mês', kpi:'18', un:'horas', bars:[3,5,4,8,9,6,7], on:4,
+    t:[['Séries','4','em dia',60],['Filmes','7','',35]], ic:'wave', rows:[['Aula 3: SQL com janelas','Curso de dados · 42 min','68%'],['Documentário: Bolsa','1 h 32 min','novo'],['Palestra ANBIMA','Gravada ontem','assistir']], cta:'Continuar de onde parei' }
 ];
 
 const days = ['S','T','Q','Q','S','S','D'];

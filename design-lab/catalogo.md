@@ -17,6 +17,7 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
 | Reservas, viagens, serviços, utilitários | `oceano` | Flat Design, Minimalism |
 | Painel de estudos, agenda, escola | `oceano` (layout do Student Activities) ou `sol-grafite` | Data-Dense Dashboard |
 | Mensagens, comunidade, perfis | `lavanda` | Flat Design, Soft UI |
+| Streaming, mídia, eventos, landing escura, portfólio audiovisual | `cinema` | Dark Mode (OLED), Cinematic |
 
 ## Arquivos de design (medidos)
 
@@ -84,6 +85,20 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
   - cartões de evento com faixa de cor por categoria + horário, local e responsável com ícone.
 - **Cuidados (não copiar)**: texto branco sobre salmão `#F99393` tem contraste ~2,2:1 e texto branco pequeno sobre o azul fica em ~3,4:1, os dois abaixo do AA. Placeholders muito claros. Ao implementar, usar as cores do tema `oceano` (azul `#0773C0`, que passa AA) e reservar o salmão para fundos de destaque com texto escuro.
 - **Uso sugerido**: base de layout para o **painel de estudos ANBIMA** (matérias, simulados, agenda, revisões).
+
+### OTT Dark Theme: streaming de filmes e séries (community), base do **cinema**
+- Arquivo: `figma.com/design/WixCbnSFUzZl6CXSRvfsoD` (nó 34:3). Lido com 1 leitura do conector: print geral de 46.100×9.517px.
+- **Site completo e responsivo**: 6 páginas, cada uma em 3 larguras (desktop, tablet, celular). São elas: Home, Filmes e Séries, Filme aberto, Série aberta, Suporte e Assinatura.
+- **Cores medidas no print**: fundos `#0F0F0F` a `#1E1E1E` em degraus de preto, destaque **vermelho `#E50000`**, variações `#B00000`/`#980808` nos gradientes do banner de chamada.
+- Tipografia: sans geométrica (substituto adotado: **Manrope**).
+- **Padrões que valem a pena**:
+  - hero com mosaico de capas e um único CTA vermelho;
+  - fileiras horizontais de capas por categoria ("Em alta", "Novos lançamentos", "Top 10") com setas;
+  - página de detalhe: banner grande + elenco, avaliações e temporadas em acordeão;
+  - tabela de planos (Básico, Padrão, Premium) com comparação de recursos;
+  - FAQ em duas colunas, faixa de CTA com gradiente vermelho sobre capas, rodapé com 6 colunas de links.
+- **Contraste**: branco sobre `#E50000` dá 4,85:1 e passa no AA. Para textos vermelhos pequenos sobre o escuro, usar `--accent-2` (`#FF4D4D`).
+- **Uso sugerido**: portfólio em vídeo, cursos gravados, eventos, qualquer landing escura e dramática.
 
 ## Imagens de inspiração (observadas)
 

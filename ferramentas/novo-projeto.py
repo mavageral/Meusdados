@@ -2,7 +2,7 @@
 """Cria projetos/<nome>/ a partir do modelo, já com o tema e as fontes certas.
 
 Uso: python3 -I ferramentas/novo-projeto.py <nome-do-projeto> <tema> ["Título visível"]
-Temas: neon-noir, sol-grafite, ardosia-coral, salvia-vidro, brasa, aurora, oceano, lavanda
+Temas: neon-noir, sol-grafite, ardosia-coral, salvia-vidro, brasa, aurora, oceano, lavanda, cinema
 """
 import os
 import re
@@ -20,6 +20,7 @@ FONTES = {
     'aurora': 'family=Manrope:wght@400;600;700&family=DotGothic16',
     'oceano': 'family=Montserrat:wght@400;500;600;700',
     'lavanda': 'family=Plus+Jakarta+Sans:wght@400;500;600;700',
+    'cinema': 'family=Manrope:wght@400;500;600;700;800',
 }
 
 

@@ -2,7 +2,7 @@
  * Meusdados Design Lab: biblioteca de componentes
  *
  * Requer design-lab/tokens/temas.css antes deste arquivo.
- * Todos os componentes usam só tokens do tema, então funcionam nos 8 temas.
+ * Todos os componentes usam só tokens do tema, então funcionam em todos os temas.
  * Anatomia, estados e sistema de elevação inspirados no DesignCode UI (Meng To);
  * ver design-lab/catalogo.md. Prefixo de classe: .c-
  */
