@@ -35,6 +35,7 @@ function urlsDe(content) {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ code: "method_not_allowed" });
+  if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ code: "no_ai", message: "A IA do site ainda não foi ligada (falta a chave da API)." });
   const token = String(req.headers.authorization || "").replace(/^Bearer\s+/i, "");
   if (!token || !SUPA_URL || !SUPA_KEY) return res.status(401).json({ code: "not_granted" });
   const quem = await supa("/auth/v1/user", token);
