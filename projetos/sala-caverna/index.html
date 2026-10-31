@@ -38,7 +38,8 @@ a{color:inherit}
 :focus-visible{outline:2px solid var(--c);outline-offset:2px;border-radius:8px}
 h1,h2,h3,p{margin:0}
 .app{max-width:1180px;margin:0 auto;padding-top:calc(env(safe-area-inset-top,0px) + 14px)}
-.view{display:grid;gap:18px;animation:in .45s var(--ease)}
+.view{display:grid;grid-template-columns:minmax(0,1fr);gap:18px;animation:in .45s var(--ease)}
+.view>*,.hoje-grid>*{min-width:0}
 @keyframes in{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -211,6 +212,7 @@ h1,h2,h3,p{margin:0}
 .card .shape{position:absolute;right:-30px;top:40px;width:150px;height:150px;border-radius:50%;background:rgb(255 255 255 / .08);border:1px solid rgb(255 255 255 / .14)}
 
 /* segmentos */
+.sh-body>.seg{min-height:50px;flex:none}
 .seg{display:flex;gap:4px;padding:4px;border-radius:var(--pill);background:var(--glass);border:1px solid var(--edge);overflow-x:auto;scrollbar-width:none}
 .seg button{flex:1 0 auto;min-height:40px;padding:0 14px;border-radius:var(--pill);border:0;background:none;color:var(--muted);font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
@@ -404,7 +406,7 @@ function applyProjeto(){ const pj=P(); const [y,m,d]=pj.inicio.split("-").map(Nu
     GOALS = (c.metas||[]).map((g,i)=>({id:g.id||("g"+i), n:g.n, due:iso(addDays(START, Math.max(0,Math.min(TOTAL-1, g.dia||TOTAL-1)))), mats:(g.mats||[]).filter(k=>SUBJ[k]), need:g.need||undefined, marco:g.marco?("m_"+(g.id||i)):undefined, how:g.how||""}));
     PHASES = (c.fases||[]).map(f=>({n:f.n, a:iso(addDays(START, f.de||0)), b:iso(addDays(START, Math.min(TOTAL-1, f.ate||TOTAL-1))), f:f.f||""}));
     FRASES = (c.frases&&c.frases.length) ? c.frases : BASE.FRASES;
-  } else { CUSTOM=false; WEEK=BASE.WEEK; SUBJ=BASE.SUBJ; GOALS=BASE.GOALS; PHASES=BASE.PHASES; FRASES=BASE.FRASES; }
+  } else { CUSTOM=false; WEEK=pj.weekOverride||BASE.WEEK; SUBJ=BASE.SUBJ; GOALS=BASE.GOALS; PHASES=BASE.PHASES; FRASES=BASE.FRASES; }
 }
 
 const AREAS = {
@@ -1719,6 +1721,7 @@ function openMenu(){
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="direcao" style="border-color:rgb(255 106 26 / .5)"><svg class="icon" style="color:var(--c)"><use href="#i-spark"/></svg><span class="grow"><b>Novo projeto · quiz de direção</b><small>O Claude entende você, mostra caminhos e monta a rotina</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       ${(M.projetos||[]).length>1?`<button class="item" data-m="projetos"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Meus projetos</b><small>${M.projetos.length} projetos · trocar o projeto ativo</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      <button class="item" data-m="editor"><svg class="icon"><use href="#i-cal"/></svg><span class="grow"><b>Editar rotina e matérias</b><small>Horários, blocos, matérias, metas ou ajustar com o Claude</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Minha evolução</b><small>Panorama, provas, metas e árvore</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="docs"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Documentos</b><small>Ementas e programas que alimentam a sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="share"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Compartilhar o Yaad1</b><small>Convide alguém a montar o próprio projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
@@ -1730,6 +1733,7 @@ function openMenu(){
     else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
     else if(m==="docs") openDocs();
     else if(m==="direcao") openDirecao();
+    else if(m==="editor") openEditor();
     else if(m==="projetos") openProjetos();
     else if(m==="share") openShare(); }));
 }
@@ -1791,10 +1795,11 @@ const PRIORIDADES = ["Fé","Família","Saúde e academia","Trabalho","Ministéri
 const CATS = ["oracao","biblia","min","saude","grad","tech","anbima","pausa","rev"];
 function openDirecao(){
   const A = {nome:M.profile.name||"", idade:"", momento:"", acorda:"06:00", dorme:"22:30", trabalha:"Não", horas:"2h", dias:"5", prior:[], desejo:[], afin:[], livre:"", desc:null, descAns:{}, cam:null, esc:null, proprio:"", pnome:"", plema:"", pdias:90, plano:null};
-  const steps = () => ["intro","momento","rotina","desejo","afin"].concat(A.desejo.includes("Ainda não sei")||A.afin.length<2?["descoberta"]:[]).concat(["caminhos","projeto","plano"]);
+  const steps = () => ["intro","momento","rotina","desejo","afin"].concat(aiOn()&&(A.desejo.includes("Ainda não sei")||A.afin.length<2)?["descoberta"]:[]).concat(["caminhos","projeto","plano"]);
   const F = FLOW = {kind:"direcao", at:0, A,
     pick:(g,v,on)=>{ if(g==="momento") A.momento=v; else if(g==="trabalha") A.trabalha=v; else if(g==="horas") A.horas=v; else if(g==="dias") A.dias=v;
       else if(["prior","desejo","afin"].includes(g)){ const L=A[g]; if(on){ if(!L.includes(v)) L.push(v); } else A[g]=L.filter(x=>x!==v); }
+      else if(g==="modelo"){ A.modelo=v; A.esc=-2; A.pnome=""; }
       else if(g.startsWith("dq")) A.descAns[g.slice(2)]=v; upd(); },
     next:()=>go(+1), back:()=>go(-1)};
   const upd = () => { const b=SH.querySelector('[data-sh="next"]'); if(b) b.disabled=!ok(); };
@@ -1841,6 +1846,7 @@ function openDirecao(){
       if(!A.desc && aiOn()) aiJson(`Crie 5 perguntas de AUTODESCOBERTA vocacional para alguém que ainda não sabe o que quer. Situações do dia a dia, linguagem simples, 4 opções cada; cada opção revela uma inclinação (exatas, tecnologia, pessoas, negócios, saúde, direito, artes, natureza, ensino). Respostas já dadas: ${JSON.stringify(respostas())}. Responda só com JSON: {"qs":[{"p":"pergunta","o":[{"t":"opção","area":"área"}]}]}`, {modelTier:"quick"})
         .then(r=>{ A.desc=r; if(FLOW===F && steps()[F.at]==="descoberta") draw(); }).catch(e=>{ const el=$("#dq-desc"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; }); }
     if(s==="caminhos"){ sheetHTML({...base, next:"Escolher", body:`<h2 class="q">Seus caminhos<small>O Claude leu as suas respostas. Escolha um alvo, ou escreva o seu.</small></h2><div id="dq-cam">${A.cam?camHTML():aiOn()?thinking("O Claude está pensando nos seus caminhos…"):`<p class="note">Precisa do Claude ligado.</p>`}</div>
+      ${aiOn()?"":`<div class="glass pad" style="display:grid;gap:10px"><span class="tag">Sem o Claude agora? Comece por um modelo</span><div class="pick" data-pick="modelo">${Object.entries(MODELOS).map(([k,v])=>`<button data-v="${k}" aria-pressed="${A.modelo===k}">${esc(v.titulo)}</button>`).join("")}</div></div>`}
       <label class="field"><span>Ou escreva o seu próprio alvo</span><textarea class="ta" id="dq-p" style="min-height:90px" placeholder="Ex.: passar no concurso do Banco do Brasil em 2027">${esc(A.proprio)}</textarea></label>`});
       if(!A.cam && aiOn()) aiJson(`Você é um orientador de carreira e estudos, empático e realista, para o Brasil. Com base nas respostas, explique a pessoa para ela mesma e proponha 3 CAMINHOS concretos e diferentes entre si (por exemplo: um concurso, um emprego, uma faculdade ou curso), adequados à idade, ao momento, ao tempo disponível e às afinidades. Para cada caminho dê um alvo específico, o porquê, um prazo realista em dias (entre 30 e 365) com a dedicação informada, oportunidades típicas e 3 buscas prontas (frases de busca) para encontrar vagas, editais ou processos. Não invente datas nem números de edital; diga para confirmar no site oficial. Respostas: ${JSON.stringify(respostas())}.
 Responda só com JSON: {"leitura":"2–3 frases sobre quem a pessoa é e onde se encaixa","caminhos":[{"titulo":"","tipo":"concurso|emprego|faculdade|curso|carreira","alvo":"meta concreta","porque":"2 frases","prazo_dias":90,"realismo":"1 frase sobre a chance com a dedicação informada","oportunidades":["",""],"buscas":[{"rotulo":"","q":"","onde":"vagas|geral"}],"nome_projeto":"nome inspirador curto","lema":"lema curto"}]}`)
@@ -1851,23 +1857,24 @@ Responda só com JSON: {"leitura":"2–3 frases sobre quem a pessoa é e onde se
         <label class="field"><span>Lema</span><input class="inp" id="dq-pl" value="${esc(A.plema)}"></label>
         <label class="field"><span>Duração em dias</span><input class="inp" id="dq-pd" type="number" min="14" max="365" value="${A.pdias}"></label>
         ${(c.oportunidades||[]).length?`<div class="glass pad"><span class="tag">Oportunidades</span><ul style="margin:8px 0 0;padding-left:18px">${c.oportunidades.map(o=>`<li>${esc(o)}</li>`).join("")}</ul></div>`:""}`}); }
+    if(s==="plano" && !A.plano && (A.esc===-2 || !aiOn())){ A.plano = sanitizePlano(planoModelo(A.modelo||"concurso", A)); }
     if(s==="plano"){ sheetHTML({...base, next:"Criar meu projeto", nextOk:!!A.plano, body:`<div id="dq-plano">${A.plano?planoHTML():aiOn()?thinking("Montando agenda, matérias, fases e metas… isso leva até um minuto."):`<p class="note">Precisa do Claude ligado.</p>`}</div>`});
       if(!A.plano && aiOn()) gerarPlano(); }
     upd();
     SH.querySelectorAll("input,textarea").forEach(x=>x.addEventListener("input",upd));
     if(s==="descoberta"||s==="caminhos") bindLocal();
   };
-  const cam = () => A.esc===-1||A.esc==null ? {alvo:A.proprio, titulo:"Meu alvo", nome_projeto:"", lema:"", prazo_dias:90, buscas:[], oportunidades:[]} : A.cam.caminhos[A.esc];
+  const cam = () => A.esc===-2&&A.modelo ? {alvo:MODELOS[A.modelo].alvo, titulo:MODELOS[A.modelo].titulo, nome_projeto:"Projeto "+MODELOS[A.modelo].titulo, lema:MODELOS[A.modelo].lema, prazo_dias:MODELOS[A.modelo].dias, buscas:[], oportunidades:[]} : A.esc===-1||A.esc==null ? {alvo:A.proprio, titulo:"Meu alvo", nome_projeto:"", lema:"", prazo_dias:90, buscas:[], oportunidades:[]} : A.cam.caminhos[A.esc];
   const descHTML = () => A.desc.qs.map((q,i)=>`<div class="mcq"><p class="p">${esc(q.p)}</p><div class="pick" data-pick="dq${i}" style="display:grid;gap:8px">${q.o.map((o,j)=>`<button data-v="${j}" aria-pressed="${A.descAns[i]===j||A.descAns[i]===String(j)}" style="text-align:left;border-radius:16px;min-height:48px;padding:10px 14px">${esc(o.t)}</button>`).join("")}</div></div>`).join("");
   const camHTML = () => `${A.cam.leitura?`<p class="title-m" style="font-weight:300;font-size:20px">${esc(A.cam.leitura)}</p>`:""}<div style="display:grid;gap:12px">${A.cam.caminhos.map((c,i)=>`<button class="mcq" data-cam="${i}" aria-pressed="${A.esc===i}" style="text-align:left;${A.esc===i?"border-color:var(--c);background:rgb(255 106 26 / .12)":""}">
       <span class="tag">${esc(c.tipo||"")} · ${c.prazo_dias||"?"} dias</span><b style="font-weight:600;font-size:18px">${esc(c.titulo)}</b><span>${esc(c.alvo)}</span><small class="muted">${esc(c.porque||"")}</small></button>`).join("")}</div>`;
   const bindLocal = () => { SH.querySelectorAll("[data-cam]").forEach(b=>b.addEventListener("click",()=>{ A.esc=+b.dataset.cam; const t=$("#dq-p"); if(t){ t.value=""; A.proprio=""; } $("#dq-cam").innerHTML=camHTML(); bindLocal(); upd(); })); };
-  const planoHTML = () => { const P2=A.plano, dia=P2.semana[String(new Date().getDay())]||P2.semana["1"]||[];
+  const planoHTML = () => { const P2=A.plano, nE=d=>(P2.semana[d]||[]).filter(b=>["grad","tech","anbima"].includes(b.c)).length, dk=["1","2","3","4","5","6","0"].sort((x,y)=>nE(y)-nE(x))[0], dia=P2.semana[dk]||[];
     return `<h2 class="q">Seu projeto está pronto<small>${esc(A.pnome)} · ${A.pdias} dias · alvo: ${esc(cam().alvo)}</small></h2>
       <div class="glass pad"><span class="tag">Fases</span>${(P2.fases||[]).map(f=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(f.n)}</b> · dias ${f.de+1} a ${f.ate+1}<br><span class="muted">${esc(f.f)}</span></p>`).join("")}</div>
       <div class="glass pad"><span class="tag">Matérias</span><div class="row wrap" style="margin-top:8px">${(P2.materias||[]).map(m=>`<span class="chip">${esc(m.n)}</span>`).join("")}</div></div>
       <div class="glass pad"><span class="tag">Metas</span>${(P2.metas||[]).map(m=>`<p style="margin-top:8px">${esc(m.n)} <span class="mono muted" style="font-size:12px">· dia ${m.dia+1}</span></p>`).join("")}</div>
-      <div class="glass pad"><span class="tag">Exemplo de um dia</span>${dia.map(b=>`<p class="mono" style="font-size:13px;margin-top:6px">${b.a}–${b.b} · ${esc(b.l)}</p>`).join("")}</div>
+      <div class="glass pad"><span class="tag">Exemplo: ${DIAS[+dk]}</span>${dia.map(b=>`<p class="mono" style="font-size:13px;margin-top:6px">${b.a}–${b.b} · ${esc(b.l)}</p>`).join("")}</div>
       <p class="faint" style="font-size:13px">Tudo pode ser ajustado depois. O projeto Caverna continua salvo em Meus projetos.</p>`; };
   const gerarPlano = () => aiJson(`Monte o PLANO COMPLETO de um projeto de estudos de ${A.pdias} dias para esta pessoa, rumo ao alvo "${cam().alvo}". Respostas do quiz: ${JSON.stringify(respostas())}.
 Regras: a agenda semanal deve caber na rotina real (acorda ${A.acorda}, dorme ${A.dorme}, trabalho: ${A.trabalha}, ${A.horas} de estudo por dia em ${A.dias} dias por semana), respeitar as prioridades (${A.prior.join(", ")||"nenhuma informada"}), ter pausas e refeições, e terminar CADA dia com o bloco {"l":"Revisão integral do dia","c":"rev"} antes de dormir. Dias sem estudo são leves. Categorias permitidas em "c": oracao (oração), biblia (leitura bíblica), min (trabalho, igreja e compromissos), saude (exercício e família), grad (estudo de matéria teórica), tech (estudo prático, profissional ou tecnologia), pausa (refeição, descanso, deslocamento), rev (revisão). Todo bloco de estudo (grad ou tech) tem "m" com a chave de uma das matérias. Horários "HH:MM" em ordem crescente, sem sobreposição.
@@ -1912,6 +1919,125 @@ function openProjetos(){
   SH.querySelectorAll("[data-pj]").forEach(b=>b.addEventListener("click",()=>{ syncProjetos(); const p=M.projetos.find(x=>x.id===b.dataset.pj); if(!p) return; M.projeto={...p}; M.sessao=null; applyProjeto(); saveMain(); closeSheet(); toast("Projeto ativo: "+p.nome); }));
 }
 
+/* ====================================================================
+   EDITOR DO PROJETO: agenda, matérias, metas e ajuste com o Claude
+   ==================================================================== */
+const CAT_N = {oracao:"Oração",biblia:"Bíblia",min:"Trabalho ou compromisso",saude:"Saúde ou família",grad:"Estudo teórico",tech:"Estudo prático",anbima:"Certificação",pausa:"Pausa ou refeição",rev:"Revisão"};
+const DIAS = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const clone = o => JSON.parse(JSON.stringify(o));
+function cleanDay(list, keys){
+  const T=/^([01]\d|2[0-3]):[0-5]\d$/;
+  let L=(list||[]).filter(b=>b&&T.test(b.a)&&T.test(b.b)&&b.a<b.b&&String(b.l||"").trim()).map(b=>({a:b.a,b:b.b,l:String(b.l).trim().slice(0,60),c:CATS.includes(b.c)?b.c:"pausa",s:String(b.s||"").slice(0,80),m:keys.has(b.m)?b.m:undefined}));
+  L.sort((x,y)=>x.a<y.a?-1:1); const out=[]; L.forEach(b=>{ if(!out.length||b.a>=out[out.length-1].b) out.push(b); });
+  if(!out.some(b=>/integral/i.test(b.l))){ const last=out.length?out[out.length-1].b:"21:00"; const [h,m]=last.split(":").map(Number), e=Math.min(23*60+59,h*60+m+15); out.push({a:last,b:`${p2(Math.floor(e/60))}:${p2(e%60)}`,l:"Revisão integral do dia",c:"rev",s:"Finalizar o dia"}); }
+  return out;
+}
+function openEditor(tab){
+  const pj=P(), custom=!!pj.custom;
+  const ED = {tab:tab||"agenda", dia:today().getDay(), week:clone(WEEK), subj:clone(SUBJ), metas:custom?clone(pj.custom.metas||[]):[], pedido:"", proposta:null, dirty:false};
+  const keys = () => new Set(Object.keys(ED.subj));
+  const F = FLOW = {kind:"editor", back:()=>{}, next:()=>salvar()};
+  const tabs = [["agenda","Agenda"]].concat(custom?[["materias","Matérias"],["metas","Metas"]]:[]).concat([["claude","Ajustar com o Claude"]]);
+  const draw = () => {
+    let body = `<h2 class="q" style="font-size:clamp(28px,7vw,40px)">Editar o projeto<small>${esc(pj.nome)}. As mudanças valem a partir de hoje; os registros já feitos ficam como estão.</small></h2>
+      <div class="seg" role="group" aria-label="Seções">${tabs.map(([k,n])=>`<button data-et="${k}" aria-pressed="${ED.tab===k}">${n}</button>`).join("")}</div>`;
+    if(ED.tab==="agenda"){
+      const d=ED.week[ED.dia], K=keys();
+      body += `<div class="pick" role="group" aria-label="Dia da semana">${[1,2,3,4,5,6,0].map(i=>`<button data-ed="${i}" aria-pressed="${ED.dia===i}">${DIAS[i].slice(0,3)}</button>`).join("")}</div>
+        <div class="list">${d.b.map((b,i)=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px">
+          <div class="row" style="gap:8px"><label class="sr" for="ea${i}">Início</label><input class="inp" id="ea${i}" type="time" data-f="a" data-i="${i}" value="${b.a}" style="padding:10px;width:auto"><span class="muted">até</span><label class="sr" for="eb${i}">Fim</label><input class="inp" id="eb${i}" type="time" data-f="b" data-i="${i}" value="${b.b}" style="padding:10px;width:auto"><button class="x" data-del="${i}" aria-label="Apagar ${esc(b.l)}" style="margin-left:auto"><svg class="icon"><use href="#i-x"/></svg></button></div>
+          <label class="sr" for="el${i}">Nome do bloco</label><input class="inp" id="el${i}" data-f="l" data-i="${i}" value="${esc(b.l)}" style="padding:10px 14px">
+          <div class="row wrap" style="gap:8px"><label class="sr" for="ec${i}">Tipo</label><select class="inp" id="ec${i}" data-f="c" data-i="${i}" style="width:auto;padding:8px 12px">${CATS.map(c=>`<option value="${c}" ${b.c===c?"selected":""}>${CAT_N[c]}</option>`).join("")}</select>
+          ${["grad","tech","anbima"].includes(b.c)&&K.size?`<label class="sr" for="em${i}">Matéria</label><select class="inp" id="em${i}" data-f="m" data-i="${i}" style="width:auto;padding:8px 12px"><option value="">matéria automática</option>${[...K].map(k=>`<option value="${k}" ${b.m===k?"selected":""}>${esc(ED.subj[k].n)}</option>`).join("")}</select>`:""}</div>
+        </div>`).join("")}</div>
+        <div class="row wrap"><button class="btn sm" data-add="1">Adicionar bloco</button><button class="btn sm ghost" data-copy="1">Copiar ${DIAS[ED.dia].toLowerCase()} para os dias úteis</button></div>`;
+    }
+    if(ED.tab==="materias"){
+      body += `<div class="list">${Object.entries(ED.subj).map(([k,v])=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="sn-${k}">Nome</label><input class="inp" id="sn-${k}" data-sk="${k}" data-sf="n" value="${esc(v.n)}" style="padding:10px 14px"><button class="x" data-sdel="${k}" aria-label="Remover ${esc(v.n)}"><svg class="icon"><use href="#i-x"/></svg></button></div>
+        <label class="field"><span>Níveis, do básico ao avançado (separe por vírgula)</span><input class="inp" data-sk="${k}" data-sf="lv" value="${esc(v.lv.join(", "))}" style="padding:10px 14px"></label></div>`).join("")}</div>
+        <button class="btn sm" data-sadd="1">Adicionar matéria</button>`;
+    }
+    if(ED.tab==="metas"){
+      const K=[...keys()];
+      body += `<div class="list">${ED.metas.map((g,i)=>`<div class="glass pad" style="display:grid;gap:8px;padding:12px"><div class="row" style="gap:8px"><label class="sr" for="gn${i}">Meta</label><input class="inp" id="gn${i}" data-gi="${i}" data-gf="n" value="${esc(g.n)}" style="padding:10px 14px"><button class="x" data-gdel="${i}" aria-label="Remover meta"><svg class="icon"><use href="#i-x"/></svg></button></div>
+        <div class="grid2"><label class="field"><span>Dia do projeto</span><input class="inp" type="number" min="1" max="${TOTAL}" data-gi="${i}" data-gf="dia" value="${(g.dia||0)+1}" style="padding:10px"></label>
+        <label class="field"><span>${g.marco?"Ação única":"Blocos aprovados"}</span>${g.marco?`<button class="btn sm" data-gmarco="${i}">Virar meta de estudo</button>`:`<input class="inp" type="number" min="1" data-gi="${i}" data-gf="need" value="${g.need||6}" style="padding:10px">`}</label></div>
+        ${g.marco?"":`<div class="pick" aria-label="Matérias que alimentam">${K.map(k=>`<button data-gmat="${i}" data-k="${k}" aria-pressed="${(g.mats||[]).includes(k)}">${esc(ED.subj[k].n)}</button>`).join("")}</div>`}</div>`).join("")}</div>
+        <div class="row wrap"><button class="btn sm" data-gadd="estudo">Nova meta de estudo</button><button class="btn sm" data-gadd="marco">Nova ação única</button></div>`;
+    }
+    if(ED.tab==="claude"){
+      body += `<label class="field"><span>O que mudou na sua rotina ou nos seus planos?</span><textarea class="ta" id="ed-p" placeholder="Ex.: comecei a trabalhar das 13h às 18h; quero estudar mais Português; não estudo mais aos domingos">${esc(ED.pedido)}</textarea></label>
+        <button class="btn c" data-ask="1" ${aiOn()?"":"disabled"}><svg class="icon"><use href="#i-spark"/></svg>Refazer a agenda com o Claude</button>
+        ${aiOn()?"":`<p class="faint" style="font-size:13px">Disponível na versão publicada, com o Claude ligado.</p>`}
+        <div id="ed-prop">${ED.proposta?propHTML():""}</div>`;
+    }
+    sheetHTML({title:"Editar projeto", next:"Salvar mudanças", body});
+    bind();
+  };
+  const propHTML = () => `<div class="ponte"><span class="tag" style="color:#FFD2B0">Proposta do Claude</span>${ED.proposta.resumo?`<p style="margin:0">${esc(ED.proposta.resumo)}</p>`:""}${[1,2,3,4,5,6,0].map(i=>`<p class="mono" style="font-size:12px;margin:0">${DIAS[i].slice(0,3)}: ${ED.proposta.semana[i].filter(b=>["grad","tech","anbima"].includes(b.c)).map(b=>b.a+" "+b.l).join(" · ")||"sem estudo"}</p>`).join("")}<div class="row wrap"><button class="btn sm primary" data-apply="1">Aplicar esta agenda</button><button class="btn sm ghost" data-discard="1">Descartar</button></div></div>`;
+  const read = () => {
+    SH.querySelectorAll("[data-f]").forEach(x=>{ const b=ED.week[ED.dia].b[+x.dataset.i]; if(b) b[x.dataset.f]=x.value||(x.dataset.f==="m"?undefined:x.value); });
+    SH.querySelectorAll("[data-sf]").forEach(x=>{ const v=ED.subj[x.dataset.sk]; if(!v) return; if(x.dataset.sf==="n") v.n=x.value.trim()||v.n; else { const L=x.value.split(",").map(t=>t.trim()).filter(Boolean); v.lv=[0,1,2,3,4].map(j=>L[j]||v.lv[j]); } });
+    SH.querySelectorAll("[data-gf]").forEach(x=>{ const g=ED.metas[+x.dataset.gi]; if(!g) return; if(x.dataset.gf==="n") g.n=x.value; else if(x.dataset.gf==="dia") g.dia=Math.max(0,Math.min(TOTAL-1,(+x.value||1)-1)); else g.need=Math.max(1,+x.value||1); });
+    const t=$("#ed-p"); if(t) ED.pedido=t.value;
+  };
+  const bind = () => {
+    SH.querySelectorAll("[data-et]").forEach(b=>b.onclick=()=>{ read(); ED.tab=b.dataset.et; draw(); });
+    SH.querySelectorAll("[data-ed]").forEach(b=>b.onclick=()=>{ read(); ED.dia=+b.dataset.ed; draw(); });
+    SH.querySelectorAll("[data-f]").forEach(x=>x.addEventListener("change",()=>{ ED.dirty=true; if(x.dataset.f==="c"){ read(); draw(); } }));
+    SH.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ read(); ED.week[ED.dia].b.splice(+b.dataset.del,1); ED.dirty=true; draw(); });
+    SH.querySelector("[data-add]")?.addEventListener("click",()=>{ read(); const L=ED.week[ED.dia].b, last=L.filter(b=>!/integral|antes de dormir/i.test(b.l)).slice(-1)[0]; const a=last?last.b:"08:00", [h,m]=a.split(":").map(Number), e=Math.min(23*60+59,h*60+m+60);
+      L.push({a, b:`${p2(Math.floor(e/60))}:${p2(e%60)}`, l:"Novo bloco", c:"grad", s:""}); ED.dirty=true; draw(); });
+    SH.querySelector("[data-copy]")?.addEventListener("click",()=>{ read(); [1,2,3,4,5].filter(i=>i!==ED.dia).forEach(i=>{ ED.week[i]={...ED.week[i], b:clone(ED.week[ED.dia].b)}; }); ED.dirty=true; toast("Copiado para segunda a sexta."); });
+    SH.querySelectorAll("[data-sdel]").forEach(b=>b.onclick=()=>{ read(); if(Object.keys(ED.subj).length<=1){ toast("O projeto precisa de pelo menos uma matéria."); return; } delete ED.subj[b.dataset.sdel]; ED.dirty=true; draw(); });
+    SH.querySelector("[data-sadd]")?.addEventListener("click",()=>{ read(); const k="m"+Date.now().toString(36).slice(-4); ED.subj[k]={n:"Nova matéria", a:"grad", lv:["Fundamentos","Básico","Intermediário","Avançado","Domínio"], st:[0,4,9,15,22], rec:[]}; ED.dirty=true; draw(); });
+    SH.querySelectorAll("[data-gdel]").forEach(b=>b.onclick=()=>{ read(); ED.metas.splice(+b.dataset.gdel,1); ED.dirty=true; draw(); });
+    SH.querySelectorAll("[data-gadd]").forEach(b=>b.onclick=()=>{ read(); const mar=b.dataset.gadd==="marco"; ED.metas.push({id:"g"+Date.now().toString(36), n:mar?"Nova ação":"Nova meta", dia:Math.min(TOTAL-1,dayIdx(today())+30), mats:[], need:mar?undefined:6, how:"", marco:mar}); ED.dirty=true; draw(); });
+    SH.querySelectorAll("[data-gmarco]").forEach(b=>b.onclick=()=>{ read(); const g=ED.metas[+b.dataset.gmarco]; g.marco=false; g.need=6; draw(); });
+    SH.querySelectorAll("[data-gmat]").forEach(b=>b.onclick=()=>{ read(); const g=ED.metas[+b.dataset.gmat]; g.mats=g.mats||[]; const k=b.dataset.k; g.mats=g.mats.includes(k)?g.mats.filter(x=>x!==k):g.mats.concat(k); ED.dirty=true; draw(); });
+    SH.querySelector("[data-ask]")?.addEventListener("click",ask);
+    SH.querySelector("[data-apply]")?.addEventListener("click",()=>{ for(let i=0;i<7;i++) ED.week[i]={...ED.week[i], b:ED.proposta.semana[i]}; ED.proposta=null; ED.dirty=true; ED.tab="agenda"; draw(); toast("Agenda aplicada. Revise e toque em Salvar mudanças."); });
+    SH.querySelector("[data-discard]")?.addEventListener("click",()=>{ ED.proposta=null; draw(); });
+  };
+  const ask = async () => { read(); if(ED.pedido.trim().length<8){ toast("Conte o que mudou em uma frase."); return; }
+    const box=$("#ed-prop"); box.innerHTML=thinking("O Claude está refazendo a sua agenda…");
+    const atual={}; for(let i=0;i<7;i++) atual[i]=ED.week[i].b.map(b=>({a:b.a,b:b.b,l:b.l,c:b.c,m:b.m}));
+    try{ const r=await aiJson(`Ajuste a AGENDA SEMANAL deste projeto ao pedido da pessoa, mudando só o necessário e mantendo o equilíbrio (estudo, pausas, prioridades e "Revisão integral do dia" no fim de cada dia). Pedido: """${ED.pedido.slice(0,1500)}""". Matérias (chave: nome): ${JSON.stringify(Object.fromEntries(Object.entries(ED.subj).map(([k,v])=>[k,v.n])))}. Categorias permitidas: ${CATS.join(", ")}. Agenda atual (0 = domingo): ${JSON.stringify(atual)}.
+Responda só com JSON: {"resumo":"1–2 frases do que mudou","semana":{"0":[{"a":"HH:MM","b":"HH:MM","l":"","c":"","m":"chave ou vazio"}],"1":[],"2":[],"3":[],"4":[],"5":[],"6":[]}}`);
+      const K=keys(), sem={}; for(let i=0;i<7;i++) sem[i]=cleanDay((r.semana||{})[String(i)]||atual[i], K);
+      ED.proposta={resumo:String(r.resumo||""), semana:sem}; if(FLOW===F && ED.tab==="claude"){ $("#ed-prop").innerHTML=propHTML(); bind(); }
+    }catch(e){ const b=$("#ed-prop"); if(b) b.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; } };
+  const salvar = () => { read(); const K=keys();
+    for(let i=0;i<7;i++) ED.week[i]={...ED.week[i], b:cleanDay(ED.week[i].b, K)};
+    if(custom){ M.projeto.custom={...M.projeto.custom, week:ED.week, subj:ED.subj, metas:ED.metas.filter(g=>String(g.n).trim())}; }
+    else M.projeto={...(M.projeto||{}), id:"caverna", weekOverride:ED.week};
+    syncProjetos(); applyProjeto(); saveMain(); closeSheet(); toast("Projeto atualizado."); };
+  openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),#05060A");
+  draw();
+}
+
+/* ---------- modelos prontos (sem IA) ---------- */
+const MODELOS = {
+  concurso:{titulo:"Concurso público", alvo:"Passar em um concurso de nível médio", dias:120, mats:[["port","Português"],["rlm","Raciocínio lógico"],["info","Informática"],["dir","Noções de Direito"],["esp","Conhecimentos específicos"]], lema:"Constância vence talento"},
+  enem:{titulo:"ENEM e vestibular", alvo:"Fazer uma boa nota no ENEM", dias:180, mats:[["mat","Matemática"],["ling","Linguagens"],["red","Redação"],["nat","Ciências da Natureza"],["hum","Ciências Humanas"]], lema:"Um passo por dia até a aprovação"},
+  emprego:{titulo:"Conseguir emprego", alvo:"Conquistar uma vaga na área escolhida", dias:60, mats:[["cv","Currículo e LinkedIn"],["exc","Excel"],["com","Comunicação e entrevista"],["area","Conhecimentos da área"]], lema:"Preparado para a oportunidade"},
+  faculdade:{titulo:"Faculdade", alvo:"Ir bem nas disciplinas do semestre", dias:120, mats:[["d1","Disciplina 1"],["d2","Disciplina 2"],["d3","Disciplina 3"],["d4","Disciplina 4"]], lema:"Entender, não decorar"}
+};
+function planoModelo(tipo, A){
+  const md=MODELOS[tipo], hrs=Math.max(1,parseInt(A.horas)||2), ndias=Math.max(3,Math.min(7,+A.dias||5)), [ah,am]=(A.acorda||"06:00").split(":").map(Number);
+  const hhmm = m => `${p2(Math.floor(m/60)%24)}:${p2(m%60)}`, ini=ah*60+am+(A.prior.includes("Fé")?60:30);
+  const estudoDias = [1,2,3,4,5,6,0].slice(0,ndias), semana={};
+  for(let d=0;d<7;d++){ const L=[]; let t=ini;
+    if(A.prior.includes("Fé")) L.push({a:hhmm(ah*60+am),b:hhmm(ah*60+am+30),l:"Oração",c:"oracao"});
+    if(estudoDias.includes(d)){ for(let i=0;i<hrs;i++){ const m=md.mats[(d+i)%md.mats.length]; L.push({a:hhmm(t),b:hhmm(t+50),l:m[1],c:"grad",m:m[0]}); t+=60; } }
+    if(A.prior.includes("Saúde e academia")) L.push({a:hhmm(Math.max(t,17*60)),b:hhmm(Math.max(t,17*60)+60),l:"Academia",c:"saude"});
+    const [dh,dm]=(A.dorme||"22:30").split(":").map(Number), dorme=Math.max(t+30, dh*60+dm);
+    L.push({a:hhmm(dorme-30),b:hhmm(dorme-15),l:"Revisão integral do dia",c:"rev",s:"Finalizar o dia"});
+    semana[d]=L; }
+  return {contexto:`Projeto montado a partir do modelo "${md.titulo}". Ajuste as matérias e a agenda no editor do projeto.`, materias:md.mats.map(([k,n])=>({k,n,area:"grad",niveis:["Fundamentos","Básico","Intermediário","Avançado","Domínio"]})), semana,
+    fases:[{n:"Base",de:0,ate:Math.floor(md.dias*.5)-1,f:"Teoria e fundamentos"},{n:"Prática",de:Math.floor(md.dias*.5),ate:md.dias-1,f:"Questões, simulados e revisão"}],
+    metas:md.mats.slice(0,3).map(([k,n],i)=>({n:`${n} consolidado`,dia:Math.floor(md.dias*(i+1)/4),mats:[k],need:6})), frases:[md.lema]};
+}
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
