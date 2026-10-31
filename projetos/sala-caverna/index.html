@@ -1,4 +1,4 @@
-<title>Caverna</title>
+<title>Yaad1</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,6 +106,9 @@ h1,h2,h3,p{margin:0}
 .tile.wide{grid-column:span 2}
 
 /* ---------- timeline ---------- */
+.wallet{display:flex;align-items:center;gap:12px;width:100%;padding:10px 12px;border-radius:22px;color:var(--text);border:1px solid rgb(255 255 255 / .16);
+  background:radial-gradient(90% 120% at 100% 0%,rgb(255 106 26 / .28),transparent 55%),radial-gradient(80% 100% at 0% 100%,rgb(90 110 255 / .22),transparent 60%),linear-gradient(160deg,#141826,#07080D);
+  box-shadow:inset 0 1px 0 rgb(255 255 255 / .1),0 20px 50px rgb(0 0 0 / .45)}
 .tl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .tl button{width:100%;display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;text-align:left;padding:12px 14px;border-radius:18px;border:1px solid var(--edge);background:var(--glass);min-height:60px}
 .tl time{font:500 12px/1.25 var(--mono);color:var(--muted)}
@@ -387,9 +390,12 @@ h1,h2,h3,p{margin:0}
 /* ====================================================================
    DADOS FIXOS DO PROJETO CAVERNA
    ==================================================================== */
-const START = new Date(2026, 9, 16), TOTAL = 100;
+let START = new Date(2026, 9, 16), TOTAL = 100;
 const NAME_DEFAULT = "Edna";
-const LEMA = "Deus · Disciplina · Conhecimento · Propósito";
+const PROJ0 = {nome:"Projeto Caverna", lema:"Deus · Disciplina · Conhecimento · Propósito", meta:"Estágio 2027 Serasa Experian · Analytics", inicio:"2026-10-16", dias:100};
+const P = () => Object.assign({}, PROJ0, M.projeto||{});
+let LEMA = PROJ0.lema;
+function applyProjeto(){ const pj=P(); const [y,m,d]=pj.inicio.split("-").map(Number); START=new Date(y,m-1,d); TOTAL=Math.max(7,Math.min(730,+pj.dias||100)); LEMA=pj.lema||""; }
 
 const AREAS = {
   oracao:{n:"Oração"}, biblia:{n:"Bíblia"}, min:{n:"Ministério"}, saude:{n:"Saúde e família"},
@@ -533,6 +539,7 @@ function saveDay(dstr){ lsSet("cav:d:"+dstr, DAYS[dstr]); dbPut("d_"+dstr, {...D
 
 async function boot(){
   const lm = lsGet("cav:main"); if(lm) M = Object.assign(M, lm);
+  applyProjeto();
   if(!M.inicio){ M.inicio = iso(today()); lsSet("cav:main", M); }
   for(let i=0;i<TOTAL;i++){ const k=iso(addDays(START,i)); const v=lsGet("cav:d:"+k); if(v) DAYS[k]=v; }
   render();
@@ -545,7 +552,7 @@ async function boot(){
     if(c){
       const timer = setTimeout(()=>{}, 10000);
       const s = await c.doc("main").get().catch(()=>null);
-      if(s && s.exists){ const loc=M.inicio; M = Object.assign(M, s.data()); if(!M.inicio) M.inicio=loc; }
+      if(s && s.exists){ const loc=M.inicio; M = Object.assign(M, s.data()); if(!M.inicio) M.inicio=loc; applyProjeto(); }
       else if(lm) saveMain();
       const q = await c.get().catch(()=>null);
       if(q) q.docs.forEach(x => { const v=x.data(); if(v && v.date){ const o={...v}; delete o.date; DAYS[v.date]=o; } });
@@ -579,7 +586,7 @@ function aiErr(e){
 }
 function perfil(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
-  return `Contexto fixo: você é o tutor e gestor do Projeto Caverna (${LEMA}), 100 dias de 16/10/2026 a 23/01/2027. Hoje é o dia ${d} de 100 (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
+  const pj=P(); return `Contexto fixo: você é o tutor e gestor do ${pj.nome} (${LEMA}), ${TOTAL} dias a partir de ${fromIso(pj.inicio).toLocaleDateString("pt-BR")}, dentro do app Yaad1 (app de direção). Meta central do projeto: ${pj.meta}. Hoje é o dia ${d} de ${TOTAL} (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
 }
 async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; return SAMPLE.json(perfil()+"\n\n"+prompt, Object.assign({cache:false}, opts||{})); }
 
@@ -639,14 +646,32 @@ $("#cbtn").addEventListener("click", () => openChat());
 
 function toast(t){ const el=document.createElement("div"); el.className="toast"; el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(), 2600); }
 
+const DOTS = `<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
+function avatarHTML(sz){ const ph=M.profile.photo, n=M.profile.name||NAME_DEFAULT; return `<span class="avatar" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.4)}px">${ph?`<img src="${esc(ph)}" alt="">`:esc(n[0])}</span>`; }
 function topBar(){
-  const ph = M.profile.photo, n = M.profile.name || NAME_DEFAULT;
+  const pj=P();
   return `<header class="top">
-    <div class="row"><button class="avatar" data-act="perfil" aria-label="Seu perfil">${ph?`<img src="${esc(ph)}" alt="">`:esc(n[0])}</button>
-      <div><div class="lema">${LEMA}</div><div class="faint mono" style="font-size:12px;margin-top:4px">Nível ${LEVEL()} · ${M.xp||0} XP</div></div></div>
+    <div class="row grow">${avatarHTML(44)}<div class="grow"><div class="lema">${esc(pj.nome)}</div><div class="faint mono" style="font-size:12px;margin-top:4px">Nível ${LEVEL()} · ${M.xp||0} pontos de domínio</div></div></div>
+    <button class="x" data-act="menu" aria-label="Menu: perfil e projeto, evolução, documentos">${DOTS}</button>
   </header>`;
 }
-
+function proximidade(){
+  const di=Math.max(0,Math.min(TOTAL,dayIdx(today())+1)), tp=Math.round(di/TOTAL*100);
+  const gp=Math.round(GOALS.map(goalProgress).reduce((a,b)=>a+b,0)/GOALS.length*100);
+  return {tp, gp, msg: gp>=tp ? "No ritmo para o alvo. Continue assim." : gp>=tp-15 ? "Perto do ritmo. A missão de hoje te coloca em dia." : "Hora de acelerar: a missão de hoje é o próximo passo até o alvo."};
+}
+function carteiraHTML(){
+  const pj=P(), pr=proximidade(), di=Math.max(1,Math.min(TOTAL,dayIdx(today())+1)), nome=M.profile.full||M.profile.name||NAME_DEFAULT;
+  return `<button class="wallet" data-act="menu" aria-label="${esc(pj.nome)}, ${esc(nome)}, dia ${di} de ${TOTAL}. Abrir menu">
+    ${avatarHTML(44)}
+    <span class="grow" style="display:grid;gap:3px;min-width:0;text-align:left">
+      <span class="row" style="gap:8px;justify-content:space-between"><span class="eyebrow" style="color:#FFD2B0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(pj.nome)}</span><span class="mono" style="font-size:11px;color:var(--muted);white-space:nowrap">${dayIdx(today())<0?`começa ${START.getDate()}/${START.getMonth()+1}`:`dia ${di}/${TOTAL}`}</span></span>
+      <b style="font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(nome)}</b>
+      <span class="gbar" style="height:4px" aria-hidden="true"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%;top:-3px;bottom:-3px"></em></span>
+    </span>
+    <span class="x" aria-hidden="true">${DOTS}</span>
+  </button>`;
+}
 /* ---------------- HOJE ---------------- */
 function vHoje(){
   const t = today(), sel = SELDAY ? fromIso(SELDAY) : t, isToday = iso(sel)===iso(t);
@@ -690,14 +715,14 @@ function vHoje(){
   });
 
   return `<div class="view">
-    ${topBar()}
+    ${carteiraHTML()}
     <div class="hoje-grid">
      <div class="h-top" style="display:grid;gap:18px">
       <section class="hello">
         <div class="eyebrow">${hi}, ${esc(M.profile.name||NAME_DEFAULT)}</div>
         <div class="dayline"><h1 class="title-xl">${sel.getDate()} de ${MES[sel.getMonth()]}</h1></div>
         <div class="row wrap" style="gap:8px">
-          <span class="chip"><i style="color:var(--c)"></i>Dia ${di} de 100</span>
+          ${dayIdx(t)<0?`<span class="chip"><i style="color:var(--c)"></i>Começa em ${START.getDate()}/${START.getMonth()+1}</span>`:""}
           ${ph?`<span class="chip">${esc(ph.n)}</span>`:""}
           <span class="chip">${esc(W.n)} · acordar ${fmtH(W.w)}</span>
         </div>
@@ -801,12 +826,12 @@ function evoPanorama(){
   const bars = Object.entries(hoursByArea).sort((a,b)=>b[1]-a[1]).map(([a,m])=>`<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between"><span>${esc(a)}</span><span class="mono muted">${(m/60).toFixed(1)} h</span></div><div class="bar"><i style="width:${Math.round(m/maxH*100)}%;background:var(--c)"></i></div></div>`).join("");
   const p = Math.round(Math.min(1,(di+1)/TOTAL)*100);
   return `<div class="kpis">
-      <div class="kpi"><b>${di+1}</b><span>dia de 100</span></div>
+      <div class="kpi"><b>${dayIdx(t)<0?0:di+1}</b><span>dia de ${TOTAL}</span></div>
       <div class="kpi"><b>${closed}</b><span>dias registrados</span></div>
       <div class="kpi"><b>${streak()}</b><span>dias de constância</span></div>
       <div class="kpi"><b>${qa==null?"--":Math.round(qa*100)+"%"}</b><span>média nas provas</span></div>
     </div>
-    <section class="glass pad" style="display:grid;gap:12px"><div class="sec-h"><h2>100 dias</h2><span class="mono muted" style="font-size:13px">${p}% do caminho</span></div><div class="heat" aria-label="Mapa dos 100 dias">${heat}</div>
+    <section class="glass pad" style="display:grid;gap:12px"><div class="sec-h"><h2>${TOTAL} dias</h2><span class="mono muted" style="font-size:13px">${dayIdx(t)<0?0:p}% do caminho</span></div><div class="heat" aria-label="Mapa dos ${TOTAL} dias">${heat}</div>
       <div class="row wrap faint" style="font-size:12px;gap:14px"><span>cinza: sem registro</span><span style="color:#FFB37A">laranja: mais forte quanto mais blocos confirmados</span></div></section>
     <section class="glass pad" style="display:grid;gap:12px"><h2 class="title-m">Tempo de estudo confirmado</h2>${bars||'<p class="muted">Ainda sem blocos de estudo confirmados.</p>'}</section>
     <section class="glass pad" style="display:grid;gap:12px" id="pan-ai"><div class="sec-h"><h2 class="title-m">Leitura do tutor</h2></div>
@@ -838,7 +863,7 @@ function evoMetas(){
     ${metasConectadasHTML()}
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Portas abertas</h2><button class="link" data-act="nova-vaga">Adicionar vaga</button></div><div class="list">${vagas}</div>
       <p class="faint" style="font-size:13px">As vagas e prazos vêm do seu plano. Confirme sempre no site de cada empresa antes de se inscrever.</p></section>
-    <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases dos 100 dias</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
+    <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases do ${esc(P().nome)}</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
 }
 function evoArvore(){
   const L = k => levelOf(k).l, m = M.marcos, sim = (M.simulados||[]).slice(-3), simAvg = sim.length?sim.reduce((a,s)=>a+s.score,0)/sim.length:0;
@@ -871,7 +896,7 @@ function evoAnbima(){
 /* ---------------- DIÁRIO ---------------- */
 function vDiario(){
   const t=today(); let html="";
-  const months = [[2026,9],[2026,10],[2026,11],[2027,0]];
+  const months = []; { let d=new Date(START.getFullYear(),START.getMonth(),1); const end=addDays(START,TOTAL-1); while(d<=end){ months.push([d.getFullYear(),d.getMonth()]); d=new Date(d.getFullYear(),d.getMonth()+1,1); } }
   months.forEach(([y,m]) => {
     const first=new Date(y,m,1), last=new Date(y,m+1,0); let cells=WD.map((w,i)=>`<span class="wd">${WD[(i+1)%7]}</span>`).join("");
     const pad=(first.getDay()+6)%7; for(let i=0;i<pad;i++) cells+=`<span></span>`;
@@ -882,7 +907,7 @@ function vDiario(){
     html += `<div class="month"><h3>${MES[m][0].toUpperCase()+MES[m].slice(1)}</h3><div class="cal">${cells}</div></div>`;
   });
   return `<div class="view">${topBar()}
-    <section style="display:grid;gap:8px"><span class="eyebrow">Diário dos 100 dias</span><h1 class="title-l">Volte a qualquer dia</h1>
+    <section style="display:grid;gap:8px"><span class="eyebrow">Diário dos ${TOTAL} dias</span><h1 class="title-l">Volte a qualquer dia</h1>
     <p class="muted">Toque num dia para ver o que você estudou, o que escreveu, as provas e o resumo. Dá para refazer uma atividade sobre aquele dia.</p></section>
     <div class="months">${html}</div></div>`;
 }
@@ -907,7 +932,7 @@ function keepSession(){
 function closeSheet(){ keepSession(); if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
   if(RETURN){ const r=RETURN; RETURN=null; FLOW=r; r.refresh(); openSheet(r.bg); drawFinal(); return; }
   SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
-  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); }
+  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); else if(o && o.dataset && o.dataset.act){ const n=document.querySelector(`[data-act="${o.dataset.act}"]`); if(n) n.focus(); } }
 function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
   const dots = steps ? `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>` : "";
   SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
@@ -1360,7 +1385,7 @@ function openDay(dstr){
   openSheet("radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .3),transparent 60%),#05060A");
   const items = bs.filter(b=>Dy.blocks[bkey(b)]).map(b=>{ const r=Dy.blocks[bkey(b)]; return `<button class="item" data-act5="rec" data-k="${esc(bkey(b))}"><span class="st ${r.st==="feito"?"done":"miss"}" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:${r.st==="feito"?"var(--ok)":"var(--bad)"};color:#05060A"><svg class="icon" style="width:14px;height:14px"><use href="#i-${r.st==="feito"?"check":"x"}"/></svg></span><span class="grow"><b>${esc(b.l)}</b><small>${fmtH(b.a)} · ${esc(r.topic||r.motivo||AREAS[b.c].n)}${r.score!=null?` · ${Math.round(r.score*100)}%`:""}</small></span></button>`; }).join("");
   const studied = bs.some(b=>Dy.blocks[bkey(b)]&&Dy.blocks[bkey(b)].mat);
-  sheetHTML({title:`Dia ${dayIdx(d)+1} de 100`, next:"Fechar", body:`
+  sheetHTML({title:`Dia ${dayIdx(d)+1} de ${TOTAL}`, next:"Fechar", body:`
     <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${WEEK[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
     ${f&&f.sint?`<div class="glass pad"><span class="tag">Síntese do dia</span><p class="title-m" style="margin-top:6px;font-weight:400">${esc(f.sint.titulo||"")}</p>${(f.sint.blocos||[]).map(b=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(b.area)}:</b> ${esc(b.resumo)}</p>`).join("")}</div>`:""}
     ${f&&((f.frases||[]).some(Boolean)||f.geral)?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
@@ -1397,7 +1422,7 @@ function openSubject(k){
    FITA DO TEMPO (pinça para afastar: agora → dia → semana → 100 dias)
    ==================================================================== */
 let ZOOM = 1;
-const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","100 dias"];
+const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","Projeto"];
 const SHORT = l => l.replace(/^Oração (da manhã|das 18h|antes de dormir)$/,(m,x)=>x==="da manhã"?"Oração":x==="das 18h"?"Oração 18h":"Oração noite")
   .replace(/Bíblia e (teologia|texto do ensinamento)/,"Bíblia").replace("Graduação com maior necessidade","Graduação").replace("Ciências Econômicas","Economia")
   .replace("Revisão integral do dia","Revisão do dia").replace(/^Culto de .*/,"Culto").replace("Programação da igreja","Igreja").replace("Escola Bíblica Dominical","EBD")
@@ -1417,7 +1442,7 @@ function dayCard(d, mode){
   }
   return `<button class="dcard ${rel} ${mode}" data-act="rseg" data-d="${s}" aria-label="${name}, ${st.done} de ${st.total} feitos">
     <span class="dh">${mode==="dots"?`<b>${s===iso(t)?"Hoje":WD[d.getDay()]}</b><small>${d.getDate()}</small>`:`<b>${name}</b><small>${d.getDate()}/${d.getMonth()+1}</small>`}</span>
-    ${inRange?inner:`<span class="faint" style="font-size:12px">fora dos 100 dias</span>`}
+    ${inRange?inner:`<span class="faint" style="font-size:12px">fora do projeto</span>`}
     ${rel!=="future"&&inRange?`<span class="dp">${st.done}/${st.total}</span>`:""}
   </button>`;
 }
@@ -1454,7 +1479,8 @@ function ribbonInner(){
   const di=dayIdx(t); let cells="", full=0;
   for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), sd=dayStats(s); if(i<=di&&sd.pct>=.8) full++; const cls = i>di?"":sd.pct>=.8?"f":sd.pct>0?"p":"";
     cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}" aria-hidden="true"></i>`; }
-  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário dos 100 dias</button><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
+  const cols = TOTAL<=35?Math.min(TOTAL,10):TOTAL<=120?20:30, fim=addDays(START,TOTAL-1);
+  return head(`${full} ${full===1?"completo":"completos"} · dia ${Math.max(0,di+1)}/${TOTAL}`)+`<div class="grid100" style="grid-template-columns:repeat(${cols},1fr)">${cells}</div><div class="rl"><span>${START.getDate()}/${START.getMonth()+1}</span><span style="text-align:right">${esc(P().meta)} · ${fim.getDate()}/${fim.getMonth()+1}</span></div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário do projeto</button>`;
 }
 function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
 (function(){
@@ -1639,20 +1665,71 @@ Você é o tutor dentro do app Caverna. Ensine com perguntas e pistas antes de d
 }
 
 /* ---------- perfil ---------- */
-function openProfile(){
-  FLOW={kind:"perfil", next:()=>{ M.profile.name=$("#pf-n").value.trim()||NAME_DEFAULT; saveMain(); closeSheet(); }, back:()=>{}};
+function openMenu(){
+  FLOW={kind:"menu", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
+  sheetHTML({title:"Yaad1", body:`
+    <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||M.profile.name||NAME_DEFAULT)}</b><div class="muted" style="font-size:13px">${esc(P().nome)} · ${esc(P().lema)}</div></div></div>
+    ${(()=>{ const pr=proximidade(); return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${M.xp||0} pontos de domínio</small></div>`; })()}
+    <div class="list">
+      <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Minha evolução</b><small>Panorama, provas, metas e árvore</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="docs"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Documentos</b><small>Ementas e programas que alimentam a sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="share"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Compartilhar o Yaad1</b><small>Convide alguém a montar o próprio projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <div class="item" style="opacity:.6"><svg class="icon"><use href="#i-spark"/></svg><span class="grow"><b>Assinatura e plano</b><small>Em breve</small></span></div>
+    </div>
+    <p class="faint" style="font-size:13px">Yaad1: de <i>ya'ad</i>, que em hebraico significa alvo, destino. Um app de direção para acertar o seu alvo.</p>`});
+  SH.querySelectorAll("[data-m]").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; closeSheetSoft();
+    if(m==="perfil") openProfile();
+    else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
+    else if(m==="docs") openDocs();
+    else if(m==="share") openShare(); }));
+}
+function openDocs(){
+  FLOW={kind:"docs", next:()=>closeSheet(), back:()=>{}};
   openSheet();
-  sheetHTML({title:"Perfil", next:"Salvar", body:`
-    <div style="display:grid;justify-items:center;gap:12px"><button class="avatar" id="pf-ph" style="width:120px;height:120px;font-size:44px" aria-label="Trocar foto">${M.profile.photo?`<img src="${esc(M.profile.photo)}" alt="Sua foto">`:esc((M.profile.name||"E")[0])}</button><span class="muted" style="font-size:13px">Toque para trocar a foto</span></div>
-    <label class="field"><span>Nome</span><input class="inp" id="pf-n" value="${esc(M.profile.name||"")}"></label>
-    <div class="kpis"><div class="kpi"><b>${LEVEL()}</b><span>nível</span></div><div class="kpi"><b>${M.xp||0}</b><span>XP</span></div><div class="kpi"><b>${allStudy().length}</b><span>estudos</span></div><div class="kpi"><b>${(M.erros||[]).length}</b><span>erros registrados</span></div></div>
-    <p class="note">${DB&&UID?"Seus registros ficam salvos na sua conta e aparecem em qualquer aparelho.":"Seus registros ficam salvos neste navegador. Na versão publicada, ficam na sua conta."}</p>
+  sheetHTML({title:"Documentos", next:"Fechar", body:`<h2 class="q">Documentos<small>Ementas e conteúdos que você colou ou fotografou. Cada um vira uma trilha de aulas na sala de aula da matéria.</small></h2>
+    <div class="list">${Object.entries(SUBJ).map(([k,v])=>{ const pg=(M.programa||{})[k]; return `<button class="item" data-doc="${k}"><span class="grow"><b>${esc(v.n)}</b><small>${pg?`${esc(pg.disciplina||v.n)} · ${pg.topicos.length} tópicos`:"Sem programa ainda · toque para adicionar"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}</div>`});
+  SH.querySelectorAll("[data-doc]").forEach(b=>b.addEventListener("click",()=>{ closeSheetSoft(); openPrograma(b.dataset.doc); }));
+}
+function openShare(){
+  FLOW={kind:"share", next:()=>closeSheet(), back:()=>{}};
+  openSheet();
+  sheetHTML({title:"Compartilhar", next:"Entendi", body:`<h2 class="q">Convide alguém<small>Cada pessoa entra com a própria conta Claude. Os registros de cada uma ficam privados, e as aulas e provas usam a conta dela.</small></h2>
+    <div class="steps"><div class="step"><span class="tag">Passo 1</span><b>No claude.ai, abra este app</b><p>Use o botão Compartilhar no topo da página do app.</p></div>
+    <div class="step"><span class="tag">Passo 2</span><b>Envie o link</b><p>A pessoa abre, entra com a conta dela e monta o próprio projeto em Perfil e projeto.</p></div></div>
+    <p class="note">O quiz de direção, que monta o projeto de outras realidades (concurso, ENEM, emprego, autodescoberta), chega na próxima etapa.</p>`});
+}
+function openProfile(){
+  const pj=P(), pf=M.profile;
+  FLOW={kind:"perfil", back:()=>{}, next:()=>{
+    const v=id=>($("#"+id)||{}).value?.trim()||"";
+    pf.full=v("pf-full"); pf.name=v("pf-n")||NAME_DEFAULT; pf.email=v("pf-e"); pf.tel=v("pf-t");
+    const ini=v("pj-i"), dias=+v("pj-d");
+    M.projeto={nome:v("pj-n")||PROJ0.nome, lema:v("pj-l"), meta:v("pj-m")||PROJ0.meta, inicio:/^\d{4}-\d{2}-\d{2}$/.test(ini)?ini:pj.inicio, dias:dias>=7?Math.min(730,Math.round(dias)):pj.dias};
+    applyProjeto(); saveMain(); closeSheet(); toast("Perfil e projeto salvos."); }};
+  openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
+  sheetHTML({title:"Perfil e projeto", next:"Salvar", body:`
+    <div style="display:grid;justify-items:center;gap:10px"><button class="avatar" id="pf-ph" style="width:120px;height:120px;font-size:44px" aria-label="Trocar foto">${pf.photo?`<img src="${esc(pf.photo)}" alt="Sua foto">`:esc((pf.name||"E")[0])}</button><span class="muted" style="font-size:13px">Toque para escolher uma foto da galeria</span></div>
+    <span class="eyebrow">Seus dados</span>
+    <label class="field"><span>Nome completo</span><input class="inp" id="pf-full" autocomplete="name" value="${esc(pf.full||"")}"></label>
+    <label class="field"><span>Nome que o app usa com você</span><input class="inp" id="pf-n" autocomplete="nickname" value="${esc(pf.name||"")}"></label>
+    <label class="field"><span>E-mail</span><input class="inp" id="pf-e" type="email" autocomplete="email" value="${esc(pf.email||"")}"></label>
+    <label class="field"><span>Telefone</span><input class="inp" id="pf-t" type="tel" autocomplete="tel" value="${esc(pf.tel||"")}"></label>
+    <span class="eyebrow" style="margin-top:8px">Seu projeto</span>
+    <label class="field"><span>Nome do projeto</span><input class="inp" id="pj-n" value="${esc(pj.nome)}"></label>
+    <label class="field"><span>Lema</span><input class="inp" id="pj-l" value="${esc(pj.lema)}"></label>
+    <label class="field"><span>Alvo central (a meta que o projeto persegue)</span><input class="inp" id="pj-m" value="${esc(pj.meta)}"></label>
+    <p class="faint" style="font-size:13px">As metas detalhadas, as fases e a agenda ainda seguem o Projeto Caverna. Na próxima etapa, o quiz de direção monta tudo isso para qualquer projeto.</p>
+    <div class="grid2"><label class="field"><span>Início</span><input class="inp" id="pj-i" type="date" value="${esc(pj.inicio)}"></label><label class="field"><span>Duração (dias)</span><input class="inp" id="pj-d" type="number" min="7" max="730" value="${esc(pj.dias)}"></label></div>
+    <div class="glass pad" style="display:grid;gap:6px"><span class="tag">Pontos de domínio</span><p style="font-size:14px">Você ganha pontos a cada aprendizado comprovado: bloco aprovado na prova, revisão, erro forjado, simulado e dia finalizado. A cada 250 pontos, sobe um nível. Hoje: nível ${LEVEL()}, ${M.xp||0} pontos.</p></div>
+    <p class="note">${DB&&UID?"Seus registros ficam salvos na sua conta Claude e aparecem em qualquer aparelho.":"Seus registros ficam salvos neste navegador. Na versão publicada, ficam na sua conta."} O quiz de direção, que ajuda a definir a meta e monta a rotina, chega na próxima etapa.</p>
     ${DL?`<button class="btn" id="pf-bk">Baixar backup dos registros</button>`:""}`});
   $("#pf-ph").addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const img=await loadImg(f[0]).catch(()=>null); if(!img) return;
     const c=scale(img,320); const data=c.toDataURL("image/jpeg",.8);
-    if(ASSETS){ try{ const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)); const up=await ASSETS.upload(b); M.profile.photo=up.url; }catch(e){ M.profile.photo=data; } } else M.profile.photo=data;
-    saveMain(); openProfile(); });
-  $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`caverna-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
+    if(ASSETS){ try{ const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)); const up=await ASSETS.upload(b); pf.photo=up.url; }catch(e){ pf.photo=data; } } else pf.photo=data;
+    saveMain(); const btn=$("#pf-ph"); if(btn) btn.innerHTML=`<img src="${esc(pf.photo)}" alt="Sua foto">`; });
+  $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`yaad1-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
 }
 
 /* ---------- ações da página ---------- */
@@ -1674,6 +1751,7 @@ document.addEventListener("click", e => {
   else if(act==="marco"){ M.marcos[a.dataset.k]=!M.marcos[a.dataset.k]; if(M.marcos.inscricao){ const v=M.vagas.find(x=>x.id==="serasa"); if(v&&v.st==="interesse") v.st="inscrita"; } saveMain(); render(); }
   else if(act==="dia") openDay(a.dataset.d);
   else if(act==="perfil") openProfile();
+  else if(act==="menu") openMenu();
   else if(act==="simulado") openSimulado(a.dataset.k||"anbima");
   else if(act==="retomar") resumeSession();
   else if(act==="manha") openManha();
