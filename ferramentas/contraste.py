@@ -8,6 +8,9 @@ Regras:
   texto principal e secundário sobre fundo e superfície ............ ≥ 4.5
   texto sobre o botão de destaque (on-accent / accent) ............. ≥ 4.5
   destaque sobre o fundo (ícones, barras, bordas de foco) .......... ≥ 3.0
+  status (--success / --danger) sobre --surface e --surface-2 ...... ≥ 4.5
+  texto do botão de perigo (on-danger / danger) .................... ≥ 4.5
+Tokens que um tema não redefine herdam o valor do bloco :root.
 Superfícies translúcidas (rgb(... / a)) são misturadas sobre --bg antes do cálculo.
 """
 import os
@@ -51,9 +54,12 @@ def ratio(a, b):
 def main():
     css = open(CSS, encoding='utf-8').read()
     temas = re.findall(r'\[data-tema="([^"]+)"\]\s*\{(.*?)\n\}', css, re.S)
+    raiz = re.search(r'^:root\s*\{(.*?)\n\}', css, re.S | re.M)
+    padrao = {k: parse(v) for k, v in re.findall(r'--([\w-]+):\s*([^;]+);', raiz.group(1))} if raiz else {}
     falhas = 0
     for nome, corpo in temas:
-        tok = {k: parse(v) for k, v in re.findall(r'--([\w-]+):\s*([^;]+);', corpo)}
+        tok = dict(padrao)
+        tok.update({k: parse(v) for k, v in re.findall(r'--([\w-]+):\s*([^;]+);', corpo)})
         bg = tok.get('bg')
         if not bg:
             print(f'{nome:14} sem --bg sólido, ignorado')
@@ -61,6 +67,9 @@ def main():
         surface = tok.get('surface') or bg
         if surface[1] < 1:
             surface = blend(surface, bg)
+        surface2 = tok.get('surface-2') or surface
+        if surface2[1] < 1:
+            surface2 = blend(surface2, bg)
         pares = [
             ('texto/fundo', 'text', bg, 4.5),
             ('texto/superfície', 'text', surface, 4.5),
@@ -68,6 +77,10 @@ def main():
             ('secundário/fundo', 'text-muted', bg, 4.5),
             ('botão', 'on-accent', tok.get('accent'), 4.5),
             ('destaque/fundo', 'accent', bg, 3.0),
+            ('sucesso/superfície', 'success', surface, 4.5),
+            ('sucesso/superfície-2', 'success', surface2, 4.5),
+            ('perigo/superfície-2', 'danger', surface2, 4.5),
+            ('botão de perigo', 'on-danger', tok.get('danger'), 4.5),
         ]
         linha = []
         for rotulo, chave, fundo, minimo in pares:

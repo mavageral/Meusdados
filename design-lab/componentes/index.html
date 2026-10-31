@@ -2,7 +2,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter+Tight:wght@500;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap">
 <link rel="stylesheet" href="../tokens/temas.css">
 <link rel="stylesheet" href="componentes.css">
 <style>
@@ -31,6 +31,8 @@
   }
   .picker button[aria-pressed="true"] { background: var(--lab-text); color: var(--lab-bg); border-color: var(--lab-text); }
   .picker button:focus-visible { outline: 2px solid var(--lab-text); outline-offset: 2px; }
+  @media (max-width: 640px) { .picker { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; } .picker button { flex: none; } }
+  .picker button { min-height: 44px; }
   .picker i { width: 10px; height: 10px; border-radius: 50%; display: block; background: var(--accent); }
 
   .stage { border-radius: 28px; background: var(--hero); padding: clamp(16px, 4vw, 40px); display: grid; gap: 40px; border: 1px solid var(--lab-line); }
@@ -102,10 +104,13 @@
         <span class="c-tip">Dica: ⌘ K</span>
       </div>
       <div class="c-tabs" role="tablist" aria-label="Linguagem">
-        <button role="tab" aria-selected="true" type="button">SQL</button>
-        <button role="tab" aria-selected="false" type="button">Python</button>
-        <button role="tab" aria-selected="false" type="button">Power BI</button>
+        <button role="tab" id="t-sql" aria-selected="true" aria-controls="p-sql" type="button">SQL</button>
+        <button role="tab" id="t-py" aria-selected="false" aria-controls="p-py" tabindex="-1" type="button">Python</button>
+        <button role="tab" id="t-bi" aria-selected="false" aria-controls="p-bi" tabindex="-1" type="button">Power BI</button>
       </div>
+      <p class="note" role="tabpanel" id="p-sql" aria-labelledby="t-sql">Consultas, joins e janelas. Exemplo de painel de aba.</p>
+      <p class="note" role="tabpanel" id="p-py" aria-labelledby="t-py" hidden>pandas, limpeza e gráficos.</p>
+      <p class="note" role="tabpanel" id="p-bi" aria-labelledby="t-bi" hidden>Modelagem, DAX e relatórios.</p>
     </section>
 
     <section class="sec">
@@ -136,12 +141,12 @@
         </div>
         <div class="c-field c-field--error">
           <label for="f-email">E-mail</label>
-          <div class="c-input"><svg class="c-icon"><use href="#i-mail"/></svg><input id="f-email" type="email" value="edna@exemplo" aria-describedby="f-email-h" aria-invalid="true"></div>
+          <div class="c-input"><svg class="c-icon"><use href="#i-mail"/></svg><input id="f-email" type="email" autocomplete="email" value="edna@exemplo" aria-describedby="f-email-h" aria-invalid="true"></div>
           <span class="c-field__hint" id="f-email-h">Falta o domínio. Exemplo: nome@gmail.com</span>
         </div>
         <div class="c-field">
           <label for="f-news">Receber novidades</label>
-          <div class="c-input c-input--pill c-input--action"><input id="f-news" type="email" placeholder="seu@email.com"><button class="c-btn c-btn--primary c-btn--sm" type="button">Inscrever</button></div>
+          <div class="c-input c-input--pill c-input--action"><input id="f-news" type="email" autocomplete="email" placeholder="seu@email.com"><button class="c-btn c-btn--primary c-btn--sm" type="button">Inscrever</button></div>
         </div>
       </div>
     </section>
@@ -174,7 +179,8 @@
           <p class="c-card__text">Meta: 20 h por semana até a prova.</p>
         </article>
 
-        <article class="c-card c-card--3 c-dialog" role="dialog" aria-labelledby="dlg-t">
+        <!-- amostra estática; no projeto real use <dialog class="c-card c-card--3 c-dialog" aria-modal="true"> -->
+        <article class="c-card c-card--3 c-dialog" aria-labelledby="dlg-t">
           <h3 class="c-card__title" id="dlg-t">Excluir o projeto?</h3>
           <p class="c-card__text">O projeto “Controle de gastos” e as telas dele serão apagados. Não dá para desfazer.</p>
           <div class="c-card__actions">
@@ -235,9 +241,22 @@
     const b = e.target.closest('button'); if (!b) return;
     g.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
   }));
-  document.querySelectorAll('.c-tabs').forEach(g => g.addEventListener('click', e => {
-    const b = e.target.closest('button'); if (!b) return;
-    g.querySelectorAll('button').forEach(x => x.setAttribute('aria-selected', String(x === b)));
-  }));
+  document.querySelectorAll('.c-tabs').forEach(g => {
+    const tabs = [...g.querySelectorAll('[role="tab"]')];
+    const ativar = b => tabs.forEach(x => {
+      const on = x === b;
+      x.setAttribute('aria-selected', String(on));
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')).hidden = !on;
+    });
+    g.addEventListener('click', e => { const b = e.target.closest('[role="tab"]'); if (b) ativar(b); });
+    g.addEventListener('keydown', e => {
+      const i = tabs.indexOf(document.activeElement); if (i < 0) return;
+      const j = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 }[e.key];
+      if (j === undefined) return;
+      e.preventDefault();
+      const b = tabs[(j + tabs.length) % tabs.length]; b.focus(); ativar(b);
+    });
+  });
   document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
 </script>

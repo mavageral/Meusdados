@@ -58,8 +58,17 @@
   box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 35%, transparent);
 }
 .c-btn--glow:hover { box-shadow: 0 0 36px color-mix(in srgb, var(--accent) 55%, transparent); }
-.c-btn--danger { background: var(--danger); color: var(--bg); }
+.c-btn--danger { background: var(--danger); color: var(--on-danger); }
 .c-btn--icon { width: var(--h); padding: 0; }
+/* carregando: <button class="c-btn c-btn--primary" aria-busy="true" disabled> */
+.c-btn[aria-busy="true"] { position: relative; color: transparent; pointer-events: none; }
+.c-btn[aria-busy="true"]::after {
+  content: ""; position: absolute; width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid currentColor; border-color: var(--on-accent) var(--on-accent) transparent transparent;
+  animation: c-spin .8s linear infinite;
+}
+.c-btn--secondary[aria-busy="true"]::after, .c-btn--ghost[aria-busy="true"]::after { border-color: var(--text) var(--text) transparent transparent; }
+@keyframes c-spin { to { transform: rotate(1turn); } }
 
 /* ---------------------------------------------------------------- controle segmentado e abas */
 .c-segment {
@@ -92,7 +101,8 @@
 .c-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: none; }
 .c-chip--dot::before { display: block; }
 
-/* ---------------------------------------------------------------- barra de navegação em pílula */
+/* ---------------------------------------------------------------- barra de navegação em pílula
+   abaixo de 640px os links somem: o projeto deve oferecer um botão de menu (.c-btn--icon) que abre um .c-menu */
 .c-navbar {
   display: flex; align-items: center; gap: var(--s-2); padding: 6px 6px 6px var(--s-4);
   background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
@@ -112,7 +122,7 @@
 .c-field label { font: 600 var(--t-xs) var(--font-body); color: var(--text-muted); }
 .c-input {
   display: flex; align-items: center; gap: var(--s-2); min-height: var(--touch); padding: 0 var(--s-4);
-  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--surface-2); border: 1px solid color-mix(in srgb, var(--line) 55%, var(--text-muted)); border-radius: var(--r-md);
   box-shadow: var(--glow-inner); transition: border-color var(--d-fast), box-shadow var(--d-fast);
 }
 .c-input:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
@@ -221,7 +231,7 @@
   --size: 40px; width: var(--size); height: var(--size); border-radius: 50%; flex: none;
   display: grid; place-items: center; overflow: hidden;
   background: var(--accent-soft); color: var(--text); border: 1px solid var(--line);
-  font: 700 calc(var(--size) * .34) var(--font-body);
+  font: 700 max(11px, calc(var(--size) * .34)) var(--font-body);
 }
 .c-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .c-avatars { display: flex; }
@@ -242,4 +252,10 @@
 .c-grad-text {
   background: linear-gradient(100deg, var(--text) 30%, var(--accent) 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+
+/* ---------------------------------------------------------------- toque
+   em telas de toque, todo alvo compacto ganha 44px de altura */
+@media (pointer: coarse) {
+  .c-btn--sm, .c-segment button, .c-navbar__links a, .c-menu a, .c-menu button { min-height: var(--touch); }
 }
