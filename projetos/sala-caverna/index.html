@@ -9,9 +9,9 @@
 :root{
   --bg:#05060A; --bg-2:#0B0D14;
   --glass:rgb(255 255 255 / .055); --glass-2:rgb(255 255 255 / .09); --edge:rgb(255 255 255 / .10); --edge-2:rgb(255 255 255 / .18);
-  --text:#F3F4F8; --muted:#A3A8BA; --faint:#6E7389;
+  --text:#F3F4F8; --muted:#A3A8BA; --faint:#8A8FA6;
   --ok:#5EE6A0; --warn:#FFC24B; --bad:#FF6B81;
-  --c:#FF6A1A; --c-2:#FFB37A;           /* laranja do assistente C */
+  --c:#FF6A1A; --c-2:#FFB37A; --on-light:#08090D; --on-c:#1A0A04; --on-ok:#05220F; --on-bad:#2A0509;           /* laranja do assistente C */
   --font:"Geist",system-ui,-apple-system,sans-serif; --mono:"Geist Mono",ui-monospace,monospace; --dot:"DotGothic16",var(--mono);
   --r:22px; --r-sm:14px; --pill:999px;
   --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
@@ -28,7 +28,7 @@
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
-html{background:var(--bg);-webkit-text-size-adjust:100%}
+html{background:var(--bg);-webkit-text-size-adjust:100%;scroll-padding-bottom:110px}
 body{margin:0;background:radial-gradient(120% 60% at 50% -10%,rgb(70 80 200 / .18),transparent 60%),var(--bg);color:var(--text);
   font:15px/1.5 var(--font);min-height:100dvh;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 120px}
@@ -54,8 +54,8 @@ h1,h2,h3,p{margin:0}
 .chip i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--pill);border:1px solid var(--edge-2);background:var(--glass-2);font-weight:600;white-space:nowrap;transition:transform .15s var(--ease),filter .15s}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(--text);color:#08090D;border-color:transparent}
-.btn.c{background:var(--c);color:#1A0A04;border-color:transparent;box-shadow:0 8px 30px rgb(255 106 26 / .35)}
+.btn.primary{background:var(--text);color:var(--on-light);border-color:transparent}
+.btn.c{background:var(--c);color:var(--on-c);border-color:transparent;box-shadow:0 8px 30px rgb(255 106 26 / .35)}
 .btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}
 .btn.sm{min-height:38px;padding:0 14px;font-size:13px}
 .btn:disabled{opacity:.4;cursor:not-allowed}
@@ -72,7 +72,7 @@ h1,h2,h3,p{margin:0}
 .top{display:flex;align-items:center;gap:12px;justify-content:space-between}
 .avatar{width:44px;height:44px;border-radius:50%;border:1px solid var(--edge-2);background:linear-gradient(135deg,var(--c),#7A2E0E);display:grid;place-items:center;font-weight:700;overflow:hidden;flex:none;padding:0}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.lema{font:500 11px/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.lema{font:500 11px/1.3 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
 .hello{display:grid;gap:6px}
 .dayline{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ring{--p:0;width:64px;height:64px;border-radius:50%;flex:none;display:grid;place-items:center;
@@ -80,15 +80,15 @@ h1,h2,h3,p{margin:0}
 .ring b{font:400 20px/1 var(--dot)}
 .weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .weekstrip button{min-height:56px;border-radius:16px;border:1px solid var(--edge);background:var(--glass);display:grid;place-items:center;gap:2px;padding:6px 0}
-.weekstrip button small{font:500 10px var(--mono);color:var(--muted);letter-spacing:.06em}
+.weekstrip button small{font:500 11px var(--mono);color:var(--muted);letter-spacing:.06em}
 .weekstrip button b{font-weight:500;font-size:16px}
-.weekstrip button[aria-pressed="true"]{background:var(--text);color:#08090D;border-color:transparent}
+.weekstrip button[aria-pressed="true"]{background:var(--text);color:var(--on-light);border-color:transparent}
 .weekstrip button[aria-pressed="true"] small{color:#3a3d48}
 .weekstrip button .dot{width:5px;height:5px;border-radius:50%;background:var(--ok)}
 
 /* ---------- agora ---------- */
 .now{position:relative;overflow:hidden;border-radius:28px;padding:22px;min-height:220px;display:grid;align-content:space-between;gap:18px;
-  background:radial-gradient(120% 90% at 100% 0%,var(--g1) 0%,transparent 55%),linear-gradient(160deg,var(--g2),#06070C 85%);border:1px solid var(--edge-2)}
+  background:radial-gradient(120% 90% at 100% 100%,var(--g1) 0%,transparent 55%),linear-gradient(160deg,var(--g2),#06070C 85%);border:1px solid var(--edge-2)}
 .now::after{content:"";position:absolute;inset:auto -20% -60% auto;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,var(--g1),transparent 70%);opacity:.35;filter:blur(10px);pointer-events:none}
 .now .label{font-weight:400;font-size:clamp(30px,8vw,44px);line-height:1;letter-spacing:-.03em;text-wrap:balance;position:relative}
 .now .meta{display:flex;gap:8px;flex-wrap:wrap;position:relative}
@@ -113,8 +113,8 @@ h1,h2,h3,p{margin:0}
 .tl .t b{display:block;font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tl .t small{color:var(--muted);font-size:12px}
 .tl .st{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--edge-2)}
-.tl .st.done{background:var(--ok);border-color:transparent;color:#05220F}
-.tl .st.miss{background:var(--bad);border-color:transparent;color:#2A0509}
+.tl .st.done{background:var(--ok);border-color:transparent;color:var(--on-ok)}
+.tl .st.miss{background:var(--bad);border-color:transparent;color:var(--on-bad)}
 .tl li.isnow button{border-color:var(--edge-2);background:linear-gradient(90deg,color-mix(in srgb,var(--g1) 22%,transparent),var(--glass))}
 .tl li.past:not(.closed) button{opacity:.78}
 .tl .bul{width:8px;height:8px;border-radius:50%;background:var(--g1);display:inline-block;margin-right:6px;vertical-align:middle}
@@ -123,9 +123,9 @@ h1,h2,h3,p{margin:0}
 .tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:40;display:flex;align-items:center;gap:4px;padding:6px;border-radius:var(--pill);
   background:rgb(14 16 24 / .82);border:1px solid var(--edge-2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 20px 50px rgb(0 0 0 / .55)}
 .tabbar button{border:0;background:none;color:var(--muted);min-width:52px;height:50px;border-radius:var(--pill);display:grid;place-items:center;gap:0;padding:0 10px}
-.tabbar button span{font-size:10px;font-weight:500}
+.tabbar button span{font-size:11px;font-weight:500}
 .tabbar button[aria-current="page"]{background:var(--glass-2);color:var(--text)}
-.tabbar .cbtn{width:58px;height:58px;margin:0 4px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFB37A,var(--c) 55%,#B83A00);color:#1A0A04;font:700 24px/1 var(--font);box-shadow:0 0 0 4px rgb(255 106 26 / .16),0 10px 30px rgb(255 106 26 / .45)}
+.tabbar .cbtn{width:58px;height:58px;margin:0 4px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFB37A,var(--c) 55%,#B83A00);color:var(--on-c);font:700 24px/1 var(--font);box-shadow:0 0 0 4px rgb(255 106 26 / .16),0 10px 30px rgb(255 106 26 / .45)}
 .tabbar .cbtn.pulse{animation:pulse 2.2s ease-in-out infinite}
 @keyframes pulse{50%{box-shadow:0 0 0 10px rgb(255 106 26 / .08),0 10px 30px rgb(255 106 26 / .55)}}
 
@@ -157,10 +157,10 @@ h1,h2,h3,p{margin:0}
 .inp:focus,.ta:focus{border-color:var(--c);box-shadow:0 0 0 3px rgb(255 106 26 / .2)}
 .pick{display:flex;flex-wrap:wrap;gap:8px}
 .pick button{min-height:44px;padding:0 16px;border-radius:var(--pill);border:1px solid var(--edge-2);background:var(--glass)}
-.pick button[aria-pressed="true"]{background:var(--text);color:#08090D;border-color:transparent}
+.pick button[aria-pressed="true"]{background:var(--text);color:var(--on-light);border-color:transparent}
 .choice{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
 .choice button{min-height:120px;text-align:left;padding:16px;border-radius:22px;border:1px solid var(--edge-2);background:rgb(255 255 255 / .07);display:grid;align-content:space-between;gap:10px}
-.choice button[aria-pressed="true"]{background:var(--text);color:#08090D}
+.choice button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
 .thumbs{display:flex;gap:8px;flex-wrap:wrap}
 .thumbs img{width:64px;height:64px;object-fit:cover;border-radius:12px;border:1px solid var(--edge-2)}
 .drop{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;border:1px dashed var(--edge-2);background:rgb(255 255 255 / .03);cursor:pointer;min-height:56px}
@@ -210,7 +210,7 @@ h1,h2,h3,p{margin:0}
 /* segmentos */
 .seg{display:flex;gap:4px;padding:4px;border-radius:var(--pill);background:var(--glass);border:1px solid var(--edge);overflow-x:auto;scrollbar-width:none}
 .seg button{flex:1 0 auto;min-height:40px;padding:0 14px;border-radius:var(--pill);border:0;background:none;color:var(--muted);font-weight:500}
-.seg button[aria-pressed="true"]{background:var(--text);color:#08090D}
+.seg button[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
 
 /* heatmap (referência 8) */
 .heat{display:grid;grid-template-columns:repeat(15,1fr);gap:4px}
@@ -222,10 +222,10 @@ h1,h2,h3,p{margin:0}
 .months{display:grid;gap:22px}
 .month h3{font-weight:300;font-size:clamp(40px,11vw,60px);letter-spacing:-.04em;line-height:1;margin-bottom:12px}
 .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
-.cal .wd{font:500 10px var(--mono);color:var(--faint);text-align:center;padding-bottom:4px}
+.cal .wd{font:500 11px var(--mono);color:var(--faint);text-align:center;padding-bottom:4px}
 .cal button{aspect-ratio:1;border-radius:14px;border:1px solid var(--edge);background:var(--glass);display:grid;place-items:center;font-weight:500;padding:0;min-height:40px;position:relative}
 .cal button.out{opacity:.25;pointer-events:none;border-style:dashed}
-.cal button.p1{background:rgb(255 106 26 / .22)} .cal button.p2{background:rgb(255 106 26 / .5)} .cal button.p3{background:var(--c);color:#1A0A04}
+.cal button.p1{background:rgb(255 106 26 / .22)} .cal button.p2{background:rgb(255 106 26 / .5)} .cal button.p3{background:var(--c);color:var(--on-c)}
 .cal button.closed::after{content:"";position:absolute;bottom:5px;width:4px;height:4px;border-radius:50%;background:currentColor}
 .cal button.today{outline:2px solid var(--text);outline-offset:1px}
 .cal button.future{color:var(--faint)}
@@ -235,14 +235,14 @@ h1,h2,h3,p{margin:0}
 .branch{padding:16px;border-radius:24px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:12px}
 .nodes{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .node{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 14px;border-radius:var(--pill);border:1px solid var(--edge-2);background:rgb(255 255 255 / .04);color:var(--faint);font-size:13px}
-.node.on{color:#08090D;background:var(--g1);border-color:transparent;font-weight:600;box-shadow:0 0 18px color-mix(in srgb,var(--g1) 45%,transparent)}
-.node.next{color:var(--text);border-style:dashed;border-color:var(--g1)}
+.node.on{color:var(--on-light);background:var(--g1);border-color:transparent;font-weight:600;box-shadow:0 0 18px color-mix(in srgb,var(--g1) 45%,transparent)}
+.node.is-next{color:var(--text);border-style:dashed;border-color:var(--g1)}
 .link-l{width:14px;height:1px;background:var(--edge-2)}
 
 /* chat (referência 7) */
 .chat{display:grid;gap:12px;align-content:start}
 .msg{max-width:86%;padding:12px 14px;border-radius:20px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
-.msg.me{justify-self:end;background:var(--c);color:#1A0A04;border-bottom-right-radius:6px}
+.msg.me{justify-self:end;background:var(--c);color:var(--on-c);border-bottom-right-radius:6px}
 .msg.ai{justify-self:start;background:rgb(255 255 255 / .07);border:1px solid var(--edge);border-bottom-left-radius:6px}
 .orb{width:140px;height:140px;border-radius:50%;margin:10px auto;background:radial-gradient(circle at 35% 30%,#FFD2A8,#FF7A1A 45%,#7A1E00 80%);box-shadow:0 0 80px rgb(255 106 26 / .5);animation:breathe 4s ease-in-out infinite}
 @keyframes breathe{50%{transform:scale(1.05);box-shadow:0 0 120px rgb(255 106 26 / .65)}}
@@ -252,7 +252,7 @@ h1,h2,h3,p{margin:0}
 .sugs button{flex:none;min-height:40px;padding:0 14px;border-radius:var(--pill);border:1px solid rgb(255 179 122 / .35);background:rgb(255 106 26 / .12);color:#FFD9BD;font-size:13px}
 
 /* toast */
-.toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 14px);transform:translateX(-50%);z-index:90;background:var(--text);color:#08090D;padding:10px 16px;border-radius:var(--pill);font-weight:600;font-size:14px;box-shadow:0 10px 30px rgb(0 0 0 / .4);max-width:calc(100vw - 32px)}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);transform:translateX(-50%);z-index:90;background:var(--text);color:var(--on-light);padding:10px 16px;border-radius:var(--pill);font-weight:600;font-size:14px;box-shadow:0 10px 30px rgb(0 0 0 / .4);max-width:calc(100vw - 32px)}
 .thinking{display:flex;align-items:center;gap:10px;color:var(--muted)}
 .thinking i{width:8px;height:8px;border-radius:50%;background:var(--c);animation:blink 1s infinite}
 .thinking i:nth-child(2){animation-delay:.2s}.thinking i:nth-child(3){animation-delay:.4s}
@@ -529,6 +529,7 @@ function render(){
   const v = {hoje:vHoje, estudar:vEstudar, evolucao:vEvolucao, diario:vDiario}[TAB]();
   $("#app").innerHTML = v;
   document.querySelectorAll(".tabbar [data-tab]").forEach(b => b.setAttribute("aria-current", b.dataset.tab===TAB ? "page" : "false"));
+  const sa=document.querySelector('.seg [aria-pressed="true"]'); if(sa) sa.scrollIntoView({inline:"nearest",block:"nearest"});
 }
 document.querySelector(".tabbar").addEventListener("click", e => {
   const b = e.target.closest("[data-tab]"); if(!b) return;
@@ -565,7 +566,7 @@ function vHoje(){
   const hk = kindOf(hero), hr = rec[bkey(hero)], heroDone = hr && hr.st==="feito";
   const elapsed = cur ? Math.min(100, Math.round((nm-toMin(cur.a))/(toMin(cur.b)-toMin(cur.a))*100)) : 0;
   const left = cur ? toMin(cur.b)-nm : toMin(hero.a)-nm;
-  const heroAct = heroDone ? `<span class="chip" style="background:var(--ok);color:#05220F;border:0"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>Feito</span>`
+  const heroAct = heroDone ? `<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>Feito</span>`
      : hk==="estudo"||hk==="biblia" ? `<button class="btn primary" data-act="bloco" data-k="${esc(bkey(hero))}">Começar a estudar <svg class="icon"><use href="#i-arrow"/></svg></button>`
      : hk==="final" ? `<button class="btn primary" data-act="finalizar">Finalizar o dia <svg class="icon"><use href="#i-arrow"/></svg></button>`
      : hk==="revisao" ? `<button class="btn primary" data-act="bloco" data-k="${esc(bkey(hero))}">Fazer revisões</button>`
@@ -606,7 +607,7 @@ function vHoje(){
       <section class="now" style="--g1:${g1(hero.c)};--g2:${g2(hero.c)}" aria-label="Agora">
         <div class="row" style="justify-content:space-between;position:relative">
           <span class="eyebrow" style="color:rgb(255 255 255 / .8)">${cur?"Agora":"Próximo"} · ${esc(AREAS[hero.c].n)}</span>
-          <span class="mono" style="font-size:13px;color:rgb(255 255 255 / .85)">${fmtH(hero.a)}–${fmtH(hero.b)}</span>
+          <span class="mono" style="font-size:13px;color:#fff;background:rgb(0 0 0 / .45);padding:4px 10px;border-radius:99px">${fmtH(hero.a)}–${fmtH(hero.b)}</span>
         </div>
         <div style="display:grid;gap:10px;position:relative">
           <h2 class="label">${esc(hero.l)}</h2>
@@ -658,7 +659,7 @@ function vEstudar(){
     <section style="display:grid;gap:8px"><span class="eyebrow">Sala de estudos</span><h1 class="title-l">Explore e aprenda</h1></section>
     <form class="composer" data-form="livre" autocomplete="off">
       <label class="sr" for="q-livre">O que você quer aprender agora?</label>
-      <input class="inp" id="q-livre" name="q" placeholder="O que você quer aprender agora? Ex.: potenciação" style="border-radius:var(--pill)">
+      <input class="inp" id="q-livre" name="q" placeholder="Aprender agora: ex. potenciação" style="border-radius:var(--pill)">
       <button class="btn c" type="submit" aria-label="Gerar aula"><svg class="icon"><use href="#i-spark"/></svg></button>
     </form>
     <section style="display:grid;gap:4px"><div class="sec-h"><h2>Suas matérias</h2><span class="muted" style="font-size:13px">deslize</span></div>
@@ -709,7 +710,7 @@ function evoMetas(){
   const t=iso(today());
   const tl = SERASA.map(s => { const done = s.k && M.marcos[s.k], hot = !done && s.d>=t && !SERASA.some(x=>x.d<s.d && x.d>=t && !(x.k&&M.marcos[x.k]));
     return `<div class="ev ${done?"done":""} ${hot?"hot":""}"><span class="mono muted" style="font-size:13px">${s.m||fromIso(s.d).getDate()+"/"+(fromIso(s.d).getMonth()+1)}</span><span><b style="font-weight:500">${esc(s.t)}</b>${s.k?`<br><button class="link" data-act="marco" data-k="${s.k}">${done?"Desmarcar":"Marcar como feito"}</button>`:""}</span></div>`; }).join("");
-  const vagas = M.vagas.map(v => `<div class="item"><span class="avatar" style="width:40px;height:40px;background:${v.alvo?"var(--c)":"var(--glass-2)"};color:${v.alvo?"#1A0A04":"var(--text)"};font-size:14px">${esc(v.n[0])}</span>
+  const vagas = M.vagas.map(v => `<div class="item"><span class="avatar" style="width:40px;height:40px;background:${v.alvo?"var(--c)":"var(--glass-2)"};color:${v.alvo?"var(--on-c)":"var(--text)"};font-size:14px">${esc(v.n[0])}</span>
       <span class="grow"><b>${esc(v.n)}${v.alvo?' <span class="chip" style="min-height:22px;font-size:11px;margin-left:6px">alvo</span>':""}</b><small>${esc(v.v)}</small></span>
       <label class="sr" for="vs-${v.id}">Situação</label><select id="vs-${v.id}" class="inp" data-vaga="${v.id}" style="width:auto;padding:8px 12px;border-radius:12px;font-size:13px">${VSTATUS.map(s=>`<option ${v.st===s?"selected":""}>${s}</option>`).join("")}</select></div>`).join("");
   return `<section class="glass pad" style="display:grid;gap:6px"><span class="eyebrow">Ponto central do alvo</span><h2 class="title-l" style="font-size:30px">Estágio 2027 · Serasa Experian · Analytics</h2>
@@ -730,7 +731,7 @@ function evoArvore(){
     {n:"Horizonte", a:"rev", nodes:[{n:"Graduação em Matemática",on:L("mat")>=4},{n:"Ciências Econômicas",on:L("eco")>=2},{n:"Ciência da Computação",on:false},{n:"Mestrado ITA",on:false}]}
   ];
   return `<p class="muted">Cada ramo acende com evidência: blocos aprovados na prova, simulados e marcos que você confirma. O próximo nó a destravar fica tracejado.</p>
-  <div class="tree">${B.map(b=>{ let firstOff=false; return `<div class="branch" style="--g1:${g1(b.a)}"><span class="eyebrow">${esc(b.n)}</span><div class="nodes">${b.nodes.map((x,i)=>{ let cls=x.on?"on":""; if(!x.on&&!firstOff){cls="next";firstOff=true;} return `${i?'<span class="link-l"></span>':""}<span class="node ${cls}">${x.on?'<svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>':""}${esc(x.n)}</span>`; }).join("")}</div></div>`; }).join("")}</div>
+  <div class="tree">${B.map(b=>{ let firstOff=false; return `<div class="branch" style="--g1:${g1(b.a)}"><span class="eyebrow">${esc(b.n)}</span><div class="nodes">${b.nodes.map((x,i)=>{ let cls=x.on?"on":""; if(!x.on&&!firstOff){cls="is-next";firstOff=true;} return `${i?'<span class="link-l"></span>':""}<span class="node ${cls}">${x.on?'<svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>':""}${esc(x.n)}</span>`; }).join("")}</div></div>`; }).join("")}</div>
   <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Marcos do projeto</h2><div class="pick">${[["painel1","Painel de crédito v1 publicado"],["modelo","Modelo de crédito documentado"],["github","GitHub organizado"],["curriculo","Currículo revisado"]].map(([k,n])=>`<button data-act="marco" data-k="${k}" aria-pressed="${!!m[k]}">${n}</button>`).join("")}</div></section>`;
 }
 function evoAnbima(){
@@ -771,8 +772,14 @@ function vDiario(){
    ==================================================================== */
 const SH = $("#sheet");
 let FLOW=null;
-function openSheet(bg){ SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden"; }
-function closeSheet(){ SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){} render(); }
+let OPENER=null, RETURN=null;
+function openSheet(bg){ if(SH.hidden) OPENER=document.activeElement; SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden";
+  $("#app").inert=true; document.querySelector(".tabbar").inert=true; setTimeout(()=>{ const x=SH.querySelector(".x,[data-sh]"); if(x&&!SH.contains(document.activeElement)) x.focus(); },60); }
+document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) closeSheet(); });
+function closeSheet(){ if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
+  if(RETURN){ const r=RETURN; RETURN=null; FLOW=r; r.refresh(); openSheet(r.bg); drawFinal(); return; }
+  SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
+  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); }
 function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
   const dots = steps ? `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>` : "";
   SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
@@ -840,7 +847,7 @@ function drawStudy(){
   const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title = F.b ? `${F.b.l} · ${fmtH(F.b.a)}` : `Estudo livre · ${SUBJ[F.mat]?SUBJ[F.mat].n:""}`;
   if(s==="plano"){
     const mats = F.isBib ? [] : Object.entries(SUBJ).filter(([k])=>k!=="biblia");
-    sheetHTML({title, steps:S, at:F.at, next: F.isBib?"Próximo":"Gerar minha aula", body:`
+    sheetHTML({title, steps:S, at:F.at, next: F.isBib||!aiOn()?"Próximo":"Gerar minha aula", body:`
       <h2 class="q">${F.isBib?"O que você vai ler hoje?":"O que você vai estudar agora?"}<small>${F.isBib?"Livro, capítulo e o tema. Depois você conta o que aprendeu e responde uma pergunta.":"Diga o assunto e de onde vem: faculdade, vídeo, livro. Se tiver, mande uma foto ou print do material. O Claude monta uma aula curta antes de você começar."}</small></h2>
       ${mats.length?`<div class="field"><span>Matéria</span><div class="pick" data-pick="mat">${mats.map(([k,v])=>`<button data-v="${k}" aria-pressed="${F.mat===k}">${esc(v.n)}</button>`).join("")}</div></div>`:""}
       <label class="field"><span>${F.isBib?"Livro e capítulo":"Assunto"}</span><input class="inp" id="st-topic" value="${esc(D.topic)}" placeholder="${F.isBib?"Ex.: Romanos 8":"Ex.: potenciação com expoente negativo"}"></label>
@@ -888,7 +895,7 @@ function drawStudy(){
         <span class="eyebrow">${r.score==null?"Registrado":r.pass?"Bloco confirmado":"Ainda não passou"}</span>
         ${r.score==null?"":`<div class="score">${Math.round(r.score*100)}<span style="font-size:.4em">%</span></div>`}
         <p class="title-m" style="max-width:34ch">${esc(r.msg)}</p>
-        ${r.pass?`<span class="chip" style="background:var(--ok);color:#05220F;border:0">+${r.xp} XP · revisão marcada para amanhã</span>`:""}
+        ${r.pass?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0">+${r.xp} XP${D.topic&&!FLOW.isBib?" · revisão marcada para amanhã":""}</span>`:""}
       </div>
       ${r.feedback?`<div class="glass pad"><span class="tag">Sua resposta aberta</span><p style="margin-top:8px">${esc(r.feedback)}</p></div>`:""}
       ${D.quiz?`<details class="glass pad" ${r.pass?"":"open"}><summary style="cursor:pointer;font-weight:500">Ver correção das questões</summary><div style="display:grid;gap:12px;margin-top:12px">${quizHTML(D.quiz,D.ans,true)}</div></details>`:""}
@@ -1004,7 +1011,7 @@ function finishStudy(score){
 function saveStudy(score, partial){
   const F=FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
   const rec = {st:"feito", mat:F.mat, topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs.slice(0,2), conta:D.conta, notes:D.notes, score, parcial:!!partial,
-    aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.b ? toMin(F.b.b)-toMin(F.b.a) : Math.max(10,mins), ts:Date.now()};
+    aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.focus ? Math.max(5, Math.round((F.focus.total-F.focus.left)/60)) || Math.min(mins, F.b?toMin(F.b.b)-toMin(F.b.a):mins) : Math.min(Math.max(10,mins), F.b?toMin(F.b.b)-toMin(F.b.a):120), ts:Date.now()};
   if(F.b){ day(F.dstr).blocks[bkey(F.b)] = rec; saveDay(F.dstr); }
   else { (M.livres=M.livres||[]).push({...rec, d:iso(today())}); }
   if(D.topic && !F.isBib){ (M.revisoes=M.revisoes||[]).push({id:"r"+Date.now(), mat:F.mat, topic:D.topic, d0:iso(today()), step:1, due:iso(addDays(today(),1)), done:false, conta:D.conta.slice(0,600)}); }
@@ -1088,9 +1095,18 @@ function openFinal(){
   const dstr=iso(today()), Dy=day(dstr);
   if(Dy.final && Dy.final.closed) return openDay(dstr);
   const bs=blocksOf(today()), rec=Dy.blocks;
-  const pend = bs.filter(b=>!rec[bkey(b)] && !["final","pausa"].includes(kindOf(b)) && !/Oração antes de dormir/.test(b.l));
+  const fb = bs.find(b=>kindOf(b)==="final");
+  if(fb && nowMin() < toMin(fb.a)-90 && !openFinal.ok){
+    FLOW={kind:"confirm", next:()=>{ openFinal.ok=true; closeSheetSoft(); openFinal(); openFinal.ok=false; }, back:()=>{}};
+    openSheet("linear-gradient(170deg,#0D0A2A,#05060A 60%)");
+    sheetHTML({title:"Finalizar o dia", next:"Finalizar mesmo assim", body:`<h2 class="q">Ainda é cedo<small>A revisão integral de hoje é às ${fmtH(fb.a)}. Finalizar agora encerra o dia com os blocos que faltam. Se for isso mesmo, siga.</small></h2>`});
+    return;
+  }
+  const pend = bs.filter(b=>!rec[bkey(b)] && !["final","pausa"].includes(kindOf(b)) && !/Oração antes de dormir/.test(b.l) && toMin(b.b)<=nowMin());
   const feitos = bs.filter(b=>rec[bkey(b)] && rec[bkey(b)].st==="feito" && rec[bkey(b)].mat).map(b=>({b, r:rec[bkey(b)]}));
-  const F = FLOW = {kind:"final", at:0, steps:["pendencias","recordar","resumo","nota","sintese","gratidao"], pend, feitos, data:{motivos:{}, recall:null, rans:{}, resumos:{}, geral:"", nota:7, f1:"", f2:"", f3:"", sint:null, grato:false}};
+  const F = FLOW = {kind:"final", at:0, steps:["pendencias","recordar","resumo","nota","sintese","gratidao"], pend, feitos, data:{motivos:{}, recall:null, rans:{}, resumos:{}, geral:"", nota:null, f1:"", f2:"", f3:"", sint:null, grato:false}};
+  F.bg="radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .35),transparent 60%),linear-gradient(170deg,#0D0A2A,#05060A 60%)";
+  F.refresh=()=>{ const r2=day(dstr).blocks; F.pend=F.pend.filter(b=>!r2[bkey(b)]); F.feitos=bs.filter(b=>r2[bkey(b)]&&r2[bkey(b)].st==="feito"&&r2[bkey(b)].mat).map(b=>({b,r:r2[bkey(b)]})); };
   F.next=()=>stepFinal(+1); F.back=()=>stepFinal(-1);
   F.pick=(g,v)=>{ if(g.startsWith("pm-")){ F.data.motivos[g.slice(3)]=v; } };
   openSheet("radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .35),transparent 60%),linear-gradient(170deg,#0D0A2A,#05060A 60%)");
@@ -1111,7 +1127,7 @@ function drawFinal(){
     sheetHTML({title, steps:S, at:F.at, next:"Próximo", body:`
       <h2 class="q">Antes de fechar<small>${F.pend.length?`Ficaram ${F.pend.length} bloco(s) sem registro. Diga o motivo de cada um, ou toque no bloco para confirmar se fez.`:"Todos os blocos têm registro. Muito bem."}</small></h2>
       ${F.pend.map((b,i)=>`<div class="glass pad" style="display:grid;gap:10px"><div class="row"><span class="grow"><b style="font-weight:500">${esc(b.l)}</b><br><span class="muted mono" style="font-size:12px">${fmtH(b.a)}–${fmtH(b.b)}</span></span><button class="btn sm" data-act3="fiz" data-i="${i}">Eu fiz</button></div><div class="pick" data-pick="pm-${i}">${MOTIVOS.map(m=>`<button data-v="${m}" aria-pressed="${D.motivos[i]===m}">${m}</button>`).join("")}</div></div>`).join("")}`});
-    SH.querySelectorAll('[data-act3="fiz"]').forEach(btn=>btn.addEventListener("click",()=>{ const b=F.pend[+btn.dataset.i]; closeSheetSoft(); openBlock(iso(today()),bkey(b)); }));
+    SH.querySelectorAll('[data-act3="fiz"]').forEach(btn=>btn.addEventListener("click",()=>{ const b=F.pend[+btn.dataset.i]; RETURN=F; closeSheetSoft(); openBlock(iso(today()),bkey(b)); }));
     return;
   }
   if(s==="recordar"){
@@ -1129,13 +1145,13 @@ function drawFinal(){
     return;
   }
   if(s==="nota"){
-    sheetHTML({title, steps:S, at:F.at, next:"Gerar meu resumo", body:`<h2 class="q">Que nota o dia merece?</h2>
-      <div style="text-align:center"><output class="score" id="nto">${D.nota}</output></div>
-      <label class="sr" for="nt">Nota de 0 a 10</label><input type="range" id="nt" min="0" max="10" step="1" value="${D.nota}" style="width:100%;accent-color:var(--c);height:44px">
+    sheetHTML({title, steps:S, at:F.at, next:"Gerar meu resumo", nextOk:D.nota!=null, body:`<h2 class="q">Que nota o dia merece?<small>Arraste ou toque na barra.</small></h2>
+      <div style="text-align:center"><output class="score" id="nto">${D.nota==null?"–":D.nota}</output></div>
+      <label class="sr" for="nt">Nota de 0 a 10</label><input type="range" id="nt" min="0" max="10" step="1" value="${D.nota==null?5:D.nota}" style="width:100%;accent-color:var(--c);height:44px">
       <label class="field"><span>1 · O que aprendi</span><input class="inp" id="f1" value="${esc(D.f1)}"></label>
       <label class="field"><span>2 · Onde errei ou travei</span><input class="inp" id="f2" value="${esc(D.f2)}"></label>
       <label class="field"><span>3 · Prioridade de amanhã</span><input class="inp" id="f3" value="${esc(D.f3)}"></label>`});
-    $("#nt").addEventListener("input",e=>$("#nto").textContent=e.target.value);
+    $("#nt").addEventListener("input",e=>{ $("#nto").textContent=e.target.value; D.nota=+e.target.value; SH.querySelector('[data-sh="next"]').disabled=false; });
     return;
   }
   if(s==="sintese"){
@@ -1195,9 +1211,11 @@ function openDay(dstr){
   sheetHTML({title:`Dia ${dayIdx(d)+1} de 100`, next:"Fechar", body:`
     <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${WEEK[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
     ${f&&f.sint?`<div class="glass pad"><span class="tag">Síntese do dia</span><p class="title-m" style="margin-top:6px;font-weight:400">${esc(f.sint.titulo||"")}</p>${(f.sint.blocos||[]).map(b=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(b.area)}:</b> ${esc(b.resumo)}</p>`).join("")}</div>`:""}
-    ${f&&f.frases?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
+    ${f&&((f.frases||[]).some(Boolean)||f.geral)?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
     ${items?`<div class="list">${items}</div>`:`<p class="note">Nada registrado neste dia.</p>`}
+    ${f&&f.closed&&dstr===iso(today())?`<button class="btn" data-act5="reabrir">Reabrir o dia</button>`:""}
     ${studied&&aiOn()?`<button class="btn c" data-act5="refazer"><svg class="icon"><use href="#i-spark"/></svg>Fazer uma atividade sobre este dia</button>`:""}`});
+  SH.querySelector('[data-act5="reabrir"]')?.addEventListener("click",()=>{ Dy.final.closed=false; saveDay(dstr); closeSheet(); toast("Dia reaberto."); });
   SH.querySelectorAll('[data-act5="rec"]').forEach(b=>b.addEventListener("click",()=>{ const bl=bs.find(x=>bkey(x)===b.dataset.k); closeSheetSoft(); openRecord(dstr,bl,Dy.blocks[b.dataset.k]); }));
   SH.querySelector('[data-act5="refazer"]')?.addEventListener("click",()=>{ const sts=bs.map(b=>Dy.blocks[bkey(b)]).filter(r=>r&&r.mat); const topics=sts.map(r=>r.topic).join("; ");
     closeSheetSoft(); (M.revisoes=M.revisoes||[]).push({id:"r"+Date.now(), mat:sts[0].mat, topic:topics, d0:dstr, step:1, due:iso(today()), done:false, conta:sts.map(r=>r.conta).join("\n").slice(0,800)}); saveMain(); openReview(M.revisoes[M.revisoes.length-1].id); });
@@ -1335,5 +1353,5 @@ async function panoramaAI(btn){
 }
 
 boot();
-setInterval(()=>{ if(SH.hidden && TAB==="hoje") render(); }, 60000);
+setInterval(()=>{ const a=document.activeElement; if(SH.hidden && TAB==="hoje" && !(a && a!==document.body && $("#app").contains(a))) render(); }, 60000);
 </script>
