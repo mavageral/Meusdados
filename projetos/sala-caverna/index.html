@@ -621,7 +621,8 @@ function aiErr(e){
   if(c==="image_rejected") return "Essa imagem não foi aceita. Tente outra foto.";
   return "Não consegui falar com o Claude agora. Tente de novo em instantes.";
 }
-function perfil(){
+function perfil(){ const ds=(M.profile.descobertas||[]).slice(-8); return perfilBase()+(ds.length?` Descobertas recentes da pessoa sobre si mesma (use para adaptar tudo): ${ds.map(d=>fmtD(d.data)+": "+d.texto).join(" | ")}.`:""); }
+function perfilBase(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
   const pj=P();
   if(CUSTOM) return `Contexto fixo: você é o tutor e gestor do ${pj.nome} (${LEMA}) dentro do app Yaad1, um app de direção. ${TOTAL} dias a partir de ${fromIso(pj.inicio).toLocaleDateString("pt-BR")}; hoje é o dia ${d} de ${TOTAL}${ph?" ("+ph.n+")":""}. Alvo central: ${pj.meta}. Sobre a pessoa: ${pj.custom.contexto||""} Matérias do projeto: ${Object.values(SUBJ).map(x=>x.n).join(", ")}. Metas e situação: ${goalsText()}. Use recuperação ativa, repetição espaçada, explicação visual e exercícios graduais; explique o porquê. Ligue o estudo ao alvo sempre que fizer sentido. Escreva em português do Brasil, claro e direto, sem floreios.`;
@@ -2112,15 +2113,38 @@ function openShare(){
     <div class="step"><span class="tag">Passo 2</span><b>Envie o link</b><p>A pessoa abre, entra com a conta dela e monta o próprio projeto em Perfil e projeto.</p></div></div>
     <p class="note">No menu ⋯, a pessoa toca em "Novo projeto · quiz de direção" e o Yaad1 monta o projeto dela.</p>`});
 }
+let F_salvarPerfil = () => {};
+function descobertasHTML(){ const ds=(M.profile.descobertas||[]).slice().reverse(); return ds.length?ds.slice(0,8).map(d=>`<li><span class="mono faint" style="font-size:12px">${fmtD(d.data)}</span> ${esc(d.texto)}</li>`).join(""):`<li class="faint" style="list-style:none;margin-left:-18px">Nenhuma ainda.</li>`; }
+function quemVoceHTML(){ const pj=P(), c=pj.custom, r=(c&&c.respostas)||null, b=M.profile.bussola, diag=pj.diag;
+  const linha=(k,v)=>v?`<div class="row" style="justify-content:space-between;gap:10px;align-items:flex-start"><span class="muted" style="flex:0 0 auto">${k}</span><span style="text-align:right;overflow-wrap:anywhere">${esc(v)}</span></div>`:"";
+  return `<span class="eyebrow" style="margin-top:8px">Quem você é</span>
+    <div class="glass pad" style="display:grid;gap:10px">
+      ${b?`<div style="display:grid;gap:4px"><span class="tag">Seu retrato (Bússola) · ${fmtD(b.data)}</span><b style="font-weight:500">${esc((b.codigo||[]).join(" · "))}</b><small class="muted">Talentos: ${esc(b.talentos.slice().sort((x,y)=>y.v-x.v).slice(0,3).map(t=>t.n).join(", "))}</small></div>`:""}
+      ${r?`<div style="display:grid;gap:6px"><span class="tag">Do seu quiz</span>${linha("Alvo",r.alvo_qual||r.alvo_porta)}${linha("Momento",[r.momento,r.escolaridade,r.curso_atual].filter(Boolean).join(" · "))}${linha("Rotina",`acorda ${r.acorda}, dorme ${r.dorme}, trabalho: ${r.trabalha}`)}${linha("Estudo",`${r.horas_estudo_dia} por dia, ${r.dias_semana} dias`)}${linha("Compromissos",r.compromissos_fixos)}${linha("Inegociáveis",(r.prioridades||[]).join(", "))}</div>`
+        :`<p class="muted" style="margin:0;font-size:14px">${c?"":"O Projeto Caverna foi montado com você, antes do quiz. Ele continua do jeito que está."}</p>`}
+      ${c&&c.leitura?`<p style="margin:0">${esc(c.leitura)}</p>`:""}
+      ${diag?`<small class="muted">Último diagnóstico: ${fmtD(diag.data)} · ${diag.dom}% do caminho até a meta.</small>`:""}
+      ${c&&(c.notas||[]).length?`<small class="faint">Projeto remodelado ${c.notas.length} vez(es) com as suas observações.</small>`:""}
+    </div>
+    <div class="glass pad" style="display:grid;gap:10px"><span class="tag">Suas descobertas</span>
+      <p class="muted" style="margin:0;font-size:14px">O ser humano muda. Conte o que você descobriu sobre você: uma matéria que passou a gostar, um novo interesse, uma mudança na rotina. O Claude passa a considerar isso nas aulas, no chat e nos ajustes.</p>
+      <ul id="pf-dl" style="margin:0;padding-left:18px;display:grid;gap:6px">${descobertasHTML()}</ul>
+      <label class="field"><span>Nova descoberta</span><textarea class="ta" id="pf-dt" style="min-height:80px" placeholder="Ex.: descobri que gosto mais de programação do que de estatística"></textarea></label>
+      <div class="row wrap" style="gap:8px"><button class="btn sm" style="min-height:44px" id="pf-desc">Salvar descoberta</button><button class="btn sm primary" style="min-height:44px" id="pf-up">Atualizar projeto</button></div>
+      <small class="faint">${c?"Atualizar projeto abre o Remodelar: você vê a proposta antes de aplicar.":"No Caverna, Atualizar projeto abre o ajuste da agenda com o Claude. Matérias e metas do Caverna continuam fixas."}</small>
+    </div>
+    <button class="btn ghost" style="min-height:44px;justify-self:start;white-space:normal;text-align:left;max-width:100%" id="pf-quiz">Fazer o quiz de direção (cria um novo projeto)</button>`; }
 function openProfile(){
   const pj=P(), pf=M.profile;
-  FLOW={kind:"perfil", back:()=>{}, next:()=>{
+  const salvarPerfil = (silencioso) => {
     const v=id=>($("#"+id)||{}).value?.trim()||"";
     pf.full=v("pf-full"); pf.name=v("pf-n")||NAME_DEFAULT; pf.email=v("pf-e"); pf.tel=v("pf-t");
     const ini=v("pj-i"), dias=+v("pj-d");
     M.projeto={...(M.projeto||{}), nome:v("pj-n")||PROJ0.nome, lema:v("pj-l"), meta:v("pj-m")||PROJ0.meta, inicio:/^\d{4}-\d{2}-\d{2}$/.test(ini)?ini:pj.inicio, dias:dias>=7?Math.min(730,Math.round(dias)):pj.dias};
     syncProjetos();
-    applyProjeto(); saveMain(); closeSheet(); toast("Perfil e projeto salvos."); }};
+    applyProjeto(); saveMain(); };
+  F_salvarPerfil = () => salvarPerfil(true);
+  FLOW={kind:"perfil", back:()=>{}, next:()=>{ salvarPerfil(); closeSheet(); toast("Perfil e projeto salvos."); }};
   openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
   sheetHTML({title:"Perfil e projeto", next:"Salvar", body:`
     <div style="display:grid;justify-items:center;gap:10px"><button class="avatar" id="pf-ph" style="width:120px;height:120px;font-size:44px" aria-label="Trocar foto">${pf.photo?`<img src="${esc(pf.photo)}" alt="Sua foto">`:esc((pf.name||"E")[0])}</button><span class="muted" style="font-size:13px">Toque para escolher uma foto da galeria</span></div>
@@ -2135,6 +2159,7 @@ function openProfile(){
     <label class="field"><span>Alvo central (a meta que o projeto persegue)</span><input class="inp" id="pj-m" value="${esc(pj.meta)}"></label>
     <p class="faint" style="font-size:13px">${CUSTOM?"A agenda, as matérias e as metas deste projeto foram montadas pelo quiz de direção. Para refazer, use Novo projeto no menu ⋯.":"A agenda, as matérias e as metas deste projeto seguem o plano do Projeto Caverna. Para montar outro projeto, use Novo projeto no menu ⋯."}</p>
     <div class="grid2"><label class="field"><span>Início</span><input class="inp" id="pj-i" type="date" value="${esc(pj.inicio)}"></label><label class="field"><span>Duração (dias)</span><input class="inp" id="pj-d" type="number" min="7" max="730" value="${esc(pj.dias)}"></label></div>
+    ${quemVoceHTML()}
     <div class="glass pad" style="display:grid;gap:6px"><span class="tag">Pontos de domínio</span><p style="font-size:14px">Você ganha pontos a cada aprendizado comprovado: bloco aprovado na prova, revisão, erro forjado, simulado e dia finalizado. A cada 250 pontos, sobe um nível. Hoje: nível ${LEVEL()}, ${XP()} pontos.</p></div>
     <p class="note">${DB&&UID?"Seus registros ficam salvos na sua conta Claude e aparecem em qualquer aparelho.":"Seus registros ficam salvos neste navegador. Na versão publicada, ficam na sua conta."} </p>
     ${DL?`<button class="btn" id="pf-bk">Baixar backup dos registros</button>`:""}`});
@@ -2142,6 +2167,11 @@ function openProfile(){
     const c=scale(img,320); const data=c.toDataURL("image/jpeg",.8);
     if(ASSETS){ try{ const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)); const up=await ASSETS.upload(b); pf.photo=up.url; }catch(e){ pf.photo=data; } } else pf.photo=data;
     saveMain(); const btn=$("#pf-ph"); if(btn) btn.innerHTML=`<img src="${esc(pf.photo)}" alt="Sua foto">`; });
+  $("#pf-desc")?.addEventListener("click",()=>{ const t=(($("#pf-dt")||{}).value||"").trim(); if(t.length<5){ toast("Escreva a sua descoberta em uma frase."); $("#pf-dt")?.focus(); return; }
+    (M.profile.descobertas=M.profile.descobertas||[]).push({data:iso(today()), texto:t.slice(0,600)}); saveMain(); $("#pf-dt").value=""; const L=$("#pf-dl"); if(L) L.innerHTML=descobertasHTML(); toast("Descoberta salva. O app passa a considerar isso."); });
+  $("#pf-up")?.addEventListener("click",()=>{ const ds=M.profile.descobertas||[], t=ds.length?ds[ds.length-1].texto:""; F_salvarPerfil(); closeSheetSoft();
+    if(P().custom) openRemodelar(t?"Nova descoberta sobre mim: "+t:""); else { EDITOR_PEDIDO=t?`Nova descoberta sobre mim: ${t}. Ajuste a minha agenda a isso, sem mudar o que já está bom.`:""; openEditor("claude"); } });
+  $("#pf-quiz")?.addEventListener("click",()=>{ F_salvarPerfil(); closeSheetSoft(); openDirecao(); });
   $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`yaad1-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
 }
 
