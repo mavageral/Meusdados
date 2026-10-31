@@ -29,6 +29,8 @@ Nota honesta: as **Inteligências Múltiplas (Gardner)** são populares, mas tê
 
 ## O alvo é o centro
 
+Duas formas de entrar: as portas abaixo, ou **"Prefiro escrever"**: a pessoa descreve o que quer, onde quer chegar e do que gosta, e o Claude faz perguntas, uma por tela, até o alvo ficar claro.
+
 Tudo no quiz serve para uma coisa: **traçar o alvo da pessoa** (o *ya'ad*). O alvo é a meta concreta que vira o projeto. A descoberta, as perguntas e os caminhos existem para chegar a ele.
 
 ## As portas de entrada
@@ -104,15 +106,15 @@ Só **depois** da rodada ampla. O Claude faz perguntas de situação para **dese
 - Em quanto tempo precisa de resultado: até 3 meses · 6 meses · 1 ano · 2 anos ou mais.
 - O que pesa mais agora: renda logo · formação sólida · as duas coisas em paralelo.
 
-### 9. Caminhos e oportunidades
-De 3 a 5 opções de **tipos diferentes** (emprego, curso ou certificação, faculdade, concurso). Cada cartão tem:
+### 9. O seu caminho
+**Um alvo, um caminho:** o app recomenda **uma** rota (não um cardápio). Se a pessoa não concordar, ela pede um ajuste ou outra rota, explicando o motivo. A rota tem:
 - **O que é** e **por que combina com você**, citando as respostas;
 - **Requisitos:** exige faculdade? Qual? Certificação? Idade? Se o emprego exige faculdade, o cartão já indica a faculdade e um **emprego de entrada** que não exige, para fazer enquanto estuda;
 - **Escada:** o degrau de agora, os próximos e o prazo realista com o tempo que a pessoa tem;
 - **Custo** (começando pelo gratuito quando o dinheiro é curto) e **mercado** (onde há mais vagas);
 - **Oportunidades:** buscas prontas (vagas, editais, vestibulares), que ligam com a etapa 4.
 
-A pessoa pode **favoritar**, **comparar dois lado a lado** e **combinar** (ex.: emprego de entrada + faculdade EAD).
+A rota pode **combinar** degraus (ex.: emprego de entrada + faculdade EAD), mas continua sendo um único caminho.
 
 Exemplo de escada (o caso da Edna):
 > **Analista de dados júnior.** Agora: SQL e Power BI gratuitos + portfólio com 3 projetos. Em 3 meses: ANBIMA CPA. Em 6 meses: estágio em dados (Serasa, PagBank, Sicoob). Em paralelo: a faculdade de Matemática que já cursa.
