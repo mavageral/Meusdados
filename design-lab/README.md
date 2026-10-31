@@ -8,9 +8,13 @@ A caixa de ferramentas de design do Meusdados. Junta três coisas:
 | **Catálogo** | `catalogo.md` | O que cada referência ensina: cores e fontes medidas, padrões de tela, qual tema usar em cada tipo de projeto. |
 | **Vitrine** | `index.html` | O mesmo app desenhado nos 8 temas, para comparar e escolher. |
 
-E duas skills em `.claude/skills/`, carregadas automaticamente pelo Claude:
+E as automações em `.claude/` e `ferramentas/`:
 
-- **`meusdados-design`**: o método. Briefing → escolha do tema → regras do ui-ux-pro-max → construção → portões de qualidade → screenshot → entrega.
+- **Skill `meusdados-design`**: o método. Briefing → escolha do tema → regras do ui-ux-pro-max → construção → portões de qualidade → verificação → entrega.
+- **Skill `extrair-referencia`**: transforma qualquer `.fig`, `.sketch` ou imagem nova em entrada do catálogo ou em tema novo.
+- **Skill `/novo-projeto <nome> <tema>`**: cria `projetos/<nome>/` já no padrão.
+- **Subagente `revisor-ui`**: revisão independente antes de cada entrega.
+- **Hook de contraste**: ao editar `temas.css`, roda `ferramentas/contraste.py` sozinho.
 - **`ui-ux-pro-max`** (e skills irmãs): base de 79 estilos, 119 regras de UX e boas práticas por tecnologia.
 
 ## Como pedir um projeto

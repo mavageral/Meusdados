@@ -35,7 +35,7 @@ As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. 
 - Carregue as fontes do tema pelo Google Fonts (lista no topo de `temas.css`).
 - Reaproveite os padrões do catálogo: número grande + unidade pequena, tab bar em pílula, semana em 7 colunas, um só destaque.
 - Mobile-first: comece pelos 375px e depois expanda.
-- Projetos novos ficam em `projetos/<nome-do-projeto>/`.
+- Projetos novos ficam em `projetos/<nome-do-projeto>/`. Crie com `python3 -I ferramentas/novo-projeto.py <nome> <tema> "<Título>"` (ou `/novo-projeto`).
 
 ## 5. Portões de qualidade (antes de entregar)
 - [ ] Contraste AA: texto ≥ 4,5:1 e elementos grandes ou ícones ≥ 3:1 (os tokens já passam; confira combinações novas).
@@ -44,8 +44,9 @@ As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. 
 - [ ] Ícones em SVG (nunca emoji como ícone). Imagens com `alt`.
 - [ ] Textos em português, diretos, com dados reais ou exemplos marcados como exemplo.
 
-## 6. Verificar visualmente
-Tire screenshots com o Playwright (já instalado: `require('playwright')`) em **390×844** e **1280×800**. Confira `document.documentElement.scrollWidth` igual à largura da janela e nenhum erro de console. Corrija o que aparecer **uma vez** e entregue.
+## 6. Verificar
+1. `node ferramentas/verificar-pagina.js projetos/<nome>/index.html <pasta-no-scratchpad>`: screenshots em 390 e 1280, rolagem lateral, erros de JS, alvos de toque, alt, textos miúdos. Olhe as duas screenshots.
+2. Rode o subagente **revisor-ui** com o caminho da página. Corrija o que vier como grave ou médio **uma vez** e entregue.
 
 ## 7. Entregar
 - Commit no repositório com mensagem clara.

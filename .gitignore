@@ -1,3 +1,4 @@
 design-lab/fontes-privadas/
 __pycache__/
 *.pyc
+node_modules/

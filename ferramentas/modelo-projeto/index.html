@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR" data-tema="{{TEMA}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{TITULO}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?{{FONTES}}&display=swap">
+<link rel="stylesheet" href="../../design-lab/tokens/temas.css">
+<style>
+  /* Só tokens do tema aqui. Nada de hex solto. */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100dvh;
+    background: var(--hero);
+    color: var(--text);
+    font: var(--t-md)/var(--lh-body) var(--font-body);
+    padding: max(var(--s-4), env(safe-area-inset-top, 0px)) max(var(--s-4), env(safe-area-inset-right, 0px)) var(--s-12) max(var(--s-4), env(safe-area-inset-left, 0px));
+  }
+  .app { max-width: 1100px; margin: 0 auto; display: grid; gap: var(--s-6); }
+  h1 { font: 700 var(--t-2xl)/var(--lh-tight) var(--font-display); margin: 0; text-wrap: balance; }
+  .muted { color: var(--text-muted); }
+  .card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--shadow); -webkit-backdrop-filter: var(--blur); backdrop-filter: var(--blur);
+    padding: var(--s-5);
+  }
+  .grid { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .big { font: 600 var(--t-3xl)/1 var(--font-num); font-variant-numeric: tabular-nums; }
+  .big small { font: 500 var(--t-md) var(--font-body); color: var(--text-muted); margin-left: var(--s-1); }
+  .btn {
+    min-height: var(--touch); padding: 0 var(--s-6); border: 0; border-radius: var(--r-pill);
+    background: var(--accent); color: var(--on-accent); font: 600 var(--t-md) var(--font-body); cursor: pointer;
+    transition: transform var(--d-fast) var(--ease-out), filter var(--d-fast);
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn:active { transform: scale(.98); }
+  @media (min-width: 768px) { h1 { font-size: var(--t-3xl); } }
+</style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <p class="muted">Projeto</p>
+      <h1>{{TITULO}}</h1>
+    </header>
+
+    <section class="grid" aria-label="Resumo">
+      <article class="card">
+        <p class="muted">Indicador principal (exemplo)</p>
+        <p class="big">0<small>unidade</small></p>
+      </article>
+    </section>
+
+    <button class="btn" type="button">Ação principal</button>
+  </main>
+</body>
+</html>
