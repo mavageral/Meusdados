@@ -109,8 +109,10 @@ A carteira mostra a escada inteira, com o degrau atual em destaque.
 
 | Fase | O que entra | Entregas |
 |---|---|---|
-| **A. Rotas** | Perguntas específicas de cada porta (2 a 4 telas), compromissos fixos por dia na rotina, "até quando?" | 1, 6 |
-| **B. Mapa do alvo e oportunidades** | Edital salvo e lido pelo Claude, requisitos, custo e viabilidade, sites para se cadastrar, mercado (é a etapa 4 da visão) | 2, 4, 5, 7 |
+| **A. Rotas** ✅ | Perguntas específicas de cada porta (2 a 4 telas), compromissos fixos por dia na rotina, "até quando?" | 1, 6 |
+| **B. Mapa do alvo e oportunidades** ✅ | Edital salvo e lido pelo Claude, requisitos, custo e viabilidade, sites para se cadastrar, mercado (é a etapa 4 da visão) | 2, 4, 5, 7 |
 | **C. Diagnóstico** | Nivelamento por matéria, distância, prazo realista e escolha da pessoa | 3 |
 | **D. Medidor do alvo** | "Quanto falta", previsão de data, alertas e ajuste do plano | 8 |
 | **E. Degraus** | Próximo projeto encadeado e escada na carteira | 9 |
+
+Andamento (31/10/2026): A e B prontas. A fase A também trouxe "Prefiro escrever" e o caminho único; a fase B usa a busca ao vivo do conector Parallel Search.
