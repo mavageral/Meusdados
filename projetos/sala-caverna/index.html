@@ -271,6 +271,28 @@ h1,h2,h3,p{margin:0}
 .tline .ev.done b{color:var(--ok)}
 .tline .ev.hot{background:linear-gradient(90deg,rgb(255 106 26 / .14),transparent);border-radius:12px;padding-left:10px}
 
+/* fita do tempo */
+.ribbon{padding:12px 14px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:8px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ribbon .rh{display:flex;align-items:center;gap:8px}
+.ribbon .rh b{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.ribbon .rh span{font-size:12px;color:var(--muted);margin-left:auto;text-align:right;min-width:0}
+.ribbon .zb{width:30px;height:30px;border-radius:50%;border:1px solid var(--edge-2);background:none;display:grid;place-items:center;padding:0;font:500 16px/1 var(--mono);color:var(--muted);position:relative}
+.ribbon .zb::after{content:"";position:absolute;inset:-7px}
+.track{display:flex;gap:3px;height:12px;align-items:stretch;position:relative}
+.track>i{display:block;border-radius:4px;background:rgb(255 255 255 / .12);min-width:3px;cursor:pointer}
+.track>i.f{background:var(--ok)} .track>i.n{background:var(--bad)} .track>i.w{background:color-mix(in srgb,var(--warn) 60%,transparent)}
+.track>i.cur{background:var(--g1,var(--c));animation:glow 1.6s ease-in-out infinite}
+@keyframes glow{50%{opacity:.55}}
+.track.hundred{gap:1px}.track.hundred>i{min-width:0;border-radius:1px}
+.track .nowm{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);border-radius:2px;pointer-events:none}
+.track.days>i{position:relative;overflow:hidden;background:rgb(255 255 255 / .08)}
+.track.days>i>u{position:absolute;inset:auto 0 0 0;background:var(--ok);text-decoration:none}
+.track.days>i.today{outline:1px solid var(--text);outline-offset:1px}
+.rl{display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted)}
+.going{animation:pulseb 2s ease-in-out infinite;border-color:rgb(255 106 26 / .55)!important;background:linear-gradient(90deg,rgb(255 106 26 / .18),var(--glass))!important}
+@keyframes pulseb{50%{box-shadow:0 0 0 6px rgb(255 106 26 / .08)}}
+.quadro{white-space:pre;overflow-x:auto;font:14px/1.45 var(--mono);padding:14px;border-radius:16px;background:#020306;border:1px solid var(--edge-2);color:#E8F0FF}
+.lvl{font:500 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:2px 8px;border-radius:99px;border:1px solid var(--edge-2)}
 /* desktop: duas colunas no Hoje */
 .hoje-grid{display:flex;flex-direction:column;gap:18px}
 .hoje-grid .h-top{order:1}.hoje-grid .h-side{order:2}.hoje-grid .h-tl{order:3}
@@ -462,6 +484,7 @@ async function boot(){
     DL = await claude.use("downloads");
   }catch(e){}
   render();
+  if(aiOn() && manhaPend() && SH.hidden && (M.manhaVista||"")!==iso(today())){ M.manhaVista=iso(today()); saveMain(); openManha(); }
 }
 
 /* ====================================================================
@@ -518,6 +541,7 @@ function streak(){
 }
 function quizAvg(){ const q=allStudy().filter(r=>r.score!=null); return q.length ? q.reduce((a,r)=>a+r.score,0)/q.length : null; }
 function dueReviews(){ const t=iso(today()); return (M.revisoes||[]).filter(r => !r.done && r.due<=t); }
+function logErro(mat, topic, q, a){ (M.erros=M.erros||[]).push({id:"e"+Date.now()+Math.random().toString(36).slice(2,6), d:iso(today()), mat, topic:topic||q.tema||"", p:q.p, minha:q.o[a]||"", certa:q.o[q.c], e:q.e, ok:false}); }
 function addXP(n){ M.xp=(M.xp||0)+n; saveMain(); }
 const LEVEL = () => Math.floor((M.xp||0)/250)+1;
 
@@ -616,6 +640,10 @@ function vHoje(){
         </div>
         <div class="acts">${heroAct}${cur&&nxt?`<span class="chip" style="background:rgb(0 0 0 / .25)">Depois: ${esc(nxt.l)} ${fmtH(nxt.a)}</span>`:""}</div>
       </section>
+      ${M.sessao?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${ribbonHTML()}
+      ${manhaPend()?`<button class="item" data-act="manha" style="border-color:rgb(154 165 255 / .45)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${semanaPend()?`<button class="item" data-act="semana" style="border-color:rgb(255 106 26 / .45)"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Segunda é dia de prova com gabarito sobre a semana</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
       ${pendNow?`<button class="item" data-act="bloco" data-k="${esc(bkey(pendNow))}" style="border-color:rgb(255 194 75 / .4)"><svg class="icon" style="color:var(--warn)"><use href="#i-flame"/></svg><span class="grow"><b>Ainda falta confirmar: ${esc(pendNow.l)}</b><small>Feito ou não feito, registre agora enquanto lembra.</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
 
      </div>
@@ -667,16 +695,18 @@ function vEstudar(){
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
       ${due.length?`<div class="list">${due.map(r=>`<button class="item" data-act="revisar" data-id="${r.id}"><span class="chip" style="color:${g1(SUBJ[r.mat]?SUBJ[r.mat].a:"rev")}"><i></i>D${r.step}</span><span class="grow"><b>${esc(r.topic)}</b><small>${esc(SUBJ[r.mat]?SUBJ[r.mat].n:"")} · estudado em ${fromIso(r.d0).getDate()}/${fromIso(r.d0).getMonth()+1}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`).join("")}</div>`:`<p class="note">Nenhuma revisão vencida. Cada assunto aprovado volta para revisão em 1, 3, 7, 14 e 30 dias.</p>`}
     </section>
-    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Caderno de erros</h2><span class="mono muted" style="font-size:13px">${(M.erros||[]).filter(e=>!e.ok).length} abertos</span></div>
-      ${er.length?`<div class="list">${er.map(e=>`<button class="item" data-act="erro" data-id="${e.id}"><svg class="icon" style="color:var(--bad)"><use href="#i-x"/></svg><span class="grow"><b>${esc(e.p)}</b><small>Certa: ${esc(e.certa)}</small></span></button>`).join("")}</div>`:`<p class="note">Cada questão errada nas provas entra aqui com a explicação. Errar é normal; errar duas vezes pelo mesmo motivo é o que vamos evitar.</p>`}
+    ${forjaHTML()}
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Erros recentes</h2><span class="mono muted" style="font-size:13px">${(M.erros||[]).filter(e=>!e.ok).length} abertos</span></div>
+      ${er.length?`<div class="list">${er.map(e=>`<button class="item" data-act="erro" data-id="${e.id}"><svg class="icon" style="color:var(--bad)"><use href="#i-x"/></svg><span class="grow"><b>${esc(e.p)}</b><small>Certa: ${esc(e.certa)}</small></span></button>`).join("")}</div>`:`<p class="note">Nenhum erro aberto. Errar é normal; errar duas vezes pelo mesmo motivo é o que vamos evitar.</p>`}
     </section>
   </div>`;
 }
 
 /* ---------------- EVOLUÇÃO ---------------- */
 function vEvolucao(){
-  const segs = [["panorama","Panorama"],["metas","Metas e vagas"],["arvore","Árvore"],["anbima","ANBIMA"]];
-  const body = {panorama:evoPanorama, metas:evoMetas, arvore:evoArvore, anbima:evoAnbima}[EVOTAB]();
+  const segs = [["panorama","Panorama"],["provas","Provas"],["metas","Metas"],["arvore","Árvore"]];
+  if(EVOTAB==="anbima") EVOTAB="provas";
+  const body = {panorama:evoPanorama, metas:evoMetas, arvore:evoArvore, provas:evoProvas}[EVOTAB]();
   return `<div class="view">${topBar()}
     <section style="display:grid;gap:8px"><span class="eyebrow">Evolução</span><h1 class="title-l">Onde estamos chegando</h1></section>
     <div class="seg" role="group" aria-label="Seções">${segs.map(([k,n])=>`<button data-act="evotab" data-k="${k}" aria-pressed="${EVOTAB===k}">${n}</button>`).join("")}</div>
@@ -776,7 +806,15 @@ let OPENER=null, RETURN=null;
 function openSheet(bg){ if(SH.hidden) OPENER=document.activeElement; SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden";
   $("#app").inert=true; document.querySelector(".tabbar").inert=true; setTimeout(()=>{ const x=SH.querySelector(".x,[data-sh]"); if(x&&!SH.contains(document.activeElement)) x.focus(); },60); }
 document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) closeSheet(); });
-function closeSheet(){ if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
+function keepSession(){
+  const F=FLOW; if(!F||F.kind!=="study") return;
+  const st=F.steps[F.at]; if(st==="fim"||(!F.data.topic&&F.at===0)) { if(st==="fim") M.sessao=null; return; }
+  const D=F.data; M.sessao={dstr:F.dstr, k:F.b?bkey(F.b):null, mat:F.mat, livre:!!F.livre, at:F.at, ts:Date.now(),
+    data:{topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs, notes:($("#st-notes")||{}).value??D.notes, conta:($("#st-conta")||{}).value??D.conta, aula:D.aula, t0:D.t0},
+    focus:F.focus?{total:F.focus.total,left:F.focus.left}:null};
+  saveMain();
+}
+function closeSheet(){ keepSession(); if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
   if(RETURN){ const r=RETURN; RETURN=null; FLOW=r; r.refresh(); openSheet(r.bg); drawFinal(); return; }
   SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
   const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); }
@@ -818,7 +856,15 @@ function openBlock(dstr,k){
   if(kd==="revisao") return openReviews();
   const r = day(dstr).blocks[k];
   if(r && r.st) return openRecord(dstr,b,r);
+  if(M.sessao && M.sessao.k===k && M.sessao.dstr===dstr) return resumeSession();
   openStudy({dstr, b, mat: FROM_LABEL(b.l) || (b.c==="anbima"?"anbima":b.c==="tech"?"py":"mat")});
+}
+function resumeSession(){
+  const S=M.sessao; if(!S) return;
+  const b = S.k ? findBlock(S.dstr,S.k) : null;
+  openStudy({dstr:S.dstr, b, mat:S.mat, topic:S.data.topic, livre:S.livre});
+  Object.assign(FLOW.data, S.data, {fotos:[]}); FLOW.at=Math.min(S.at, FLOW.steps.length-2); if(S.focus) FLOW.focus={...S.focus, run:false};
+  drawStudy();
 }
 function openStudy({dstr, b, mat, topic, livre}){
   const isBib = (b && b.c==="biblia") || mat==="biblia";
@@ -897,7 +943,7 @@ function drawStudy(){
         <p class="title-m" style="max-width:34ch">${esc(r.msg)}</p>
         ${r.pass?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0">+${r.xp} XP${D.topic&&!FLOW.isBib?" · revisão marcada para amanhã":""}</span>`:""}
       </div>
-      ${r.feedback?`<div class="glass pad"><span class="tag">Sua resposta aberta</span><p style="margin-top:8px">${esc(r.feedback)}</p></div>`:""}
+      ${r.feedback?`<div class="glass pad"><span class="tag">Avaliação da sua descrição${r.desc!=null?` · ${Math.round(r.desc*100)}%`:""}</span><p style="margin-top:8px">${esc(r.feedback)}</p>${(r.lacunas||[]).length?`<span class="tag" style="margin-top:10px;display:block">Rever</span><ul style="margin:6px 0 0;padding-left:18px">${r.lacunas.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}</div>`:""}
       ${D.quiz?`<details class="glass pad" ${r.pass?"":"open"}><summary style="cursor:pointer;font-weight:500">Ver correção das questões</summary><div style="display:grid;gap:12px;margin-top:12px">${quizHTML(D.quiz,D.ans,true)}</div></details>`:""}
       ${!r.pass&&r.score!=null?`<div class="row wrap"><button class="btn primary" data-act="refazer-prova">Fazer outra prova</button><button class="btn" data-act="aceitar-parcial">Registrar como parcial</button></div>`:""}` : thinking()});
   }
@@ -926,16 +972,20 @@ function tickFocus(){
 }
 function lessonHTML(L){
   const yt = (L.buscas||[]).slice(0,3).map(q=>`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener"><span class="yt"><svg class="icon" style="width:14px;height:14px"><use href="#i-play"/></svg></span><span class="grow">${esc(q)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
+  const qq = encodeURIComponent(L.titulo||""), isMat = FLOW && ["mat","est"].includes(FLOW.mat);
+  const pesq = [["Khan Academy: "+(L.titulo||""), "https://pt.khanacademy.org/search?page_search_query="+qq],["Wikipédia: "+(L.titulo||""), "https://pt.wikipedia.org/w/index.php?search="+qq]].concat(isMat?[["Ver no GeoGebra","https://www.geogebra.org/search/"+qq],["Calcular no Wolfram Alpha","https://www.wolframalpha.com/input?i="+qq]]:[])
+    .map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
   const rec = (SUBJ[FLOW&&FLOW.mat]||{rec:[]}).rec.slice(0,2).map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
   return `<div class="lesson">
     <span class="tag">Aula · ${esc(L.titulo||"")}</span>
     <p class="idea">${esc(L.ideia||"")}</p>
     ${L.analogia?`<div class="glass pad"><span class="tag">Imagine assim</span><p style="margin-top:6px">${esc(L.analogia)}</p></div>`:""}
     <div class="steps">${(L.passos||[]).map((p,i)=>`<div class="step"><span class="tag">Passo ${i+1}</span><b>${esc(p.t)}</b><p>${esc(p.txt)}</p></div>`).join("")}</div>
+    ${L.quadro?`<div style="display:grid;gap:6px"><span class="tag">Quadro</span><div class="quadro" role="img" aria-label="Ilustração em texto">${esc(L.quadro)}</div></div>`:""}
     ${L.exemplo?`<div class="ex"><span class="tag">Exemplo resolvido</span><p style="margin-top:6px;font-weight:500">${esc(L.exemplo.enunciado)}</p><pre>${esc(L.exemplo.resolucao)}</pre></div>`:""}
     ${(L.armadilhas||[]).length?`<div class="glass pad"><span class="tag">Cuidado com</span><ul style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.armadilhas.map(a=>`<li>${esc(a)}</li>`).join("")}</ul></div>`:""}
     ${(L.treino||[]).length?`<div class="glass pad"><span class="tag">Treine no caderno (sem consultar)</span><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.treino.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div>`:""}
-    ${yt||rec?`<div class="links"><span class="tag">Assista e consulte</span>${yt}${rec}</div>`:""}
+    ${yt||rec?`<div class="links"><span class="tag">Videoaulas</span>${yt}</div><div class="links"><span class="tag">Pesquise e aprofunde</span>${pesq}${rec}</div>`:""}
     <div class="row wrap"><button class="btn sm" data-act="ouvir" data-txt="${esc((L.ideia||"")+". "+(L.passos||[]).map(p=>p.t+". "+p.txt).join(" "))}"><svg class="icon"><use href="#i-sound"/></svg>Ouvir a aula</button><button class="btn sm ghost" data-act="aula-retry">Gerar outra explicação</button></div>
   </div>`;
 }
@@ -947,7 +997,7 @@ Matéria: ${mat}. Nível atual na trilha: ${SUBJ[F.mat]?SUBJ[F.mat].lv[lv.l]:"-"
 ${D.fotos.length?"As imagens anexadas são o material que será estudado (página, slide ou exercício). Baseie a aula nelas.":""}
 Regras do laudo: explicar o PORQUÊ, partir do concreto para o abstrato, mostrar um exemplo resolvido passo a passo com verificação, e terminar com treino graduado.
 Responda só com JSON neste formato:
-{"titulo":"nome curto do assunto","ideia":"a ideia central em 1–2 frases","analogia":"comparação concreta do dia a dia","passos":[{"t":"título curto","txt":"explicação em 2–3 frases"}],"exemplo":{"enunciado":"...","resolucao":"passo a passo em linhas, com a verificação no final"},"armadilhas":["erro comum 1","erro comum 2"],"treino":["exercício guiado","exercício independente","problema contextualizado"],"buscas":["busca no YouTube em português 1","busca 2","busca 3"]}
+{"titulo":"nome curto do assunto","ideia":"a ideia central em 1–2 frases","analogia":"comparação concreta do dia a dia","passos":[{"t":"título curto","txt":"explicação em 2–3 frases"}],"exemplo":{"enunciado":"...","resolucao":"passo a passo em linhas, com a verificação no final"},"quadro":"desenho em texto monoespaçado (até 12 linhas, até 38 colunas) que ilustre o conceito: reta numérica, barras de fração, tabela, esquema de passos ou diagrama","armadilhas":["erro comum 1","erro comum 2"],"treino":["exercício guiado","exercício independente","problema contextualizado"],"buscas":["busca no YouTube em português 1","busca 2","busca 3"]}
 Use 3 a 5 passos. As buscas devem ser frases de pesquisa (não links).`;
   try{
     D.aula = await aiJson(prompt, {signal:F.ctl.signal, images: D.fotos.length?D.fotos:undefined});
@@ -991,15 +1041,19 @@ async function gradeQuiz(){
   const F=FLOW, D=F.data, Q=D.quiz; const ta=$("#st-aberta"); if(ta) D.aberta=ta.value;
   const right = Q.qs.filter((q,i)=>D.ans[i]===q.c).length;
   F.at = F.steps.indexOf("fim"); D.result=null; drawStudy();
-  let open = {nota:0.5, feedback:""};
+  let open = {nota:0.5, descricao:0.5, feedback:"", lacunas:[]};
   try{
-    open = await aiJson(`Corrija a resposta aberta. Pergunta: "${Q.aberta.p}". Critério: "${Q.aberta.criterio}". Resposta: """${D.aberta.slice(0,2000)}""". Seja justo e encorajador; aponte o que faltou. Responda só com JSON: {"nota":0.0 a 1.0,"feedback":"2–3 frases"}`, {modelTier:"quick"});
-  }catch(e){ open = {nota:0.5, feedback:"Não consegui corrigir a pergunta aberta agora; contei meio ponto."}; }
-  const score = (right + Math.max(0,Math.min(1,+open.nota||0))) / (Q.qs.length+1);
-  Q.qs.forEach((q,i)=>{ if(D.ans[i]!==q.c){ (M.erros=M.erros||[]).push({id:"e"+Date.now()+i, d:iso(today()), mat:F.mat, p:q.p, minha:q.o[D.ans[i]]||"", certa:q.o[q.c], e:q.e, ok:false}); } });
+    open = await aiJson(`Avalie duas coisas de quem acabou de estudar "${D.topic}" (${SUBJ[F.mat]?SUBJ[F.mat].n:""}).
+1) A DESCRIÇÃO do que aprendeu, escrita sem consultar: """${D.conta.slice(0,2500)}""". Está correta? Mostra compreensão do porquê ou só repete regra?
+2) A resposta à pergunta aberta "${Q.aberta.p}" (critério: "${Q.aberta.criterio}"): """${D.aberta.slice(0,2000)}""".
+Seja justo e encorajador. Corrija equívocos com precisão. Responda só com JSON: {"descricao":0.0 a 1.0,"nota":0.0 a 1.0,"feedback":"3–4 frases sobre o que ela já domina e o que corrigir","lacunas":["ponto a rever 1","ponto 2"]}`, {modelTier:"quick"});
+  }catch(e){ open = {nota:0.5, descricao:0.5, feedback:"Não consegui avaliar a descrição e a pergunta aberta agora; contei meio ponto em cada.", lacunas:[]}; }
+  const cl = v => Math.max(0,Math.min(1,+v||0));
+  const score = (right + cl(open.nota) + cl(open.descricao)) / (Q.qs.length+2);
+  Q.qs.forEach((q,i)=>{ if(D.ans[i]!==q.c) logErro(F.mat, D.topic, q, D.ans[i]); });
   const pass = score >= 0.6;
-  D.result = {score, pass, feedback:open.feedback, xp: pass?Math.round(20+score*20):0,
-    msg: pass ? (score>=0.9?"Excelente. Domínio demonstrado.":"Bloco confirmado. O que errou foi para o caderno de erros.") : "Ainda abaixo de 60%. Releia a aula e o caderno de erros e faça outra prova. Aprender é isso."};
+  D.result = {score, pass, feedback:open.feedback, lacunas:open.lacunas||[], desc:cl(open.descricao), xp: pass?Math.round(20+score*20):0,
+    msg: pass ? (score>=0.9?"Excelente. Domínio demonstrado.":"Bloco confirmado. O que errou foi para a Forja.") : "Ainda abaixo de 60%. Releia a aula, veja as lacunas abaixo e faça outra prova. Aprender é isso."};
   if(pass) saveStudy(score); else saveMain();
   if(FLOW===F) drawStudy();
 }
@@ -1009,6 +1063,7 @@ function finishStudy(score){
   saveStudy(score); drawStudy();
 }
 function saveStudy(score, partial){
+  M.sessao=null;
   const F=FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
   const rec = {st:"feito", mat:F.mat, topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs.slice(0,2), conta:D.conta, notes:D.notes, score, parcial:!!partial,
     aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.focus ? Math.max(5, Math.round((F.focus.total-F.focus.left)/60)) || Math.min(mins, F.b?toMin(F.b.b)-toMin(F.b.a):mins) : Math.min(Math.max(10,mins), F.b?toMin(F.b.b)-toMin(F.b.a):120), ts:Date.now()};
@@ -1224,32 +1279,194 @@ function openDay(dstr){
 /* ---------- matéria ---------- */
 function openSubject(k){
   const s=SUBJ[k], L=levelOf(k), hist=allStudy().filter(r=>r.mat===k).slice(-8).reverse();
+  const prog = (M.programa||{})[k], estudados = new Set(allStudy().filter(r=>r.mat===k).map(r=>(r.topic||"").toLowerCase()));
   FLOW={kind:"subj", next:()=>{ closeSheetSoft(); openStudy({mat:k, livre:true}); }, back:()=>{}};
   openSheet(`radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,${g1(s.a)} 40%,transparent),transparent 60%),linear-gradient(170deg,color-mix(in srgb,${g2(s.a)} 70%,#05060A),#05060A 60%)`);
   sheetHTML({title:AREAS[s.a].n, next:"Estudar agora", body:`
     <h2 class="q">${esc(s.n)}<small>Nível ${["I","II","III","IV","V"][L.l]} · ${esc(s.lv[L.l])} · ${L.n} blocos aprovados${L.next!=null?` · faltam ${L.next-L.n} para o próximo nível`:""}</small></h2>
+    <section class="glass pad" style="display:grid;gap:12px">
+      <span class="tag">Sala de aula · programa da matéria</span>
+      ${prog&&prog.topicos&&prog.topicos.length?`<b style="font-weight:500">${esc(prog.disciplina||s.n)}</b><div class="list">${prog.topicos.map((t,i)=>{ const ok=estudados.has((t.t||"").toLowerCase()); return `<button class="item" data-sub="topico" data-i="${i}"><span class="chip" style="${ok?"background:var(--ok);color:var(--on-ok);border:0":""}">${ok?"✓":i+1}</span><span class="grow"><b>${esc(t.t)}</b><small>${esc(t.r||"")}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}</div><button class="link" data-sub="programa">Trocar o programa</button>`
+      :`<p class="muted">Cole aqui a ementa ou o conteúdo do semestre (ou mande um print). O Claude organiza em tópicos e cada tópico vira uma aula com prova.</p><button class="btn" data-sub="programa">Montar o programa da matéria</button>`}
+    </section>
     <div class="steps">${s.lv.map((x,i)=>`<div class="step" style="${i===L.l?"border-color:"+g1(s.a):i<L.l?"opacity:.7":""}"><span class="tag">Nível ${["I","II","III","IV","V"][i]} ${i<L.l?"· concluído":i===L.l?"· atual":""}</span><b>${esc(x)}</b></div>`).join("")}</div>
     ${s.rec.length?`<div class="links"><span class="tag">Materiais escolhidos</span>${s.rec.map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("")}</div>`:""}
     ${hist.length?`<div class="list"><span class="tag">Últimos estudos</span>${hist.map(r=>`<div class="item"><span class="grow"><b>${esc(r.topic||"")}</b><small>${r.d?fromIso(r.d).getDate()+"/"+(fromIso(r.d).getMonth()+1):""}${r.score!=null?" · "+Math.round(r.score*100)+"%":""}</small></span></div>`).join("")}</div>`:""}`});
+  SH.querySelectorAll('[data-sub="topico"]').forEach(b=>b.addEventListener("click",()=>{ const t=prog.topicos[+b.dataset.i]; closeSheetSoft(); openStudy({mat:k, topic:t.t, livre:true}); }));
+  SH.querySelectorAll('[data-sub="programa"]').forEach(b=>b.addEventListener("click",()=>{ closeSheetSoft(); openPrograma(k); }));
 }
 
-/* ---------- simulado ANBIMA ---------- */
-function openSimulado(){
-  if(!aiOn()){ toast("O simulado precisa do Claude ligado (versão publicada)."); return; }
-  let Q=null, ans={};
-  FLOW={kind:"sim", next:()=>{ if(!Q) return closeSheet();
-    const r=Q.qs.filter((q,i)=>ans[i]===q.c).length, sc=r/Q.qs.length; (M.simulados=M.simulados||[]).push({d:iso(today()), score:sc, n:Q.qs.length});
-    Q.qs.forEach((q,j)=>{ if(ans[j]!==q.c) (M.erros=M.erros||[]).push({id:"e"+Date.now()+j, d:iso(today()), mat:"anbima", p:q.p, minha:q.o[ans[j]]||"", certa:q.o[q.c], e:q.e, ok:false}); });
-    addXP(Math.round(sc*40)); saveMain();
-    $("#sm").innerHTML=`<div style="text-align:center"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${r} de ${Q.qs.length} · ${sc>=.7?"acima da meta de 70%":"meta: 70%. Os erros foram para o caderno."}</p></div>`+Q.qs.map((q,i)=>`<div class="mcq"><p class="p">${esc(q.p)}</p>${q.o.map((o,j)=>`<div class="opt ${j===q.c?"right":ans[i]===j?"wrong":""}"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></div>`).join("")}<p class="explain">${esc(q.e)}</p></div>`).join("");
-    Q=null; SH.querySelector('[data-sh="next"]').firstChild.textContent="Fechar "; }, back:()=>{}};
-  openSheet("linear-gradient(170deg,#2A2100,#05060A 60%)");
-  sheetHTML({title:"Simulado ANBIMA CPA", next:"Corrigir", nextOk:false, body:`<h2 class="q">Simulado<small>10 questões no estilo da certificação, misturando os temas do programa. Sem consultar.</small></h2><div id="sm">${thinking("Montando o simulado…")}</div>`});
-  aiJson(`Crie um SIMULADO de 10 questões no estilo da certificação ANBIMA CPA (nível de entrada), cobrindo: Sistema Financeiro Nacional, ética e regulação, noções de economia e finanças, princípios de investimento, fundos e tributação. 4 alternativas, só uma certa, explicação curta. Use conceitos estáveis e evite números de normas que mudam. Responda só com JSON: {"qs":[{"p":"","o":["","","",""],"c":0,"e":""}]}`)
-   .then(q=>{ Q=q; const el=$("#sm"); if(!el) return; el.innerHTML=q.qs.map((x,i)=>`<div class="mcq"><span class="tag">${i+1} de ${q.qs.length}</span><p class="p">${esc(x.p)}</p>${x.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}" aria-pressed="false"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`).join("")}</div>`).join("");
-     el.addEventListener("click",e=>{ const b=e.target.closest("button.opt"); if(!b) return; ans[+b.dataset.q]=+b.dataset.o; b.parentElement.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); SH.querySelector('[data-sh="next"]').disabled=q.qs.some((x,i)=>ans[i]==null); }); })
-   .catch(e=>{ const el=$("#sm"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; });
+/* ====================================================================
+   FITA DO TEMPO (pinça para afastar: agora → dia → semana → 100 dias)
+   ==================================================================== */
+let ZOOM = 1;
+const ZN = ["Agora","Hoje","Semana","100 dias"];
+function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Linha do tempo">${ribbonInner()}</section>`; }
+function ribbonInner(){
+  const t=today(), ts=iso(t), nm=nowMin(), bs=blocksOf(t).filter(b=>!["pausa"].includes(kindOf(b))), rec=day(ts).blocks;
+  const head = (sub) => `<div class="rh"><b>${ZN[ZOOM]}</b><span>${sub}</span><button class="zb" data-act="zoom" data-z="1" aria-label="Afastar (ver mais tempo)" ${ZOOM===3?"disabled":""}>−</button><button class="zb" data-act="zoom" data-z="-1" aria-label="Aproximar" ${ZOOM===0?"disabled":""}>+</button></div>`;
+  if(ZOOM===0){
+    const cur=blocksOf(t).find(b=>nm>=toMin(b.a)&&nm<toMin(b.b));
+    if(!cur) return head("Nenhum bloco agora")+`<div class="track"><i style="flex:1"></i></div>`;
+    const p=Math.round((nm-toMin(cur.a))/(toMin(cur.b)-toMin(cur.a))*100);
+    return head(`faltam ${toMin(cur.b)-nm} min`)+`<div class="track" style="--g1:${g1(cur.c)}"><i class="cur" style="flex:${p}"></i><i style="flex:${100-p}"></i></div><div class="rl"><span>${fmtH(cur.a)}</span><span>${fmtH(cur.b)}</span></div>`;
+  }
+  if(ZOOM===1){
+    const a0=toMin(bs[0].a), a1=toMin(bs[bs.length-1].b), st=dayStats(ts);
+    let seg=bs.map(b=>{ const r=rec[bkey(b)], k=bkey(b), past=toMin(b.b)<=nm, cur=nm>=toMin(b.a)&&nm<toMin(b.b);
+      const cls = r ? (r.st==="feito"?"f":"n") : cur ? "cur" : past ? "w" : "";
+      return `<i class="${cls}" style="flex:${toMin(b.b)-toMin(b.a)};--g1:${g1(b.c)}" data-act="rseg" data-k="${esc(k)}" title="${esc(b.l)} ${fmtH(b.a)}"></i>`; }).join("");
+    const pos = Math.max(0,Math.min(100,(nm-a0)/(a1-a0)*100));
+    return head(`${st.done} de ${st.total} feitos · ${Math.round(st.pct*100)}%`)+`<div class="track">${seg}${nm>=a0&&nm<=a1?`<span class="nowm" style="left:${pos}%"></span>`:""}</div><div class="rl"><span>${fmtH(bs[0].a)}</span><span>agora ${fmtH(p2(Math.floor(nm/60))+":"+p2(nm%60))}</span><span>${fmtH(bs[bs.length-1].b)}</span></div>`;
+  }
+  if(ZOOM===2){
+    let cols="", lbl=""; for(let i=-3;i<=3;i++){ const d=addDays(t,i), s=iso(d), st=dayStats(s), fut=i>0;
+      cols+=`<i class="${i===0?"today":""}" style="flex:1" data-act="rseg" data-d="${s}" title="${d.getDate()}/${d.getMonth()+1}">${fut?"":`<u style="height:${Math.round(st.pct*100)}%"></u>`}</i>`;
+      lbl+=`<span style="flex:1;text-align:center">${i===0?"hoje":WD[d.getDay()]}</span>`; }
+    const w=[-3,-2,-1,0].map(i=>dayStats(iso(addDays(t,i))).pct); const m=Math.round(w.reduce((a,b)=>a+b,0)/w.length*100);
+    return head(`média de ${m}% nos últimos 4 dias`)+`<div class="track days" style="height:36px">${cols}</div><div class="rl" style="display:flex">${lbl}</div>`;
+  }
+  const di=dayIdx(t); let cells="";
+  for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), st=dayStats(s); const cls = i>di?"":st.pct>=.8?"f":st.pct>0?"w":"";
+    cells+=`<i class="${cls}" style="flex:1;${i===di?"outline:1px solid var(--text);outline-offset:1px;":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}"></i>`; }
+  return head(`dia ${di+1} de 100 · ${Math.round((di+1)/TOTAL*100)}% do caminho`)+`<div class="track hundred">${cells}</div><div class="rl"><span>16/10</span><span>Fase 2 · 20/11</span><span>Fase 3 · 25/12</span><span>23/01</span></div>`;
 }
+function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
+(function(){
+  let d0=0, done=false;
+  const dist = e => Math.hypot(e.touches[0].clientX-e.touches[1].clientX, e.touches[0].clientY-e.touches[1].clientY);
+  document.addEventListener("touchstart", e=>{ if(e.touches.length===2 && e.target.closest("#ribbon")){ d0=dist(e); done=false; } }, {passive:true});
+  document.addEventListener("touchmove", e=>{ if(!d0||e.touches.length!==2||done) return; const r=dist(e)/d0;
+    if(r<0.75){ ZOOM=Math.min(3,ZOOM+1); done=true; paintRibbon(); } else if(r>1.33){ ZOOM=Math.max(0,ZOOM-1); done=true; paintRibbon(); } }, {passive:true});
+  document.addEventListener("touchend", ()=>{ d0=0; }, {passive:true});
+  document.addEventListener("wheel", e=>{ if(!e.ctrlKey || !e.target.closest("#ribbon")) return; e.preventDefault(); ZOOM=Math.max(0,Math.min(3,ZOOM+(e.deltaY>0?1:-1))); paintRibbon(); }, {passive:false});
+  document.addEventListener("dblclick", e=>{ if(e.target.closest("#ribbon")){ ZOOM=0; paintRibbon(); } });
+})();
+
+/* ====================================================================
+   PROVA GENÉRICA (simulados, revisão de ontem, da semana, forja)
+   ==================================================================== */
+function openProva({title, q, intro, bg, prompt, tier, onDone}){
+  if(!aiOn()){ toast("Esta prova precisa do Claude ligado (versão publicada)."); return; }
+  let Q=null, ans={}, fixed=false;
+  FLOW={kind:"prova", back:()=>{}, next:()=>{
+    if(fixed||!Q) return closeSheet();
+    const right=Q.qs.filter((x,i)=>ans[i]===x.c).length, sc=right/Q.qs.length; fixed=true;
+    const extra = onDone ? onDone(Q, ans, sc) || "" : "";
+    $("#pv").innerHTML=`<div style="text-align:center;display:grid;gap:8px"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${right} de ${Q.qs.length} certas</p></div>${extra}
+      ${Q.qs.map((x,i)=>`<div class="mcq"><div class="row wrap">${x.nivel?`<span class="lvl">${esc(x.nivel)}</span>`:""}${x.tema?`<span class="tag">${esc(x.tema)}</span>`:""}</div><p class="p">${esc(x.p)}</p>${x.o.map((o,j)=>`<div class="opt ${j===x.c?"right":ans[i]===j?"wrong":""}"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></div>`).join("")}<p class="explain">${esc(x.e||"")}</p></div>`).join("")}`;
+    $("#shb").scrollTop=0; SH.querySelector('[data-sh="next"]').firstChild.textContent="Fechar "; }};
+  openSheet(bg);
+  sheetHTML({title, next:"Corrigir", nextOk:false, body:`<h2 class="q">${q}<small>${intro}</small></h2><div id="pv">${thinking("Preparando as questões…")}</div>`});
+  aiJson(prompt+`\nResponda só com JSON: {"qs":[{"tema":"assunto","nivel":"fácil|médio|difícil","p":"","o":["","","",""],"c":0,"e":"explicação curta"}]}`, {modelTier:tier||"default"})
+   .then(r=>{ if(!r||!Array.isArray(r.qs)) throw {code:"invalid_json"}; Q=r; const el=$("#pv"); if(!el) return;
+     el.innerHTML=r.qs.map((x,i)=>`<div class="mcq"><div class="row wrap"><span class="tag">${i+1} de ${r.qs.length}</span>${x.nivel?`<span class="lvl">${esc(x.nivel)}</span>`:""}</div><p class="p">${esc(x.p)}</p>${x.o.map((o,j)=>`<button class="opt" data-q="${i}" data-o="${j}" aria-pressed="false"><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`).join("")}</div>`).join("");
+     el.addEventListener("click",e=>{ const b=e.target.closest("button.opt"); if(!b||fixed) return; ans[+b.dataset.q]=+b.dataset.o; b.parentElement.querySelectorAll(".opt").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); SH.querySelector('[data-sh="next"]').disabled=r.qs.some((x,i)=>ans[i]==null); }); })
+   .catch(e=>{ const el=$("#pv"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; });
+}
+function porTema(Q, ans){ const m={}; Q.qs.forEach((x,i)=>{ const t=x.tema||"Geral"; m[t]=m[t]||{a:0,n:0}; m[t].n++; if(ans[i]===x.c) m[t].a++; }); return m; }
+function temaHTML(m){ const rows=Object.entries(m).sort((a,b)=>a[1].a/a[1].n-b[1].a/b[1].n);
+  return `<div class="glass pad" style="display:grid;gap:10px"><span class="tag">Por assunto (do mais fraco ao mais forte)</span>${rows.map(([t,v])=>{ const p=Math.round(v.a/v.n*100); return `<div style="display:grid;gap:4px"><div class="row" style="justify-content:space-between"><span>${esc(t)}</span><span class="mono muted">${v.a}/${v.n}</span></div><div class="bar"><i style="width:${p}%;background:${p>=67?"var(--ok)":p>=34?"var(--warn)":"var(--bad)"}"></i></div></div>`; }).join("")}</div>`; }
+
+/* ---------- simulados ---------- */
+const SIMS = {
+  anbima:{n:"ANBIMA CPA", meta:.7, bg:"linear-gradient(170deg,#2A2100,#05060A 60%)", p:`Crie um SIMULADO de 10 questões no estilo da certificação ANBIMA CPA (nível de entrada), cobrindo Sistema Financeiro Nacional, ética e regulação, noções de economia e finanças, princípios de investimento, fundos e tributação. 4 alternativas, só uma certa. Use conceitos estáveis e evite números de normas que mudam. Em "tema" ponha o tópico do programa.`},
+  enem:{n:"Matemática estilo ENEM", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de Matemática no estilo do ENEM (situações do cotidiano, leitura de gráficos e tabelas descritas em texto, porcentagem, proporção, funções, geometria, estatística básica). Dificuldade crescente; 4 alternativas. Em "tema" ponha o conteúdo.`},
+  eco:{n:"Economia", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões introdutórias de Ciências Econômicas (micro, macro, matemática financeira, juros, inflação, mercado de crédito). 4 alternativas. Em "tema" ponha o conteúdo.`},
+  dados:{n:"Dados: SQL, Python e estatística", meta:.6, bg:"linear-gradient(170deg,#04323E,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de nível estágio em dados: SQL (SELECT, WHERE, GROUP BY, JOIN), Python básico e pandas, Power BI e estatística descritiva, como em testes de processos seletivos de Analytics. Código curto dentro do enunciado quando ajudar. 4 alternativas. Em "tema" ponha o conteúdo.`}
+};
+function openSimulado(k){
+  const S=SIMS[k]||SIMS.anbima;
+  openProva({title:"Simulado · "+S.n, q:"Simulado", intro:"10 questões, sem consultar. No fim você vê o gabarito e o desempenho por assunto.", bg:S.bg, prompt:S.p,
+    onDone:(Q,ans,sc)=>{ (M.simulados=M.simulados||[]).push({tipo:k, d:iso(today()), score:sc, n:Q.qs.length});
+      Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c) logErro(k==="anbima"?"anbima":k==="dados"?"sql":k==="eco"?"eco":"mat", x.tema, x, ans[i]); });
+      addXP(Math.round(sc*40)); saveMain();
+      return `<p class="note" style="text-align:center">${sc>=S.meta?`Acima da meta de ${S.meta*100}%.`:`Meta: ${S.meta*100}%. Os erros foram para a Forja.`}</p>`+temaHTML(porTema(Q,ans)); }});
+}
+function evoProvas(){
+  const sims=(M.simulados||[]).map(x=>({...x,tipo:x.tipo||"anbima"})), last=k=>sims.filter(x=>x.tipo===k).slice(-3), avg=k=>{ const l=last(k); return l.length?l.reduce((a,x)=>a+x.score,0)/l.length:null; };
+  const an=avg("anbima"), ph=phaseOf(today()), fase=ph?PHASES.indexOf(ph)+1:1;
+  return `<section class="now" style="--g1:var(--a-anbima-1);--g2:var(--a-anbima-2);min-height:auto">
+      <span class="eyebrow" style="color:rgb(255 255 255 / .8);position:relative">ANBIMA · CPA · ter, qui e sex, 14h–16h</span>
+      <div style="position:relative"><div class="score" style="font-size:72px">${an==null?"--":Math.round(an*100)}</div><span style="color:rgb(255 255 255 / .85)">% média dos últimos simulados · meta 70% · prova depois de 23/01</span></div>
+      <div class="bar" style="position:relative"><i style="width:${an==null?0:Math.round(an*100)}%"></i></div>
+      <div class="acts"><button class="btn primary" data-act="simulado" data-k="anbima">Simulado ANBIMA</button></div></section>
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões com gabarito</h2></div><div class="list">
+      <button class="item" data-act="manha"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Fácil, médio e difícil sobre o dia anterior</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-act="semana"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Tudo o que você estudou nos últimos 7 dias, com desempenho por assunto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button></div></section>
+    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Simulados</h2><span class="mono muted" style="font-size:13px">fase ${fase} de 3</span></div><div class="list">
+      ${["dados","enem","eco"].map(k=>{ const a=avg(k), rec=k==="dados"||fase>=2; return `<button class="item" data-act="simulado" data-k="${k}"><span class="grow"><b>${esc(SIMS[k].n)}</b><small>${a==null?"ainda não feito":"média "+Math.round(a*100)+"%"}${rec?"":" · recomendado a partir da Fase 2"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`; }).join("")}
+      <a class="item" href="https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/provas-e-gabaritos" target="_blank" rel="noopener" style="text-decoration:none"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Provas e gabaritos oficiais do ENEM (INEP)</b><small>Para treinar com provas reais a partir da Fase 2</small></span></a>
+    </div></section>
+    ${sims.length?`<section style="display:grid;gap:8px"><h2 class="title-m">Histórico</h2><div class="list">${sims.slice().reverse().slice(0,12).map(x=>`<div class="item"><span class="grow"><b>${Math.round(x.score*100)}% · ${esc((SIMS[x.tipo]||SIMS.anbima).n)}</b><small>${fromIso(x.d).getDate()}/${fromIso(x.d).getMonth()+1} · ${x.n} questões</small></span></div>`).join("")}</div></section>`:""}`;
+}
+
+/* ---------- revisão ao acordar ---------- */
+function estudosDe(dstr){ const v=DAYS[dstr]; return v ? Object.values(v.blocks||{}).filter(r=>r.st==="feito"&&r.mat&&r.topic) : []; }
+function ontemComEstudo(){ for(let i=1;i<=3;i++){ const d=iso(addDays(today(),-i)); if(dayIdx(fromIso(d))<0) return null; if(estudosDe(d).length) return d; } return null; }
+function manhaPend(){ const d=ontemComEstudo(); return !!d && !((M.manha||{})[iso(today())]); }
+function openManha(){
+  const d=ontemComEstudo(); if(!d){ toast("Nenhum estudo registrado nos últimos dias para revisar."); return; }
+  const es=estudosDe(d);
+  openProva({title:`Revisão de ${fromIso(d).getDate()}/${fromIso(d).getMonth()+1}`, q:"Bom dia. Lembra de ontem?", intro:"Perguntas fáceis, médias e difíceis sobre o que você estudou. Responda de memória: é isso que mostra quanto ficou.", bg:"linear-gradient(170deg,#101540,#05060A 60%)", tier:"quick",
+    prompt:`Revisão matinal (recuperação ativa) do que a pessoa estudou ontem. Faça ${Math.min(6,Math.max(3,es.length*2))} questões de múltipla escolha com níveis misturados (fácil, médio e difícil) cobrindo cada assunto. Estudos: ${JSON.stringify(es.map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:"", escreveu:(r.conta||"").slice(0,500)})))}. Em "tema" ponha o assunto.`,
+    onDone:(Q,ans,sc)=>{ (M.manha=M.manha||{})[iso(today())]={d, score:sc}; Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c) logErro(es[0].mat, x.tema, x, ans[i]); }); addXP(Math.round(sc*20)); saveMain();
+      return `<p class="note" style="text-align:center">Absorção de ontem: ${Math.round(sc*100)}%. ${sc>=.67?"Ficou bem.":"Os pontos errados entraram na Forja para treinar."}</p>`+temaHTML(porTema(Q,ans)); }});
+}
+
+/* ---------- revisão da semana ---------- */
+function weekKey(){ const t=today(); return iso(addDays(t,-((t.getDay()+6)%7))); }
+function estudosSemana(){ const out=[]; for(let i=1;i<=7;i++){ const d=iso(addDays(today(),-i)); out.push(...estudosDe(d)); } (M.livres||[]).filter(r=>r.d>=iso(addDays(today(),-7))).forEach(r=>out.push(r)); return out; }
+function semanaPend(){ return today().getDay()===1 && estudosSemana().length>0 && !((M.semanas||{})[weekKey()]); }
+function openSemana(){
+  const es=estudosSemana(); if(!es.length){ toast("Ainda não há estudos registrados nos últimos 7 dias."); return; }
+  const erros=(M.erros||[]).filter(e=>!e.ok).slice(-8).map(e=>e.p);
+  openProva({title:"Revisão da semana", q:"Prova da semana", intro:"10 questões sobre tudo o que você estudou nos últimos 7 dias, com gabarito e desempenho por assunto.", bg:"linear-gradient(170deg,#2A1204,#05060A 60%)",
+    prompt:`Revisão semanal com gabarito. Faça 10 questões de múltipla escolha cobrindo os assuntos da semana, níveis misturados, priorizando os pontos em que houve erro. Assuntos: ${JSON.stringify(es.slice(0,14).map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:""})))}. Erros recentes: ${JSON.stringify(erros)}. Em "tema" ponha o assunto exatamente como listado.`,
+    onDone:(Q,ans,sc)=>{ const m=porTema(Q,ans); (M.semanas=M.semanas||{})[weekKey()]={score:sc, temas:m};
+      Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c){ const r=es.find(z=>z.topic===x.tema)||es[0]; logErro(r.mat, x.tema, x, ans[i]); } }); addXP(Math.round(sc*40)); saveMain();
+      return temaHTML(m)+`<p class="note">Os assuntos em vermelho são o foco desta semana. Treine-os na Forja.</p>`; }});
+}
+
+/* ---------- Forja: onde o erro vira domínio ---------- */
+function forjaGrupos(){ const g={}; (M.erros||[]).filter(e=>!e.ok).forEach(e=>{ const t=e.topic||(SUBJ[e.mat]?SUBJ[e.mat].n:"Geral"); const k=e.mat+"|"+t; g[k]=g[k]||{mat:e.mat, t, n:0, ps:[]}; g[k].n++; g[k].ps.push(e); }); return Object.values(g).sort((a,b)=>b.n-a.n); }
+function forjaHTML(){
+  const g=forjaGrupos(), fixed=(M.erros||[]).filter(e=>e.ok).length;
+  return `<section class="glass pad" style="display:grid;gap:12px;background:radial-gradient(90% 70% at 100% 0%,rgb(255 106 26 / .22),transparent 60%),var(--glass)">
+    <div class="sec-h"><div><span class="eyebrow">Forja</span><h2 class="title-m" style="margin-top:4px">Onde o erro vira domínio</h2></div><span class="mono muted" style="font-size:13px">${fixed} forjados</span></div>
+    ${g.length?`<div class="list">${g.slice(0,6).map(x=>`<button class="item" data-act="forja" data-t="${esc(x.t)}" data-m="${x.mat}"><span class="chip" style="color:var(--bad)">${x.n}</span><span class="grow"><b>${esc(x.t)}</b><small>${esc(SUBJ[x.mat]?SUBJ[x.mat].n:"")} · ${x.n} erro(s) · treinar até acertar</small></span><svg class="icon"><use href="#i-flame"/></svg></button>`).join("")}</div>`
+      :`<p class="muted">Cada questão errada em aula, revisão ou simulado entra aqui agrupada por assunto. Treinar um assunto gera uma explicação nova e questões inéditas; acertando, o erro é forjado em domínio.</p>`}
+  </section>`;
+}
+function openForja(t, mat){
+  const g=forjaGrupos().find(x=>x.t===t&&x.mat===mat); if(!g) return;
+  openProva({title:"Forja · "+t, q:t, intro:"Primeiro, a explicação do que confundiu. Depois, 4 questões inéditas sobre o mesmo ponto. Com 3 ou mais certas, os erros deste assunto são forjados.", bg:"radial-gradient(120% 60% at 50% 0%,rgb(255 106 26 / .35),transparent 60%),linear-gradient(170deg,#2A0A04,#05060A 60%)",
+    prompt:`Treino de ponto fraco. Assunto: "${t}" (${SUBJ[mat]?SUBJ[mat].n:""}). Erros que a pessoa cometeu: ${JSON.stringify(g.ps.slice(0,6).map(e=>({pergunta:e.p, respondeu:e.minha, certa:e.certa})))}. Faça 4 questões NOVAS (não repita as de cima) que ataquem exatamente a confusão, do fácil ao difícil; na primeira, em "e", explique com clareza o equívoco por trás dos erros.`,
+    onDone:(Q,ans,sc)=>{ const ok=Q.qs.filter((x,i)=>ans[i]===x.c).length>=3; if(ok) g.ps.forEach(e=>e.ok=true); addXP(ok?25:5); saveMain();
+      return `<p class="note" style="text-align:center">${ok?"Forjado. Esses erros viraram domínio.":"Ainda não. Leia as explicações e treine de novo amanhã."}</p>`; }});
+}
+
+/* ---------- programa da matéria (sala de aula) ---------- */
+function openPrograma(k){
+  const s=SUBJ[k]; let fotos=[], thumbs=[];
+  FLOW={kind:"prog", back:()=>{}, next:async()=>{
+    const disc=$("#pg-d").value.trim(), txt=$("#pg-t").value.trim();
+    if(!txt && !fotos.length){ toast("Cole o conteúdo ou mande um print."); return; }
+    if(!aiOn()){ const tps=txt.split(/\n+/).map(x=>x.trim()).filter(Boolean).slice(0,30).map(x=>({t:x,r:""})); (M.programa=M.programa||{})[k]={disciplina:disc, topicos:tps}; saveMain(); closeSheet(); openSubject(k); return; }
+    const box=$("#pg-out"); box.innerHTML=thinking("Organizando o programa em aulas…"); SH.querySelector('[data-sh="next"]').disabled=true;
+    try{ const r=await aiJson(`Organize o conteúdo de uma disciplina em uma TRILHA DE AULAS, na ordem de pré-requisitos (do fundamento ao avançado), respeitando o laudo (consolidar a base antes de avançar). Disciplina: "${disc||s.n}". Conteúdo colado: \"\"\"${txt.slice(0,6000)}\"\"\" ${fotos.length?"As imagens são a ementa ou o conteúdo do semestre.":""} Gere de 6 a 20 tópicos, cada um do tamanho de uma aula de 60 a 90 minutos. Responda só com JSON: {"disciplina":"nome","topicos":[{"t":"título curto do tópico","r":"o que será aprendido, em 1 frase"}]}`, {images:fotos.length?fotos:undefined});
+      (M.programa=M.programa||{})[k]={disciplina:r.disciplina||disc, topicos:(r.topicos||[]).slice(0,24)}; saveMain(); closeSheetSoft(); openSubject(k);
+    }catch(e){ box.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; SH.querySelector('[data-sh="next"]').disabled=false; } }};
+  openSheet(`linear-gradient(170deg,color-mix(in srgb,${g2(s.a)} 70%,#05060A),#05060A 60%)`);
+  sheetHTML({title:"Sala de aula · "+s.n, next:"Montar a trilha", body:`
+    <h2 class="q">O que você vai estudar nesta matéria?<small>Cole a ementa, o plano de ensino ou a lista de conteúdos do semestre. Também pode mandar um print. O Claude transforma em uma trilha de aulas na ordem certa.</small></h2>
+    <label class="field"><span>Disciplina</span><input class="inp" id="pg-d" placeholder="Ex.: Álgebra Linear" value="${esc(((M.programa||{})[k]||{}).disciplina||"")}"></label>
+    <label class="field"><span>Conteúdo</span><textarea class="ta" id="pg-t" style="min-height:180px" placeholder="Cole aqui a ementa ou os tópicos, um por linha"></textarea></label>
+    ${canImg()?`<button class="drop" id="pg-f"><svg class="icon"><use href="#i-cam"/></svg><span class="grow" id="pg-fl">Mandar print da ementa</span></button><div class="thumbs" id="pg-th"></div>`:""}
+    <div id="pg-out"></div>`});
+  $("#pg-f")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); fotos=p.blobs; $("#pg-th").innerHTML=p.thumbs.map(t=>`<img src="${t}" alt="Print da ementa">`).join(""); $("#pg-fl").textContent=`${p.thumbs.length} imagem(ns) anexada(s)`; });
+}
+
 
 /* ---------- chat C ---------- */
 function openChat(prefill){
@@ -1321,7 +1538,7 @@ document.addEventListener("click", e => {
   else if(act==="ok") openBlock(dstr, a.dataset.k);
   else if(act==="finalizar") openFinal();
   else if(act==="metas"){ TAB="evolucao"; EVOTAB="metas"; render(); window.scrollTo({top:0}); }
-  else if(act==="anbima"){ TAB="evolucao"; EVOTAB="anbima"; render(); window.scrollTo({top:0}); }
+  else if(act==="anbima"){ TAB="evolucao"; EVOTAB="provas"; render(); window.scrollTo({top:0}); }
   else if(act==="revisoes") openReviews();
   else if(act==="revisar") openReview(a.dataset.id);
   else if(act==="materia") openSubject(a.dataset.m);
@@ -1329,7 +1546,14 @@ document.addEventListener("click", e => {
   else if(act==="marco"){ M.marcos[a.dataset.k]=!M.marcos[a.dataset.k]; if(M.marcos.inscricao){ const v=M.vagas.find(x=>x.id==="serasa"); if(v&&v.st==="interesse") v.st="inscrita"; } saveMain(); render(); }
   else if(act==="dia") openDay(a.dataset.d);
   else if(act==="perfil") openProfile();
-  else if(act==="simulado") openSimulado();
+  else if(act==="simulado") openSimulado(a.dataset.k||"anbima");
+  else if(act==="retomar") resumeSession();
+  else if(act==="manha") openManha();
+  else if(act==="semana") openSemana();
+  else if(act==="forja") openForja(a.dataset.t, a.dataset.m);
+  else if(act==="zoom"){ ZOOM=Math.max(0,Math.min(3,ZOOM+(+a.dataset.z))); paintRibbon(); }
+  else if(act==="rseg"){ const k=a.dataset.k; if(a.dataset.d){ SELDAY=a.dataset.d===iso(today())?null:a.dataset.d; render(); } else if(k) openBlock(iso(today()),k); }
+  else if(act==="rday") openDay(a.dataset.d);
   else if(act==="erro"){ const er=(M.erros||[]).find(x=>x.id===a.dataset.id); if(!er) return; FLOW={kind:"erro", next:()=>{ er.ok=true; er.porque=$("#er-t").value; saveMain(); closeSheet(); toast("Erro resolvido."); }, back:()=>{}}; openSheet("linear-gradient(170deg,#2A0A10,#05060A 60%)");
     sheetHTML({title:"Caderno de erros", next:"Entendi, resolver", body:`<h2 class="q" style="font-size:30px">${esc(er.p)}</h2><div class="opt wrong"><span class="k">✗</span><span>${esc(er.minha||"(sem resposta)")}</span></div><div class="opt right"><span class="k">✓</span><span>${esc(er.certa)}</span></div><p class="explain">${esc(er.e||"")}</p><label class="field"><span>Por que errei e como reconheço da próxima vez</span><textarea class="ta" id="er-t">${esc(er.porque||"")}</textarea></label>`}); }
   else if(act==="nova-vaga"){ FLOW={kind:"vaga", next:()=>{ const n=$("#vg-n").value.trim(), v=$("#vg-v").value.trim(); if(!n) return; M.vagas.push({id:"v"+Date.now(), n, v, st:"interesse"}); saveMain(); closeSheet(); }, back:()=>{}}; openSheet();
