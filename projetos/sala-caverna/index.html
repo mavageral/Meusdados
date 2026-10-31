@@ -636,6 +636,7 @@ async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; const o=O
    O formato dos argumentos é lido do próprio conector (describeTool); sem conector, o app segue sem busca. */
 const BUSCA_SERVER="Parallel Search", BUSCA_TOOL="web_search", LER_TOOL="web_fetch"; let BUSCA_SCHEMA, BUSCA_SID, LER_SCHEMA, BUSCA_FALHA=0; const URLS_VISTAS=new Set();
 async function ferramentasBusca(){
+  if(window.YAAD_SITE) return [{name:"buscar_na_internet", description:"busca na internet feita no servidor", inputSchema:{type:"object"}, execute:async()=>""}, {name:"ler_pagina", description:"leitura de página feita no servidor", inputSchema:{type:"object"}, execute:async()=>""}];
   if(!MCP || !(LIMITS&&LIMITS.tools)) return [];
   if(BUSCA_SCHEMA===null && Date.now()-(BUSCA_FALHA||0)>120000){ BUSCA_SCHEMA=undefined; LER_SCHEMA=undefined; }
   if(BUSCA_SCHEMA===undefined){ try{ const d=await MCP.describeTool(BUSCA_SERVER, BUSCA_TOOL); BUSCA_SCHEMA=(d&&d.inputSchema)||{}; }catch(e){ BUSCA_SCHEMA=null; BUSCA_FALHA=Date.now(); } }
@@ -1792,6 +1793,7 @@ function openMenu(){
       <button class="item" data-m="editor"><svg class="icon"><use href="#i-cal"/></svg><span class="grow"><b>Editar rotina e matérias</b><small>Horários, blocos, matérias, metas ou ajustar com o Claude</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Minha evolução</b><small>Panorama, provas, metas e árvore</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="docs"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Documentos</b><small>Ementas e programas que alimentam a sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      ${window.YAAD_CONTA?`<button class="item" data-m="conta"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Minha conta</b><small>E-mail, senha, verificação em 2 etapas, importar dados e sair</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
       <button class="item" data-m="share"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Compartilhar o Yaad1</b><small>Convide alguém a montar o próprio projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <div class="item" style="opacity:.6"><svg class="icon"><use href="#i-spark"/></svg><span class="grow"><b>Assinatura e plano</b><small>Em breve</small></span></div>
     </div>
@@ -1805,6 +1807,7 @@ function openMenu(){
     else if(m==="mapa") openMapa();
     else if(m==="diag") openDiagnostico();
     else if(m==="remodelar") openRemodelar();
+    else if(m==="conta") window.YAAD_CONTA&&window.YAAD_CONTA.abrir();
     else if(m==="tour") openTour();
     else if(m==="direcao") openDirecao();
     else if(m==="editor") openEditor();
