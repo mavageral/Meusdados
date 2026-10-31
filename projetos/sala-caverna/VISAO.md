@@ -77,7 +77,7 @@ Um app próprio, com cadastro por e-mail e telefone fora do claude.ai, é outro 
 ## Ordem de construção sugerida
 
 1. **Carteira + menu ⋯ + Perfil e projeto** (dados, foto, e-mail, telefone). O Projeto Caverna vira o projeto da Edna, editável.
-2. **Quiz de direção** com o Claude: autoconhecimento → caminhos → meta → nome → proposta de rotina e projeto.
+2. **Quiz de direção** com o Claude: autoconhecimento → caminhos → meta → nome → proposta de rotina e projeto. Método detalhado (a **Bússola**) em [QUIZ-DIRECAO.md](QUIZ-DIRECAO.md).
 3. **Gerador de projeto:** a agenda, as matérias, as metas e as provas deixam de ser fixas no código e passam a vir do projeto de cada pessoa (com modelos: faculdade, concurso, ENEM e vestibular, emprego, autodescoberta).
 4. **Oportunidades:** buscas prontas de vagas e concursos ligadas à meta.
 5. **Compartilhar:** testar com 1 ou 2 pessoas de realidades diferentes.
