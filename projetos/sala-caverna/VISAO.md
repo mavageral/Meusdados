@@ -71,6 +71,18 @@ No lugar do "Bom dia + fotinho", uma **carteira** (cartão de identidade do proj
 4. **Assinatura e plano:** futuro, se houver pagamento.
 5. **Compartilhar o app:** convidar outra pessoa.
 
+## Caminho de lançamento (31/10/2026)
+
+O foco é virar um **aplicativo lançado na Play Store e na App Store**. Até lá:
+
+| Fase | Onde roda | Quem usa | O que muda |
+|---|---|---|---|
+| **1. Agora** | Artifact no claude.ai | A Edna, no dia a dia | Validar o método no Projeto Caverna. IA e busca vêm da conta Claude e dos conectores dela. |
+| **2. Site** | URL própria (Vercel) | Primeiras pessoas de fora | Cadastro com e-mail e telefone, banco de dados (Supabase ou Neon), IA e **busca na internet pelo servidor**, para todos, sem a pessoa ligar conectores. |
+| **3. Lojas** | Play Store e App Store | Público | O mesmo app empacotado (PWA + Capacitor), com notificações reais (lembretes da rotina) e assinatura. |
+
+**Regras para não travar a passagem:** a lógica do método (quiz, plano, metas, medidor) fica separada da tela e do armazenamento; tudo que hoje depende do claude.ai (IA, banco, busca) passa por funções pequenas que poderão ser trocadas por um servidor próprio.
+
 ## Login e compartilhamento
 
 Publicado no claude.ai, o app já tem **login**: cada pessoa entra com a própria conta Claude, e os registros de cada uma ficam **privados** (`data/users/<id>`). Para outra pessoa usar:
