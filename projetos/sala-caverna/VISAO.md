@@ -1,4 +1,8 @@
-# Visão central do app: um app de direção
+# Yaad1: visão central do app
+
+**Nome:** Yaad1, de *ya'ad*, que em hebraico significa alvo, destino. Um app de direção para acertar o alvo.
+
+## Um app de direção
 
 > Registrado em 31/10/2026, nas palavras da Edna (resumidas). **Este é o propósito central do aplicativo.** Toda decisão de produto e de design deve servir a ele.
 

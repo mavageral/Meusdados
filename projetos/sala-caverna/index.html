@@ -1,4 +1,4 @@
-<title>Yaad</title>
+<title>Yaad1</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -586,7 +586,7 @@ function aiErr(e){
 }
 function perfil(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
-  const pj=P(); return `Contexto fixo: você é o tutor e gestor do ${pj.nome} (${LEMA}), ${TOTAL} dias a partir de ${fromIso(pj.inicio).toLocaleDateString("pt-BR")}, dentro do app Yaad (app de direção). Meta central do projeto: ${pj.meta}. Hoje é o dia ${d} de ${TOTAL} (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
+  const pj=P(); return `Contexto fixo: você é o tutor e gestor do ${pj.nome} (${LEMA}), ${TOTAL} dias a partir de ${fromIso(pj.inicio).toLocaleDateString("pt-BR")}, dentro do app Yaad1 (app de direção). Meta central do projeto: ${pj.meta}. Hoje é o dia ${d} de ${TOTAL} (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
 }
 async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; return SAMPLE.json(perfil()+"\n\n"+prompt, Object.assign({cache:false}, opts||{})); }
 
@@ -1668,17 +1668,17 @@ Você é o tutor dentro do app Caverna. Ensine com perguntas e pistas antes de d
 function openMenu(){
   FLOW={kind:"menu", next:()=>closeSheet(), back:()=>{}};
   openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
-  sheetHTML({title:"Yaad", body:`
+  sheetHTML({title:"Yaad1", body:`
     <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||M.profile.name||NAME_DEFAULT)}</b><div class="muted" style="font-size:13px">${esc(P().nome)} · ${esc(P().lema)}</div></div></div>
     ${(()=>{ const pr=proximidade(); return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${M.xp||0} pontos de domínio</small></div>`; })()}
     <div class="list">
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Minha evolução</b><small>Panorama, provas, metas e árvore</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="docs"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Documentos</b><small>Ementas e programas que alimentam a sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
-      <button class="item" data-m="share"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Compartilhar o Yaad</b><small>Convide alguém a montar o próprio projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="share"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>Compartilhar o Yaad1</b><small>Convide alguém a montar o próprio projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <div class="item" style="opacity:.6"><svg class="icon"><use href="#i-spark"/></svg><span class="grow"><b>Assinatura e plano</b><small>Em breve</small></span></div>
     </div>
-    <p class="faint" style="font-size:13px">Yaad: em hebraico, alvo, destino. Um app de direção para acertar o seu alvo.</p>`});
+    <p class="faint" style="font-size:13px">Yaad1: de <i>ya'ad</i>, que em hebraico significa alvo, destino. Um app de direção para acertar o seu alvo.</p>`});
   SH.querySelectorAll("[data-m]").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; closeSheetSoft();
     if(m==="perfil") openProfile();
     else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
@@ -1729,7 +1729,7 @@ function openProfile(){
     const c=scale(img,320); const data=c.toDataURL("image/jpeg",.8);
     if(ASSETS){ try{ const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.85)); const up=await ASSETS.upload(b); pf.photo=up.url; }catch(e){ pf.photo=data; } } else pf.photo=data;
     saveMain(); const btn=$("#pf-ph"); if(btn) btn.innerHTML=`<img src="${esc(pf.photo)}" alt="Sua foto">`; });
-  $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`yaad-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
+  $("#pf-bk")?.addEventListener("click", async()=>{ try{ await DL.save({filename:`yaad1-backup-${iso(today())}.json`, data:new Blob([JSON.stringify({M,DAYS},null,1)],{type:"application/json"})}); }catch(e){} });
 }
 
 /* ---------- ações da página ---------- */
