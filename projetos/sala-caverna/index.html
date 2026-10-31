@@ -147,7 +147,7 @@ h1,h2,h3,p{margin:0}
 .dots i.on{background:var(--text);border-color:var(--text);width:22px;border-radius:99px}
 .dots i.done{background:var(--muted);border-color:var(--muted)}
 .prog{display:flex;align-items:center;gap:10px;flex:1;min-width:0;max-width:180px;font-size:12px;color:var(--muted)}
-.prog b{flex:1;height:4px;border-radius:99px;background:rgb(255 255 255 / .14);overflow:hidden}
+.prog b{flex:1;height:4px;border-radius:99px;background:var(--edge-2);overflow:hidden}
 .prog i{display:block;height:100%;background:var(--text);border-radius:inherit}
 .next{margin-left:auto;display:inline-flex;align-items:center;gap:12px;background:none;border:0;font:300 clamp(24px,6.6vw,38px)/1 var(--font);letter-spacing:-.03em;padding:6px 0;min-height:56px;white-space:nowrap}
 .next .arrow{width:40px;height:40px;border-radius:50%;background:var(--text);color:#000;display:grid;place-items:center}
@@ -1854,16 +1854,17 @@ function openDirecao(){
     pick:(g,v,on)=>{ if(g==="momento") A.momento=v; else if(g==="trabalha") A.trabalha=v; else if(g==="horas") A.horas=v; else if(g==="dias") A.dias=v;
       else if(["prior","desejo","afin"].includes(g)){ const L=A[g]; if(on){ if(!L.includes(v)) L.push(v); } else A[g]=L.filter(x=>x!==v); }
       else if(g==="modelo"){ A.modelo=v; A.esc=-2; A.pnome=""; }
-      else if(g==="nsq"){ keep(); if(v==="1") A.nsQual=on; else A.descobrir=on; return draw(); }
-      else if(g==="porta"){ if(A.porta!==v){ A.qual=""; A.nsQual=false; A.cam=null; A.plano=null; A.esc=null; A.pnome=""; A.proprio=""; } A.porta=v; A.modelo=(porta()||{}).modelo||undefined; return draw(); }
-      else if(g==="qualex"){ const t=$("#dq-q"); if(t){ t.value=v; A.qual=v; } A.nsQual=false; return draw(); }
-      else if(g==="escolar"){ keep(); A.escolar=v; return draw(); }
+      else if(g==="nsq"){ keep(); if(v==="1"){ A.nsQual=on; if(on){ A.qual=""; } } else A.descobrir=on; return redraw(`[data-pick="nsq"] [data-v="${v}"]`); }
+      else if(g==="porta"){ if(A.porta!==v){ A.qual=""; A.nsQual=false; A.descobrir=false; A.cam=null; A.plano=null; A.esc=null; A.pnome=""; A.proprio=""; } A.porta=v; A.modelo=(porta()||{}).modelo||undefined; return redraw(`[data-pick="porta"] [data-v="${v}"]`); }
+      else if(g==="qualex"){ keep(); A.qual=v; A.nsQual=false; return redraw(`[data-pick="qualex"] [data-v="${CSS.escape(v)}"]`); }
+      else if(g==="escolar"){ keep(); A.escolar=v; return redraw(`[data-pick="escolar"] [data-v="${v}"]`); }
       else if(g==="invest") A.invest=v; else if(g==="mob") A.mob=v;
       else if(g.startsWith("ii")) A.int[g.slice(2)]=+v;
       else if(g.startsWith("tt")) A.tal[g.slice(2)]=+v;
-      else if(g==="conf"){ keep(); A.conf=v; const sc=($("#shb")||{}).scrollTop||0; draw(); $("#shb").scrollTop=sc; return; }
+      else if(g==="conf"){ keep(); A.conf=v; if(v==="Mais ou menos" && !A.ordEsp) A.ordEsp=placarBussola(A.int,A.tal,A.aj).areas.slice().sort((a,b)=>(b.v??-1)-(a.v??-1)).map(x=>x.k); return redraw(`[data-pick="conf"] [data-v="${v}"]`); }
       upd(); },
     next:()=>go(+1), back:()=>go(-1)};
+  const redraw = sel => { const sc=($("#shb")||{}).scrollTop||0; draw(sel); const b=$("#shb"); if(b) b.scrollTop=sc; };
   const upd = () => { const b=SH.querySelector('[data-sh="next"]'); if(b) b.disabled=!ok(); };
   const ok = () => { const s=steps()[F.at];
     if(s==="intro") return ($("#dq-n")||{}).value?.trim().length>0;
@@ -1896,7 +1897,7 @@ function openDirecao(){
       investimento_mensal:A.invest, cidade:A.cidade, mobilidade:A.mob, em_palavras:A.livre,
       perfil: pl ? {interesses:pl.areas.map(x=>x.n+": "+(x.v==null?"a explorar":x.v+"%")+(x.explorar&&x.v!=null?" (pouco explorada)":"")).join(", "), talentos:pl.talentos.map(x=>x.n+": "+x.v+"%").join(", "), codigo:pl.codigo.join(" · "), conferencia:A.conf} : null}; };
   const pk = (g, list, sel, multi) => `<div class="pick" role="group" data-pick="${g}" ${multi?"data-multi":""}>${list.map(x=>`<button data-v="${esc(x)}" aria-pressed="${multi?sel.includes(x):sel===x}">${esc(x)}</button>`).join("")}</div>`;
-  const draw = () => {
+  const draw = (focusSel) => {
     const S=steps(), s=S[F.at], base={title:"Direção", steps:S.length, at:F.at};
     if(s==="intro") sheetHTML({...base, next:"Começar", body:`<h2 class="q">Vamos traçar o seu alvo<small>Perguntas rápidas, uma por tela. Primeiro o alvo, depois a sua realidade. Se ainda não souber o que quer, a gente descobre junto. No fim, o app monta o seu projeto com rotina, matérias, provas e metas.</small></h2>
       <label class="field"><span>Como você quer ser chamado(a)</span><input class="inp" id="dq-n" value="${esc(A.nome)}"></label>
@@ -1909,7 +1910,7 @@ function openDirecao(){
       <label class="field"><span>O seu alvo</span><input class="inp" id="dq-q" value="${esc(A.qual)}" placeholder="${esc(pt.ph)}"></label>
       <div class="pick" role="group" data-pick="nsq" data-multi><button data-v="1" aria-pressed="${A.nsQual}">Ainda não sei qual</button><button data-v="2" aria-pressed="${A.descobrir}">Quero me conhecer melhor antes</button></div>
       ${A.nsQual||A.descobrir?`<p class="note">Depois da sua rotina, vêm perguntas rápidas de interesses e talentos para escolher o alvo que combina com você.</p>`:""}
-      <label class="field"><span>Com as suas palavras (opcional)</span><textarea class="ta" id="dq-l" placeholder="Ex.: quero estabilidade, me interesso por bancos, preciso de renda logo…">${esc(A.livre)}</textarea></label>`}); }
+      <details ${A.livre?"open":""}><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center" class="muted">Quer contar mais com as suas palavras?</summary><label class="field" style="margin-top:8px"><span class="sr">Com as suas palavras</span><textarea class="ta" id="dq-l" placeholder="Ex.: quero estabilidade, me interesso por bancos, preciso de renda logo…">${esc(A.livre)}</textarea></label></details>`}); }
     if(s==="momento") sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Qual é o seu momento hoje?</h2>${pk("momento",MOMENTOS,A.momento)}
       <div class="field"><span>Escolaridade</span>${pk("escolar",ESCOLAR,A.escolar)}</div>
       ${/Superior|Pós/.test(A.escolar)?`<label class="field"><span>Qual curso? (e período, se estiver cursando)</span><input class="inp" id="dq-c" value="${esc(A.curso)}" placeholder="Ex.: Matemática EAD, 3º período"></label>`:""}`});
@@ -1918,7 +1919,7 @@ function openDirecao(){
       <label class="field"><span>Cidade e estado (opcional)</span><input class="inp" id="dq-cid" value="${esc(A.cidade)}" placeholder="Ex.: Uberlândia, MG"></label>
       <div class="field"><span>Para trabalhar ou estudar</span>${pk("mob",["Só na minha cidade","Aceito remoto","Aceito me mudar"],A.mob)}</div>`});
     if(/^i\d$/.test(s)){ const n=+s[1], cs=A.ord.slice(n*3,n*3+3); sheetHTML({...base, next:"Próximo", body:`<h2 class="q">Eu gostaria de…<small>Interesses, ${n+1} de 6. Responda pelo que você sente, não pelo que dá dinheiro. "Nunca experimentei" não conta contra.</small></h2>
-      ${cs.map(c=>{ const g="ii"+c.a+"_"+c.r; return `<div class="mcq"><p class="p">${esc(RIASEC[c.a].it[c.r])}</p>${pkI(g,ESC_INT,A.int[c.a+"_"+c.r])}</div>`; }).join("")}`}); }
+      ${cs.map(c=>{ const g="ii"+c.a+"_"+c.r; return `<div class="mcq"><p class="p">${esc(RIASEC[c.a].it[c.r])}</p>${pkI(g,ESC_INT,A.int[c.a+"_"+c.r],true)}</div>`; }).join("")}`}); }
     if(/^t\d$/.test(s)){ const n=+s[1]; sheetHTML({...base, next:n?"Ver meu retrato":"Próximo", body:`<h2 class="q">Isso sou eu?<small>Talentos, ${n+1} de 2.</small></h2>
       ${[0,1,2,3].map(j=>{ const i=n*4+j; return `<div class="mcq"><p class="p">${esc(TALENTOS[i][1])}</p>${pkI("tt"+i,ESC_TAL,A.tal[i])}</div>`; }).join("")}`}); }
     if(s==="espelho") sheetHTML({...base, next:"Ver caminhos", body:espelhoHTML()});
@@ -1928,7 +1929,8 @@ function openDirecao(){
       <div class="field"><span>Horas para estudar por dia</span>${pk("horas",["1h","2h","3h","4h","5h ou mais"],A.horas)}</div>
       <div class="field"><span>Dias de estudo por semana</span>${pk("dias",["3","4","5","6","7"],A.dias)}</div>
       <div class="field"><span>Prioridades que a rotina deve respeitar</span>${pk("prior",PRIORIDADES,A.prior,true)}</div>`});
-    if(s==="caminhos"){ if(!aiOn() && !A.proprio && A.qual && !A.nsQual) A.proprio=(porta()||{}).n+": "+A.qual;
+    if(s==="caminhos"){ const sig=JSON.stringify(respostas()); if(A.camSig!==sig){ if(A.camSig){ A.cam=null; A.esc=null; A.plano=null; A.pnome=""; } if(A.proprio && A.proprio===A.autoProp) A.proprio=""; A.camSig=sig; }
+      if(!aiOn() && !A.proprio && A.qual && !A.nsQual) A.proprio=A.autoProp=(porta()||{}).n+": "+A.qual;
       sheetHTML({...base, next:"Escolher", body:`<h2 class="q">Seus caminhos<small>O Claude leu as suas respostas. Escolha um alvo, ou escreva o seu.</small></h2><div id="dq-cam">${A.cam?camHTML():aiOn()?thinking("O Claude está pensando nos seus caminhos…"):`<p class="note">Precisa do Claude ligado.</p>`}</div>
       ${aiOn()?"":`<div class="glass pad" style="display:grid;gap:10px"><span class="tag">Sem o Claude agora? Comece por um modelo</span><div class="pick" data-pick="modelo">${Object.entries(MODELOS).map(([k,v])=>`<button data-v="${k}" aria-pressed="${A.modelo===k}">${esc(v.titulo)}</button>`).join("")}</div></div>`}
       <label class="field"><span>Ou escreva o seu próprio alvo</span><textarea class="ta" id="dq-p" style="min-height:90px" placeholder="Ex.: passar no concurso do Banco do Brasil em 2027">${esc(A.proprio)}</textarea></label>`});
@@ -1945,27 +1947,29 @@ Responda só com JSON: {"leitura":"2–3 frases sobre quem a pessoa é e onde se
     if(s==="plano"){ sheetHTML({...base, next:"Criar projeto", nextOk:!!A.plano, body:`<div id="dq-plano" style="display:grid;gap:12px">${A.plano?planoHTML():aiOn()?thinking("Montando agenda, matérias, fases e metas… isso leva até um minuto."):`<p class="note">Precisa do Claude ligado.</p>`}</div>`});
       if(!A.plano && aiOn()) gerarPlano(); }
     upd();
-    const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
+    const fe=focusSel&&SH.querySelector(focusSel), h=SH.querySelector("h2.q");
+    if(fe) fe.focus({preventScroll:true}); else if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
     SH.querySelectorAll("input,textarea").forEach(x=>x.addEventListener("input",upd));
+    $("#dq-q")?.addEventListener("input",e=>{ if(e.target.value.trim().length>1 && A.nsQual){ A.nsQual=false; const nb=SH.querySelector('[data-pick="nsq"] [data-v="1"]'); if(nb) nb.setAttribute("aria-pressed","false"); } });
     if(s==="caminhos") bindLocal();
-    if(s==="espelho"){ SH.querySelectorAll("[data-aj]").forEach(b=>b.addEventListener("click",()=>{ A.livre=($("#dq-l")||{}).value||A.livre; const k=b.dataset.aj; A.aj[k]=Math.max(-50,Math.min(50,(A.aj[k]||0)+(+b.dataset.d))); const sc=$("#shb").scrollTop; draw(); $("#shb").scrollTop=sc; }));
-      SH.querySelector("[data-refazer]")?.addEventListener("click",()=>{ A.int={}; A.aj={}; A.conf=""; A.ord=ordemCartoes(); F.at=steps().indexOf("i0"); draw(); }); }
+    if(s==="espelho"){ SH.querySelectorAll("[data-aj]").forEach(b=>b.addEventListener("click",()=>{ A.livre=($("#dq-l")||{}).value||A.livre; const k=b.dataset.aj; A.aj[k]=Math.max(-50,Math.min(50,(A.aj[k]||0)+(+b.dataset.d))); redraw(`[data-aj="${k}"][data-d="${b.dataset.d}"]`); }));
+      SH.querySelector("[data-refazer]")?.addEventListener("click",()=>{ keep(); A.ordEsp=null; A.int={}; A.aj={}; A.conf=""; A.ord=ordemCartoes(); F.at=steps().indexOf("i0"); draw(); }); }
   };
   const cam = () => A.esc===-2&&A.modelo ? {alvo:MODELOS[A.modelo].alvo, titulo:MODELOS[A.modelo].titulo, nome_projeto:"Projeto "+MODELOS[A.modelo].titulo, lema:MODELOS[A.modelo].lema, prazo_dias:MODELOS[A.modelo].dias, buscas:[], oportunidades:[]} : A.esc===-1||A.esc==null ? {alvo:A.proprio, titulo:"Meu alvo", nome_projeto:"", lema:"", prazo_dias:90, buscas:[], oportunidades:[]} : A.cam.caminhos[A.esc];
-  const pkI = (g, labels, sel) => `<div class="pick" role="group" data-pick="${g}">${labels.map((x,i)=>`<button data-v="${i}" aria-pressed="${sel===i}">${esc(x)}</button>`).join("")}</div>`;
-  const espelhoHTML = () => { const pl=placarBussola(A.int,A.tal,A.aj), ar=pl.areas.slice().sort((a,b)=>(b.v??-1)-(a.v??-1)), tl=pl.talentos.slice().sort((a,b)=>b.v-a.v), expl=pl.areas.filter(x=>x.explorar);
+  const pkI = (g, labels, sel, fora) => `<div class="pick" role="group" data-pick="${g}">${labels.map((x,i)=>`<button data-v="${i}" aria-pressed="${sel===i}" ${fora&&i===labels.length-1?'style="border-style:dashed;margin-left:8px"':""}>${esc(x)}</button>`).join("")}</div>`;
+  const espelhoHTML = () => { const pl=placarBussola(A.int,A.tal,A.aj), ar=A.ordEsp?A.ordEsp.map(k=>pl.areas.find(x=>x.k===k)):pl.areas.slice().sort((a,b)=>(b.v??-1)-(a.v??-1)), tl=pl.talentos.slice().sort((a,b)=>b.v-a.v), tlOk=tl.filter(x=>x.v>0), expl=pl.areas.filter(x=>x.explorar), todasExpl=pl.areas.every(x=>x.v==null);
     const barra = (n,v,extra) => `<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(n)}${extra||""}</span><span class="mono muted">${v==null?"—":v+"%"}</span></div><div class="bar"><i style="width:${v||0}%"></i></div></div>`;
-    return `<h2 class="q">Seu retrato<small>${pl.codigo.length?`Você se destaca em <b style="font-weight:600">${esc(pl.codigo.slice(0,2).join(" e "))}</b>, com talento ${esc(tl[0].n.toLowerCase())} e ${esc(tl[1].n.toLowerCase())}.`:"Você marcou pouca coisa como interesse. Tudo bem: vamos olhar caminhos amplos."} Confira se isso parece você.</small></h2>
-      <div class="glass pad" style="display:grid;gap:12px"><span class="tag">Interesses</span>${ar.map(x=>`${barra(x.n,x.v,x.explorar?' <span class="chip" style="font-size:11px;min-height:0;padding:2px 8px">a explorar</span>':"")}${A.conf==="Mais ou menos"&&x.v!=null?`<div class="row" style="gap:8px"><button class="btn sm ghost" data-aj="${x.k}" data-d="-10" aria-label="Diminuir ${esc(x.n)}">−10</button><button class="btn sm ghost" data-aj="${x.k}" data-d="10" aria-label="Aumentar ${esc(x.n)}">+10</button></div>`:""}`).join("")}</div>
+    return `<h2 class="q">Seu retrato<small>${todasExpl?"Você ainda não experimentou muitas áreas. Tudo bem: vamos mostrar caminhos para testar.":pl.codigo.length?`Você se destaca nas áreas <b style="font-weight:600">${esc(pl.codigo.slice(0,2).join(" e "))}</b>${tlOk.length?`, com talento ${esc(tlOk.slice(0,2).map(x=>x.n.toLowerCase()).join(" e "))}`:""}.`:"Você marcou pouca coisa como interesse. Tudo bem: vamos olhar caminhos amplos."} Confira se isso parece você.</small></h2>
+      <div class="glass pad" style="display:grid;gap:12px"><span class="tag">Interesses</span>${ar.map(x=>`${barra(x.n,x.v,x.explorar?' <span class="chip" style="font-size:12px;min-height:0;padding:2px 8px">a explorar</span>':"")}${A.conf==="Mais ou menos"&&x.v!=null?`<div class="row" style="gap:8px"><button class="btn sm" style="min-height:44px;min-width:56px" data-aj="${x.k}" data-d="-10" aria-label="Diminuir ${esc(x.n)}">−10</button><button class="btn sm" style="min-height:44px;min-width:56px" data-aj="${x.k}" data-d="10" aria-label="Aumentar ${esc(x.n)}">+10</button></div>`:""}`).join("")}</div>
       <div class="glass pad" style="display:grid;gap:12px"><span class="tag">Talentos</span>${tl.map(x=>barra(x.n,x.v)).join("")}</div>
       ${expl.length?`<p class="faint" style="font-size:13px">A explorar: ${esc(expl.map(x=>x.n).join(", "))}. Você quase não experimentou essas áreas, então elas continuam abertas.</p>`:""}
       <div class="field"><span>Isso parece você?</span>${pk("conf",["Sim, sou eu","Mais ou menos","Não"],A.conf)}</div>
       ${A.conf==="Mais ou menos"?`<p class="note">Use −10 e +10 nas áreas para o retrato ficar do seu jeito.</p>`:""}
-      ${A.conf==="Não"?`<div class="ponte"><b style="font-weight:600">Vamos refazer os interesses</b><p style="margin:0">Responda de novo, pensando no que você faria mesmo sem ganhar nada por isso.</p><button class="btn sm primary" data-refazer="1">Refazer interesses</button></div>`:""}
+      ${A.conf==="Não"?`<div class="ponte"><b style="font-weight:600">Vamos refazer os interesses</b><p style="margin:0">Responda de novo, pensando no que você faria mesmo sem ganhar nada por isso.</p><button class="btn sm primary" style="min-height:44px" data-refazer="1">Refazer interesses</button></div>`:""}
       <label class="field"><span>Quer acrescentar algo com as suas palavras? (opcional)</span><textarea class="ta" id="dq-l" placeholder="Ex.: gosto de música, mas como hobby; quero estabilidade…">${esc(A.livre)}</textarea></label>`; };
   const camHTML = () => `${A.cam.leitura?`<p class="title-m" style="font-weight:300;font-size:20px">${esc(A.cam.leitura)}</p>`:""}<div style="display:grid;gap:12px">${A.cam.caminhos.map((c,i)=>`<button class="mcq" data-cam="${i}" aria-pressed="${A.esc===i}" style="text-align:left;${A.esc===i?"border-color:var(--c);background:rgb(255 106 26 / .12)":""}">
       <span class="tag">${esc(c.tipo||"")} · ${c.prazo_dias||"?"} dias</span><b style="font-weight:600;font-size:18px">${esc(c.titulo)}</b><span>${esc(c.alvo)}</span><small class="muted">${esc(c.porque||"")}</small></button>`).join("")}</div>`;
-  const bindLocal = () => { SH.querySelectorAll("[data-cam]").forEach(b=>b.addEventListener("click",()=>{ A.esc=+b.dataset.cam; const t=$("#dq-p"); if(t){ t.value=""; A.proprio=""; } $("#dq-cam").innerHTML=camHTML(); bindLocal(); upd(); })); };
+  const bindLocal = () => { SH.querySelectorAll("[data-cam]").forEach(b=>b.addEventListener("click",()=>{ A.esc=+b.dataset.cam; A.plano=null; A.pnome=""; const t=$("#dq-p"); if(t){ t.value=""; A.proprio=""; } $("#dq-cam").innerHTML=camHTML(); bindLocal(); upd(); })); };
   const planoHTML = () => { const P2=A.plano, nE=d=>(P2.semana[d]||[]).filter(b=>["grad","tech","anbima"].includes(b.c)).length, dk=["1","2","3","4","5","6","0"].sort((x,y)=>nE(y)-nE(x))[0], dia=P2.semana[dk]||[];
     return `<h2 class="q">Seu projeto está pronto<small>${esc(A.pnome)} · ${A.pdias} dias · alvo: ${esc(cam().alvo)}</small></h2>
       <div class="glass pad"><span class="tag">Fases</span>${(P2.fases||[]).map(f=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(f.n)}</b> · dias ${f.de+1} a ${f.ate+1}<br><span class="muted">${esc(f.f)}</span></p>`).join("")}</div>
