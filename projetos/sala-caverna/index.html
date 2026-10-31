@@ -271,6 +271,18 @@ h1,h2,h3,p{margin:0}
 .tline .ev.done b{color:var(--ok)}
 .tline .ev.hot{background:linear-gradient(90deg,rgb(255 106 26 / .14),transparent);border-radius:12px;padding-left:10px}
 
+/* metas */
+.missao{position:relative;overflow:hidden;display:grid;gap:10px;padding:16px;border-radius:22px;border:1px solid rgb(255 106 26 / .45);background:radial-gradient(100% 120% at 0% 0%,rgb(255 106 26 / .28),transparent 60%),var(--glass)}
+.missao.urg{animation:pulseb 1.8s ease-in-out infinite}
+.missao .mh{display:flex;align-items:baseline;gap:10px;justify-content:space-between}
+.missao .dd{font:400 30px/1 var(--dot);color:var(--c-2)}
+.gtag{display:inline-block;font:500 11px var(--mono);color:#FFD2B0;margin-left:6px}
+.ponte{display:grid;gap:6px;padding:14px;border-radius:18px;border:1px solid rgb(255 106 26 / .5);background:linear-gradient(120deg,rgb(255 106 26 / .16),rgb(255 255 255 / .03));animation:pulseb 2.4s ease-in-out infinite}
+.gbar{position:relative;height:8px;border-radius:99px;background:rgb(255 255 255 / .1);overflow:visible}
+.gbar>i{display:block;height:100%;border-radius:inherit;background:var(--ok)}
+.gbar>em{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--text);border-radius:2px}
+.now .btn.primary{animation:cta 2.4s ease-in-out infinite}
+@keyframes cta{50%{box-shadow:0 0 0 6px rgb(255 255 255 / .12),0 0 30px rgb(255 255 255 / .25)}}
 /* fita do tempo */
 .ribbon{padding:12px 14px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:8px;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .ribbon .rh{display:flex;align-items:center;gap:8px}
@@ -422,6 +434,36 @@ const FRASES = [
   "Reter mais, compreender melhor, errar menos pelos mesmos motivos."
 ];
 
+/* Metas conectadas: prazo, matérias que alimentam, evidência e ritmo */
+const GOALS = [
+  {id:"inscricao", n:"Inscrição na Serasa (Eureca)", due:"2026-11-04", soft:"2026-10-31", mats:[], marco:"inscricao", how:"Entre na plataforma Eureca, complete o cadastro e a trilha online. Reserve 1 hora hoje."},
+  {id:"testes", n:"Testes online da Serasa", due:"2026-11-30", mats:["sql","py","est","mat"], need:14, marco:"testes", how:"Testes de raciocínio lógico, leitura de gráficos e base de dados. Faça o simulado de Dados toda semana."},
+  {id:"painel", n:"Painel de crédito v1 com dados do BCB", due:"2026-12-24", mats:["proj","bi","sql","py"], need:16, marco:"painel1", how:"O SQL extrai, o Python limpa e o Power BI mostra. É a prova de competência que abre as 5 portas."},
+  {id:"cpa", n:"Certificação ANBIMA CPA", due:"2027-01-23", mats:["anbima"], sim:"anbima", how:"Ter, qui e sex, 14h–16h. A data da prova é decidida pela média de 70% nos simulados."},
+  {id:"cs50", n:"Certificados CS50 (SQL e Python)", due:"2027-01-23", mats:["sql","py"], need:30, how:"Estude só os módulos da fase e guarde cada exercício no GitHub."},
+  {id:"base", n:"Base matemática sólida (ITA no horizonte)", due:"2027-01-23", mats:["mat"], need:35, how:"Aritmética e álgebra consolidadas antes de avançar. Cada bloco de Matemática aprovado conta."}
+];
+function matsOfBlock(b){ const l=b.l; if(/Matem/.test(l)) return ["mat"]; if(/Econ/.test(l)) return ["eco"]; if(/ANBIMA/.test(l)) return ["anbima"];
+  if(/Python|SQL|código/.test(l)) return ["py","sql"]; if(/Projeto|Power BI/.test(l)) return ["proj","bi"]; if(/Graduação/.test(l)) return ["mat","eco"]; return []; }
+function goalProgress(g){
+  const parts=[];
+  if(g.marco) parts.push(M.marcos && M.marcos[g.marco] ? 1 : 0);
+  if(g.need) parts.push(Math.min(1, g.mats.reduce((a,m)=>a+countBy(m),0)/g.need));
+  if(g.sim){ const l=(M.simulados||[]).filter(x=>(x.tipo||"anbima")===g.sim).slice(-3); parts.push(l.length?Math.min(1,(l.reduce((a,x)=>a+x.score,0)/l.length)/0.7):0); }
+  if(g.marco && g.need) return (M.marcos&&M.marcos[g.marco]) ? 1 : parts[1]*0.9;
+  return parts.length ? parts.reduce((a,b)=>a+b,0)/parts.length : 0;
+}
+function goalInfo(g){
+  const t=today(), due=fromIso(g.due), left=Math.round((due-t)/864e5), p=goalProgress(g);
+  const base = M.inicio ? fromIso(M.inicio) : t, span=Math.max(1,(due-base)/864e5), exp=Math.max(0,Math.min(1,((t-base)/864e5)/span));
+  const mins = Object.values(WEEK).reduce((a,W)=>a+W.b.filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))).reduce((x,b)=>x+toMin(b.b)-toMin(b.a),0),0);
+  const done = p>=1, late = !done && left<0, behind = !done && !!(g.need||g.sim) && p+0.15<exp;
+  return {g, left, p, exp, mins, done, late, behind, urgent: !done && left<=7};
+}
+function goalsFor(mat){ return GOALS.filter(g=>g.mats.includes(mat)).map(goalInfo).filter(x=>!x.done); }
+function topGoal(){ const all=GOALS.map(goalInfo).filter(x=>!x.done && x.left>=-3); all.sort((a,b)=>(b.urgent-a.urgent)||(b.behind-a.behind)||(a.left-b.left)); return all[0]||null; }
+function goalsText(){ return GOALS.map(goalInfo).map(x=>`${x.g.n}: prazo ${fromIso(x.g.due).getDate()}/${fromIso(x.g.due).getMonth()+1}, faltam ${x.left} dias, progresso ${Math.round(x.p*100)}% (esperado ${Math.round(x.exp*100)}%)${x.done?" CONCLUÍDA":x.behind?" ATRÁS DO RITMO":""}`).join("; "); }
+
 /* ====================================================================
    ESTADO E MEMÓRIA
    ==================================================================== */
@@ -458,6 +500,7 @@ function saveDay(dstr){ lsSet("cav:d:"+dstr, DAYS[dstr]); dbPut("d_"+dstr, {...D
 
 async function boot(){
   const lm = lsGet("cav:main"); if(lm) M = Object.assign(M, lm);
+  if(!M.inicio){ M.inicio = iso(today()); lsSet("cav:main", M); }
   for(let i=0;i<TOTAL;i++){ const k=iso(addDays(START,i)); const v=lsGet("cav:d:"+k); if(v) DAYS[k]=v; }
   render();
   if(!window.claude || !claude.use) return;
@@ -469,7 +512,7 @@ async function boot(){
     if(c){
       const timer = setTimeout(()=>{}, 10000);
       const s = await c.doc("main").get().catch(()=>null);
-      if(s && s.exists){ M = Object.assign(M, s.data()); }
+      if(s && s.exists){ const loc=M.inicio; M = Object.assign(M, s.data()); if(!M.inicio) M.inicio=loc; }
       else if(lm) saveMain();
       const q = await c.get().catch(()=>null);
       if(q) q.docs.forEach(x => { const v=x.data(); if(v && v.date){ const o={...v}; delete o.date; DAYS[v.date]=o; } });
@@ -503,7 +546,7 @@ function aiErr(e){
 }
 function perfil(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
-  return `Contexto fixo: você é o tutor e gestor do Projeto Caverna (${LEMA}), 100 dias de 16/10/2026 a 23/01/2027. Hoje é o dia ${d} de 100 (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Escreva em português do Brasil, claro e direto, sem floreios.`;
+  return `Contexto fixo: você é o tutor e gestor do Projeto Caverna (${LEMA}), 100 dias de 16/10/2026 a 23/01/2027. Hoje é o dia ${d} de 100 (${ph?ph.n:""}). Estudante: ${M.profile.name}, pastor(a), cursa Bacharelado em Matemática EAD e vai cursar Ciências Econômicas; estuda SQL, Python, Excel/Power BI, estatística e ANBIMA CPA (terça, quinta e sexta, 14h–16h). Meta central: Estágio 2027 Serasa Experian, vaga Analytics; reservas PagBank, Mercantil, Sicoob, Agibank. Horizonte: mestrado no ITA em Computação/Dados. Laudo pedagógico: base aritmética a consolidar, dificuldade de reter procedimentos; usar recuperação ativa, repetição espaçada, explicação visual, exercícios graduais (guiado → independente → contextualizado) e caderno de erros; explicar o porquê, não só a regra. Prioridades: Deus, ministério, saúde, Matemática, formação, tecnologia, economia, ANBIMA. Metas e situação atual: ${goalsText()}. Sempre que fizer sentido, ligue o estudo às metas. Escreva em português do Brasil, claro e direto, sem floreios.`;
 }
 async function aiJson(prompt, opts){ if(!SAMPLE) throw {code:"no_ai"}; return SAMPLE.json(perfil()+"\n\n"+prompt, Object.assign({cache:false}, opts||{})); }
 
@@ -607,9 +650,10 @@ function vHoje(){
     const k=bkey(b), r=rec[k], kd=kindOf(b), past=isToday&&toMin(b.b)<=nm, isn=cur===b;
     const st = r ? (r.st==="feito" ? `<span class="st done"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg></span>` : `<span class="st miss"><svg class="icon" style="width:14px;height:14px"><use href="#i-x"/></svg></span>`) : `<span class="st"></span>`;
     const tag = kd==="estudo"?"aula + prova":kd==="biblia"?"leitura + pergunta":kd==="revisao"?"recuperação ativa":"";
+    const gm = matsOfBlock(b).length ? GOALS.find(g=>!goalInfo(g).done && g.mats.some(m=>matsOfBlock(b).includes(m))) : null;
     tl += `<li class="${isn?"isnow":""} ${past?"past":""} ${r?"closed":""}" style="--g1:${g1(b.c)}"><button data-act="${kd==="final"?"finalizar":kd==="simples"||kd==="pausa"?"ok":"bloco"}" data-k="${esc(k)}" data-d="${iso(sel)}">
       <time>${fmtH(b.a)}<br>${fmtH(b.b)}</time>
-      <span class="t"><b><span class="bul"></span>${esc(b.l)}</b><small>${esc(b.s || AREAS[b.c].n)}${tag?` · ${tag}`:""}</small></span>${st}</button></li>`;
+      <span class="t"><b><span class="bul"></span>${esc(b.l)}</b><small>${esc(b.s || AREAS[b.c].n)}${tag?` · ${tag}`:""}${gm?`<span class="gtag">→ ${esc(gm.n.split(" (")[0])}</span>`:""}</small></span>${st}</button></li>`;
   });
 
   return `<div class="view">
@@ -641,6 +685,7 @@ function vHoje(){
         <div class="acts">${heroAct}${cur&&nxt?`<span class="chip" style="background:rgb(0 0 0 / .25)">Depois: ${esc(nxt.l)} ${fmtH(nxt.a)}</span>`:""}</div>
       </section>
       ${M.sessao?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${missaoHTML()}
       ${ribbonHTML()}
       ${manhaPend()?`<button class="item" data-act="manha" style="border-color:rgb(154 165 255 / .45)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
       ${semanaPend()?`<button class="item" data-act="semana" style="border-color:rgb(255 106 26 / .45)"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Segunda é dia de prova com gabarito sobre a semana</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
@@ -736,6 +781,17 @@ function evoPanorama(){
       <button class="btn c" data-act="panorama-ai" ${aiOn()?"":"disabled"}><svg class="icon"><use href="#i-spark"/></svg>Analisar meu momento</button>
       ${aiOn()?"":`<p class="faint" style="font-size:13px">Disponível na versão publicada, com o Claude ligado.</p>`}</section>`;
 }
+function metasConectadasHTML(){
+  const xs=GOALS.map(goalInfo);
+  return `<section style="display:grid;gap:10px"><div class="sec-h"><h2>Metas conectadas à rotina</h2><span class="mono muted" style="font-size:13px">barra: feito · traço: ritmo esperado</span></div>
+    <div class="list">${xs.map(x=>{ const h=(x.mins/60); const warn = x.g.mats.length && x.mins===0 ? "Nenhum horário da agenda alimenta esta meta. Encaixe um bloco na semana." : x.behind ? `Atrás do ritmo: ${Math.round(x.p*100)}% feito, o esperado hoje era ${Math.round(x.exp*100)}%.` : "";
+      return `<div class="glass pad" style="display:grid;gap:8px;${x.urgent&&!x.done?"border-color:rgb(255 106 26 / .5)":""}">
+        <div class="row" style="justify-content:space-between;align-items:baseline"><b style="font-weight:500">${esc(x.g.n)}</b><span class="mono" style="font-size:12px;color:${x.done?"var(--ok)":x.urgent||x.behind?"var(--warn)":"var(--muted)"}">${x.done?"concluída":x.left>=0?`faltam ${x.left} dias`:"prazo passou"}</span></div>
+        <div class="gbar"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>
+        <small class="muted">${x.g.mats.length?`Na agenda: ${h?h.toFixed(1).replace(".",",")+" h por semana":"nenhum bloco"} · alimentada por ${x.g.mats.map(m=>SUBJ[m].n).join(", ")}`:"Marco: confirme quando fizer"}</small>
+        ${warn?`<p style="font-size:14px;color:var(--warn)">${esc(warn)}</p>`:""}
+        <small>${esc(x.g.how)}</small></div>`; }).join("")}</div></section>`;
+}
 function evoMetas(){
   const t=iso(today());
   const tl = SERASA.map(s => { const done = s.k && M.marcos[s.k], hot = !done && s.d>=t && !SERASA.some(x=>x.d<s.d && x.d>=t && !(x.k&&M.marcos[x.k]));
@@ -746,6 +802,7 @@ function evoMetas(){
   return `<section class="glass pad" style="display:grid;gap:6px"><span class="eyebrow">Ponto central do alvo</span><h2 class="title-l" style="font-size:30px">Estágio 2027 · Serasa Experian · Analytics</h2>
       <p class="muted">Núcleo comum a todas as vagas: SQL, Python, Power BI, estatística aplicada e crédito. Cada bloco confirmado alimenta as cinco portas ao mesmo tempo.</p>
       <div class="tline" style="margin-top:8px">${tl}</div></section>
+    ${metasConectadasHTML()}
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Portas abertas</h2><button class="link" data-act="nova-vaga">Adicionar vaga</button></div><div class="list">${vagas}</div>
       <p class="faint" style="font-size:13px">As vagas e prazos vêm do seu plano. Confirme sempre no site de cada empresa antes de se inscrever.</p></section>
     <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases dos 100 dias</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
@@ -901,6 +958,7 @@ function drawStudy(){
       <label class="field"><span>Link do vídeo ou material (opcional)</span><input class="inp" id="st-link" value="${esc(D.link)}" placeholder="https://"></label>`}
       ${canImg()?`<div class="field"><span>Foto ou print do material</span><button class="drop" data-act="fotos"><svg class="icon"><use href="#i-cam"/></svg><span class="grow">${D.thumbs.length?`${D.thumbs.length} foto(s) anexada(s). Toque para trocar.`:"Tirar foto ou escolher print"}</span></button><div class="thumbs">${D.thumbs.map(t=>`<img src="${t}" alt="Foto anexada">`).join("")}</div></div>`:""}
       ${!aiOn()?`<p class="note">O Claude não está ligado nesta cópia. A aula e a prova automáticas aparecem na versão publicada. Aqui você ainda registra o estudo e a descrição.</p>`:""}
+      ${contaParaHTML(F.mat)}
       <button class="link" data-act="nao-fiz" style="justify-self:start">Não vou conseguir fazer este bloco</button>`});
     return;
   }
@@ -970,6 +1028,10 @@ function tickFocus(){
     $("#tmv").textContent=`${p2(m)}:${p2(s)}`; tm.style.setProperty("--p", Math.round((1-f.left/f.total)*100)); const b=$("#tmb"); if(b) b.textContent=f.run?"Pausar":"Iniciar"; };
   draw(); if(F.focus.run) F.timer=setInterval(()=>{ if(F.focus.left>0){F.focus.left--; draw();} else { clearInterval(F.timer); F.focus.run=false; draw(); toast("Tempo do bloco concluído."); } },1000);
 }
+function contaParaHTML(mat){
+  const gs=goalsFor(mat); if(!gs.length) return "";
+  return `<div class="ponte"><span class="tag" style="color:#FFD2B0">Este estudo conta para</span>${gs.map(x=>`<div style="display:grid;gap:4px"><div class="row" style="justify-content:space-between"><b style="font-weight:600">${esc(x.g.n)}</b><span class="mono" style="font-size:12px;color:${x.behind?"var(--warn)":"var(--muted)"}">${x.left>=0?`faltam ${x.left} dias`:"prazo passou"}</span></div><div class="gbar" aria-label="${Math.round(x.p*100)}% feito"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div><small class="muted">${x.behind?"Atrás do ritmo. ":""}${esc(x.g.how)}</small></div>`).join("")}</div>`;
+}
 function lessonHTML(L){
   const yt = (L.buscas||[]).slice(0,3).map(q=>`<a href="https://www.youtube.com/results?search_query=${encodeURIComponent(q)}" target="_blank" rel="noopener"><span class="yt"><svg class="icon" style="width:14px;height:14px"><use href="#i-play"/></svg></span><span class="grow">${esc(q)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
   const qq = encodeURIComponent(L.titulo||""), isMat = FLOW && ["mat","est"].includes(FLOW.mat);
@@ -977,6 +1039,7 @@ function lessonHTML(L){
     .map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
   const rec = (SUBJ[FLOW&&FLOW.mat]||{rec:[]}).rec.slice(0,2).map(([n,u])=>`<a href="${u}" target="_blank" rel="noopener"><span class="rs"><svg class="icon" style="width:14px;height:14px"><use href="#i-link"/></svg></span><span class="grow">${esc(n)}</span><svg class="icon"><use href="#i-arrow"/></svg></a>`).join("");
   return `<div class="lesson">
+    ${L.ponte?`<div class="ponte"><span class="tag" style="color:#FFD2B0">Para as suas metas</span><p style="margin:0">${esc(L.ponte)}</p></div>`:""}
     <span class="tag">Aula · ${esc(L.titulo||"")}</span>
     <p class="idea">${esc(L.ideia||"")}</p>
     ${L.analogia?`<div class="glass pad"><span class="tag">Imagine assim</span><p style="margin-top:6px">${esc(L.analogia)}</p></div>`:""}
@@ -997,7 +1060,7 @@ Matéria: ${mat}. Nível atual na trilha: ${SUBJ[F.mat]?SUBJ[F.mat].lv[lv.l]:"-"
 ${D.fotos.length?"As imagens anexadas são o material que será estudado (página, slide ou exercício). Baseie a aula nelas.":""}
 Regras do laudo: explicar o PORQUÊ, partir do concreto para o abstrato, mostrar um exemplo resolvido passo a passo com verificação, e terminar com treino graduado.
 Responda só com JSON neste formato:
-{"titulo":"nome curto do assunto","ideia":"a ideia central em 1–2 frases","analogia":"comparação concreta do dia a dia","passos":[{"t":"título curto","txt":"explicação em 2–3 frases"}],"exemplo":{"enunciado":"...","resolucao":"passo a passo em linhas, com a verificação no final"},"quadro":"desenho em texto monoespaçado (até 12 linhas, até 38 colunas) que ilustre o conceito: reta numérica, barras de fração, tabela, esquema de passos ou diagrama","armadilhas":["erro comum 1","erro comum 2"],"treino":["exercício guiado","exercício independente","problema contextualizado"],"buscas":["busca no YouTube em português 1","busca 2","busca 3"]}
+{"titulo":"nome curto do assunto","ideia":"a ideia central em 1–2 frases","analogia":"comparação concreta do dia a dia","passos":[{"t":"título curto","txt":"explicação em 2–3 frases"}],"exemplo":{"enunciado":"...","resolucao":"passo a passo em linhas, com a verificação no final"},"quadro":"desenho em texto monoespaçado (até 12 linhas, até 38 colunas) que ilustre o conceito: reta numérica, barras de fração, tabela, esquema de passos ou diagrama","armadilhas":["erro comum 1","erro comum 2"],"treino":["exercício guiado","exercício independente","problema contextualizado"],"buscas":["busca no YouTube em português 1","busca 2","busca 3"],"ponte":"1–2 frases: como este assunto serve às metas do contexto (Serasa, painel de crédito, ANBIMA, certificados ou base matemática) e como aproveitar este bloco para elas"}
 Use 3 a 5 passos. As buscas devem ser frases de pesquisa (não links).`;
   try{
     D.aula = await aiJson(prompt, {signal:F.ctl.signal, images: D.fotos.length?D.fotos:undefined});
@@ -1301,6 +1364,17 @@ function openSubject(k){
    ==================================================================== */
 let ZOOM = 1;
 const ZN = ["Agora","Hoje","Semana","100 dias"];
+function missaoHTML(){
+  const x=topGoal(); if(!x) return "";
+  const g=x.g, isMarco=g.marco&&!g.need, hojeTxt = isMarco ? g.how : (()=>{ const hb=blocksOf(today()).filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))); return hb.length?`Hoje alimentam esta meta: ${hb.map(b=>`${b.l} (${fmtH(b.a)})`).join(", ")}.`:`Hoje a agenda não tem bloco para esta meta. ${g.how}`; })();
+  return `<section class="missao ${x.urgent||x.behind?"urg":""}" aria-label="Missão">
+    <div class="mh"><span class="eyebrow" style="color:#FFD2B0">${x.urgent?"Missão urgente":x.behind?"Meta atrás do ritmo":"Missão em foco"}</span><span class="dd">${x.left>=0?x.left:"!"}<small style="font:500 11px var(--mono);color:var(--muted);margin-left:4px">${x.left>=0?"dias":"atrasada"}</small></span></div>
+    <b style="font-weight:500;font-size:18px">${esc(g.n)}</b>
+    <div class="gbar" aria-label="${Math.round(x.p*100)}% feito, esperado ${Math.round(x.exp*100)}%"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>
+    <p class="muted" style="font-size:14px">${esc(hojeTxt)}</p>
+    <div class="row wrap">${isMarco?`<button class="btn sm primary" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" data-act="metas">Ver todas as metas</button></div>
+  </section>`;
+}
 function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Linha do tempo">${ribbonInner()}</section>`; }
 function ribbonInner(){
   const t=today(), ts=iso(t), nm=nowMin(), bs=blocksOf(t).filter(b=>!["pausa"].includes(kindOf(b))), rec=day(ts).blocks;
@@ -1425,7 +1499,8 @@ function openSemana(){
     prompt:`Revisão semanal com gabarito. Faça 10 questões de múltipla escolha cobrindo os assuntos da semana, níveis misturados, priorizando os pontos em que houve erro. Assuntos: ${JSON.stringify(es.slice(0,14).map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:""})))}. Erros recentes: ${JSON.stringify(erros)}. Em "tema" ponha o assunto exatamente como listado.`,
     onDone:(Q,ans,sc)=>{ const m=porTema(Q,ans); (M.semanas=M.semanas||{})[weekKey()]={score:sc, temas:m};
       Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c){ const r=es.find(z=>z.topic===x.tema)||es[0]; logErro(r.mat, x.tema, x, ans[i]); } }); addXP(Math.round(sc*40)); saveMain();
-      return temaHTML(m)+`<p class="note">Os assuntos em vermelho são o foco desta semana. Treine-os na Forja.</p>`; }});
+      const atr=GOALS.map(goalInfo).filter(x=>x.behind||x.urgent);
+      return temaHTML(m)+`<p class="note">Os assuntos em vermelho são o foco desta semana. Treine-os na Forja.</p>`+(atr.length?`<div class="ponte"><span class="tag" style="color:#FFD2B0">Metas que pedem atenção esta semana</span>${atr.map(x=>`<p style="margin:0"><b style="font-weight:600">${esc(x.g.n)}</b> · ${x.left>=0?"faltam "+x.left+" dias":"prazo passou"} · ${Math.round(x.p*100)}% feito</p>`).join("")}</div>`:""); }});
 }
 
 /* ---------- Forja: onde o erro vira domínio ---------- */
