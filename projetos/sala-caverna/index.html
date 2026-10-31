@@ -661,11 +661,11 @@ function proximidade(){
   return {tp, gp, msg: gp>=tp ? "No ritmo para o alvo. Continue assim." : gp>=tp-15 ? "Perto do ritmo. A missão de hoje te coloca em dia." : "Hora de acelerar: a missão de hoje é o próximo passo até o alvo."};
 }
 function carteiraHTML(){
-  const pj=P(), pr=proximidade(), di=Math.max(1,dayIdx(today())+1), nome=M.profile.full||M.profile.name||NAME_DEFAULT;
+  const pj=P(), pr=proximidade(), di=Math.max(1,Math.min(TOTAL,dayIdx(today())+1)), nome=M.profile.full||M.profile.name||NAME_DEFAULT;
   return `<button class="wallet" data-act="menu" aria-label="${esc(pj.nome)}, ${esc(nome)}, dia ${di} de ${TOTAL}. Abrir menu">
     ${avatarHTML(44)}
     <span class="grow" style="display:grid;gap:3px;min-width:0;text-align:left">
-      <span class="row" style="gap:8px;justify-content:space-between"><span class="eyebrow" style="color:#FFD2B0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(pj.nome)}</span><span class="mono" style="font-size:11px;color:var(--muted);white-space:nowrap">dia ${di}/${TOTAL}</span></span>
+      <span class="row" style="gap:8px;justify-content:space-between"><span class="eyebrow" style="color:#FFD2B0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(pj.nome)}</span><span class="mono" style="font-size:11px;color:var(--muted);white-space:nowrap">${dayIdx(today())<0?`começa ${START.getDate()}/${START.getMonth()+1}`:`dia ${di}/${TOTAL}`}</span></span>
       <b style="font-weight:500;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(nome)}</b>
       <span class="gbar" style="height:4px" aria-hidden="true"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%;top:-3px;bottom:-3px"></em></span>
     </span>
@@ -722,7 +722,7 @@ function vHoje(){
         <div class="eyebrow">${hi}, ${esc(M.profile.name||NAME_DEFAULT)}</div>
         <div class="dayline"><h1 class="title-xl">${sel.getDate()} de ${MES[sel.getMonth()]}</h1></div>
         <div class="row wrap" style="gap:8px">
-          <span class="chip"><i style="color:var(--c)"></i>Dia ${di} de ${TOTAL}</span>
+          ${dayIdx(t)<0?`<span class="chip"><i style="color:var(--c)"></i>Começa em ${START.getDate()}/${START.getMonth()+1}</span>`:""}
           ${ph?`<span class="chip">${esc(ph.n)}</span>`:""}
           <span class="chip">${esc(W.n)} · acordar ${fmtH(W.w)}</span>
         </div>
@@ -826,12 +826,12 @@ function evoPanorama(){
   const bars = Object.entries(hoursByArea).sort((a,b)=>b[1]-a[1]).map(([a,m])=>`<div style="display:grid;gap:6px"><div class="row" style="justify-content:space-between"><span>${esc(a)}</span><span class="mono muted">${(m/60).toFixed(1)} h</span></div><div class="bar"><i style="width:${Math.round(m/maxH*100)}%;background:var(--c)"></i></div></div>`).join("");
   const p = Math.round(Math.min(1,(di+1)/TOTAL)*100);
   return `<div class="kpis">
-      <div class="kpi"><b>${di+1}</b><span>dia de 100</span></div>
+      <div class="kpi"><b>${dayIdx(t)<0?0:di+1}</b><span>dia de ${TOTAL}</span></div>
       <div class="kpi"><b>${closed}</b><span>dias registrados</span></div>
       <div class="kpi"><b>${streak()}</b><span>dias de constância</span></div>
       <div class="kpi"><b>${qa==null?"--":Math.round(qa*100)+"%"}</b><span>média nas provas</span></div>
     </div>
-    <section class="glass pad" style="display:grid;gap:12px"><div class="sec-h"><h2>100 dias</h2><span class="mono muted" style="font-size:13px">${p}% do caminho</span></div><div class="heat" aria-label="Mapa dos 100 dias">${heat}</div>
+    <section class="glass pad" style="display:grid;gap:12px"><div class="sec-h"><h2>${TOTAL} dias</h2><span class="mono muted" style="font-size:13px">${dayIdx(t)<0?0:p}% do caminho</span></div><div class="heat" aria-label="Mapa dos ${TOTAL} dias">${heat}</div>
       <div class="row wrap faint" style="font-size:12px;gap:14px"><span>cinza: sem registro</span><span style="color:#FFB37A">laranja: mais forte quanto mais blocos confirmados</span></div></section>
     <section class="glass pad" style="display:grid;gap:12px"><h2 class="title-m">Tempo de estudo confirmado</h2>${bars||'<p class="muted">Ainda sem blocos de estudo confirmados.</p>'}</section>
     <section class="glass pad" style="display:grid;gap:12px" id="pan-ai"><div class="sec-h"><h2 class="title-m">Leitura do tutor</h2></div>
@@ -863,7 +863,7 @@ function evoMetas(){
     ${metasConectadasHTML()}
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Portas abertas</h2><button class="link" data-act="nova-vaga">Adicionar vaga</button></div><div class="list">${vagas}</div>
       <p class="faint" style="font-size:13px">As vagas e prazos vêm do seu plano. Confirme sempre no site de cada empresa antes de se inscrever.</p></section>
-    <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases dos 100 dias</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
+    <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases do ${esc(P().nome)}</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
 }
 function evoArvore(){
   const L = k => levelOf(k).l, m = M.marcos, sim = (M.simulados||[]).slice(-3), simAvg = sim.length?sim.reduce((a,s)=>a+s.score,0)/sim.length:0;
@@ -932,7 +932,7 @@ function keepSession(){
 function closeSheet(){ keepSession(); if(FLOW&&FLOW.timer) clearInterval(FLOW.timer); if(FLOW&&FLOW.ctl) FLOW.ctl.abort(); FLOW=null; try{speechSynthesis.cancel()}catch(e){}
   if(RETURN){ const r=RETURN; RETURN=null; FLOW=r; r.refresh(); openSheet(r.bg); drawFinal(); return; }
   SH.hidden=true; SH.innerHTML=""; document.body.style.overflow=""; $("#app").inert=false; document.querySelector(".tabbar").inert=false; render();
-  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); }
+  const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); else if(o && o.dataset && o.dataset.act){ const n=document.querySelector(`[data-act="${o.dataset.act}"]`); if(n) n.focus(); } }
 function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
   const dots = steps ? `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>` : "";
   SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
@@ -1385,7 +1385,7 @@ function openDay(dstr){
   openSheet("radial-gradient(120% 60% at 50% 0%,rgb(110 90 255 / .3),transparent 60%),#05060A");
   const items = bs.filter(b=>Dy.blocks[bkey(b)]).map(b=>{ const r=Dy.blocks[bkey(b)]; return `<button class="item" data-act5="rec" data-k="${esc(bkey(b))}"><span class="st ${r.st==="feito"?"done":"miss"}" style="width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:${r.st==="feito"?"var(--ok)":"var(--bad)"};color:#05060A"><svg class="icon" style="width:14px;height:14px"><use href="#i-${r.st==="feito"?"check":"x"}"/></svg></span><span class="grow"><b>${esc(b.l)}</b><small>${fmtH(b.a)} · ${esc(r.topic||r.motivo||AREAS[b.c].n)}${r.score!=null?` · ${Math.round(r.score*100)}%`:""}</small></span></button>`; }).join("");
   const studied = bs.some(b=>Dy.blocks[bkey(b)]&&Dy.blocks[bkey(b)].mat);
-  sheetHTML({title:`Dia ${dayIdx(d)+1} de 100`, next:"Fechar", body:`
+  sheetHTML({title:`Dia ${dayIdx(d)+1} de ${TOTAL}`, next:"Fechar", body:`
     <h2 class="q">${d.getDate()} de ${MES[d.getMonth()]}<small>${WEEK[d.getDay()].n}${f?` · nota ${f.nota}/10`:""}</small></h2>
     ${f&&f.sint?`<div class="glass pad"><span class="tag">Síntese do dia</span><p class="title-m" style="margin-top:6px;font-weight:400">${esc(f.sint.titulo||"")}</p>${(f.sint.blocos||[]).map(b=>`<p style="margin-top:8px"><b style="font-weight:600">${esc(b.area)}:</b> ${esc(b.resumo)}</p>`).join("")}</div>`:""}
     ${f&&((f.frases||[]).some(Boolean)||f.geral)?`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Suas 3 frases</span>${f.frases.filter(Boolean).map(x=>`<p>${esc(x)}</p>`).join("")}${f.geral?`<span class="tag" style="margin-top:8px">Bíblia e ministério</span><p style="white-space:pre-wrap">${esc(f.geral)}</p>`:""}</div>`:""}
@@ -1422,7 +1422,7 @@ function openSubject(k){
    FITA DO TEMPO (pinça para afastar: agora → dia → semana → 100 dias)
    ==================================================================== */
 let ZOOM = 1;
-const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","100 dias"];
+const ZN = ["Agora","Ontem · hoje · amanhã","5 dias","Semana","Projeto"];
 const SHORT = l => l.replace(/^Oração (da manhã|das 18h|antes de dormir)$/,(m,x)=>x==="da manhã"?"Oração":x==="das 18h"?"Oração 18h":"Oração noite")
   .replace(/Bíblia e (teologia|texto do ensinamento)/,"Bíblia").replace("Graduação com maior necessidade","Graduação").replace("Ciências Econômicas","Economia")
   .replace("Revisão integral do dia","Revisão do dia").replace(/^Culto de .*/,"Culto").replace("Programação da igreja","Igreja").replace("Escola Bíblica Dominical","EBD")
@@ -1442,7 +1442,7 @@ function dayCard(d, mode){
   }
   return `<button class="dcard ${rel} ${mode}" data-act="rseg" data-d="${s}" aria-label="${name}, ${st.done} de ${st.total} feitos">
     <span class="dh">${mode==="dots"?`<b>${s===iso(t)?"Hoje":WD[d.getDay()]}</b><small>${d.getDate()}</small>`:`<b>${name}</b><small>${d.getDate()}/${d.getMonth()+1}</small>`}</span>
-    ${inRange?inner:`<span class="faint" style="font-size:12px">fora dos 100 dias</span>`}
+    ${inRange?inner:`<span class="faint" style="font-size:12px">fora do projeto</span>`}
     ${rel!=="future"&&inRange?`<span class="dp">${st.done}/${st.total}</span>`:""}
   </button>`;
 }
@@ -1479,7 +1479,8 @@ function ribbonInner(){
   const di=dayIdx(t); let cells="", full=0;
   for(let i=0;i<TOTAL;i++){ const s=iso(addDays(START,i)), sd=dayStats(s); if(i<=di&&sd.pct>=.8) full++; const cls = i>di?"":sd.pct>=.8?"f":sd.pct>0?"p":"";
     cells+=`<i class="${cls} ${i===di?"td":""}" data-act="rday" data-d="${s}" title="Dia ${i+1}" aria-hidden="true"></i>`; }
-  return head(`${full} ${full===1?"dia completo":"dias completos"} · dia ${di+1} de 100`)+`<div class="grid100">${cells}</div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário dos 100 dias</button><div class="rl"><span>16/10</span><span>alvo: 23/01 · Serasa Analytics</span></div>`;
+  const cols = TOTAL<=35?Math.min(TOTAL,10):TOTAL<=120?20:30, fim=addDays(START,TOTAL-1);
+  return head(`${full} ${full===1?"completo":"completos"} · dia ${Math.max(0,di+1)}/${TOTAL}`)+`<div class="grid100" style="grid-template-columns:repeat(${cols},1fr)">${cells}</div><div class="rl"><span>${START.getDate()}/${START.getMonth()+1}</span><span style="text-align:right">${esc(P().meta)} · ${fim.getDate()}/${fim.getMonth()+1}</span></div><button class="link" data-act="tabdiario" style="justify-self:start">Abrir o diário do projeto</button>`;
 }
 function paintRibbon(){ const r=$("#ribbon"); if(r) r.innerHTML=ribbonInner(); }
 (function(){
@@ -1705,7 +1706,7 @@ function openProfile(){
     const v=id=>($("#"+id)||{}).value?.trim()||"";
     pf.full=v("pf-full"); pf.name=v("pf-n")||NAME_DEFAULT; pf.email=v("pf-e"); pf.tel=v("pf-t");
     const ini=v("pj-i"), dias=+v("pj-d");
-    M.projeto={nome:v("pj-n")||PROJ0.nome, lema:v("pj-l"), meta:v("pj-m")||PROJ0.meta, inicio:/^\d{4}-\d{2}-\d{2}$/.test(ini)?ini:pj.inicio, dias:dias>=7?dias:pj.dias};
+    M.projeto={nome:v("pj-n")||PROJ0.nome, lema:v("pj-l"), meta:v("pj-m")||PROJ0.meta, inicio:/^\d{4}-\d{2}-\d{2}$/.test(ini)?ini:pj.inicio, dias:dias>=7?Math.min(730,Math.round(dias)):pj.dias};
     applyProjeto(); saveMain(); closeSheet(); toast("Perfil e projeto salvos."); }};
   openSheet("radial-gradient(120% 60% at 100% 0%,rgb(255 106 26 / .25),transparent 60%),#05060A");
   sheetHTML({title:"Perfil e projeto", next:"Salvar", body:`
@@ -1719,6 +1720,7 @@ function openProfile(){
     <label class="field"><span>Nome do projeto</span><input class="inp" id="pj-n" value="${esc(pj.nome)}"></label>
     <label class="field"><span>Lema</span><input class="inp" id="pj-l" value="${esc(pj.lema)}"></label>
     <label class="field"><span>Alvo central (a meta que o projeto persegue)</span><input class="inp" id="pj-m" value="${esc(pj.meta)}"></label>
+    <p class="faint" style="font-size:13px">As metas detalhadas, as fases e a agenda ainda seguem o Projeto Caverna. Na próxima etapa, o quiz de direção monta tudo isso para qualquer projeto.</p>
     <div class="grid2"><label class="field"><span>Início</span><input class="inp" id="pj-i" type="date" value="${esc(pj.inicio)}"></label><label class="field"><span>Duração (dias)</span><input class="inp" id="pj-d" type="number" min="7" max="730" value="${esc(pj.dias)}"></label></div>
     <div class="glass pad" style="display:grid;gap:6px"><span class="tag">Pontos de domínio</span><p style="font-size:14px">Você ganha pontos a cada aprendizado comprovado: bloco aprovado na prova, revisão, erro forjado, simulado e dia finalizado. A cada 250 pontos, sobe um nível. Hoje: nível ${LEVEL()}, ${M.xp||0} pontos.</p></div>
     <p class="note">${DB&&UID?"Seus registros ficam salvos na sua conta Claude e aparecem em qualquer aparelho.":"Seus registros ficam salvos neste navegador. Na versão publicada, ficam na sua conta."} O quiz de direção, que ajuda a definir a meta e monta a rotina, chega na próxima etapa.</p>
