@@ -19,3 +19,6 @@ O site é o mesmo app do claude.ai (`projetos/sala-caverna/index.html`), com log
 1. A Edna cria a conta no site com o e-mail dela e a senha que ela escolher.
 2. Marca-se a conta como dona: `insert into public.app_owner (user_id) select id from auth.users where email = '<e-mail>';`
 3. Em Minha conta → Importar backup, ela traz o Projeto Caverna (o backup sai do Yaad1 do claude.ai, em Perfil e projeto).
+
+## Banco acordado
+O plano gratuito do Supabase pausa projetos sem uso por 7 dias. A Vercel chama `/api/manter` todo dia às 6h17 (horário de Brasília), que faz uma consulta leve ao banco.
