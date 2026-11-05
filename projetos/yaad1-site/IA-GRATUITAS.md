@@ -22,3 +22,11 @@ O Yaad1 manda ao modelo dados pessoais (rotina, momento de vida, descobertas, pe
 - **Hoje:** o site usa o Claude (`api/claude.js`) e precisa da chave paga da Anthropic.
 - **Opção gratuita para testes:** Gemini Flash no plano grátis, só enquanto o site é usado pela dona. Exige aviso claro na tela de criar conta por causa do uso dos dados.
 - **Para abrir a outras pessoas:** um plano pago que não usa os dados (Claude, ou Gemini pago).
+
+## Diretório complementar: nejib1/Free-LLM
+
+[github.com/nejib1/Free-LLM](https://github.com/nejib1/Free-LLM) ([free-llm.com](https://free-llm.com)) lista mais de 34 serviços e é atualizado todo dia. Lido em 05/11/2026: é só texto (sem programas para instalar) e não tem nada suspeito. Vale como mapa, com dois cuidados:
+
+- **Grandes empresas** (Google, Groq, Mistral, Cohere, NVIDIA, Cloudflare, Z.AI): termos públicos, dá para confiar e conferir. Detalhes da lista: a Mistral pede verificação por telefone e permite 1 pedido por segundo; a chave de teste da Cohere vale 1.000 chamadas por mês e **só para uso não comercial**; o NVIDIA NIM pede telefone e permite cerca de 40 pedidos por minuto.
+- **Revendedores e intermediários pequenos** (por exemplo Api.Airforce, LLM7.io, FreeInference, LLM.kiwi, Routeway, AI Horde): pouca transparência sobre quem recebe e guarda os textos. **Não usar com dados de pessoas do Yaad1.**
+- **Rodar no próprio computador** (Ollama, LM Studio, llama.cpp): o mais privado e sem limite, mas precisa de máquina própria e não serve para o site na Vercel.
