@@ -183,6 +183,21 @@ h1,h2,h3,p{margin:0}
 
 /* aula */
 .lesson{display:grid;gap:14px}
+:root{--sl-prof:#ff8a3d;--sl-assist:#4fd1a5;--sl-cur:#7aa7ff;--sl-anot:#e2b7ff;--sl-pens:#ffd166;--sl-brinc:#ff7aa2}
+.sala{display:grid;gap:14px}
+.sala-turma{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.sala-av{display:grid;justify-items:center;gap:4px;min-width:52px;opacity:.45;transition:opacity .2s}
+.sala-av.on{opacity:1}
+.sala-av i{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:600;color:var(--on-light);background:var(--c)}
+.sala-av.on i{box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--c)}
+.sala-av small{font-size:11px;color:var(--muted)}
+.sala-fala{display:grid;gap:8px;padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);border-left:4px solid var(--c)}
+.sala-fala b{font-weight:600}
+.sala-fala p{margin:0;font-size:18px;line-height:1.45}
+.sala-quadro{display:grid;gap:6px;padding:14px;border-radius:16px;background:var(--bg);border:1px solid var(--edge-2)}
+.sala-quadro .mono{font:15px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.sala-quadro table{border-collapse:collapse;font-size:14px}.sala-quadro td,.sala-quadro th{border:1px solid var(--edge-2);padding:4px 8px;text-align:left}
+@media (prefers-reduced-motion: reduce){.sala-av{transition:none}}
 .idea{font-weight:300;font-size:clamp(24px,6.4vw,34px);line-height:1.15;letter-spacing:-.02em;text-wrap:balance}
 .steps{display:grid;gap:10px;counter-reset:s}
 .step{padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);display:grid;gap:6px}
@@ -1185,7 +1200,8 @@ SH.addEventListener("click", async e => {
   if(act==="refazer-prova"){ FLOW.data.quiz=null; FLOW.data.ans={}; FLOW.data.aberta=""; FLOW.at=FLOW.steps.indexOf("prova"); drawStudy(); }
   if(act==="aceitar-parcial"){ FLOW.data.result.pass=true; FLOW.data.result.msg="Registrado como parcial. O assunto volta para revisão amanhã."; saveStudy(FLOW.data.result.score, true); drawStudy(); }
   if(act==="ouvir"){ speak(a.dataset.txt || ""); }
-  if(act==="aula-retry"){ FLOW.data.aula=null; drawStudy(); }
+  if(act==="aula-retry"){ FLOW.data.aula=null; FLOW.data.sala=null; drawStudy(); }
+  if(act==="sala"){ abrirSala(); }
   if(act==="quiz-retry"){ FLOW.data.quiz=null; drawStudy(); }
 });
 function tickFocus(){
@@ -1216,8 +1232,92 @@ function lessonHTML(L){
     ${(L.treino||[]).length?`<div class="glass pad"><span class="tag">Treine no caderno (sem consultar)</span><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px">${L.treino.map(a=>`<li>${esc(a)}</li>`).join("")}</ol></div>`:""}
     ${yt?`<div class="links"><span class="tag">Videoaulas</span>${yt}</div>`:""}
     <div class="links"><span class="tag">Pesquise e aprofunde</span>${pesq}${rec}</div>
+    <button class="btn primary" style="min-height:48px" data-act="sala"><svg class="icon"><use href="#i-sound"/></svg>Assistir na Sala viva: professor, colegas e quadro</button>
     <div class="row wrap"><button class="btn sm" data-act="ouvir" data-txt="${esc((L.ideia||"")+". "+(L.passos||[]).map(p=>p.t+". "+p.txt).join(" "))}"><svg class="icon"><use href="#i-sound"/></svg>Ouvir a aula</button><button class="btn sm ghost" data-act="aula-retry">Gerar outra explicação</button></div>
   </div>`;
+}
+/* ====================================================================
+   SALA VIVA (inspirada no OpenMAIC, THU-MAIC, licença MIT): a aula em cenas,
+   com professor, assistente e colegas de personalidades diferentes, quadro e pausas para responder.
+   ==================================================================== */
+const TURMA = {
+  professor:{n:"Professor", c:"var(--sl-prof)", papel:"explica com calma, do concreto ao abstrato, e usa o quadro"},
+  assistente:{n:"Lia", c:"var(--sl-assist)", papel:"assistente: reexplica de outro jeito quando algo ficou difícil, com exemplo do dia a dia"},
+  curioso:{n:"Davi", c:"var(--sl-cur)", papel:"colega curioso: pergunta \"por quê?\" e \"e quando…?\" no ponto mais difícil"},
+  anotadora:{n:"Ana", c:"var(--sl-anot)", papel:"colega anotadora: resume no quadro o que importa e lembra o que cai na prova"},
+  pensador:{n:"Téo", c:"var(--sl-pens)", papel:"colega pensador: \"e se…?\", liga o assunto ao alvo da pessoa e a outras matérias"},
+  brincalhao:{n:"Beto", c:"var(--sl-brinc)", papel:"colega brincalhão: uma frase leve e curta que ajuda a lembrar, sem atrapalhar"}};
+function salaQuadroHTML(q){ if(!q||!Array.isArray(q.linhas)||!q.linhas.length) return "";
+  const L=q.linhas.slice(0,12).map(x=>String(x).slice(0,120));
+  const corpo = q.tipo==="tabela" ? `<table>${L.map((l,i)=>`<tr>${l.split("|").map(c=>i?`<td>${esc(c.trim())}</td>`:`<th scope="col">${esc(c.trim())}</th>`).join("")}</tr>`).join("")}</table>`
+    : q.tipo==="lista" ? `<ul style="margin:0;padding-left:18px;display:grid;gap:4px">${L.map(l=>`<li>${esc(l)}</li>`).join("")}</ul>`
+    : `<div class="mono">${esc(L.join("\n"))}</div>`;
+  return `<div class="sala-quadro" role="figure" aria-label="Quadro${q.titulo?": "+esc(q.titulo):""}"><span class="tag">Quadro${q.titulo?" · "+esc(q.titulo):""}</span>${corpo}</div>`; }
+let SALA_U=null;
+function salaFalar(texto, aoFim){ try{ if(SALA_U) SALA_U.onend=null; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(texto); u.lang="pt-BR"; u.rate=1.02; SALA_U=u; if(aoFim) u.onend=aoFim; speechSynthesis.speak(u); return true; }catch(e){ return false; } }
+function abrirSala(){ const F=FLOW, D=F.data; if(!D.aula) return;
+  if(!aiOn()){ toast("A Sala viva precisa do Claude ligado."); return; }
+  if(!D.sala){ const el=$("#aula"); if(el) el.innerHTML=thinking("Montando a sala: professor, colegas e quadro…"); gerarSala(); return; }
+  desenharSala(); }
+async function gerarSala(pergunta){ const F=FLOW, D=F.data, mat=SUBJ[F.mat]?SUBJ[F.mat].n:F.mat;
+  F.ctl=new AbortController();
+  const turma=Object.entries(TURMA).map(([k,v])=>`${k} (${v.n}): ${v.papel}`).join("; ");
+  const base = pergunta
+    ? `Na Sala viva da aula "${D.aula.titulo}" (${mat}), a pessoa perguntou à turma: ${JSON.stringify(pergunta)}. Crie de 2 a 4 cenas que respondem: o professor responde direto e com exemplo; se ajudar, um colega reage (o curioso aprofunda ou a anotadora resume no quadro). Termine com uma pausa curta para a pessoa conferir se entendeu.`
+    : `Transforme esta aula numa SALA VIVA, como uma aula de verdade com professor e colegas: ${JSON.stringify(D.aula)}. Matéria: ${mat}.
+Crie de 9 a 13 cenas, em ordem. O professor conduz a maior parte. Os colegas intervêm de 3 a 5 vezes, nos momentos naturais: o curioso no passo mais difícil, a anotadora resumindo no quadro, o pensador ligando ao alvo da pessoa, o brincalhão no máximo uma vez com uma frase curta. A assistente entra quando um ponto pede outra explicação.
+Inclua de 2 a 3 PAUSAS em que a pessoa precisa responder antes de seguir (prever o próximo passo, achar o erro, aplicar a regra), com 3 alternativas e o porquê da certa. Use o quadro para fórmulas, passos, tabelas e esquemas. A última cena é a anotadora resumindo os 3 pontos que mais caem na prova.`;
+  const prompt = `${base}
+Turma: ${turma}.
+Falas curtas e naturais para ouvir em voz alta (até 3 frases cada), em português do Brasil, sem markdown. Cada cena tem "quem", "fala" e, se ajudar, "quadro" (tipo "texto" para fórmulas e passos linha a linha, "lista" ou "tabela" com colunas separadas por |; até 12 linhas) e/ou "pausa".
+Responda só com JSON: {"cenas":[{"quem":"professor|assistente|curioso|anotadora|pensador|brincalhao","fala":"","quadro":{"tipo":"texto|lista|tabela","titulo":"","linhas":[""]},"pausa":{"p":"","o":["","",""],"c":0,"porque":""}}]}`;
+  try{
+    const r=await aiJson(prompt,{signal:F.ctl.signal});
+    const cenas=(r&&Array.isArray(r.cenas)?r.cenas:[]).filter(c=>c&&TURMA[c.quem]&&c.fala).map(c=>({quem:c.quem, fala:String(c.fala).slice(0,600), quadro:c.quadro&&Array.isArray(c.quadro.linhas)?c.quadro:null,
+      pausa:c.pausa&&c.pausa.p&&Array.isArray(c.pausa.o)&&c.pausa.o.length>=2&&c.pausa.c>=0&&c.pausa.c<c.pausa.o.length?{p:String(c.pausa.p),o:c.pausa.o.slice(0,4).map(String),c:+c.pausa.c,porque:String(c.pausa.porque||"")}:null}));
+    if(!cenas.length) throw {code:"invalid_json"};
+    if(pergunta && D.sala){ D.sala.cenas.splice(D.sala.at+1,0,...cenas); D.sala.at++; } else D.sala={cenas, at:0, resp:{}, auto:false, acertos:0, total:0};
+    if(FLOW===F && F.steps[F.at]==="aula") desenharSala(true, pergunta?"next":null);
+  }catch(e){ if(e.code==="cancelled") return; if(D.sala){ desenharSala(); toast(aiErr(e)); } else { drawStudy(); const el=$("#aula"); if(el) el.insertAdjacentHTML("afterbegin",`<div class="ponte" role="alert"><p style="margin:0">${esc(aiErr(e))}</p></div>`); } }
+}
+function desenharSala(falar, foco){ const F=FLOW, D=F.data, S=D.sala, el=$("#aula"); if(!S||!el) return;
+  const ativo=document.activeElement, focoAntes = foco || (ativo&&el.contains(ativo)&&ativo.dataset&&ativo.dataset.sl ? ativo.dataset.sl : null);
+  const c=S.cenas[S.at], p=TURMA[c.quem], r=S.resp[S.at], pausaAberta=c.pausa && r==null;
+  const ultimoQuadro = c.quadro || (S.cenas.slice(0,S.at).reverse().find(x=>x.quadro)||{}).quadro;
+  el.innerHTML = `<div class="sala">
+    <div class="row" style="justify-content:space-between;gap:8px"><span class="tag">Sala viva · ${esc(D.aula.titulo||"")}</span><span class="mono muted" style="font-size:12px">${S.at+1}/${S.cenas.length}</span></div>
+    <div class="sala-turma" aria-hidden="true">${Object.entries(TURMA).map(([k,v])=>`<div class="sala-av${k===c.quem?" on":""}" style="--c:${v.c}"><i>${esc(v.n[0])}</i><small>${esc(v.n)}</small></div>`).join("")}</div>
+    <div class="sala-fala" style="--c:${p.c}"><b style="color:${p.c}">${esc(p.n)}</b><p>${esc(c.fala)}</p></div>
+    ${salaQuadroHTML(ultimoQuadro)}
+    ${c.pausa?`<div class="mcq"><span class="tag">Sua vez · responda para continuar</span><p class="p">${esc(c.pausa.p)}</p>
+      ${c.pausa.o.map((o,j)=>{ let cls=""; if(r!=null){ if(j===c.pausa.c) cls="right"; else if(r===j) cls="wrong"; } return `<button class="opt ${cls}" data-sp="${j}" aria-pressed="${r===j}" ${r!=null?"disabled":""}><span class="k">${"ABCD"[j]}</span><span>${esc(o)}</span></button>`; }).join("")}
+      ${r!=null?`<p class="explain" tabindex="-1">${r===c.pausa.c?"Isso! ":"Quase. "}${esc(c.pausa.porque)}</p>`:""}</div>`:""}
+    <div class="row wrap" style="gap:8px">
+      <button class="btn sm ghost" style="min-height:44px" data-sl="prev" ${S.at?"":"disabled"}>Voltar</button>
+      <button class="btn sm" style="min-height:44px" data-sl="ouvir"><svg class="icon"><use href="#i-sound"/></svg>Ouvir</button>
+      <button class="btn sm primary" style="min-height:44px" data-sl="next" ${pausaAberta?"disabled":""}>${S.at<S.cenas.length-1?"Próxima cena":"Fim da aula"}</button>
+    </div>
+    <label class="row" style="gap:8px;min-height:44px"><input type="checkbox" id="sl-auto" ${S.auto?"checked":""} style="width:22px;height:22px"> <span class="muted" style="font-size:14px">Tocar sozinha, como um vídeo (para nas perguntas)</span></label>
+    <form class="glass pad" id="sl-form" style="display:grid;gap:8px"><label class="field"><span>Pergunte à turma</span><input class="inp" id="sl-q" enterkeyhint="send" placeholder="Ex.: por que o sinal muda quando passa para o outro lado?"></label><button type="submit" class="btn sm" style="min-height:44px;justify-self:start" data-sl="perguntar">Perguntar</button></form>
+    ${S.total?`<small class="muted">Pausas certas: ${S.acertos} de ${S.total}</small>`:""}
+    <button class="btn sm ghost" style="min-height:44px;justify-self:start" data-sl="texto">Ver a aula escrita</button>
+  </div>`;
+  let live=document.getElementById("sl-live"); if(!live){ live=document.createElement("div"); live.id="sl-live"; live.className="sr"; live.setAttribute("aria-live","polite"); document.body.appendChild(live); }
+  live.textContent = r!=null&&c.pausa ? (r===c.pausa.c?"Isso! ":"Quase. ")+c.pausa.porque : p.n+": "+c.fala;
+  if(r!=null&&c.pausa&&foco==="explain"){ const ex=el.querySelector(".explain"); if(ex) ex.focus(); }
+  else if(focoAntes){ const b=el.querySelector(`[data-sl="${focoAntes}"]`); if(b&&!b.disabled) b.focus(); else { const n=el.querySelector('[data-sl="next"]'); if(n&&!n.disabled) n.focus(); else { const o=el.querySelector("[data-sp]"); if(o) o.focus(); } } }
+  const avancar = () => { if(S.at<S.cenas.length-1){ S.at++; desenharSala(true); } else { S.auto=false; desenharSala(); toast("Aula concluída. Siga para o foco quando quiser."); } };
+  el.querySelectorAll("[data-sp]").forEach(b=>b.addEventListener("click",()=>{ const j=+b.dataset.sp; S.resp[S.at]=j; S.total++; if(j===c.pausa.c) S.acertos++;
+    else { logErro(F.mat, D.aula.titulo||D.topic||"", {p:c.pausa.p, o:c.pausa.o, c:c.pausa.c, e:c.pausa.porque}, j); saveMain(); }
+    desenharSala(false,"explain"); salaFalar((j===c.pausa.c?"Isso! ":"Quase. ")+c.pausa.porque, S.auto?avancar:null); }));
+  el.querySelector('[data-sl="prev"]').onclick=()=>{ S.at=Math.max(0,S.at-1); desenharSala(true); };
+  el.querySelector('[data-sl="next"]').onclick=avancar;
+  el.querySelector('[data-sl="ouvir"]').onclick=()=>salaFalar(p.n+": "+c.fala);
+  el.querySelector('[data-sl="texto"]').onclick=()=>{ try{ speechSynthesis.cancel(); }catch(e){} S.auto=false; el.innerHTML=lessonHTML(D.aula); };
+  el.querySelector("#sl-auto").onchange=ev=>{ S.auto=ev.target.checked; if(S.auto && !pausaAberta) salaFalar(c.fala, avancar); };
+  el.querySelector("#sl-form").onsubmit=ev=>{ ev.preventDefault(); const q=(el.querySelector("#sl-q").value||"").trim(); if(q.length<4){ el.querySelector("#sl-q").focus(); return; } S.auto=false;
+    el.querySelectorAll("[data-sl],[data-sp]").forEach(x=>x.disabled=true); el.querySelector("#sl-form").insertAdjacentHTML("afterend",thinking("A turma está pensando na sua pergunta…")); gerarSala(q); };
+  if(falar) salaFalar(c.fala, S.auto&&!pausaAberta?avancar:null);
 }
 async function genLesson(){
   const F=FLOW, D=F.data, mat=SUBJ[F.mat]?SUBJ[F.mat].n:F.mat, lv=levelOf(F.mat);
