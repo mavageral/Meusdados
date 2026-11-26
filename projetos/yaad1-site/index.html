@@ -2827,7 +2827,8 @@ function planoModelo(tipo, A){
 const LENTES = {
   perto:{n:"Perto de você", d:"Concursos, seletivos, vagas e cursos na sua cidade e no seu estado"},
   alvo:{n:"Para o seu alvo", d:"O que aproxima você do alvo principal"},
-  renda:{n:"Renda agora", d:"O que pode pagar as contas logo, mesmo fora da sua área"}};
+  renda:{n:"Renda agora", d:"O que pode pagar as contas logo, mesmo fora da sua área"},
+  futuras:{n:"Em breve", d:"Concursos previstos, seleções que se repetem todo ano e turmas novas: prepare-se antes de abrir"}};
 const TIPO_OP = {concurso:"Concurso", seletivo:"Seletivo", vaga:"Vaga", estagio:"Estágio", curso:"Curso", bolsa:"Bolsa"};
 const DIAS_N = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
 const isoOk = s => /^\d{4}-\d\d-\d\d$/.test(String(s||""));
@@ -2924,6 +2925,7 @@ function openOportunidades(lente){
     F.busy="Procurando oportunidades reais para você… pode levar um minuto."; draw();
     const loc=localTxt(), lente=F.lente, uf=(M.profile.local||{}).uf||"";
     const foco = lente==="perto" ? `ABERTAS ou com edital publicado para quem mora em ${loc}${uf?` (estado ${uf})`:""}: concursos, processos seletivos (inclusive temporários, como IBGE e prefeituras), vagas de emprego, estágios e cursos gratuitos com certificado. Priorize o que tem vaga NA CIDADE ou perto dela, depois no estado.`
+      : lente==="futuras" ? `que AINDA NÃO ABRIRAM mas devem abrir nos próximos 12 meses e servem para esta pessoa${loc?` (mora em ${loc})`:""}: concursos autorizados ou previstos, processos seletivos que se repetem todo ano (com o mês provável), programas de estágio e trainee com calendário, bolsas e turmas novas de cursos gratuitos. Diga em "porque" quando deve abrir e de onde vem a previsão; deixe "inscricao_ate" vazio se não houver data oficial. Ligadas ao alvo principal ("${P().meta}") ou à necessidade de renda.`
       : lente==="alvo" ? `ligadas ao ALVO PRINCIPAL da pessoa ("${P().meta}") e às áreas de interesse dela: estágios, vagas, trainee, cursos, bolsas e certificações que aproximam do alvo. Pode ser em todo o Brasil ou remoto${loc?`; diga quando for perto de ${loc}`:""}.`
       : `de RENDA para quem precisa de dinheiro agora${loc?` e mora em ${loc}`:""}: processos seletivos temporários, concursos de nível fundamental ou médio, vagas de entrada e trabalhos remotos reais e acessíveis. PODE ser fora da área de interesse. Em "ponte", diga com honestidade o que a oportunidade traz para o alvo principal (dinheiro para estudar, experiência, horário que deixa estudar).`;
     F.ctl=new AbortController();
