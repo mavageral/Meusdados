@@ -25,6 +25,7 @@
   --a-anbima-1:#F7D23E; --a-anbima-2:#5C4500;
   --a-pausa-1:#9AA2B8;  --a-pausa-2:#1D2230;
   --a-rev-1:#9AA5FF;    --a-rev-2:#222C77;
+  --a-op-1:#3DDBA4;     --a-op-2:#0B3B33;   /* oportunidades: mundo real */
   color-scheme:dark;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -176,6 +177,42 @@ h1,h2,h3,p{margin:0}
 
 /* aula */
 .lesson{display:grid;gap:14px}
+.destino{position:relative;display:grid;gap:14px;padding:18px;border-radius:var(--r);overflow:hidden;border:1px solid var(--edge-2);background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--a-op-1) 55%,transparent),transparent 62%),linear-gradient(160deg,var(--a-op-2),var(--bg) 80%);background-size:cover;background-position:center}
+.destino.com-foto{min-height:360px;align-content:end}
+.d-tit{display:grid;gap:4px}
+.d-lk{all:unset;cursor:pointer;display:inline;border-radius:8px}.d-lk:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+.d-tit h2{margin:0;font-weight:300;font-size:clamp(30px,8.5vw,46px);line-height:1.02;letter-spacing:-.035em;text-wrap:balance}
+.d-din{font-weight:500;font-size:19px}
+.d-tit small{color:rgb(255 255 255 / .78);font-size:14px}
+.d-cont{display:flex;align-items:center;gap:10px;margin:0}
+.d-cont b{font:300 56px/1 var(--font);letter-spacing:-.04em}
+.d-cont span{font-size:14px;line-height:1.25;color:rgb(255 255 255 / .82)}
+.trilha{list-style:none;margin:0;padding:0 0 0 6px;display:flex;overflow-x:auto;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+.trilha li{flex:1 0 96px;display:grid;gap:3px;position:relative;padding:20px 10px 2px 0;align-content:start}
+.trilha li::before{content:"";position:absolute;top:9px;left:14px;right:0;height:2px;background:rgb(255 255 255 / .22)}
+.trilha li:last-child::before{display:none}
+.trilha i{position:absolute;top:3px;left:0;width:14px;height:14px;border-radius:50%;background:var(--bg);border:2px solid rgb(255 255 255 / .55)}
+.trilha li.ok i,.trilha li.ok::before{background:var(--ok);border-color:var(--ok)}
+.trilha li.aqui i{background:var(--a-op-1);border-color:var(--a-op-1);box-shadow:0 0 0 5px color-mix(in srgb,var(--a-op-1) 35%,transparent)}
+.trilha li.pass{opacity:.55}
+.trilha b{font-weight:500;font-size:13px;line-height:1.2}
+.trilha small{font:11px/1.3 var(--mono);color:rgb(255 255 255 / .72)}
+.d-passo{display:flex;flex-wrap:wrap;gap:12px;align-items:center;padding:12px 14px;border-radius:18px;background:rgb(0 0 0 / .42);border:1px solid var(--edge)}
+.d-passo .grow{display:grid;gap:2px;min-width:0}
+.d-passo b{font-weight:500;font-size:17px}
+.d-passo small{color:rgb(255 255 255 / .78)}
+.op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
+.op-lista{display:grid;gap:12px}
+.op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
+.op-card h3{margin:0;font-weight:500;font-size:20px;line-height:1.2}
+.op-din{display:grid;gap:2px}
+.op-din b{font-weight:400;font-size:26px;line-height:1.1;letter-spacing:-.02em}
+.op-din small{color:var(--muted)}
+.op-mais summary{min-height:44px;display:flex;align-items:center;cursor:pointer;color:var(--muted);font-size:14px}
+.op-prazo{font-size:12px;color:var(--muted)}.op-prazo.urg{color:var(--warn)}
+.mat-bar{display:grid;gap:6px}
+.mat-bar .b{display:block;height:8px;border-radius:99px;background:var(--edge)}
+.mat-bar .b i{display:block;height:100%;border-radius:inherit;background:var(--a-op-1)}
 :root{--sl-prof:#ff8a3d;--sl-assist:#4fd1a5;--sl-cur:#7aa7ff;--sl-anot:#e2b7ff;--sl-pens:#ffd166;--sl-brinc:#ff7aa2}
 .sala{display:grid;gap:14px}
 .sala-turma{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
@@ -640,7 +677,7 @@ function aiErr(e){
   if(c==="image_rejected") return "Essa imagem não foi aceita. Tente outra foto.";
   return "Não consegui falar com o Claude agora. Tente de novo em instantes.";
 }
-function perfil(){ const ds=(M.profile.descobertas||[]).slice(-8); return (OWNER===false && !CUSTOM ? "Contexto fixo: você é o tutor do app Yaad1, um app de direção (um alvo, um caminho). A pessoa ainda está montando o projeto dela; use só o que ela informar." : perfilBase())+(ds.length?` Descobertas recentes da pessoa sobre si mesma (use para adaptar tudo): ${ds.map(d=>fmtD(d.data)+": "+d.texto).join(" | ")}.`:""); }
+function perfil(){ const ds=(M.profile.descobertas||[]).slice(-8), fs=frentes(); return (OWNER===false && !CUSTOM ? "Contexto fixo: você é o tutor do app Yaad1, um app de direção (um alvo, um caminho). A pessoa ainda está montando o projeto dela; use só o que ela informar." : perfilBase())+(ds.length?` Descobertas recentes da pessoa sobre si mesma (use para adaptar tudo): ${ds.map(d=>fmtD(d.data)+": "+d.texto).join(" | ")}.`:"")+(localTxt()?` A pessoa mora em ${localTxt()}.`:"")+(fs.length?` Frentes paralelas que a pessoa está preparando (oportunidades reais): ${fs.map(f=>f.titulo+(f.prova?" (prova "+fmtD(f.prova)+")":"")).join("; ")}.`:""); }
 function perfilBase(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
   const pj=P();
@@ -711,7 +748,7 @@ function allStudy(){
   return out;
 }
 function countBy(mat){ return allStudy().filter(r => r.mat===mat && (r.score==null || r.score>=0.6)).length; }
-function levelOf(mat){ const s=SUBJ[mat], n=countBy(mat); let l=0; s.st.forEach((t,i)=>{ if(n>=t) l=i; }); return {l, n, next:s.st[l+1]}; }
+function levelOf(mat){ const s=SUBJ[mat], n=countBy(mat); if(!s) return {l:0, n, next:null}; let l=0; s.st.forEach((t,i)=>{ if(n>=t) l=i; }); return {l, n, next:s.st[l+1]}; }
 function streak(){
   let s=0, d=today();
   if(dayStats(iso(d)).pct<0.5) d=addDays(d,-1);
@@ -800,6 +837,7 @@ function vHoje(){
 
   const s = dayStats(iso(sel)), due = dueReviews().length, stk = streak();
   const serasaD = Math.max(0, dayIdx(fromIso("2026-11-04")) - dayIdx(t));
+  const serasaPass = dayIdx(fromIso("2026-11-04")) < dayIdx(t);
   const insc = M.marcos.inscricao;
   const frase = FRASES[(di + 3) % FRASES.length];
 
@@ -817,6 +855,7 @@ function vHoje(){
 
   return `<div class="view">
     ${carteiraHTML()}
+    ${isToday?destinoHTML():""}
     <div class="hoje-grid">
      <div class="h-top" style="display:grid;gap:18px">
       <section class="hello">
@@ -861,7 +900,7 @@ function vHoje(){
       <div class="bento">
         ${CUSTOM?`<button class="tile wide" data-act="metas" style="--g1:var(--c);--g2:#3A1204"><span class="lbl">Alvo central · ${esc(P().meta)}</span><span class="row" style="align-items:flex-end;justify-content:space-between"><span class="big">${Math.max(0,TOTAL-1-dayIdx(t))}</span><span class="sub" style="text-align:right">dias até o fim<br>do projeto</span></span></button>`:`<button class="tile wide" data-act="metas" style="--g1:var(--c);--g2:#3A1204">
           <span class="lbl">Alvo central · Serasa Experian Analytics</span>
-          <span class="row" style="align-items:flex-end;justify-content:space-between"><span class="big">${insc?"OK":serasaD}</span><span class="sub" style="text-align:right">${insc?"Inscrição enviada.<br>Próximo: testes online":serasaD===0?"Hoje é o prazo oficial<br>da inscrição":"dias até o prazo oficial<br>da inscrição (04/11)"}</span></span>
+          <span class="row" style="align-items:flex-end;justify-content:space-between"><span class="big">${insc?"OK":serasaPass?"—":serasaD}</span><span class="sub" style="text-align:right">${insc?"Inscrição enviada.<br>Próximo: testes online":serasaPass?"Prazo de 04/11 encerrado.<br>Toque para rever o alvo":serasaD===0?"Hoje é o prazo oficial<br>da inscrição":"dias até o prazo oficial<br>da inscrição (04/11)"}</span></span>
         </button>`}
         <button class="tile" data-act="revisoes" style="--g1:var(--a-rev-1);--g2:var(--a-rev-2)"><span class="lbl">Revisões de hoje</span><span class="big">${due}</span><span class="sub">${due?"Recuperar sem consultar":"Nada pendente"}</span></button>
         <button class="tile" data-tabgo="evolucao" style="--g1:var(--a-saude-1);--g2:var(--a-saude-2)"><span class="lbl">Constância</span><span class="big">${stk}</span><span class="sub">dias seguidos acima de 50%</span></button>
@@ -1037,7 +1076,7 @@ document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) c
 function keepSession(){
   const F=FLOW; if(!F||F.kind!=="study") return;
   const st=F.steps[F.at]; if(st==="fim"||(!F.data.topic&&F.at===0)) { if(st==="fim") M.sessao=null; return; }
-  const D=F.data; M.sessao={proj:PID(), dstr:F.dstr, k:F.b?bkey(F.b):null, mat:F.mat, livre:!!F.livre, at:F.at, ts:Date.now(),
+  const D=F.data; M.sessao={proj:PID(), dstr:F.dstr, k:F.b?bkey(F.b):null, mat:F.mat, livre:!!F.livre, frente:F.frente||null, at:F.at, ts:Date.now(),
     data:{topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs, notes:($("#st-notes")||{}).value??D.notes, conta:($("#st-conta")||{}).value??D.conta, aula:D.aula, t0:D.t0},
     focus:F.focus?{total:F.focus.total,left:F.focus.left}:null};
   saveMain();
@@ -1048,7 +1087,7 @@ function closeSheet(){ if(FLOW && FLOW.guard && FLOW.guard()) return; keepSessio
   const o=OPENER; OPENER=null; if(o && document.contains(o)) o.focus(); else if(o && o.dataset && o.dataset.act){ const n=document.querySelector(`[data-act="${o.dataset.act}"]`); if(n) n.focus(); } }
 function sheetHTML({title, body, steps, at, next, nextOk=true, back=true}){
   const dots = !steps ? "" : steps>9 ? `<div class="prog" role="img" aria-label="Passo ${at+1} de ${steps}"><span class="mono">${at+1}/${steps}</span><b><i style="width:${Math.round((at+1)/steps*100)}%"></i></b></div>`
-    : `<div class="dots" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>`;
+    : `<div class="dots" role="img" aria-label="Passo ${at+1} de ${steps}">${Array.from({length:steps},(_,i)=>`<i class="${i===at?"on":i<at?"done":""}"></i>`).join("")}</div>`;
   SH.innerHTML = `<div class="sh-top">${back&&at>0?`<button class="x" data-sh="back" aria-label="Voltar"><svg class="icon"><use href="#i-back"/></svg></button>`:""}<span class="eyebrow grow">${esc(title||"")}</span><button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
     <div class="sh-body" id="shb">${body}</div>
     <div class="sh-foot"><div class="in">${dots}${next?`<button class="next" data-sh="next" ${nextOk?"":"disabled"}>${esc(next)} <span class="arrow"><svg class="icon"><use href="#i-arrow"/></svg></span></button>`:""}</div></div>`;
@@ -1092,6 +1131,7 @@ function resumeSession(){
   const S=M.sessao; if(!S) return;
   const b = S.k ? findBlock(S.dstr,S.k) : null;
   openStudy({dstr:S.dstr, b, mat:S.mat, topic:S.data.topic, livre:S.livre});
+  if(S.frente) FLOW.frente=S.frente;
   Object.assign(FLOW.data, S.data, {fotos:[]}); FLOW.at=Math.min(S.at, FLOW.steps.length-2); if(S.focus) FLOW.focus={...S.focus, run:false};
   drawStudy();
 }
@@ -1119,7 +1159,7 @@ function stepStudy(d){
   drawStudy();
 }
 function drawStudy(){
-  const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title = F.b ? `${F.b.l} · ${fmtH(F.b.a)}` : `Estudo livre · ${SUBJ[F.mat]?SUBJ[F.mat].n:""}`;
+  const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title = F.b ? `${F.b.l} · ${fmtH(F.b.a)}` : `Estudo livre · ${SUBJ[F.mat]?SUBJ[F.mat].n:F.mat}`;
   if(s==="plano"){
     const mats = F.isBib ? [] : Object.entries(SUBJ).filter(([k])=>k!=="biblia");
     sheetHTML({title, steps:S, at:F.at, next: F.isBib||!aiOn()?"Próximo":"Gerar minha aula", body:`
@@ -1389,7 +1429,7 @@ function saveStudy(score, partial, FL){
   const F=FL||FLOW, D=F.data, mins=Math.round((Date.now()-D.t0)/60000);
   const rec = {st:"feito", mat:F.mat, topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs.slice(0,2), conta:D.conta, notes:D.notes, score, parcial:!!partial,
     aula: D.aula?{titulo:D.aula.titulo, ideia:D.aula.ideia}:null, quiz: D.quiz?{qs:D.quiz.qs, ans:D.ans, aberta:D.quiz.aberta.p, resp:D.aberta}:null, min: F.focus ? Math.max(5, Math.round((F.focus.total-F.focus.left)/60)) || Math.min(mins, F.b?toMin(F.b.b)-toMin(F.b.a):mins) : Math.min(Math.max(10,mins), F.b?toMin(F.b.b)-toMin(F.b.a):120), ts:Date.now()};
-  rec.proj = PID();
+  rec.proj = PID(); if(F.frente) rec.frente=F.frente;
   if(F.b){ day(F.dstr).blocks[bkey(F.b)] = rec; saveDay(F.dstr); }
   else { (M.livres=M.livres||[]).push({...rec, d:iso(today())}); }
   if(D.topic && !F.isBib){ (M.revisoes=M.revisoes||[]).push({proj:PID(), id:"r"+Date.now(), mat:F.mat, topic:D.topic, d0:iso(today()), step:1, due:iso(addDays(today(),1)), done:false, conta:D.conta.slice(0,600)}); }
@@ -1885,6 +1925,7 @@ function openMenu(){
     <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||nomeExib()||"Seu perfil")}</b><div class="muted" style="font-size:13px" data-pjn="1">${esc(P().nome)} · ${esc(P().lema)}</div></div></div>
     ${(()=>{ const pr=proximidade(); return `<div class="glass pad" data-alvo="1" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${XP()} pontos de domínio</small></div>`; })()}
     <div class="list">
+      <button class="item op-entrada" data-m="oport"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-spark"/></svg><span class="grow"><b>Oportunidades</b><small>Perto de você, para o seu alvo e para ter renda agora</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       ${P().custom?`<button class="item" data-m="remodelar"><svg class="icon"><use href="#i-spark"/></svg><span class="grow"><b>Remodelar projeto</b><small>Conte o que mudou ou o que você não concordou</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
       <button class="item" data-m="diag"><svg class="icon"><use href="#i-chart"/></svg><span class="grow"><b>Diagnóstico</b><small>${P().diag?`Feito em ${fmtD(P().diag.data)} · ${P().diag.dom}% do caminho`:"Onde você está hoje e o prazo realista"}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
@@ -1903,6 +1944,7 @@ function openMenu(){
     SH.querySelector('[data-m="direcao"]')?.insertAdjacentHTML("afterend",`<button class="item" data-m="tour"><svg class="icon"><use href="#i-book"/></svg><span class="grow"><b>Apresentação do app</b><small>O que o Yaad1 faz, em 5 telas</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`); }
   SH.querySelectorAll("[data-m]").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; closeSheetSoft();
     if(m==="perfil") openProfile();
+    else if(m==="oport") openOportunidades();
     else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
     else if(m==="docs") openDocs();
     else if(m==="mapa") openMapa();
@@ -2769,6 +2811,215 @@ function planoModelo(tipo, A){
     fases:[{n:"Base",de:0,ate:Math.floor(md.dias*.5)-1,f:"Teoria e fundamentos"},{n:"Prática",de:Math.floor(md.dias*.5),ate:md.dias-1,f:"Questões, simulados e revisão"}],
     metas:md.mats.slice(0,3).map(([k,n],i)=>({n:`${n} consolidado`,dia:Math.floor(md.dias*(i+1)/4),mats:[k],need:6})), frases:[md.lema]};
 }
+/* ====================================================================
+   OPORTUNIDADES, FRENTES E DESTINO (mesa "palpável", 26/11/2026: MESA-PALPAVEL.md)
+   Oportunidades reais (perto, alvo, renda), uma frente de preparo encaixada na rotina
+   e um cartão do destino com foto, trilha de marcos e o passo de hoje.
+   ==================================================================== */
+const LENTES = {
+  perto:{n:"Perto de você", d:"Concursos, seletivos, vagas e cursos na sua cidade e no seu estado"},
+  alvo:{n:"Para o seu alvo", d:"O que aproxima você do alvo principal"},
+  renda:{n:"Renda agora", d:"O que pode pagar as contas logo, mesmo fora da sua área"}};
+const TIPO_OP = {concurso:"Concurso", seletivo:"Seletivo", vaga:"Vaga", estagio:"Estágio", curso:"Curso", bolsa:"Bolsa"};
+const DIAS_N = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
+const isoOk = s => /^\d{4}-\d\d-\d\d$/.test(String(s||""));
+const diasAte = s => isoOk(s) ? Math.round((fromIso(s) - today())/864e5) : null;
+const dataCurta = s => isoOk(s) ? `${+s.slice(8,10)}/${+s.slice(5,7)}` : "";
+const fotoOk = s => /^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(String(s||""));
+function localTxt(){ const l=M.profile.local||{}; return [l.cidade,l.uf].filter(Boolean).join(" - "); }
+function frentes(){ return (M.frentes||[]).filter(f=>f && !f.arquivada); }
+function marcosDe(f){ const ok=f.ok||{}; return (f.marcos||[]).map((m,i)=>({...m, i, ok:!!ok[i]})).sort((a,b)=>String(a.d).localeCompare(String(b.d))); }
+function proxMarco(f){ return marcosDe(f).find(m=>!m.ok && diasAte(m.d)!=null && diasAte(m.d)>=0) || null; }
+function proxMarcoTxt(f){ const m=proxMarco(f); if(!m) return f.onde||"Frente ativa"; const n=diasAte(m.d); return `${m.r}: ${n===0?"hoje":n===1?"amanhã":"em "+n+" dias"} (${dataCurta(m.d)})`; }
+function frenteAtiva(){ const fs=frentes(); if(!fs.length) return null; const k=f=>{ const m=proxMarco(f); return m?diasAte(m.d):9999; }; return fs.slice().sort((a,b)=>k(a)-k(b))[0]; }
+function sessoesFrente(f){ return (M.livres||[]).filter(r=>r.frente===f.id); }
+function passoHoje(f){
+  const hoje=iso(today()), wd=today().getDay(), dias=(f.dias&&f.dias.length?f.dias:[1,2,3,4,5]).map(Number), ss=sessoesFrente(f);
+  const mats=(f.materias||[]).filter(m=>m&&m.n); const roda=[]; mats.forEach(m=>{ for(let k=0;k<Math.max(1,Math.round((+m.questoes||5)/5));k++) roda.push(m); });
+  const m = roda.length ? roda[ss.length % roda.length] : {n:"Revisão geral", topicos:[]};
+  const feitasM = ss.filter(r=>String(r.mat||"").startsWith(m.n+" · ")).length, tps=(m.topicos||[]).filter(Boolean), topico=tps.length?tps[feitasM % tps.length]:"";
+  const det = [m.questoes?`${m.questoes} questões na prova`:"", topico?`hoje: ${topico}`:"", f.turno&&f.turno!=="qualquer"?`melhor à ${f.turno}`:""].filter(Boolean).join(" · ");
+  if(ss.some(r=>r.d===hoje)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {feito:true, amanha:`Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}.`}; }
+  if(!dias.includes(wd)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {folga:true, txt:`Hoje é descanso desta frente. Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}, ${f.min||40} min de ${m.n}.`}; }
+  return {min:f.min||40, mat:m.n, topico, det};
+}
+function trilhaHTML(f){
+  const ms=marcosDe(f); if(!ms.length) return "";
+  const agora = ms.find(m=>!m.ok && (diasAte(m.d)==null || diasAte(m.d)>=0));
+  return `<ol class="trilha" tabindex="0" aria-label="Trilha até o destino">${ms.map(m=>{ const n=diasAte(m.d), st=m.ok?"ok":m===agora?"aqui":n!=null&&n<0?"pass":"";
+    return `<li class="${st}"${m===agora?' aria-current="step"':""}><i aria-hidden="true"></i><b>${esc(m.r)}</b><small>${m.ok?"feito":dataCurta(m.d)}${m===agora?" · aqui":""}</small></li>`; }).join("")}</ol>`;
+}
+function destinoHTML(){
+  const f=frenteAtiva(), foto=fotoOk(M.profile.fotoDestino)?M.profile.fotoDestino:"";
+  if(!f) return `<button class="item op-entrada" data-act="oport"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-spark"/></svg><span class="grow"><b>Oportunidades ${localTxt()?"perto de você":"para você"}</b><small>Concursos, seletivos, vagas e cursos reais, ligados à sua vida</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`;
+  const pm=proxMarco(f), n=pm?diasAte(pm.d):null, ps=passoHoje(f);
+  return `<section class="destino${foto?" com-foto":""}" ${foto?`style="background-image:linear-gradient(180deg,rgb(5 6 10 / .58),rgb(5 6 10 / .93) 60%),url('${foto}')"`:""} aria-label="Seu destino: ${esc(f.titulo)}">
+    <div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow" style="color:rgb(255 255 255 / .8)">Seu destino</span><span class="row" style="gap:8px"><button class="x" data-act="oport" aria-label="Oportunidades"><svg class="icon"><use href="#i-spark"/></svg></button><button class="x" data-act="destino-foto" aria-label="${foto?"Trocar a":"Pôr uma"} foto do seu porquê"><svg class="icon"><use href="#i-cam"/></svg></button></span></div>
+    <div class="d-tit"><h2><button class="d-lk" data-act="frente" data-id="${esc(f.id)}">${esc(f.titulo)}<span class="sr"> · abrir a frente</span></button></h2>${f.salario?`<span class="d-din">${esc(f.salario)}</span>`:""}${f.beneficios?`<small>+ ${esc(f.beneficios)}</small>`:""}</div>
+    ${pm?`<p class="d-cont"><b>${n}</b><span>${n===0?"é hoje:":n===1?"dia para:":"dias para:"}<br>${esc(pm.r.replace(/\s+até$/i,""))}</span></p>`:""}
+    ${trilhaHTML(f)}
+    <div class="d-passo">${ps.feito?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>Passo de hoje feito</span><small>${esc(ps.amanha)}</small>`
+      : ps.folga?`<small>${esc(ps.txt)}</small>`
+      : `<span class="grow"><span class="tag" style="color:rgb(255 255 255 / .8)">Passo de hoje</span><b>${ps.min} min de ${esc(ps.mat)}</b>${ps.det?`<small>${esc(ps.det)}</small>`:""}</span><button class="btn primary" style="min-height:48px" data-act="frente-estudar" data-id="${esc(f.id)}">Começar</button>`}</div>
+    ${foto?"":`<button class="link" data-act="destino-foto" style="justify-self:start;min-height:44px;color:rgb(255 255 255 / .85)">Pôr uma foto do seu porquê (família, sonho, lugar)</button>`}
+  </section>`;
+}
+async function fotoDestino(){ const fs=await pickFiles(); if(!fs.length) return;
+  try{ const img=await loadImg(fs[0]); M.profile.fotoDestino=scale(img,720).toDataURL("image/jpeg",.72); saveMain(); render(); toast("Foto salva. Ela lembra você do porquê."); }catch(e){ toast("Não consegui abrir essa imagem."); } }
+function estudarFrente(id){ const f=frentes().find(x=>x.id===id); if(!f) return; const ps=passoHoje(f), mat=ps.mat||((f.materias||[])[0]||{}).n||"Revisão geral";
+  openStudy({mat:mat+" · "+f.titulo, livre:true, topic:ps.topico||""}); if(FLOW) FLOW.frente=f.id; }
+
+function opCard(o,i){
+  const ni=diasAte(o.inscricao_ate), np=diasAte(o.prova), salva=frentes().some(f=>(o.url&&f.fonteOp===o.url)||f.tituloOp===o.titulo);
+  return `<article class="op-card">
+    <div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="chip">${esc(TIPO_OP[o.tipo]||o.tipo||"Oportunidade")}</span>${ni!=null?`<span class="mono op-prazo${ni<=7?" urg":""}">${ni===0?"inscrição termina hoje":`inscrição: ${ni} dia${ni>1?"s":""}`}</span>`:""}</div>
+    <h3>${esc(o.titulo)}</h3>
+    ${o.orgao||o.onde?`<small class="muted">${esc([o.orgao,o.onde].filter(Boolean).join(" · "))}</small>`:""}
+    ${o.salario?`<div class="op-din"><b>${esc(o.salario)}</b>${o.beneficios?`<small>+ ${esc(o.beneficios)}</small>`:""}</div>`:""}
+    <div class="row wrap" style="gap:6px">${o.vagas_local?`<span class="chip">${esc(o.vagas_local)}</span>`:""}${np!=null&&np>=0?`<span class="chip">Prova em ${np} dias</span>`:""}</div>
+    ${o.porque?`<p style="margin:0">${esc(o.porque)}</p>`:""}
+    ${o.requisito||o.taxa||o.ponte?`<details class="op-mais"><summary>Ver requisitos e taxa</summary><div style="display:grid;gap:4px;padding-top:6px">${o.requisito?`<span>Requisito: ${esc(o.requisito)}</span>`:""}${o.taxa?`<span>Taxa: ${esc(o.taxa)}</span>`:""}${o.ponte?`<span class="muted">Para o seu alvo: ${esc(o.ponte)}</span>`:""}</div></details>`:""}
+    <div class="row wrap" style="gap:8px">${salva?`<span class="chip" style="color:var(--ok)">Já está na sua rotina</span>`:`<button class="btn sm primary" style="min-height:44px" data-op="quero" data-i="${i}">Quero essa</button>`}${urlOk(o.url)?`<a class="btn sm" style="min-height:44px" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Site oficial</a>`:""}</div>
+  </article>`;
+}
+function openOportunidades(lente){
+  const F = FLOW = {kind:"oport", lente: lente || M.oportLente || "perto", busy:"", erro:"", editLoc:false, next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-op-1) 30%,transparent),transparent 60%),var(--bg)");
+  const draw = () => { if(FLOW!==F) return;
+    const loc=localTxt(), cache=(M.oport||{})[F.lente], its=cache?cache.itens:[], pedeLocal=(!loc||F.editLoc)&&F.lente!=="alvo";
+    sheetHTML({title:"Oportunidades", body:`
+      <h2 class="q" style="font-size:clamp(30px,8vw,44px)">O que está aberto para você</h2>
+      <div class="pick" role="group" aria-label="Lente das oportunidades">${Object.entries(LENTES).map(([k,v])=>`<button data-lente="${k}" aria-pressed="${F.lente===k}">${v.n}</button>`).join("")}</div>
+      <p class="muted" style="margin:0">${esc(LENTES[F.lente].d)}</p>
+      ${loc&&!F.editLoc?`<div class="row" style="gap:6px"><span class="chip"><i style="color:var(--a-op-1)"></i>${esc(loc)}</span><button class="link" data-op="local" style="min-height:44px;padding-inline:8px">mudar cidade</button></div>`:""}
+      ${pedeLocal?`<form class="glass pad" id="op-loc" style="display:grid;gap:10px"><b style="font-weight:500">Onde você mora?</b><small class="muted">O app usa a cidade só para achar oportunidades perto de você.</small>
+        <div class="row" style="gap:8px;align-items:end"><label class="field grow"><span>Cidade</span><input class="inp" id="op-cid" autocomplete="address-level2" value="${esc((M.profile.local||{}).cidade||"")}"></label><label class="field" style="width:84px"><span>UF</span><input class="inp" id="op-uf" maxlength="2" autocomplete="address-level1" style="text-transform:uppercase" value="${esc((M.profile.local||{}).uf||"")}"></label></div>
+        <button class="btn primary" type="submit" style="min-height:48px">Salvar e pesquisar</button></form>`:""}
+      ${F.erro?`<div class="ponte" role="alert"><p style="margin:0">${esc(F.erro)}</p></div>`:""}
+      ${F.busy?thinking(F.busy):""}
+      ${its.length&&!F.busy?`<div class="op-lista">${its.map((o,i)=>opCard(o,i)).join("")}</div><small class="faint">Pesquisado em ${fmtD(cache.data)}. Confirme datas e valores no site oficial antes de se inscrever ou pagar.</small>`:""}
+      ${cache&&!its.length&&!F.busy?`<p class="note">Nada aberto apareceu nesta busca. Tente outra lente ou pesquise de novo em alguns dias.</p>`:""}
+      ${!F.busy&&!pedeLocal?`<button class="btn${its.length?"":" primary"}" style="min-height:48px" data-op="buscar">${cache?"Pesquisar de novo":"Pesquisar agora"}</button>`:""}
+      ${frentes().length?`<section style="display:grid;gap:8px"><span class="tag">Suas frentes</span>${frentes().map(f=>`<button class="item" data-op="frente" data-id="${esc(f.id)}"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-target"/></svg><span class="grow"><b>${esc(f.titulo)}</b><small>${esc(proxMarcoTxt(f))}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`).join("")}</section>`:""}`});
+    SH.querySelectorAll("[data-lente]").forEach(b=>b.onclick=()=>{ F.lente=b.dataset.lente; F.erro=""; M.oportLente=F.lente; draw(); if(!(M.oport||{})[F.lente] && (localTxt()||F.lente==="alvo")) buscar(); });
+    const fl=SH.querySelector("#op-loc"); if(fl) fl.onsubmit=ev=>{ ev.preventDefault(); const c=$("#op-cid").value.trim(), u=$("#op-uf").value.trim().toUpperCase().slice(0,2); if(c.length<2){ $("#op-cid").focus(); return; } M.profile.local={cidade:c.slice(0,60), uf:u}; F.editLoc=false; M.oport={}; saveMain(); buscar(); };
+    SH.querySelectorAll("[data-op]").forEach(b=>b.onclick=()=>{ const k=b.dataset.op;
+      if(k==="local"){ F.editLoc=true; draw(); const c=$("#op-cid"); if(c) c.focus(); }
+      else if(k==="buscar") buscar();
+      else if(k==="quero"){ const o=(((M.oport||{})[F.lente]||{}).itens||[])[+b.dataset.i]; if(o){ closeSheetSoft(); openFrenteNova(o); } }
+      else if(k==="frente"){ closeSheetSoft(); openFrente(b.dataset.id); } });
+  };
+  async function buscar(){
+    if(!aiOn()){ F.erro="As oportunidades precisam do Claude ligado."; draw(); return; }
+    F.erro=""; const tools=await ferramentasBusca();
+    if(!tools.length){ F.erro="A busca na internet está desligada. Ligue o conector Parallel Search no seu Claude para o app pesquisar oportunidades reais."; draw(); return; }
+    F.busy="Procurando oportunidades reais para você… pode levar um minuto."; draw();
+    const loc=localTxt(), lente=F.lente, uf=(M.profile.local||{}).uf||"";
+    const foco = lente==="perto" ? `ABERTAS ou com edital publicado para quem mora em ${loc}${uf?` (estado ${uf})`:""}: concursos, processos seletivos (inclusive temporários, como IBGE e prefeituras), vagas de emprego, estágios e cursos gratuitos com certificado. Priorize o que tem vaga NA CIDADE ou perto dela, depois no estado.`
+      : lente==="alvo" ? `ligadas ao ALVO PRINCIPAL da pessoa ("${P().meta}") e às áreas de interesse dela: estágios, vagas, trainee, cursos, bolsas e certificações que aproximam do alvo. Pode ser em todo o Brasil ou remoto${loc?`; diga quando for perto de ${loc}`:""}.`
+      : `de RENDA para quem precisa de dinheiro agora${loc?` e mora em ${loc}`:""}: processos seletivos temporários, concursos de nível fundamental ou médio, vagas de entrada e trabalhos remotos reais e acessíveis. PODE ser fora da área de interesse. Em "ponte", diga com honestidade o que a oportunidade traz para o alvo principal (dinheiro para estudar, experiência, horário que deixa estudar).`;
+    F.ctl=new AbortController();
+    try{
+      const r=await aiJson(`Você é o Yaad1, um app de direção que liga a pessoa a oportunidades REAIS. Encontre de 3 a 6 oportunidades ${foco}
+Hoje é ${fmtD(iso(today()))}. USE a ferramenta buscar_na_internet (3 a 5 buscas) e, para confirmar datas, vagas e valores, ler_pagina. Use SOMENTE links que vieram das buscas; nunca invente link, data ou número. Descarte o que já encerrou. Prefira fontes oficiais. Considere a escolaridade, a rotina e a realidade da pessoa.
+Escreva de forma concreta: dinheiro em reais, datas, lugar e número de vagas. Frases curtas.
+Responda só com JSON: {"itens":[{"tipo":"concurso|seletivo|vaga|estagio|curso|bolsa","titulo":"curto","orgao":"","onde":"cidade - UF ou remoto","vagas_local":"ex.: 5 vagas em Iracema","salario":"ex.: R$ 1.741 + produtividade","beneficios":"ex.: vale-alimentação de R$ 1.192","taxa":"ex.: R$ 70","requisito":"ex.: fundamental completo","inscricao_ate":"AAAA-MM-DD ou vazio","prova":"AAAA-MM-DD ou vazio","porque":"1 frase: por que serve para esta pessoa","ponte":"1 frase: o que traz para o alvo principal","url":"link oficial vindo da busca"}]}`, {modelTier:"complex", tools, signal:F.ctl.signal});
+      const hosts=new Set([...URLS_VISTAS].map(host));
+      const itens=(r&&Array.isArray(r.itens)?r.itens:[]).filter(o=>o&&o.titulo).slice(0,8).map(o=>{ const x={};
+        ["tipo","titulo","orgao","onde","vagas_local","salario","beneficios","taxa","requisito","inscricao_ate","prova","porque","ponte","url"].forEach(k=>x[k]=String(o[k]==null?"":o[k]).slice(0,240));
+        if(!urlOk(x.url) || (!window.YAAD_SITE && hosts.size && !hosts.has(host(x.url)))) x.url="";
+        if(!isoOk(x.inscricao_ate)) x.inscricao_ate=""; if(!isoOk(x.prova)) x.prova=""; return x; })
+        .filter(o=>!(diasAte(o.inscricao_ate)!=null && diasAte(o.inscricao_ate)<0));
+      (M.oport=M.oport||{})[lente]={itens, data:iso(today())}; M.oportLente=lente; saveMain();
+    }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); }
+    F.busy=""; draw(); const h=SH.querySelector(".op-card h3,[role=alert]"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
+  }
+  draw();
+  if(!(M.oport||{})[F.lente] && (localTxt()||F.lente==="alvo")) buscar();
+}
+function limparEdital(r, o){
+  r=r||{}; const s=(v,n)=>String(v==null?"":v).slice(0,n||240);
+  const materias=(Array.isArray(r.materias)?r.materias:[]).filter(m=>m&&m.n).slice(0,10).map(m=>({n:s(m.n,60), questoes:Math.max(0,Math.min(200,parseInt(m.questoes,10)||0)), topicos:(Array.isArray(m.topicos)?m.topicos:[]).map(t=>s(t,90)).filter(Boolean).slice(0,6)}));
+  let marcos=(Array.isArray(r.marcos)?r.marcos:[]).filter(m=>m&&m.r&&isoOk(m.d)).slice(0,8).map(m=>({r:s(m.r,40), d:m.d}));
+  const prova=isoOk(r.prova)?r.prova:(o&&isoOk(o.prova)?o.prova:"");
+  if(o&&isoOk(o.inscricao_ate)&&!marcos.some(m=>/inscri/i.test(m.r))) marcos.push({r:"Inscrição até", d:o.inscricao_ate});
+  if(prova&&!marcos.some(m=>m.d===prova)) marcos.push({r:"Prova", d:prova});
+  marcos.sort((a,b)=>a.d.localeCompare(b.d));
+  return {titulo:s(r.titulo,60), resumo:s(r.resumo,400), prova, materias, marcos, jornada:s(r.jornada,80), atencao:s(r.atencao,300), fonte:urlOk(r.fonte)?r.fonte:""};
+}
+function editalHTML(ed){
+  const mx=Math.max(1,...ed.materias.map(m=>m.questoes||0));
+  return `${ed.resumo?`<p style="margin:0">${esc(ed.resumo)}</p>`:""}
+    ${ed.materias.length?`<div style="display:grid;gap:12px">${ed.materias.map(m=>`<div class="mat-bar"><div class="row" style="justify-content:space-between;gap:8px"><b style="font-weight:500">${esc(m.n)}</b>${m.questoes?`<span class="mono" style="font-size:13px">${m.questoes} questões</span>`:""}</div>${m.questoes?`<span class="b" aria-hidden="true"><i style="width:${Math.round(m.questoes/mx*100)}%"></i></span>`:""}${m.topicos.length?`<small class="muted">${esc(m.topicos.join(" · "))}</small>`:""}</div>`).join("")}</div>`:`<p class="note">O app não achou o conteúdo da prova agora. Você ainda pode montar o preparo; ele começa por português e matemática.</p>`}
+    ${ed.marcos.length?`<div style="display:grid;gap:6px"><span class="tag">Datas</span>${ed.marcos.map(m=>`<div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.r)}</span><span class="mono" style="font-size:13px">${dataCurta(m.d)}${diasAte(m.d)>=0?` · ${diasAte(m.d)} dias`:""}</span></div>`).join("")}</div>`:""}
+    ${ed.atencao||ed.jornada?`<div class="ponte" style="animation:none"><b style="font-weight:500">Antes de decidir</b><p style="margin:0">${esc([ed.jornada?`Jornada: ${ed.jornada}.`:"", ed.atencao].filter(Boolean).join(" "))}</p></div>`:""}
+    ${ed.fonte?`<small class="faint">Fonte: ${linkFonte({url:ed.fonte, rotulo:"edital oficial"})}</small>`:""}`;
+}
+function openFrenteNova(o){
+  const F = FLOW = {kind:"frente-nova", at:0, o, ed:null, busy:"", erro:"", min:40, dias:[1,2,3,4,5], turno:"qualquer", steps:["edital","tempo","dias","turno","ok"]};
+  const S=F.steps.length;
+  F.next=()=>{ if(F.at<S-1){ F.at++; draw(true); } else salvar(); };
+  F.back=()=>{ F.at=Math.max(0,F.at-1); draw(true); };
+  F.pick=(g,v,on)=>{ if(g==="min") F.min=+v; else if(g==="turno") F.turno=v; else if(g==="dias"){ const d=+v; F.dias=on?[...new Set([...F.dias,d])].sort():F.dias.filter(x=>x!==d); const nb=SH.querySelector('[data-sh="next"]'); if(nb) nb.disabled=!F.dias.length; } };
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-op-1) 30%,transparent),transparent 60%),var(--bg)");
+  const sessoes=()=>{ const ate=isoOk(F.ed&&F.ed.prova)?fromIso(F.ed.prova):addDays(today(),60); let n=0; for(let d=today(); d<ate && n<400; d=addDays(d,1)) if(F.dias.includes(d.getDay())) n++; return n; };
+  const draw=(foco)=>{ if(FLOW!==F) return; const s=F.steps[F.at], t=(F.ed&&F.ed.titulo)||o.titulo;
+    if(s==="edital") sheetHTML({title:t, steps:S, at:F.at, next:"Montar meu preparo", nextOk:!F.busy&&!!F.ed, body:`<h2 class="q" style="font-size:clamp(28px,7.5vw,42px)">O que cai na prova</h2>${F.erro?`<div class="ponte" role="alert" style="animation:none"><p style="margin:0">${esc(F.erro)}</p></div>`:""}${F.busy?thinking(F.busy):F.ed?editalHTML(F.ed):""}`});
+    else if(s==="tempo") sheetHTML({title:t, steps:S, at:F.at, next:"Continuar", body:`<h2 class="q">Quanto tempo por dia você consegue dar a isso?</h2><p class="muted" style="margin:0">Pense num dia comum, com família e compromissos. Pouco e todo dia vence muito de vez em quando.</p>
+      <div class="pick" data-pick="min" role="group" aria-label="Tempo por dia" style="display:grid;gap:8px">${[[20,"20 min","o mínimo que mantém o ritmo"],[40,"40 min","uma matéria por dia"],[60,"1 hora","teoria e questões"],[90,"1h30","preparo forte"]].map(([v,a,b])=>`<button data-v="${v}" aria-pressed="${F.min===v}" style="border-radius:16px;min-height:56px;text-align:left;padding:8px 16px"><b style="font-weight:500">${a}</b> · <small>${b}</small></button>`).join("")}</div>`});
+    else if(s==="dias") sheetHTML({title:t, steps:S, at:F.at, next:"Continuar", nextOk:F.dias.length>0, body:`<h2 class="q">Em quais dias?</h2><p class="muted" style="margin:0">Deixe de fora os dias de culto, de família ou de muito trabalho. O app não cobra nesses dias.</p>
+      <div class="pick" data-pick="dias" data-multi role="group" aria-label="Dias da semana">${[1,2,3,4,5,6,0].map(d=>`<button data-v="${d}" aria-pressed="${F.dias.includes(d)}">${DIAS_N[d]}</button>`).join("")}</div>`});
+    else if(s==="turno") sheetHTML({title:t, steps:S, at:F.at, next:"Ver meu preparo", body:`<h2 class="q">Qual período rende mais para você?</h2>
+      <div class="pick" data-pick="turno" role="group" aria-label="Período">${[["manhã","Manhã"],["tarde","Tarde"],["noite","Noite"],["qualquer","Qualquer brecha"]].map(([v,a])=>`<button data-v="${v}" aria-pressed="${F.turno===v}">${a}</button>`).join("")}</div>`});
+    else { const n=sessoes(), h=Math.round(n*F.min/60), ed=F.ed||{materias:[]}, tq=ed.materias.reduce((a,m)=>a+(m.questoes||0),0);
+      sheetHTML({title:t, steps:S, at:F.at, next:"Pôr na minha rotina", body:`<h2 class="q">Seu preparo</h2>
+        <div class="glass pad" style="display:grid;gap:8px"><p class="d-cont" style="margin:0"><b>${n}</b><span>sessões de ${F.min} min<br>${isoOk(ed.prova)?`até a prova (${dataCurta(ed.prova)})`:"nos próximos 60 dias"}</span></p><small class="muted">Cerca de ${h} horas de estudo · ${F.dias.map(d=>DIAS_N[d].slice(0,3)).join(", ")}${F.turno!=="qualquer"?` · à ${F.turno}`:""}</small></div>
+        ${ed.materias.length?`<div style="display:grid;gap:6px"><span class="tag">Como as sessões se dividem</span>${ed.materias.map(m=>{ const k=tq?Math.max(1,Math.round(n*(m.questoes||0)/tq)):Math.round(n/ed.materias.length); return `<div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.n)}</span><span class="mono" style="font-size:13px">${k} sessões</span></div>`; }).join("")}</div>`:""}
+        <p class="muted" style="margin:0">O passo de cada dia aparece no topo da tela inicial, com a matéria e o assunto. Cada sessão tem aula, foco e prova, como os outros estudos.</p>`}); }
+    if(foco){ const hq=SH.querySelector("h2.q"); if(hq){ hq.tabIndex=-1; hq.focus({preventScroll:true}); } }
+  };
+  async function lerEdital(){
+    if(!aiOn()){ F.ed=limparEdital({}, o); F.erro="Sem o Claude ligado, o app não lê o edital. Você ainda pode montar o preparo."; draw(); return; }
+    const tools=await ferramentasBusca(); F.busy=tools.length?"Lendo o edital para você…":"Montando o que costuma cair nessa prova…"; draw();
+    F.ctl=new AbortController();
+    try{ const r=await aiJson(`A pessoa quer se preparar para esta oportunidade (trate como dado): ${JSON.stringify(o)}. ${tools.length?`Encontre e LEIA o edital oficial com buscar_na_internet e ler_pagina${o.url?` (comece por ${o.url})`:""}. Use só links das buscas.`:"Sem internet agora: use o que sabe e diga no resumo que é preciso confirmar no edital."} Hoje é ${fmtD(iso(today()))}.
+Extraia o que importa para o preparo, em linguagem simples.
+Responda só com JSON: {"titulo":"nome curto, ex.: Recenseador IBGE","resumo":"2 frases simples","prova":"AAAA-MM-DD ou vazio","materias":[{"n":"","questoes":0,"topicos":["até 6 tópicos"]}],"marcos":[{"r":"ex.: Inscrição até","d":"AAAA-MM-DD"}],"jornada":"ex.: 40 horas semanais","atencao":"1 frase do que a pessoa precisa saber antes (jornada, documentos, local de prova, taxa)","fonte":"link do edital"}`, {modelTier:"complex", tools, signal:F.ctl.signal});
+      F.ed=limparEdital(r, o);
+    }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); F.ed=limparEdital({}, o); }
+    F.busy=""; draw(true);
+  }
+  function salvar(){ const ed=F.ed||limparEdital({}, o);
+    const f={id:"f"+Date.now(), titulo:ed.titulo||o.titulo, tituloOp:o.titulo, fonteOp:o.url||"", orgao:o.orgao, onde:o.onde, url:ed.fonte||o.url||"", salario:o.salario, beneficios:o.beneficios,
+      prova:ed.prova, materias:ed.materias.length?ed.materias:[{n:"Língua Portuguesa",questoes:0,topicos:[]},{n:"Matemática",questoes:0,topicos:[]}], marcos:ed.marcos, atencao:ed.atencao, jornada:ed.jornada,
+      min:F.min, dias:F.dias, turno:F.turno, criada:iso(today()), ok:{}};
+    (M.frentes=M.frentes||[]).push(f); saveMain(); closeSheet(); TAB="hoje"; SELDAY=null; render(); window.scrollTo({top:0}); toast("Pronto: o passo de hoje já está no topo da tela inicial.");
+  }
+  draw(); lerEdital();
+}
+function openFrente(id){
+  const f=frentes().find(x=>x.id===id); if(!f) return;
+  const F = FLOW = {kind:"frente", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-op-1) 30%,transparent),transparent 60%),var(--bg)");
+  const draw=()=>{ if(FLOW!==F) return; const ms=marcosDe(f), ss=sessoesFrente(f), ps=passoHoje(f);
+    sheetHTML({title:"Frente", body:`
+      <h2 class="q" style="font-size:clamp(30px,8vw,46px)">${esc(f.titulo)}</h2>
+      ${f.salario?`<div class="op-din"><b>${esc(f.salario)}</b>${f.beneficios?`<small>+ ${esc(f.beneficios)}</small>`:""}</div>`:""}
+      ${f.onde?`<small class="muted">${esc([f.orgao,f.onde].filter(Boolean).join(" · "))}</small>`:""}
+      <div class="d-passo" style="background:var(--glass)">${ps.feito?`<span class="chip" style="color:var(--ok)">Passo de hoje feito</span><small class="muted">${esc(ps.amanha)}</small>`:ps.folga?`<small class="muted">${esc(ps.txt)}</small>`:`<span class="grow"><span class="tag">Passo de hoje</span><b>${ps.min} min de ${esc(ps.mat)}</b>${ps.det?`<small class="muted">${esc(ps.det)}</small>`:""}</span><button class="btn primary" style="min-height:48px" data-fa="estudar">Estudar agora</button>`}</div>
+      ${ms.length?`<section style="display:grid;gap:8px"><span class="tag">Marcos · toque para marcar o que já fez</span>${ms.map(m=>`<button class="opt" data-mk="${m.i}" aria-pressed="${m.ok}"><span class="k">${m.ok?"✓":""}</span><span class="grow">${esc(m.r)}<br><small class="muted mono">${dataCurta(m.d)}${!m.ok&&diasAte(m.d)>=0?` · faltam ${diasAte(m.d)} dias`:""}</small></span></button>`).join("")}</section>`:""}
+      <section style="display:grid;gap:10px"><span class="tag">Matérias · ${ss.length} sessões feitas</span>${(f.materias||[]).map(m=>{ const k=ss.filter(r=>String(r.mat||"").startsWith(m.n+" · ")).length; return `<div class="mat-bar"><div class="row" style="justify-content:space-between;gap:8px"><b style="font-weight:500">${esc(m.n)}</b><span class="mono" style="font-size:13px">${k} feitas${m.questoes?` · ${m.questoes} questões`:""}</span></div>${m.topicos&&m.topicos.length?`<small class="muted">${esc(m.topicos.join(" · "))}</small>`:""}</div>`; }).join("")}</section>
+      <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Seu ritmo</span><span>${f.min} min · ${(f.dias||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ")}${f.turno&&f.turno!=="qualquer"?` · à ${f.turno}`:""}</span></div>
+      ${f.atencao||f.jornada?`<div class="ponte" style="animation:none"><b style="font-weight:500">Para lembrar</b><p style="margin:0">${esc([f.jornada?`Jornada: ${f.jornada}.`:"", f.atencao].filter(Boolean).join(" "))}</p></div>`:""}
+      <div class="row wrap" style="gap:8px">${urlOk(f.url)?`<a class="btn" style="min-height:48px" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Edital e inscrição</a>`:""}</div>
+      <button class="link" data-fa="arquivar" style="justify-self:start;min-height:44px">Encerrar esta frente</button>`});
+    SH.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{ f.ok=f.ok||{}; const i=+b.dataset.mk; f.ok[i]=!f.ok[i]; saveMain(); draw(); render(); const nb=SH.querySelector(`[data-mk="${i}"]`); if(nb) nb.focus(); });
+    SH.querySelectorAll("[data-fa]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fa;
+      if(k==="estudar"){ closeSheetSoft(); estudarFrente(f.id); }
+      else if(k==="arquivar"){ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para encerrar (os estudos feitos ficam salvos)"; return; } f.arquivada=iso(today()); saveMain(); closeSheet(); render(); toast("Frente encerrada."); } });
+  };
+  draw();
+}
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
@@ -2789,6 +3040,10 @@ document.addEventListener("click", e => {
   else if(act==="dia") openDay(a.dataset.d);
   else if(act==="perfil") openProfile();
   else if(act==="menu") openMenu();
+  else if(act==="oport") openOportunidades();
+  else if(act==="frente") openFrente(a.dataset.id);
+  else if(act==="frente-estudar") estudarFrente(a.dataset.id);
+  else if(act==="destino-foto") fotoDestino();
   else if(act==="quiz-novo") openDirecao();
   else if(act==="tour") openTour();
   else if(act==="simulado") openSimulado(a.dataset.k||"anbima");
