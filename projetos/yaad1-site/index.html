@@ -208,6 +208,37 @@ h1,h2,h3,p{margin:0}
 .d-passo .grow{display:grid;gap:2px;min-width:0}
 .d-passo b{font-weight:500;font-size:17px}
 .d-passo small{color:rgb(255 255 255 / .78)}
+.jornada .d-tit h2{font-size:clamp(28px,8vw,42px)}
+.estrada{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:relative}
+.estrada::before{content:"";position:absolute;left:12%;right:12%;top:21px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--a-op-1),var(--c) 55%,rgb(255 255 255 / .18))}
+.estrada li{display:grid;justify-items:center;gap:6px;position:relative;text-align:center}
+.estrada i{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid rgb(255 255 255 / .28);color:rgb(255 255 255 / .7)}
+.estrada i .icon{width:20px;height:20px}
+.estrada li.ok i{border-color:var(--a-op-1);color:var(--a-op-1)}
+.estrada li.aqui i{border-color:var(--c);background:var(--c);color:var(--on-c);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 30%,transparent)}
+.estrada b{font-weight:500;font-size:13px}
+.estrada li:not(.ok):not(.aqui) b{color:rgb(255 255 255 / .7)}
+.j-hoje{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:rgb(0 0 0 / .42);border:1px solid var(--edge-2);color:inherit;min-height:64px}
+button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
+.j-hoje .grow{display:grid;gap:2px;min-width:0}
+.j-hoje b{font-weight:500;font-size:17px;line-height:1.3}.j-min{font-size:26px;font-weight:400}
+.j-hoje small{color:rgb(255 255 255 / .78)}
+.j-grid{display:grid;gap:12px}
+@media (min-width:720px){.j-grid{grid-template-columns:1fr 1fr}.j-grid>.faixas{grid-column:1/-1}}
+.faixas{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.faixa{display:grid;gap:4px;align-content:start;padding:12px 14px;border-radius:18px;background:var(--glass);border:1px solid var(--edge);min-width:0}
+.faixa b{font-weight:500;font-size:15px;line-height:1.3;overflow-wrap:anywhere}
+.faixa.agora{border-top:3px solid var(--a-op-1)}.faixa.sonho{border-top:3px solid var(--c)}
+.faixa-ponte{grid-column:1/-1;margin:0;font-size:14px;padding:10px 14px;border-radius:14px;border:1px dashed var(--edge-2);color:var(--muted)}
+.radar,.vida-card{display:grid;gap:10px;padding:14px 16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge)}
+.radar{border-top:3px solid var(--a-op-1)}.vida-card{border-top:3px solid var(--a-grad-1)}
+.vida-card b{font-weight:500;font-size:18px}
+.radar-it{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:14px;background:rgb(255 255 255 / .04);border:1px solid var(--edge);color:inherit;min-height:56px}
+.radar-it .grow{display:grid;gap:4px;min-width:0}.radar-it b{font-weight:500}.radar-it small{color:var(--muted)}
+.chip.sm{min-height:24px;font-size:12px;padding:0 9px}.chip.urg{color:var(--warn)}
+.rc-l{display:grid;gap:2px;padding-bottom:8px;border-bottom:1px solid var(--edge)}.rc-l:last-child{border-bottom:0;padding-bottom:0}
+.rc-l>span:first-child{font-size:13px;color:var(--muted)}
+.rc-v{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.rc-v s{color:var(--faint)}.rc-v .icon{width:14px;height:14px}.rc-v b{font-weight:500}
 .op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
 .op-lista{display:grid;gap:12px}
 .op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
@@ -685,7 +716,7 @@ function aiErr(e){
   if(c==="image_rejected") return "Essa imagem não foi aceita. Tente outra foto.";
   return "Não consegui falar com o Claude agora. Tente de novo em instantes.";
 }
-function perfil(){ const ds=(M.profile.descobertas||[]).slice(-8), fs=frentes(); return (OWNER===false && !CUSTOM ? "Contexto fixo: você é o tutor do app Yaad1, um app de direção (um alvo, um caminho). A pessoa ainda está montando o projeto dela; use só o que ela informar." : perfilBase())+(ds.length?` Descobertas recentes da pessoa sobre si mesma (use para adaptar tudo): ${ds.map(d=>fmtD(d.data)+": "+d.texto).join(" | ")}.`:"")+(localTxt()?` A pessoa mora em ${localTxt()}.`:"")+(fs.length?` Frentes paralelas que a pessoa está preparando (oportunidades reais): ${fs.map(f=>f.titulo+(f.prova?" (prova "+fmtD(f.prova)+")":"")).join("; ")}.`:""); }
+function perfil(){ const ds=(M.profile.descobertas||[]).slice(-8), fs=frentes(); return (OWNER===false && !CUSTOM ? "Contexto fixo: você é o tutor do app Yaad1, um app de direção (um alvo, um caminho). A pessoa ainda está montando o projeto dela; use só o que ela informar." : perfilBase())+(ds.length?` Descobertas recentes da pessoa sobre si mesma (use para adaptar tudo): ${ds.map(d=>fmtD(d.data)+": "+d.texto).join(" | ")}.`:"")+(localTxt()?` A pessoa mora em ${localTxt()}.`:"")+(()=>{ const r=M.rota||{}, c=r.ctx; return (c?` Momento de vida (informado pela pessoa em ${fmtD(c.data)}): ${SITU[c.situacao]||"?"}; prioridade agora: ${(PRIOR[c.prioridade]||{}).n||"?"}; sonho: ${c.sonho||"?"}; tempo por dia: ${c.min||"?"} min.`:"")+(r.marcha&&r.marcha!=="avancar"?` Ritmo atual: ${MARCHAS[r.marcha].n} (${MARCHAS[r.marcha].d}); não cobre mais do que isso.`:""); })()+(fs.length?` Frentes paralelas que a pessoa está preparando (oportunidades reais): ${fs.map(f=>f.titulo+(f.prova?" (prova "+fmtD(f.prova)+")":"")).join("; ")}.`:""); }
 function perfilBase(){
   const d=dayIdx(today())+1, ph=phaseOf(today());
   const pj=P();
@@ -863,7 +894,7 @@ function vHoje(){
 
   return `<div class="view">
     ${carteiraHTML()}
-    ${isToday?destinoHTML():""}
+    ${isToday?jornadaHTML():""}
     <div class="hoje-grid">
      <div class="h-top" style="display:grid;gap:18px">
       <section class="hello">
@@ -1933,6 +1964,8 @@ function openMenu(){
     <div class="row">${avatarHTML(56)}<div class="grow"><b style="font-weight:500;font-size:18px">${esc(M.profile.full||nomeExib()||"Seu perfil")}</b><div class="muted" style="font-size:13px" data-pjn="1">${esc(P().nome)} · ${esc(P().lema)}</div></div></div>
     ${(()=>{ const pr=proximidade(); return `<div class="glass pad" data-alvo="1" style="display:grid;gap:8px"><span class="tag">Alvo</span><b style="font-weight:500">${esc(P().meta)}</b><div class="gbar"><i style="width:${pr.gp}%"></i><em style="left:${pr.tp}%"></em></div><small class="muted">${pr.gp}% das metas comprovadas · ${pr.tp}% do tempo. ${esc(pr.msg)}</small><small class="faint mono">Nível ${LEVEL()} · ${XP()} pontos de domínio</small></div>`; })()}
     <div class="list">
+      <button class="item" data-m="partida"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-target"/></svg><span class="grow"><b>Ponto de partida</b><small>Sua situação agora, o que é urgente e o seu sonho</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
+      <button class="item" data-m="vida"><svg class="icon" style="color:var(--a-grad-1)"><use href="#i-spark"/></svg><span class="grow"><b>Minha vida mudou</b><small>Recalcular a rota sem perder nada do que já fez</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item op-entrada" data-m="oport"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-spark"/></svg><span class="grow"><b>Oportunidades</b><small>Perto de você, para o seu alvo e para ter renda agora</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="item" data-m="perfil"><svg class="icon"><use href="#i-target"/></svg><span class="grow"><b>Perfil e projeto</b><small>Seus dados, sua meta, o nome e o lema do projeto</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       ${P().custom?`<button class="item" data-m="remodelar"><svg class="icon"><use href="#i-spark"/></svg><span class="grow"><b>Remodelar projeto</b><small>Conte o que mudou ou o que você não concordou</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
@@ -1953,6 +1986,8 @@ function openMenu(){
   SH.querySelectorAll("[data-m]").forEach(b=>b.addEventListener("click",()=>{ const m=b.dataset.m; closeSheetSoft();
     if(m==="perfil") openProfile();
     else if(m==="oport") openOportunidades();
+    else if(m==="partida") openPartida();
+    else if(m==="vida") openVida();
     else if(m==="evolucao"){ closeSheet(); TAB="evolucao"; EVOTAB="panorama"; render(); window.scrollTo({top:0}); }
     else if(m==="docs") openDocs();
     else if(m==="mapa") openMapa();
@@ -2257,6 +2292,7 @@ function vBemVindo(){
       <h1 style="font-weight:300;font-size:clamp(40px,11vw,64px);line-height:1.05;margin:0">${nome?`Olá, ${esc(nome)}.`:"Bem-vindo(a)."}<br><span class="muted">Vamos traçar o seu alvo?</span></h1>
       <div class="glass pad" style="display:grid;gap:12px;border-color:rgb(255 106 26 / .5)"><span class="tag">Comece aqui</span><b style="font-weight:500;font-size:20px">Seu projeto</b><p class="muted" style="margin:0">Responda o quiz de direção, ou escreva com as suas palavras. O app monta o seu projeto: caminho, rotina, matérias, provas e metas.</p>
         <button class="btn primary" style="min-height:48px" data-act="quiz-novo">Responder o quiz</button></div>
+      <button class="item op-entrada" data-act="partida"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-target"/></svg><span class="grow"><b>Não sei por onde começar</b><small>Ponto de partida: 5 perguntas sobre a sua vida agora, e o app mostra oportunidades reais perto de você</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>
       <button class="btn ghost" style="min-height:44px;justify-self:start" data-act="tour">Ver a apresentação do app</button>
       <p class="faint" style="font-size:13px">Seus dados ficam só na sua conta.</p>
     </section>`;
@@ -2850,28 +2886,13 @@ function passoHoje(f){
   const det = [m.questoes?`${m.questoes} questões na prova`:"", topico?`hoje: ${topico}`:"", f.turno&&f.turno!=="qualquer"?`melhor à ${f.turno}`:""].filter(Boolean).join(" · ");
   if(ss.some(r=>r.d===hoje)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {feito:true, amanha:`Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}.`}; }
   if(!dias.includes(wd)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {folga:true, txt:`Hoje é descanso desta frente. Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}, ${f.min||40} min de ${m.n}.`}; }
-  return {min:f.min||40, mat:m.n, topico, det};
+  const lim=MARCHAS[marchaAtual()].min; return {min:lim?Math.min(lim,f.min||40):(f.min||40), mat:m.n, topico, det};
 }
 function trilhaHTML(f){
   const ms=marcosDe(f); if(!ms.length) return "";
   const agora = ms.find(m=>!m.ok && (diasAte(m.d)==null || diasAte(m.d)>=0));
   return `<ol class="trilha" tabindex="0" aria-label="Trilha até o destino">${ms.map(m=>{ const n=diasAte(m.d), st=m.ok?"ok":m===agora?"aqui":n!=null&&n<0?"pass":"";
     return `<li class="${st}"${m===agora?' aria-current="step"':""}><i aria-hidden="true"></i><b>${esc(m.r)}</b><small>${m.ok?"feito":dataCurta(m.d)}${m===agora?" · aqui":""}</small></li>`; }).join("")}</ol>`;
-}
-function destinoHTML(){
-  const f=frenteAtiva(), foto=fotoOk(M.profile.fotoDestino)?M.profile.fotoDestino:"";
-  if(!f) return `<button class="item op-entrada" data-act="oport"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-spark"/></svg><span class="grow"><b>Oportunidades ${localTxt()?"perto de você":"para você"}</b><small>Concursos, seletivos, vagas e cursos reais, ligados à sua vida</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`;
-  const pm=proxMarco(f), n=pm?diasAte(pm.d):null, ps=passoHoje(f);
-  return `<section class="destino${foto?" com-foto":""}" ${foto?`style="background-image:linear-gradient(180deg,rgb(5 6 10 / .58),rgb(5 6 10 / .93) 60%),url('${foto}')"`:""} aria-label="Seu destino: ${esc(f.titulo)}">
-    <div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow" style="color:rgb(255 255 255 / .8)">Seu destino</span><span class="row" style="gap:8px"><button class="x" data-act="oport" aria-label="Oportunidades"><svg class="icon"><use href="#i-spark"/></svg></button><button class="x" data-act="destino-foto" aria-label="${foto?"Trocar a":"Pôr uma"} foto do seu porquê"><svg class="icon"><use href="#i-cam"/></svg></button></span></div>
-    <div class="d-tit"><h2><button class="d-lk" data-act="frente" data-id="${esc(f.id)}">${esc(f.titulo)}<span class="sr"> · abrir a frente</span></button></h2>${f.salario?`<span class="d-din">${esc(f.salario)}</span>`:""}${f.beneficios?`<small>+ ${esc(f.beneficios)}</small>`:""}</div>
-    ${pm?`<p class="d-cont"><b>${n}</b><span>${n===0?"é hoje:":n===1?"dia para:":"dias para:"}<br>${esc(pm.r.replace(/\s+até$/i,""))}</span></p>`:""}
-    ${trilhaHTML(f)}
-    <div class="d-passo">${ps.feito?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>Passo de hoje feito</span><small>${esc(ps.amanha)}</small>`
-      : ps.folga?`<small>${esc(ps.txt)}</small>`
-      : `<span class="grow"><span class="tag" style="color:rgb(255 255 255 / .8)">Passo de hoje</span><b>${ps.min} min de ${esc(ps.mat)}</b>${ps.det?`<small>${esc(ps.det)}</small>`:""}</span><button class="btn primary" style="min-height:48px" data-act="frente-estudar" data-id="${esc(f.id)}">Começar</button>`}</div>
-    ${foto?"":`<button class="link" data-act="destino-foto" style="justify-self:start;min-height:44px;color:rgb(255 255 255 / .85)">Pôr uma foto do seu porquê (família, sonho, lugar)</button>`}
-  </section>`;
 }
 async function fotoDestino(){ const fs=await pickFiles(); if(!fs.length) return;
   try{ const img=await loadImg(fs[0]); M.profile.fotoDestino=scale(img,720).toDataURL("image/jpeg",.72); saveMain(); render(); toast("Foto salva. Ela lembra você do porquê."); }catch(e){ toast("Não consegui abrir essa imagem."); } }
@@ -2887,7 +2908,8 @@ function opCard(o,i){
     ${o.salario?`<div class="op-din"><b>${esc(o.salario)}</b>${o.beneficios?`<small>+ ${esc(o.beneficios)}</small>`:""}</div>`:""}
     <div class="row wrap" style="gap:6px">${o.vagas_local?`<span class="chip">${esc(o.vagas_local)}</span>`:""}${np!=null&&np>=0?`<span class="chip">Prova em ${np} dias</span>`:""}</div>
     ${o.porque?`<p style="margin:0">${esc(o.porque)}</p>`:""}
-    ${o.requisito||o.taxa||o.ponte?`<details class="op-mais"><summary>Ver requisitos e taxa</summary><div style="display:grid;gap:4px;padding-top:6px">${o.requisito?`<span>Requisito: ${esc(o.requisito)}</span>`:""}${o.taxa?`<span>Taxa: ${esc(o.taxa)}</span>`:""}${o.ponte?`<span class="muted">Para o seu alvo: ${esc(o.ponte)}</span>`:""}</div></details>`:""}
+    ${o.barreiras?`<p style="margin:0;font-size:14px;color:var(--warn)">Pode dificultar: ${esc(o.barreiras)}</p>`:""}
+    ${o.requisito||o.taxa||o.ponte||(o.competencias&&o.competencias.length)?`<details class="op-mais"><summary>O que precisa e o que desenvolve</summary><div style="display:grid;gap:6px;padding-top:6px">${o.requisito?`<span>Requisito: ${esc(o.requisito)}</span>`:""}${o.taxa?`<span>Taxa: ${esc(o.taxa)}</span>`:""}${o.competencias&&o.competencias.length?`<span class="row wrap" style="gap:6px">${o.competencias.map(c=>`<span class="chip sm">${esc(c)}</span>`).join("")}</span>`:""}${o.ponte?`<span class="muted">Ponte para o seu sonho: ${esc(o.ponte)}</span>`:""}</div></details>`:""}
     <div class="row wrap" style="gap:8px">${salva?`<span class="chip" style="color:var(--ok)">Já está na sua rotina</span>`:`<button class="btn sm primary" style="min-height:44px" data-op="quero" data-i="${i}">Quero essa</button>`}${urlOk(o.url)?`<a class="btn sm" style="min-height:44px" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Site oficial</a>`:""}</div>
   </article>`;
 }
@@ -2933,10 +2955,11 @@ function openOportunidades(lente){
       const r=await aiJson(`Você é o Yaad1, um app de direção que liga a pessoa a oportunidades REAIS. Encontre de 3 a 6 oportunidades ${foco}
 Hoje é ${fmtD(iso(today()))}. USE a ferramenta buscar_na_internet (3 a 5 buscas) e, para confirmar datas, vagas e valores, ler_pagina. Use SOMENTE links que vieram das buscas; nunca invente link, data ou número. Descarte o que já encerrou. Prefira fontes oficiais. Considere a escolaridade, a rotina e a realidade da pessoa.
 Escreva de forma concreta: dinheiro em reais, datas, lugar e número de vagas. Frases curtas.
-Responda só com JSON: {"itens":[{"tipo":"concurso|seletivo|vaga|estagio|curso|bolsa","titulo":"curto","orgao":"","onde":"cidade - UF ou remoto","vagas_local":"ex.: 5 vagas em Iracema","salario":"ex.: R$ 1.741 + produtividade","beneficios":"ex.: vale-alimentação de R$ 1.192","taxa":"ex.: R$ 70","requisito":"ex.: fundamental completo","inscricao_ate":"AAAA-MM-DD ou vazio","prova":"AAAA-MM-DD ou vazio","porque":"1 frase: por que serve para esta pessoa","ponte":"1 frase: o que traz para o alvo principal","url":"link oficial vindo da busca"}]}`, {modelTier:"complex", tools, signal:F.ctl.signal});
+Responda só com JSON: {"itens":[{"tipo":"concurso|seletivo|vaga|estagio|curso|bolsa","titulo":"curto","orgao":"","onde":"cidade - UF ou remoto","vagas_local":"ex.: 5 vagas em Iracema","salario":"ex.: R$ 1.741 + produtividade","beneficios":"ex.: vale-alimentação de R$ 1.192","taxa":"ex.: R$ 70","requisito":"ex.: fundamental completo","inscricao_ate":"AAAA-MM-DD ou vazio","prova":"AAAA-MM-DD ou vazio","porque":"1 frase: por que apareceu para esta pessoa","barreiras":"1 frase honesta do que pode dificultar (distância, custo, horário, internet, documentos) ou vazio","competencias":["até 4 competências que a oportunidade desenvolve"],"ponte":"1 frase: o que traz para o alvo principal","url":"link oficial vindo da busca"}]}
+Avalie a VIABILIDADE para a realidade da pessoa (situação, tempo por dia, cidade, custo) e prefira o que ela consegue de fato acessar; quando algo for longe ou caro, diga em "barreiras" e, se houver, sugira a alternativa remota ou gratuita em outro item.`, {modelTier:"complex", tools, signal:F.ctl.signal});
       const hosts=new Set([...URLS_VISTAS].map(host));
       const itens=(r&&Array.isArray(r.itens)?r.itens:[]).filter(o=>o&&o.titulo).slice(0,8).map(o=>{ const x={};
-        ["tipo","titulo","orgao","onde","vagas_local","salario","beneficios","taxa","requisito","inscricao_ate","prova","porque","ponte","url"].forEach(k=>x[k]=String(o[k]==null?"":o[k]).slice(0,240));
+        ["tipo","titulo","orgao","onde","vagas_local","salario","beneficios","taxa","requisito","inscricao_ate","prova","porque","barreiras","ponte","url"].forEach(k=>x[k]=String(o[k]==null?"":o[k]).slice(0,240)); x.competencias=(Array.isArray(o.competencias)?o.competencias:[]).map(c=>String(c).slice(0,50)).filter(Boolean).slice(0,4);
         if(!urlOk(x.url) || (!window.YAAD_SITE && hosts.size && !hosts.has(host(x.url)))) x.url="";
         if(!isoOk(x.inscricao_ate)) x.inscricao_ate=""; if(!isoOk(x.prova)) x.prova=""; return x; })
         .filter(o=>!(diasAte(o.inscricao_ate)!=null && diasAte(o.inscricao_ate)<0));
@@ -2955,12 +2978,13 @@ function limparEdital(r, o){
   if(o&&isoOk(o.inscricao_ate)&&!marcos.some(m=>/inscri/i.test(m.r))) marcos.push({r:"Inscrição até", d:o.inscricao_ate});
   if(prova&&!marcos.some(m=>m.d===prova)) marcos.push({r:"Prova", d:prova});
   marcos.sort((a,b)=>a.d.localeCompare(b.d));
-  return {titulo:s(r.titulo,60), resumo:s(r.resumo,400), prova, materias, marcos, jornada:s(r.jornada,80), atencao:s(r.atencao,300), fonte:urlOk(r.fonte)?r.fonte:""};
+  return {titulo:s(r.titulo,60), resumo:s(r.resumo,400), prova, materias, marcos, jornada:s(r.jornada,80), corte:s(r.corte,160), atencao:s(r.atencao,300), fonte:urlOk(r.fonte)?r.fonte:""};
 }
 function editalHTML(ed){
   const mx=Math.max(1,...ed.materias.map(m=>m.questoes||0));
   return `${ed.resumo?`<p style="margin:0">${esc(ed.resumo)}</p>`:""}
     ${ed.materias.length?`<div style="display:grid;gap:12px">${ed.materias.map(m=>`<div class="mat-bar"><div class="row" style="justify-content:space-between;gap:8px"><b style="font-weight:500">${esc(m.n)}</b>${m.questoes?`<span class="mono" style="font-size:13px">${m.questoes} questões</span>`:""}</div>${m.questoes?`<span class="b" aria-hidden="true"><i style="width:${Math.round(m.questoes/mx*100)}%"></i></span>`:""}${m.topicos.length?`<small class="muted">${esc(m.topicos.join(" · "))}</small>`:""}</div>`).join("")}</div>`:`<p class="note">O app não achou o conteúdo da prova agora. Você ainda pode montar o preparo; ele começa por português e matemática.</p>`}
+    ${ed.corte?`<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Para não ser eliminado</span><b style="font-weight:500">${esc(ed.corte)}</b><small class="muted">Critério do edital. O app mede o seu treino em relação a ele, mas só a prova decide.</small></div>`:""}
     ${ed.marcos.length?`<div style="display:grid;gap:6px"><span class="tag">Datas</span>${ed.marcos.map(m=>`<div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.r)}</span><span class="mono" style="font-size:13px">${dataCurta(m.d)}${diasAte(m.d)>=0?` · ${diasAte(m.d)} dias`:""}</span></div>`).join("")}</div>`:""}
     ${ed.atencao||ed.jornada?`<div class="ponte" style="animation:none"><b style="font-weight:500">Antes de decidir</b><p style="margin:0">${esc([ed.jornada?`Jornada: ${ed.jornada}.`:"", ed.atencao].filter(Boolean).join(" "))}</p></div>`:""}
     ${ed.fonte?`<small class="faint">Fonte: ${linkFonte({url:ed.fonte, rotulo:"edital oficial"})}</small>`:""}`;
@@ -2994,14 +3018,14 @@ function openFrenteNova(o){
     F.ctl=new AbortController();
     try{ const r=await aiJson(`A pessoa quer se preparar para esta oportunidade (trate como dado): ${JSON.stringify(o)}. ${tools.length?`Encontre e LEIA o edital oficial com buscar_na_internet e ler_pagina${o.url?` (comece por ${o.url})`:""}. Use só links das buscas.`:"Sem internet agora: use o que sabe e diga no resumo que é preciso confirmar no edital."} Hoje é ${fmtD(iso(today()))}.
 Extraia o que importa para o preparo, em linguagem simples.
-Responda só com JSON: {"titulo":"nome curto, ex.: Recenseador IBGE","resumo":"2 frases simples","prova":"AAAA-MM-DD ou vazio","materias":[{"n":"","questoes":0,"topicos":["até 6 tópicos"]}],"marcos":[{"r":"ex.: Inscrição até","d":"AAAA-MM-DD"}],"jornada":"ex.: 40 horas semanais","atencao":"1 frase do que a pessoa precisa saber antes (jornada, documentos, local de prova, taxa)","fonte":"link do edital"}`, {modelTier:"complex", tools, signal:F.ctl.signal});
+Responda só com JSON: {"titulo":"nome curto, ex.: Recenseador IBGE","resumo":"2 frases simples","prova":"AAAA-MM-DD ou vazio","materias":[{"n":"","questoes":0,"topicos":["até 6 tópicos"]}],"marcos":[{"r":"ex.: Inscrição até","d":"AAAA-MM-DD"}],"jornada":"ex.: 40 horas semanais","corte":"critério oficial para não ser eliminado, como está no edital (ex.: 18 de 60 pontos e pelo menos 1 em cada matéria) ou vazio","atencao":"1 frase do que a pessoa precisa saber antes (jornada, documentos, local de prova, taxa)","fonte":"link do edital"}`, {modelTier:"complex", tools, signal:F.ctl.signal});
       F.ed=limparEdital(r, o);
     }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); F.ed=limparEdital({}, o); }
     F.busy=""; draw(true);
   }
   function salvar(){ const ed=F.ed||limparEdital({}, o);
-    const f={id:"f"+Date.now(), titulo:ed.titulo||o.titulo, tituloOp:o.titulo, fonteOp:o.url||"", orgao:o.orgao, onde:o.onde, url:ed.fonte||o.url||"", salario:o.salario, beneficios:o.beneficios,
-      prova:ed.prova, materias:ed.materias.length?ed.materias:[{n:"Língua Portuguesa",questoes:0,topicos:[]},{n:"Matemática",questoes:0,topicos:[]}], marcos:ed.marcos, atencao:ed.atencao, jornada:ed.jornada,
+    const f={id:"f"+Date.now(), ponte:o.ponte||"", competencias:o.competencias||[], titulo:ed.titulo||o.titulo, tituloOp:o.titulo, fonteOp:o.url||"", orgao:o.orgao, onde:o.onde, url:ed.fonte||o.url||"", salario:o.salario, beneficios:o.beneficios,
+      prova:ed.prova, corte:ed.corte||"", materias:ed.materias.length?ed.materias:[{n:"Língua Portuguesa",questoes:0,topicos:[]},{n:"Matemática",questoes:0,topicos:[]}], marcos:ed.marcos, atencao:ed.atencao, jornada:ed.jornada,
       min:F.min, dias:F.dias, turno:F.turno, criada:iso(today()), ok:{}};
     (M.frentes=M.frentes||[]).push(f); saveMain(); closeSheet(); TAB="hoje"; SELDAY=null; render(); window.scrollTo({top:0}); toast("Pronto: o passo de hoje já está no topo da tela inicial.");
   }
@@ -3019,6 +3043,8 @@ function openFrente(id){
       <div class="d-passo" style="background:var(--glass)">${ps.feito?`<span class="chip" style="color:var(--ok)">Passo de hoje feito</span><small class="muted">${esc(ps.amanha)}</small>`:ps.folga?`<small class="muted">${esc(ps.txt)}</small>`:`<span class="grow"><span class="tag">Passo de hoje</span><b>${ps.min} min de ${esc(ps.mat)}</b>${ps.det?`<small class="muted">${esc(ps.det)}</small>`:""}</span><button class="btn primary" style="min-height:48px" data-fa="estudar">Estudar agora</button>`}</div>
       ${ms.length?`<section style="display:grid;gap:8px"><span class="tag">Marcos · toque para marcar o que já fez</span>${ms.map(m=>`<button class="opt" data-mk="${m.i}" aria-pressed="${m.ok}"><span class="k">${m.ok?"✓":""}</span><span class="grow">${esc(m.r)}<br><small class="muted mono">${dataCurta(m.d)}${!m.ok&&diasAte(m.d)>=0?` · faltam ${diasAte(m.d)} dias`:""}</small></span></button>`).join("")}</section>`:""}
       <section style="display:grid;gap:10px"><span class="tag">Matérias · ${ss.length} sessões feitas</span>${(f.materias||[]).map(m=>{ const k=ss.filter(r=>String(r.mat||"").startsWith(m.n+" · ")).length; return `<div class="mat-bar"><div class="row" style="justify-content:space-between;gap:8px"><b style="font-weight:500">${esc(m.n)}</b><span class="mono" style="font-size:13px">${k} feitas${m.questoes?` · ${m.questoes} questões`:""}</span></div>${m.topicos&&m.topicos.length?`<small class="muted">${esc(m.topicos.join(" · "))}</small>`:""}</div>`; }).join("")}</section>
+      ${f.corte?`<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Para não ser eliminado</span><b style="font-weight:500">${esc(f.corte)}</b></div>`:""}
+      ${f.ponte?`<p class="faixa-ponte" style="margin:0"><span class="tag">Ponte</span> ${esc(f.ponte)}</p>`:""}
       <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Seu ritmo</span><span>${f.min} min · ${(f.dias||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ")}${f.turno&&f.turno!=="qualquer"?` · à ${f.turno}`:""}</span></div>
       ${f.atencao||f.jornada?`<div class="ponte" style="animation:none"><b style="font-weight:500">Para lembrar</b><p style="margin:0">${esc([f.jornada?`Jornada: ${f.jornada}.`:"", f.atencao].filter(Boolean).join(" "))}</p></div>`:""}
       <div class="row wrap" style="gap:8px">${urlOk(f.url)?`<a class="btn" style="min-height:48px" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Edital e inscrição</a>`:""}</div>
@@ -3028,6 +3054,187 @@ function openFrente(id){
       if(k==="estudar"){ closeSheetSoft(); estudarFrente(f.id); }
       else if(k==="arquivar"){ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para encerrar (os estudos feitos ficam salvos)"; return; } f.arquivada=iso(today()); saveMain(); closeSheet(); render(); toast("Frente encerrada."); } });
   };
+  draw();
+}
+/* ====================================================================
+   MOTOR ROTA (conselho de 27/11/2026: ROTA.md): Realidade · Oportunidades · Trajetórias · Ação
+   Ponto de Partida → Duas Faixas → Radar → Ponte → Próxima ação → "Minha vida mudou" (Recalculadora de Rota).
+   Tudo é regra determinística no aparelho; a IA só entra no Radar e na leitura de editais (com fonte).
+   O progresso nunca é apagado: a rota muda o ritmo e as prioridades, não os registros.
+   ==================================================================== */
+const SITU = {estudo:"Estudando", trabalho:"Trabalhando", informal:"Bico ou trabalho informal", sem:"Sem trabalho agora", casa:"Cuidando da casa ou da família"};
+const PRIOR = {renda:{n:"Ter renda", lente:"renda", agora:"Achar trabalho ou renda"}, prova:{n:"Passar numa prova ou concurso", lente:"perto", agora:"Preparar uma prova"}, facul:{n:"Entrar ou seguir na faculdade", lente:"alvo", agora:"Avançar nos estudos"}, carreira:{n:"Crescer ou mudar de carreira", lente:"alvo", agora:"Dar o próximo passo na carreira"}, descobrir:{n:"Descobrir o meu caminho", lente:"futuras", agora:"Descobrir o caminho"}};
+const MARCHAS = {avancar:{n:"Avançar", d:"rotina completa"}, manter:{n:"Manter", d:"20 min por dia, só o essencial", min:20}, proteger:{n:"Proteger", d:"5 min por dia: uma questão e uma revisão", min:5}, pausa:{n:"Pausa combinada", d:"nada fica atrasado até a volta"}};
+const ETAPAS = [["Descobrir","i-spark"],["Preparar","i-book"],["Conquistar","i-target"],["Evoluir","i-chart"]];
+function rota(){ const r = M.rota = M.rota || {}; r.eventos=r.eventos||[]; r.planos=r.planos||[]; r.marcha=r.marcha||"avancar"; return r; }
+function marchaAtual(){ const r=rota(); if(r.ate && diasAte(r.ate)!=null && diasAte(r.ate)<0){ r.eventos.push({d:iso(today()), tipo:"volta", de:r.marcha, para:r.volta||"avancar"}); r.marcha=r.volta||"avancar"; r.ate=""; r.volta=""; try{ saveMain(); }catch(e){} } return r.marcha; }
+function etapaAtual(f){ const c=rota().ctx; if(!f) return (c||P().custom||OWNER!==false) ? 1 : 0;
+  const ms=marcosDe(f), prova=ms.find(m=>/prova/i.test(m.r)); if(prova && (prova.ok || diasAte(prova.d)<0)){ const fim=ms[ms.length-1]; return fim&&fim.ok?3:2; } return 1; }
+function passoGeral(f){
+  const mar=marchaAtual(), r=rota(), lim=MARCHAS[mar].min;
+  if(mar==="pausa") return {pausa:true, txt:`Pausa combinada${r.ate?" até "+dataCurta(r.ate):""}. Nada fica atrasado.`};
+  if(f){ const ps=passoHoje(f); if(ps.feito) return {feito:true, txt:ps.amanha}; if(!ps.folga) return {min:ps.min, txt:ps.mat, det:ps.det, act:"frente-estudar", id:f.id}; }
+  const t=today(), nm=nowMin(), rec=day(iso(t)).blocks;
+  const b=(blocksOf(t)||[]).find(x=>["estudo","biblia"].includes(kindOf(x)) && !rec[bkey(x)] && toMin(x.b)>nm);
+  if(b){ const dur=toMin(b.b)-toMin(b.a); return {min:lim?Math.min(lim,dur):dur, txt:b.l, det:`${fmtH(b.a)}–${fmtH(b.b)}${lim?` · no ritmo ${MARCHAS[mar].n}, ${lim} min já contam`:""}`, act:"bloco", k:bkey(b)}; }
+  if(!r.ctx) return {min:2, txt:"Contar onde você está hoje", det:"5 perguntas rápidas para o app saber de onde partir", act:"partida"};
+  return {min:5, txt:"Ver o que está aberto para você", det:"Oportunidades reais, com fonte oficial", act:"oport"};
+}
+function jornadaHTML(){
+  const f=frenteAtiva(), r=rota(), c=r.ctx, foto=fotoOk(M.profile.fotoDestino)?M.profile.fotoDestino:"", et=etapaAtual(f), pg=passoGeral(f), mar=marchaAtual();
+  const pm=f?proxMarco(f):null, n=pm?diasAte(pm.d):null;
+  const titulo = f ? null : (c&&c.sonho) ? c.sonho : (OWNER!==false||P().custom) ? P().meta : "Qual é o próximo passo da sua vida?";
+  const passo = pg.pausa||pg.feito ? `<div class="j-hoje"><span class="grow"><span class="tag">Hoje</span><b>${pg.feito?"Passo de hoje feito":"Em pausa"}</b><small>${esc(pg.txt)}</small></span></div>`
+    : `<button class="j-hoje" data-act="${pg.act}" ${pg.id?`data-id="${esc(pg.id)}"`:""} ${pg.k?`data-k="${esc(pg.k)}"`:""}><svg class="icon" aria-hidden="true"><use href="#i-cal"/></svg><span class="grow"><span class="tag">Hoje</span><b><span class="j-min">${pg.min}</span> min · ${esc(pg.txt)}</b>${pg.det?`<small>${esc(pg.det)}</small>`:""}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>`;
+  return `<section class="destino jornada${foto?" com-foto":""}" ${foto?`style="background-image:linear-gradient(180deg,rgb(5 6 10 / .58),rgb(5 6 10 / .93) 60%),url('${foto}')"`:""} aria-label="Sua jornada">
+    <div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow" style="color:rgb(255 255 255 / .8)">Sua jornada${mar!=="avancar"?` · ritmo ${MARCHAS[mar].n}`:""}</span><span class="row" style="gap:8px"><button class="x" data-act="oport" aria-label="Radar de oportunidades"><svg class="icon"><use href="#i-spark"/></svg></button><button class="x" data-act="destino-foto" aria-label="${foto?"Trocar a":"Pôr uma"} foto do seu porquê"><svg class="icon"><use href="#i-cam"/></svg></button></span></div>
+    <div class="d-tit"><h2>${f?`<button class="d-lk" data-act="frente" data-id="${esc(f.id)}">${esc(f.titulo)}<span class="sr"> · abrir a frente</span></button>`:esc(titulo)}</h2>${f&&f.salario?`<span class="d-din">${esc(f.salario)}</span>`:""}${f&&f.beneficios?`<small>+ ${esc(f.beneficios)}</small>`:""}</div>
+    <ol class="estrada" aria-label="Etapas da jornada">${ETAPAS.map(([nm,ic],i)=>`<li class="${i<et?"ok":i===et?"aqui":""}"${i===et?' aria-current="step"':""}><i aria-hidden="true"><svg class="icon"><use href="#${ic}"/></svg></i><b>${nm}</b></li>`).join("")}</ol>
+    ${pm?`<p class="d-cont"><b>${n}</b><span>${n===0?"é hoje:":n===1?"dia para:":"dias para:"}<br>${esc(pm.r.replace(/\s+até$/i,""))}</span></p>`:""}
+    ${f?trilhaHTML(f):""}
+    ${passo}
+    ${foto?"":`<button class="link" data-act="destino-foto" style="justify-self:start;min-height:44px;color:rgb(255 255 255 / .85)">Pôr uma foto do seu porquê (família, sonho, lugar)</button>`}
+  </section>
+  <div class="j-grid">${faixasHTML(f)}${radarHTML()}${vidaCardHTML()}</div>`;
+}
+function faixasHTML(f){
+  const c=rota().ctx||{}, sonho=c.sonho||((OWNER!==false||P().custom)?P().meta:""), pr=PRIOR[c.prioridade];
+  const agora = f ? f.titulo : pr ? pr.agora : "";
+  if(!agora && !sonho) return `<button class="item op-entrada" data-act="partida"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-target"/></svg><span class="grow"><b>Ponto de partida</b><small>5 perguntas para o app entender a sua vida agora</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`;
+  const ponte = f && f.ponte ? f.ponte : (agora && sonho && c.prioridade==="renda") ? "O trabalho de agora sustenta o caminho do sonho." : "";
+  return `<section class="faixas" aria-label="Duas faixas">
+    <div class="faixa agora"><span class="tag">Faixa agora</span><b>${esc(agora||"Ainda não definida")}</b>${agora?"":`<button class="link" data-act="partida" style="min-height:44px">Definir</button>`}</div>
+    <div class="faixa sonho"><span class="tag">Faixa sonho</span><b>${esc(sonho||"Vamos descobrir juntos")}</b>${sonho?"":`<button class="link" data-act="quiz-novo" style="min-height:44px">Descobrir</button>`}</div>
+    ${ponte?`<p class="faixa-ponte"><span class="tag">Ponte</span> ${esc(ponte)}</p>`:""}
+  </section>`;
+}
+function radarHTML(){
+  const its=[]; Object.values(M.oport||{}).forEach(c=>(c&&c.itens||[]).forEach(o=>{ const ni=diasAte(o.inscricao_ate); if(!(ni!=null&&ni<0) && !its.some(x=>x.titulo===o.titulo)) its.push({...o, _d:c.data}); }));
+  const loc=localTxt();
+  return `<section class="radar" aria-label="Radar da vida real">
+    <div class="row" style="justify-content:space-between;gap:8px"><span class="tag">Radar da vida real${loc?` · ${esc(loc)}`:""}</span><button class="link" data-act="oport" style="min-height:44px;padding-inline:6px">Abrir</button></div>
+    ${its.length?its.slice(0,2).map(o=>{ const ni=diasAte(o.inscricao_ate); return `<button class="radar-it" data-act="oport"><span class="grow"><b>${esc(o.titulo)}</b><small>${esc([o.onde, o.salario].filter(Boolean).join(" · "))}</small><span class="row wrap" style="gap:6px">${o.url?`<span class="chip sm">Fonte oficial</span>`:""}${ni!=null?`<span class="chip sm${ni<=7?" urg":""}">Inscrição: ${ni===0?"hoje":ni+" dias"}</span>`:""}${o._d?`<span class="chip sm">Conferido ${dataCurta(o._d)}</span>`:""}</span></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>`; }).join("")
+      : `<p class="muted" style="margin:0;font-size:14px">O radar ainda não pesquisou${loc?` em ${esc(loc)}`:""}. Toque em Abrir para ver concursos, seletivos, vagas e cursos reais.</p>`}
+  </section>`;
+}
+function vidaCardHTML(){ const mar=marchaAtual(), r=rota();
+  return `<section class="vida-card" aria-label="Recalcular a rota"><span class="tag">Assistente de rota</span><b>Sua rotina mudou?</b><small class="muted">Trabalho novo, semana pesada, família, mudança de cidade. O app reorganiza sem apagar nada do que você já fez.</small>
+    ${mar!=="avancar"?`<small>Ritmo atual: <b style="font-weight:500">${MARCHAS[mar].n}</b>${r.ate?` até ${dataCurta(r.ate)}`:""}</small>`:""}
+    <button class="btn primary" style="min-height:48px;justify-self:start" data-act="vida">Recalcular minha rota</button></section>`; }
+
+/* ---------- Ponto de Partida ---------- */
+function openPartida(){
+  const c0=rota().ctx||{}, l0=M.profile.local||{};
+  const D={situacao:c0.situacao||"", prioridade:c0.prioridade||"", sonho:c0.sonho||((OWNER!==false||P().custom)?P().meta:"")||"", min:c0.min||40, cidade:l0.cidade||"", uf:l0.uf||""};
+  const steps=["situacao","prioridade","sonho","min","local","mapa"], S=steps.length;
+  const F = FLOW = {kind:"partida", at:0};
+  F.pick=(g,v)=>{ D[g] = g==="min" ? +v : v; const nb=SH.querySelector('[data-sh="next"]'); if(nb) nb.disabled=false; };
+  const ler=()=>{ const s=steps[F.at]; if(s==="sonho"){ const t=$("#pp-sonho"); if(t) D.sonho=t.value.trim().slice(0,160); } if(s==="local"){ const a=$("#pp-cid"), b=$("#pp-uf"); if(a) D.cidade=a.value.trim().slice(0,60); if(b) D.uf=b.value.trim().toUpperCase().slice(0,2); } };
+  F.next=()=>{ ler(); if(steps[F.at]==="mapa"){ salvar(); return; } F.at++; draw(true); };
+  F.back=()=>{ ler(); F.at=Math.max(0,F.at-1); draw(true); };
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-op-1) 28%,transparent),transparent 60%),var(--bg)");
+  const opts=(g,o,lbl)=>`<div class="pick" data-pick="${g}" role="group" aria-label="${lbl}" style="display:grid;gap:8px">${Object.entries(o).map(([k,v])=>`<button data-v="${k}" aria-pressed="${String(D[g])===String(k)}" style="border-radius:16px;min-height:56px;text-align:left;padding:8px 16px">${esc(typeof v==="string"?v:v.n)}</button>`).join("")}</div>`;
+  const pular=`<button class="link" data-pp="pular" style="min-height:44px;justify-self:start">Pular esta pergunta</button>`;
+  function draw(foco){ if(FLOW!==F) return; const s=steps[F.at]; let body="", next="Continuar", ok=true;
+    if(s==="situacao"){ ok=!!D.situacao; body=`<h2 class="q">Como está a sua vida agora?</h2><p class="muted" style="margin:0">Sem julgamento. É só para o app saber de onde partir.</p>${opts("situacao",SITU,"Situação")}${pular}`; }
+    else if(s==="prioridade"){ ok=!!D.prioridade; body=`<h2 class="q">O que é mais urgente neste momento?</h2><p class="muted" style="margin:0">Pode ser diferente do seu sonho. Os dois vão andar juntos.</p>${opts("prioridade",PRIOR,"Prioridade")}${pular}`; }
+    else if(s==="sonho"){ body=`<h2 class="q">E o sonho, lá na frente?</h2><p class="muted" style="margin:0">Uma frase. Se ainda não sabe, deixe em branco: o app ajuda a descobrir.</p><label class="field"><span>Meu sonho</span><textarea class="inp" id="pp-sonho" rows="3" placeholder="Ex.: ser delegada; trabalhar com dados; abrir meu negócio">${esc(D.sonho)}</textarea></label>`; }
+    else if(s==="min"){ body=`<h2 class="q">Quanto tempo por dia cabe na sua vida real?</h2>${opts("min",{5:"5 min · só para não perder o fio",20:"20 min",40:"40 min",60:"1 hora",90:"1h30 ou mais"},"Tempo por dia")}`; }
+    else if(s==="local"){ body=`<h2 class="q">Onde você mora?</h2><p class="muted" style="margin:0">Serve só para achar oportunidades perto de você.</p><div class="row" style="gap:8px;align-items:end"><label class="field grow"><span>Cidade</span><input class="inp" id="pp-cid" autocomplete="address-level2" value="${esc(D.cidade)}"></label><label class="field" style="width:84px"><span>UF</span><input class="inp" id="pp-uf" maxlength="2" autocomplete="address-level1" style="text-transform:uppercase" value="${esc(D.uf)}"></label></div>${pular}`; }
+    else { const pr=PRIOR[D.prioridade], f=frenteAtiva(), agora=f?f.titulo:pr?pr.agora:"Ainda em aberto", loc=[D.cidade,D.uf].filter(Boolean).join(" - ");
+      const acao = D.prioridade==="descobrir"&&!D.sonho ? "Fazer o Quiz de direção (a Bússola)" : f ? "Seguir o passo de hoje da sua frente" : `Abrir o radar: ${LENTES[(pr||PRIOR.renda).lente].n.toLowerCase()}${loc&&(pr||{}).lente!=="alvo"?" em "+loc:""}`;
+      next="Salvar e começar";
+      body=`<h2 class="q">Seu ponto de partida</h2>
+        <div class="faixas"><div class="faixa agora"><span class="tag">Faixa agora</span><b>${esc(agora)}</b><small class="muted">${esc([SITU[D.situacao],D.min+" min por dia"].filter(Boolean).join(" · "))}</small></div>
+        <div class="faixa sonho"><span class="tag">Faixa sonho</span><b>${esc(D.sonho||"Vamos descobrir juntos")}</b></div></div>
+        ${D.prioridade==="renda"&&D.sonho?`<p class="faixa-ponte"><span class="tag">Ponte</span> A renda vem primeiro, e o sonho não sai da tela: ele guarda um fio de 15 minutos por semana.</p>`:""}
+        <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Próxima ação</span><b style="font-weight:500">${esc(acao)}</b></div>
+        <small class="faint">Você pode mudar isso quando quiser no menu, em Ponto de partida.</small>`; }
+    sheetHTML({title:"Ponto de partida", steps:S, at:F.at, next, nextOk:ok, body});
+    const pp=SH.querySelector('[data-pp="pular"]'); if(pp) pp.onclick=()=>{ ler(); F.at=Math.min(S-1,F.at+1); draw(true); };
+    if(foco){ const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); } }
+  }
+  function salvar(){ const r=rota(), l=M.profile.local||{};
+    r.ctx={situacao:D.situacao, prioridade:D.prioridade, sonho:D.sonho, min:D.min, data:iso(today())};
+    if(D.cidade && (D.cidade!==l.cidade || D.uf!==l.uf)){ M.profile.local={cidade:D.cidade, uf:D.uf}; M.oport={}; }
+    r.eventos.push({d:iso(today()), tipo:"partida", prioridade:D.prioridade, situacao:D.situacao});
+    saveMain(); closeSheet(); TAB="hoje"; SELDAY=null; render(); window.scrollTo({top:0});
+    const pr=PRIOR[D.prioridade];
+    if(D.prioridade==="descobrir"&&!D.sonho) openDirecao(); else if(!frenteAtiva()) openOportunidades((pr||PRIOR.renda).lente);
+    else toast("Ponto de partida salvo.");
+  }
+  draw();
+}
+
+/* ---------- Minha vida mudou: Recalculadora de Rota ---------- */
+const MUDANCAS = {emprego:"Arrumei um trabalho", desemprego:"Perdi o trabalho", pesada:"Semana pesada", familia:"Família ou saúde", cidade:"Mudei de cidade", vontade:"Perdi a vontade", outra:"Outra coisa"};
+function openVida(){
+  const r=rota(), fs=frentes(), l0=M.profile.local||{};
+  const D={tipo:"", min:null, dias:(fs[0]&&fs[0].dias)||[1,2,3,4,5], dur:7, modo:"proteger", vontade:"", cidade:l0.cidade||"", uf:l0.uf||"", texto:""};
+  const steps=["tipo","detalhe","proposta"], S=steps.length;
+  const F = FLOW = {kind:"vida", at:0};
+  F.pick=(g,v,on)=>{ if(g==="dias"){ const d=+v; D.dias=on?[...new Set([...D.dias,d])].sort():D.dias.filter(x=>x!==d); } else D[g] = ["min","dur"].includes(g) ? +v : v; const nb=SH.querySelector('[data-sh="next"]'); if(nb) nb.disabled=!pronto(); };
+  const pronto=()=>{ const s=steps[F.at]; if(s==="tipo") return !!D.tipo; if(s==="detalhe"){ if(["emprego","desemprego"].includes(D.tipo)) return D.min!=null && (D.tipo!=="emprego"||D.dias.length>0); if(D.tipo==="vontade") return !!D.vontade; } return true; };
+  const ler=()=>{ const a=$("#vd-cid"), b=$("#vd-uf"), t=$("#vd-txt"); if(a) D.cidade=a.value.trim().slice(0,60); if(b) D.uf=b.value.trim().toUpperCase().slice(0,2); if(t) D.texto=t.value.trim().slice(0,600); };
+  F.next=()=>{ ler(); if(steps[F.at]==="detalhe" && D.tipo==="vontade" && D.vontade==="conversar"){ closeSheetSoft(); openChat("Perdi a vontade de seguir o meu plano. Me ajuda a entender o que está acontecendo e a achar um próximo passo pequeno?"); return; }
+    if(steps[F.at]==="proposta"){ aplicar(); return; } F.at++; draw(true); };
+  F.back=()=>{ ler(); F.at=Math.max(0,F.at-1); draw(true); };
+  openSheet("radial-gradient(120% 60% at 0% 0%,rgb(110 155 255 / .25),transparent 60%),var(--bg)");
+  const opts=(g,o,lbl,multi)=>`<div class="pick" data-pick="${g}" ${multi?"data-multi":""} role="group" aria-label="${lbl}" ${multi?"":'style="display:grid;gap:8px"'}>${Object.entries(o).map(([k,v])=>`<button data-v="${k}" aria-pressed="${multi?D[g].includes(+k):String(D[g])===String(k)}" ${multi?"":'style="border-radius:16px;min-height:56px;text-align:left;padding:8px 16px"'}>${esc(v)}</button>`).join("")}</div>`;
+  const diasOpts=()=>opts("dias",Object.fromEntries([1,2,3,4,5,6,0].map(d=>[d,DIAS_N[d]])),"Dias da semana",true);
+  function proposta(){ const antes={marcha:r.marcha, ate:r.ate||"", frentes:fs.map(f=>({id:f.id, t:f.titulo, min:f.min, dias:f.dias})), ctx:{...(r.ctx||{})}, local:{...l0}};
+    const dep={marcha:r.marcha, ate:"", volta:"", frentes:fs.map(f=>({id:f.id, t:f.titulo, min:f.min, dias:f.dias})), ctx:{...(r.ctx||{})}, local:{...l0}, abrir:"", notas:[]};
+    const fim=n=>iso(addDays(today(),n)), marchaPorMin=m=>m<=5?"proteger":m<=20?"manter":"avancar";
+    if(D.tipo==="emprego"){ dep.marcha=marchaPorMin(D.min); dep.frentes.forEach(x=>{ x.min=Math.max(5,D.min); x.dias=D.dias.slice(); }); dep.ctx.situacao="trabalho"; dep.notas.push("O sonho continua na tela, com um fio de 15 minutos por semana.","Mudança de rotina é a melhor hora de fixar um hábito novo: escolha um horário fixo."); }
+    else if(D.tipo==="desemprego"){ dep.marcha="avancar"; dep.frentes.forEach(x=>x.min=D.min); dep.ctx.situacao="sem"; dep.ctx.prioridade="renda"; dep.abrir="renda"; dep.notas.push("O radar abre em Renda agora, para achar trabalho perto de você."); }
+    else if(D.tipo==="pesada"){ dep.marcha="proteger"; dep.ate=fim(D.dur); dep.volta=r.marcha==="pausa"?"avancar":r.marcha; dep.notas.push(`Por ${D.dur} dias, 5 minutos já contam. Depois o ritmo volta sozinho.`); }
+    else if(D.tipo==="familia"){ dep.marcha=D.modo; dep.ate=fim(D.dur); dep.volta=r.marcha==="pausa"?"avancar":r.marcha; dep.notas.push(D.modo==="pausa"?`Nada fica atrasado até ${dataCurta(dep.ate)}. No dia da volta, o app recebe você com o passo do dia.`:"5 minutos por dia mantêm o fio sem pesar."); }
+    else if(D.tipo==="cidade"){ dep.local={cidade:D.cidade, uf:D.uf}; dep.abrir="perto"; dep.notas.push("O radar vai pesquisar de novo na cidade nova."); }
+    else if(D.tipo==="vontade"){ if(D.vontade==="recomecar"){ const seg=addDays(today(),((8-today().getDay())%7)||7); dep.marcha="manter"; dep.ate=iso(addDays(seg,-1)); dep.volta="avancar"; dep.notas.push(`Segunda, ${seg.getDate()}/${seg.getMonth()+1}, é um recomeço: semana nova, página nova. Até lá, só 20 minutos.`); } else { dep.marcha="proteger"; dep.ate=fim(7); dep.volta="avancar"; dep.notas.push("Uma semana leve: 5 minutos por dia. Vontade costuma voltar com pequenas vitórias."); } }
+    else { if(D.min!=null){ dep.marcha=marchaPorMin(D.min); dep.frentes.forEach(x=>x.min=Math.max(5,D.min)); } if(D.texto) dep.notas.push("O que você contou fica guardado para o Claude adaptar as próximas aulas e sugestões."); }
+    return {antes, dep};
+  }
+  const linha=(rot,a,b)=>a===b?"":`<div class="rc-l"><span>${esc(rot)}</span><span class="rc-v"><s>${esc(a)}</s> <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg> <b>${esc(b)}</b></span></div>`;
+  const ritmo=(m,ate)=>MARCHAS[m].n+(ate?` até ${dataCurta(ate)}`:"");
+  const diasTxt=ds=>(ds||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ");
+  function draw(foco){ if(FLOW!==F) return; const s=steps[F.at]; let body="", next="Continuar";
+    if(s==="tipo") body=`<h2 class="q">O que mudou?</h2><p class="muted" style="margin:0">Mudança não é fracasso. O app ajusta o caminho e guarda tudo o que você já fez.</p>${opts("tipo",MUDANCAS,"O que mudou")}`;
+    else if(s==="detalhe"){ const t=D.tipo;
+      if(t==="emprego") body=`<h2 class="q">Quanto tempo por dia sobra para estudar?</h2>${opts("min",{5:"5 min",20:"20 min",40:"40 min",60:"1 hora"},"Tempo por dia")}<span class="tag">Em quais dias</span>${diasOpts()}`;
+      else if(t==="desemprego") body=`<h2 class="q">Quanto tempo por dia você pode dar agora?</h2><p class="muted" style="margin:0">Parte do tempo vai para procurar trabalho. O app conta isso.</p>${opts("min",{20:"20 min",40:"40 min",60:"1 hora",90:"1h30"},"Tempo por dia")}`;
+      else if(t==="pesada") body=`<h2 class="q">Por quantos dias?</h2>${opts("dur",{3:"3 dias",7:"1 semana",14:"2 semanas"},"Duração")}`;
+      else if(t==="familia") body=`<h2 class="q">Do que você precisa agora?</h2>${opts("modo",{proteger:"Manter um fio de 5 min por dia",pausa:"Parar e voltar depois, sem atraso"},"Modo")}<span class="tag">Por quanto tempo</span>${opts("dur",{7:"1 semana",14:"2 semanas",30:"1 mês"},"Duração")}`;
+      else if(t==="cidade") body=`<h2 class="q">Para onde você foi?</h2><div class="row" style="gap:8px;align-items:end"><label class="field grow"><span>Cidade</span><input class="inp" id="vd-cid" value="${esc(D.cidade)}"></label><label class="field" style="width:84px"><span>UF</span><input class="inp" id="vd-uf" maxlength="2" style="text-transform:uppercase" value="${esc(D.uf)}"></label></div>`;
+      else if(t==="vontade") body=`<h2 class="q">Tudo bem. Acontece com todo mundo.</h2><p class="muted" style="margin:0">Escolha o que parece mais leve.</p>${opts("vontade",{leve:"Uma semana leve: 5 minutos por dia",recomecar:"Recomeçar na segunda-feira",conversar:"Conversar com o Claude sobre isso"},"Escolha")}`;
+      else body=`<h2 class="q">Conte com as suas palavras</h2><label class="field"><span>O que mudou</span><textarea class="inp" id="vd-txt" rows="4">${esc(D.texto)}</textarea></label><span class="tag">Tempo por dia agora</span>${opts("min",{5:"5 min",20:"20 min",40:"40 min",60:"1 hora"},"Tempo por dia")}`; }
+    else { const {antes, dep}=F.prop=proposta(); next="Aplicar a nova rota";
+      const linhas=[linha("Ritmo", ritmo(antes.marcha,antes.ate), ritmo(dep.marcha,dep.ate)), ...dep.frentes.map((x,i)=>linha(x.t, `${antes.frentes[i].min} min · ${diasTxt(antes.frentes[i].dias)}`, `${x.min} min · ${diasTxt(x.dias)}`)),
+        linha("Situação", SITU[antes.ctx.situacao]||"—", SITU[dep.ctx.situacao]||"—"), linha("Prioridade", (PRIOR[antes.ctx.prioridade]||{}).n||"—", (PRIOR[dep.ctx.prioridade]||{}).n||"—"),
+        linha("Cidade", [antes.local.cidade,antes.local.uf].filter(Boolean).join(" - ")||"—", [dep.local.cidade,dep.local.uf].filter(Boolean).join(" - ")||"—")].join("");
+      body=`<h2 class="q">Sua nova rota</h2>
+        <div class="glass pad rc" style="display:grid;gap:10px"><span class="tag">O que muda</span>${linhas||`<p class="muted" style="margin:0">O ritmo continua o mesmo.</p>`}</div>
+        ${dep.notas.length?`<ul style="margin:0;padding-left:20px;display:grid;gap:6px">${dep.notas.map(n=>`<li>${esc(n)}</li>`).join("")}</ul>`:""}
+        <div class="faixa-ponte"><span class="tag">O que não muda</span> Seus estudos feitos, suas revisões, seus pontos e o seu sonho.</div>
+        <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:44px" data-vd="ajustar">Ajustar</button><button class="btn ghost" style="min-height:44px" data-vd="nao">Agora não</button></div>
+        ${P().custom?`<button class="link" data-vd="remodelar" style="min-height:44px;justify-self:start">Também refazer a rotina do projeto com o Claude</button>`:""}`; }
+    sheetHTML({title:"Minha vida mudou", steps:S, at:F.at, next, nextOk:pronto(), body});
+    SH.querySelectorAll("[data-vd]").forEach(b=>b.onclick=()=>{ const k=b.dataset.vd;
+      if(k==="ajustar"){ F.at=1; draw(true); }
+      else if(k==="nao"){ r.planos.push({d:iso(today()), tipo:D.tipo, status:"recusado"}); saveMain(); closeSheet(); toast("Tudo bem. Nada foi mudado."); }
+      else if(k==="remodelar"){ aplicar(true); openRemodelar(`Minha vida mudou: ${MUDANCAS[D.tipo]}. ${D.texto||""} ${D.min!=null?`Agora tenho ${D.min} min por dia.`:""}`.trim()); } });
+    if(foco){ const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); } }
+  }
+  function aplicar(semFechar){ const {antes, dep}=F.prop||proposta();
+    r.marcha=dep.marcha; r.ate=dep.ate; r.volta=dep.volta; r.ctx=Object.keys(dep.ctx).length?{...dep.ctx, data:iso(today())}:r.ctx;
+    dep.frentes.forEach(x=>{ const f=fs.find(y=>y.id===x.id); if(f){ f.min=x.min; f.dias=x.dias; } });
+    if(dep.local.cidade!==antes.local.cidade || dep.local.uf!==antes.local.uf){ M.profile.local=dep.local; M.oport={}; }
+    if(D.texto) (M.profile.descobertas=M.profile.descobertas||[]).push({data:iso(today()), texto:"Mudança de vida: "+D.texto});
+    r.planos.push({d:iso(today()), tipo:D.tipo, status:"aplicado", antes, depois:{marcha:dep.marcha, ate:dep.ate, frentes:dep.frentes}});
+    r.eventos.push({d:iso(today()), tipo:"vida", mudanca:D.tipo});
+    saveMain(); if(semFechar){ closeSheetSoft(); return; }
+    closeSheet(); TAB="hoje"; SELDAY=null; render(); window.scrollTo({top:0}); toast("Rota recalculada. Seu progresso continua todo aqui.");
+    if(dep.abrir) openOportunidades(dep.abrir);
+  }
   draw();
 }
 /* ---------- ações da página ---------- */
@@ -3051,6 +3258,8 @@ document.addEventListener("click", e => {
   else if(act==="perfil") openProfile();
   else if(act==="menu") openMenu();
   else if(act==="oport") openOportunidades();
+  else if(act==="partida") openPartida();
+  else if(act==="vida") openVida();
   else if(act==="frente") openFrente(a.dataset.id);
   else if(act==="frente-estudar") estudarFrente(a.dataset.id);
   else if(act==="destino-foto") fotoDestino();
