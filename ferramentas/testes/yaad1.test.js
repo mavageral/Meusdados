@@ -107,6 +107,21 @@ const CENARIOS = {
     ok(r[0] === 4 && r[1] === 15, "intervalos do FSRS fora do esperado: " + r);
     ok(r[2] <= 12, "FSRS agendou depois da prova");
   },
+  "Jornada, mapa do radar e currículo vivo": async (p) => {
+    const r = await p.evaluate(() => {
+      M.profile.local = { cidade: "Iracema", uf: "RR" }; M.geo = { "iracema|RR": [-61.05, 2.18], "boa vista|RR": [-60.67, 2.82] };
+      M.oport = { perto: { data: "2026-11-27", itens: [{ tipo: "vaga", titulo: "Assistente", onde: "Boa Vista - RR", inscricao_ate: "2026-12-15" }, { tipo: "seletivo", titulo: "IBGE", onde: "Iracema - RR", inscricao_ate: "2026-11-30" }] } };
+      const a = alvoPrep(), st = prepSt(a), m = a.mats[0].n; for (let i = 0; i < 12; i++) st.resp.push({ id: "t" + i, mat: m, ok: i % 6 !== 0, d: "2026-11-26" });
+      M.candidaturas = [{ key: "g1", titulo: "Assistente", status: "enviada" }]; TAB = "hoje"; render();
+      const jorn = document.querySelector(".estrada-h [aria-current=step]");
+      openOportunidades("perto"); const mapa = document.querySelector("#shb .rmapa svg");
+      closeSheet(); openConquistas(); const cv = document.querySelector(".cvv");
+      return { jorn: jorn && jorn.textContent, mapa: mapa && mapa.getAttribute("aria-label"), pins: mapa ? mapa.querySelectorAll(".pin").length : 0, cv: cv && cv.textContent, txt: cvVivoTxt() };
+    });
+    ok(r.jorn === "Conquistar", "jornada não marcou Conquistar depois da candidatura enviada: " + r.jorn);
+    ok(r.pins === 2 && /2 oportunidades em 2 cidades/.test(r.mapa || ""), "mapa do radar sem os pinos certos: " + r.mapa);
+    ok(/83% de acerto/.test(r.txt) && /1 candidatura enviada/.test(r.txt), "currículo vivo sem os fatos do treino: " + r.txt);
+  },
   "Segurança: link desconhecido recusado e .ics blindado": async (p) => {
     const r = await p.evaluate(async () => {
       const tools = await ferramentasBusca(); const ler = tools.find(t => t.name === "ler_pagina");

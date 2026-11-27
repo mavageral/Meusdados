@@ -225,3 +225,11 @@ Revisão de segurança do app (subagente `revisor-seguranca`) e correções apli
 Pendências que dependem de decisão ou da chave de IA do site:
 - dados pessoais da Edna escritos no código (repositório público) e o padrão "dona" quando não há login;
 - quando a chave da IA entrar no site: `registrar_uso` só pelo servidor, limite por IP, teto de gasto na Anthropic, CSP sem `unsafe-inline`, tipos de arquivo no bucket de fotos, validação em `api/claude.js` e segredo no `api/manter.js`.
+
+## 15. Conceito "IAD 1 · Sua vida em movimento" (27/11/2026)
+Imagem de conceito recebida (vida noturna em azul neon, celular central e quatro painéis). Quase tudo nela já existia no app: Radar da vida real, Sua preparação com domínio por matéria, Conquistas e "Sua rotina mudou? Recalcular minha rota". O que faltava foi construído com dados reais, sem inventar nada:
+- **Jornada visível no Início:** Descobrir → Preparar → Conquistar → Evoluir dentro do herói. A etapa vem do estado real (ponto de partida, frente, prova, candidatura enviada ou aprovada).
+- **"Hoje: x de y etapas"** embaixo do passo de hoje, contado pelos blocos feitos na agenda do dia.
+- **Mapa do Radar:** as oportunidades aparecem em volta de "Você" pela posição real das cidades (geocodificação TomTom já em cache), com anéis de distância. Verde até 60 km.
+- **Currículo vivo** (em Conquistas): matérias com 70% de acerto ou mais (com 10 respostas ou mais), questões treinadas, candidaturas e marcos cumpridos, e o gráfico "Seu crescimento" com 8 semanas. Ele entra sozinho no prompt de cada candidatura, como fato medido.
+- Decisão pendente com a Edna: trocar o laranja do app pelo azul neon do conceito, ou manter.
