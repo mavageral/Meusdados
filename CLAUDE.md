@@ -8,6 +8,7 @@ Repositório de projetos de design e dados da Edna (sites, apps, dashboards, por
 - **Referência nova de design** (arquivo ou imagem) → skill `extrair-referencia`.
 - **App de estudos (Projeto Caverna): as referências pétreas são obrigatórias.** Leia `design-lab/referencias-petreas.md` antes de qualquer tela desse projeto e compare o resultado com as 9 imagens (mural privado: https://claude.ai/artifact/VmL6uP7X3G4htThsweRKbX). A imagem 4 (assistente em passos) é a principal. Não altere essas referências sem pedido da Edna.
 - **Propósito central do app de estudos:** é um **app de direção** que se adapta à realidade de qualquer pessoa (faculdade, concurso, ENEM, emprego, autodescoberta). Leia `projetos/sala-caverna/VISAO.md` antes de mudar o produto. O Projeto Caverna da Edna é o primeiro projeto e o modelo.
+- **Yaad1 (reconstrução):** o pacote de 27/11 está em `projetos/sala-caverna/docs/reconstrucao/` (visão, arquitetura, plano por fases e auditoria do repositório real). Antes de mexer em tela ou fluxo, use as skills `yaad1-product-guardrails` e `yaad1-delivery-workflow`.
 - **Antes de entregar uma página**, rode o subagente `revisor-ui` e corrija o que ele marcar como grave.
 - Entregue com link: publique a página como Artifact. Quando o projeto estiver maduro, ofereça publicar na Vercel.
 

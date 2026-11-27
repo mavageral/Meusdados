@@ -239,6 +239,25 @@ h1,h2,h3,p{margin:0}
 .jg-ord .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid var(--edge-2);font:500 13px var(--mono)}.jg-ord button[disabled]{opacity:1}.jg-ord button.on .n{background:var(--text);color:var(--on-light);border-color:transparent}
 .jg-ord .ok .n{background:var(--ok);color:var(--on-ok);border-color:transparent}.jg-ord .no .n{background:var(--bad);color:var(--on-bad);border-color:transparent}
 .jg-pts{font:300 clamp(56px,16vw,80px)/1 var(--font);letter-spacing:-.04em}
+.sync-st{position:fixed;left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 8px);z-index:60;max-width:min(92vw,420px);min-height:44px;padding:8px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--warn) 60%,transparent);background:color-mix(in srgb,var(--bg-2) 92%,transparent);color:var(--text);font-size:13px;text-align:left;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+.cid-wrap{position:relative;width:100%;padding-top:40.625%;flex:none}.cid-wrap>.cid-cena{position:absolute;inset:0;height:100%}
+.cid-cena{width:100%;display:block;border-radius:18px;border:1px solid var(--edge);background:linear-gradient(180deg,color-mix(in srgb,var(--a-grad-2) 70%,var(--bg)),var(--bg-2))}
+.cid-cena .agua{fill:color-mix(in srgb,var(--a-tech-1) 35%,var(--bg))}.cid-cena .terra{fill:color-mix(in srgb,var(--a-op-2) 90%,var(--bg))}.cid-cena .pilar{fill:var(--faint)}.cid-cena .deck{fill:var(--text)}.cid-cena .gc{stroke:var(--a-anbima-1);stroke-width:2}.cid-cena .luz{fill:var(--warn)}.cid-cena .rampa{fill:var(--a-op-1)}.cid-cena .carro{fill:var(--c)}
+.cid-cena .novo{animation:cidIn .6s var(--spring) both;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes cidIn{from{transform:scaleY(0);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:no-preference){.cid-cena .carro.anda{animation:cidCarro 3.2s var(--ease) 1 both}@keyframes cidCarro{from{transform:translateX(-60px)}to{transform:translateX(260px)}}}
+@media (prefers-reduced-motion:reduce){.cid-cena .novo{animation:none}}
+.cid-mapa{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.cid-mapa button,.cid-mapa div{min-height:72px;border-radius:16px;border:1px solid var(--edge);background:var(--glass);padding:8px;display:grid;align-content:space-between;text-align:left;font-size:12px;line-height:1.25}
+.cid-mapa .on{border-color:var(--c);background:color-mix(in srgb,var(--c) 16%,var(--glass))}.cid-mapa .feito{border-color:var(--ok)}.cid-mapa .trava{opacity:.55}
+.cid-mapa b{font:500 11px var(--mono);color:var(--muted)}
+.cem{display:grid;grid-template-columns:repeat(10,1fr);gap:3px;max-width:300px}
+.cem i{aspect-ratio:1;border-radius:3px;background:var(--edge-2)}.cem i.on{background:var(--c)}.cem i.d10{background:var(--a-grad-1)}.cem i.d5{background:var(--a-op-1)}
+.cid-range{width:100%;min-height:44px;accent-color:var(--c)}
+.cid-itens{display:grid;gap:8px}.cid-itens button{display:flex;gap:12px;align-items:center;justify-content:space-between;min-height:56px;padding:10px 14px;border-radius:16px;border:1px solid var(--edge-2);background:var(--glass);text-align:left}
+.cid-itens b{white-space:nowrap}.cid-itens button[aria-pressed="true"]{border-color:var(--c);background:color-mix(in srgb,var(--c) 14%,var(--glass))}
+.cid-dec{display:grid;gap:6px;padding:12px;border-radius:16px;background:var(--glass);border:1px solid var(--edge)}.cid-dec div{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.cid-fb{min-height:24px;margin:0}.cid-fb.ok{color:var(--ok)}.cid-fb.no{color:var(--warn)}
 .j-hoje{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:color-mix(in srgb,var(--bg) 62%,transparent);border:1px solid var(--edge-2);color:inherit;min-height:64px}
 button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .j-hoje .grow{display:grid;gap:2px;min-width:0}
@@ -742,10 +761,18 @@ const lsGet = k => { try { return JSON.parse(localStorage.getItem(k) || "null");
 const lsSet = (k,v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) {} };
 function coll(){ return DB && UID ? DB.collection("data/users/" + UID) : null; }
 const qd = {};
-function dbPut(key, val){
+/* Sincronização visível (auditoria 27/11): falha de gravação não é mais silenciosa. Os dados ficam no aparelho e o app tenta de novo. */
+const SYNC = {falhas:{}, tent:{}};
+function paintSync(){ const n=Object.keys(SYNC.falhas).length; let el=document.getElementById("sync-st");
+  if(!n){ if(el) el.remove(); return; }
+  if(!el){ el=document.createElement("button"); el.id="sync-st"; el.type="button"; el.className="sync-st"; el.setAttribute("role","status"); el.onclick=()=>{ Object.keys(SYNC.falhas).forEach(k=>{ SYNC.tent[k]=0; dbPut(k, SYNC.falhas[k], 0); }); }; document.body.appendChild(el); }
+  el.textContent=`Salvo neste aparelho · ${n===1?"1 registro":n+" registros"} ainda sem ir para a nuvem. Tocar para tentar de novo`; }
+function dbPut(key, val, atraso){
   const c = coll(); if(!c) return;
   clearTimeout(qd[key]);
-  qd[key] = setTimeout(() => { c.doc(key).set(JSON.parse(JSON.stringify(val))).catch(()=>{}); }, 600);
+  qd[key] = setTimeout(() => { const snap=JSON.parse(JSON.stringify(val));
+    c.doc(key).set(snap).then(()=>{ delete SYNC.falhas[key]; SYNC.tent[key]=0; paintSync(); })
+      .catch(()=>{ SYNC.falhas[key]=snap; const t=SYNC.tent[key]=(SYNC.tent[key]||0)+1; paintSync(); if(t<=4) dbPut(key, snap, 3000*t); }); }, atraso==null?600:atraso);
 }
 function saveMain(){ lsSet("cav:main", M); dbPut("main", M); }
 function day(dstr){ return DAYS[dstr] || (DAYS[dstr] = {blocks:{}, final:null}); }
@@ -1063,7 +1090,7 @@ function vEstudar(){
       <input class="inp" id="q-livre" name="q" placeholder="O que você quer aprender agora?" style="border-radius:var(--pill)">
       <button class="btn c" type="submit" aria-label="Gerar aula"><svg class="icon"><use href="#i-spark"/></svg></button>
     </form>
-    <section style="display:grid;gap:10px" aria-label="Jogos"><div class="sec-h"><h2>Aprender jogando</h2></div><div class="jg-menu">${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-act="jogos" data-j="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div></section>
+    <section style="display:grid;gap:10px" aria-label="Jogos"><div class="sec-h"><h2>Aprender jogando</h2></div><div class="jg-menu"><button class="jg-it" data-act="cidade" style="--jc:var(--a-grad-1)"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#i-target"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>Operação Cidade Inteligente</b><small>Reconstrua a ponte com porcentagem.</small></span></button>${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-act="jogos" data-j="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div></section>
     <section style="display:grid;gap:4px"><div class="sec-h"><h2>Suas matérias</h2><span class="muted" style="font-size:13px">deslize</span></div>
       <div class="fan">${cards}</div></section>
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
@@ -1207,9 +1234,9 @@ function openSheet(bg){ document.querySelectorAll(".toast").forEach(t=>t.remove(
 document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) closeSheet(); });
 function keepSession(){
   const F=FLOW; if(!F||F.kind!=="study") return;
-  const st=F.steps[F.at]; if(st==="fim"||(!F.data.topic&&F.at===0)) { if(st==="fim") M.sessao=null; return; }
+  const st=F.steps[F.at], pend=st==="fim"&&F.data.result&&F.data.result.pendente; if(!pend&&(st==="fim"||(!F.data.topic&&F.at===0))) { if(st==="fim") M.sessao=null; return; }
   const D=F.data; M.sessao={proj:PID(), dstr:F.dstr, k:F.b?bkey(F.b):null, mat:F.mat, livre:!!F.livre, frente:F.frente||null, at:F.at, ts:Date.now(),
-    data:{topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs, notes:($("#st-notes")||{}).value??D.notes, conta:($("#st-conta")||{}).value??D.conta, aula:D.aula, t0:D.t0},
+    data:{topic:D.topic, fonte:D.fonte, link:D.link, thumbs:D.thumbs, notes:($("#st-notes")||{}).value??D.notes, conta:($("#st-conta")||{}).value??D.conta, aula:D.aula, t0:D.t0, ...(pend?{quiz:D.quiz, ans:D.ans, aberta:D.aberta, result:D.result}:{})},
     focus:F.focus?{total:F.focus.total,left:F.focus.left}:null};
   saveMain();
 }
@@ -1264,7 +1291,7 @@ function resumeSession(){
   const b = S.k ? findBlock(S.dstr,S.k) : null;
   openStudy({dstr:S.dstr, b, mat:S.mat, topic:S.data.topic, livre:S.livre});
   if(S.frente) FLOW.frente=S.frente;
-  Object.assign(FLOW.data, S.data, {fotos:[]}); FLOW.at=Math.min(S.at, FLOW.steps.length-2); if(S.focus) FLOW.focus={...S.focus, run:false};
+  Object.assign(FLOW.data, S.data, {fotos:[]}); FLOW.at=Math.min(S.at, FLOW.steps.length-2); if(S.data.result&&S.data.result.pendente) FLOW.at=FLOW.steps.indexOf("fim"); if(S.focus) FLOW.focus={...S.focus, run:false};
   drawStudy();
 }
 function openStudy({dstr, b, mat, topic, livre}){
@@ -1340,13 +1367,15 @@ function drawStudy(){
     const r = D.result;
     sheetHTML({title, steps:S, at:F.at, next:"Voltar para o dia", back:false, body: r ? `
       <div style="text-align:center;display:grid;gap:10px;justify-items:center;padding-top:12px">
-        <span class="eyebrow">${r.score==null?"Registrado":r.pass?"Bloco confirmado":"Ainda não passou"}</span>
+        <span class="eyebrow">${r.pendente?"Correção pendente":r.score==null?"Registrado":r.pass?"Bloco confirmado":"Ainda não passou"}</span>
+        ${r.pendente?`<b style="font-weight:500">Questões objetivas: ${r.obj} de ${r.tot} certas</b>`:""}
         ${r.score==null?"":`<div class="score">${Math.round(r.score*100)}<span style="font-size:.4em">%</span></div>`}
         <p class="title-m" style="max-width:34ch">${esc(r.msg)}</p>
         ${r.pass?`<span class="chip" style="background:var(--ok);color:var(--on-ok);border:0">+${r.xp} XP${D.topic&&!FLOW.isBib?" · revisão marcada para amanhã":""}</span>`:""}
       </div>
       ${r.feedback?`<div class="glass pad"><span class="tag">Avaliação da sua descrição${r.desc!=null?` · ${Math.round(r.desc*100)}%`:""}</span><p style="margin-top:8px">${esc(r.feedback)}</p>${(r.lacunas||[]).length?`<span class="tag" style="margin-top:10px;display:block">Rever</span><ul style="margin:6px 0 0;padding-left:18px">${r.lacunas.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:""}</div>`:""}
       ${D.quiz?`<details class="glass pad" ${r.pass?"":"open"}><summary style="cursor:pointer;font-weight:500">Ver correção das questões</summary><div style="display:grid;gap:12px;margin-top:12px">${quizHTML(D.quiz,D.ans,true)}</div></details>`:""}
+      ${r.pendente?`<div class="row wrap"><button class="btn primary" style="min-height:48px" data-act="recorrigir">Corrigir agora</button></div><small class="muted">Se fechar, o estudo continua em "Em andamento" com a correção pendente.</small>`:""}
       ${!r.pass&&r.score!=null?`<div class="row wrap"><button class="btn primary" data-act="refazer-prova">Fazer outra prova</button><button class="btn" data-act="aceitar-parcial">Registrar como parcial</button></div>`:""}` : thinking()});
   }
 }
@@ -1361,6 +1390,7 @@ SH.addEventListener("click", async e => {
   if(act==="tm-toggle"){ FLOW.focus.run=!FLOW.focus.run; tickFocus(); }
   if(act==="tm-add"){ FLOW.focus.total+=600; FLOW.focus.left+=600; tickFocus(); }
   if(act==="nao-fiz"){ openMiss(FLOW.dstr, FLOW.b); }
+  if(act==="recorrigir"){ FLOW.data.result=null; gradeQuiz(); return; }
   if(act==="refazer-prova"){ FLOW.data.quiz=null; FLOW.data.ans={}; FLOW.data.aberta=""; FLOW.at=FLOW.steps.indexOf("prova"); drawStudy(); }
   if(act==="aceitar-parcial"){ FLOW.data.result.pass=true; FLOW.data.result.msg="Registrado como parcial. O assunto volta para revisão amanhã."; saveStudy(FLOW.data.result.score, true); drawStudy(); }
   if(act==="ouvir"){ speak(a.dataset.txt || ""); }
@@ -1536,13 +1566,17 @@ async function gradeQuiz(){
   const F=FLOW, D=F.data, Q=D.quiz; const ta=$("#st-aberta"); if(ta) D.aberta=ta.value;
   const right = Q.qs.filter((q,i)=>D.ans[i]===q.c).length;
   F.at = F.steps.indexOf("fim"); D.result=null; drawStudy();
-  let open = {nota:0.5, descricao:0.5, feedback:"", lacunas:[]};
+  let open = null;
   try{
     open = await aiJson(`Avalie duas coisas de quem acabou de estudar "${D.topic}" (${SUBJ[F.mat]?SUBJ[F.mat].n:""}).
 1) A DESCRIÇÃO do que aprendeu, escrita sem consultar: """${D.conta.slice(0,2500)}""". Está correta? Mostra compreensão do porquê ou só repete regra?
 2) A resposta à pergunta aberta "${Q.aberta.p}" (critério: "${Q.aberta.criterio}"): """${D.aberta.slice(0,2000)}""".
 Seja justo e encorajador. Corrija equívocos com precisão. Responda só com JSON: {"descricao":0.0 a 1.0,"nota":0.0 a 1.0,"feedback":"3–4 frases sobre o que ela já domina e o que corrigir","lacunas":["ponto a rever 1","ponto 2"]}`, {modelTier:"quick"});
-  }catch(e){ open = {nota:0.5, descricao:0.5, feedback:"Não consegui avaliar a descrição e a pergunta aberta agora; contei meio ponto em cada.", lacunas:[]}; }
+  }catch(e){ open = null; }
+  if(!open || typeof open!=="object" || open.nota==null || open.descricao==null){
+    D.result = {pendente:true, score:null, pass:false, obj:right, tot:Q.qs.length,
+      msg:"Suas respostas estão guardadas. A IA não conseguiu corrigir a descrição e a pergunta aberta agora, então o bloco ainda não foi confirmado: nenhuma nota é dada no chute."};
+    keepSession(); if(FLOW===F) drawStudy(); return; }
   const cl = v => Math.max(0,Math.min(1,+v||0));
   const score = (right + cl(open.nota) + cl(open.descricao)) / (Q.qs.length+2);
   Q.qs.forEach((q,i)=>{ if(D.ans[i]!==q.c) logErro(F.mat, D.topic, q, D.ans[i]); });
@@ -3193,6 +3227,7 @@ function cvVivo(){ const comp=[], fatos=[];
   if(todas.length) fatos.push(`${todas.length} ${todas.length===1?"questão treinada":"questões treinadas"} no estilo de banca`);
   const env=(M.candidaturas||[]).filter(c=>c.status&&c.status!=="preparando"); if(env.length) fatos.push(`${env.length} ${env.length===1?"candidatura enviada":"candidaturas enviadas"}${env.some(c=>["entrevista","aprovada"].includes(c.status))?", com entrevista":""}`);
   const marcos=(M.frentes||[]).flatMap(f=>marcosDe(f).filter(m=>m.ok).map(m=>`${m.r.replace(/\s+até$/i,"")}: ${f.titulo}`)).slice(0,4); fatos.push(...marcos);
+  { const gs=((M.game||{}).sessoes||[]).filter(x=>x.dominio); if(gs.length) fatos.push(`Porcentagem (desconto e acréscimo): domínio demonstrado em missão com situação nova, ${dataCurta(gs[gs.length-1].d)}`); }
   CERTS.filter(c=>(M.certs||{})[c.id]==="concluído").forEach(c=>fatos.push(`Certificado: ${c.n} (${c.org})`));
   const g=conquistas().filter(c=>c.got).map(c=>c.n); return {comp, fatos, conq:g}; }
 function cvVivoTxt(){ const v=cvVivo(); return [...v.comp.map(c=>`${c.m}: ${c.p}% de acerto nas últimas questões (${c.n} respondidas no app)`), ...v.fatos].join("; "); }
@@ -3206,6 +3241,134 @@ function cvVivoHTML(){ const v=cvVivo(), tem=v.comp.length||v.fatos.length, gr=c
     ${tem?`<ul>${v.comp.map(c=>`<li><b style="font-weight:500">${esc(c.m)}</b>: ${c.p}% de acerto nas últimas questões <small class="muted">(${c.n} respondidas)</small></li>`).join("")}${v.fatos.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:`<p class="muted" style="margin:0">Ainda vazio. Ele se escreve sozinho com o que você prova no app: matérias com 70% de acerto, candidaturas, inscrições.</p>`}
     ${gr?`<span class="tag">Seu crescimento</span>${gr}`:""}
     ${tem?`<small class="muted">Entra sozinho em cada candidatura que o app prepara. Nada é inventado: só fatos do seu treino.</small><button class="btn sm" style="min-height:44px;justify-self:start" data-cv="copiar">Copiar</button>`:""}</section>`; }
+/* ======================================================================
+   IAD 1 · GAME (27/11/2026) — Operação Cidade Inteligente, missão 03: O orçamento da ponte.
+   Primeira fatia vertical da especificação GAME: narrativa, manipulação visual, construção com
+   restrição, explicação em outra representação quando erra, desafio de transferência, regras e
+   nota DETERMINÍSTICAS (sem IA), sessão retomável e evidências devolvidas ao app (Forja, revisão
+   FSRS, Currículo vivo, conquistas). Funciona sem internet e sem IA.
+   ====================================================================== */
+const CIDADE = [["Operações básicas","Distribuição de recursos"],["Frações","Divisão de materiais"],["Porcentagem","O orçamento da ponte"],["Regra de três","Escala e dimensionamento"],["Geometria","Construção de pontes"],["Equações","Problemas de engenharia"],["Gráficos","Dados da cidade"],["Raciocínio lógico","Rotas e recursos"]];
+const PONTE_ITENS = [{id:"rampa",n:"Rampa de acessibilidade",p:7,obr:true},{id:"guarda",n:"Guarda-corpo",p:6},{id:"luz",n:"Iluminação",p:8},{id:"pint",n:"Pintura anticorrosão",p:4},{id:"placa",n:"Placas de sinalização",p:2}];
+const BRL = v => "R$ "+Number(v).toLocaleString("pt-BR",{minimumFractionDigits:v%1?2:0, maximumFractionDigits:2});
+function numBR(t){ let x=String(t||"").replace(/[R$\s]/g,""); if(!x) return NaN; if(x.includes(",")) x=x.replace(/\./g,"").replace(",","."); else if(/^\d{1,3}(\.\d{3})+$/.test(x)) x=x.replace(/\./g,""); return Number(x); }
+/* Classificação determinística do erro de porcentagem: o erro vira informação, não só ponto perdido. */
+function diagPct(v, base, pct, modo){ const parte=base*pct/100, alvo=modo==="aumento"?base+parte:parte;
+  if(Math.abs(v-alvo)<.005) return "certo";
+  if(modo==="aumento"){ if(Math.abs(v-parte)<.005) return "so_parte"; if(Math.abs(v-(base-parte))<.005) return "inverteu"; }
+  else { if(Math.abs(v-(base-parte))<.005) return "resto"; if(v===pct) return "pct_valor"; }
+  if(v>0 && [10,100,1000].some(f=>Math.abs(v*f-alvo)<.005||Math.abs(v/f-alvo)<.005)) return "casa_decimal";
+  return "outro"; }
+const DIAG_TXT = {so_parte:"Você achou só o aumento. Falta somar ao valor original.", inverteu:"Isso seria um desconto. Aumento soma ao valor original.", resto:"Esse é o valor que sobra depois do desconto. A pergunta é o desconto.", pct_valor:"15% não é 15 reais: é 15 de cada 100.", casa_decimal:"A ideia está certa, mas a vírgula andou. 1% de 10.000 é 100.", outro:"Ainda não. Veja a conta em partes abaixo."};
+const DIAG_NOME = {so_parte:"calcula a parte e esquece de somar no aumento", inverteu:"troca aumento por desconto", resto:"confunde o desconto com o valor final", pct_valor:"trata a porcentagem como valor em reais", casa_decimal:"erra a casa decimal", outro:"cálculo de porcentagem"};
+function gameSt(){ const g=M.game=M.game||{}; g.sessoes=g.sessoes||[]; return g; }
+function cidadeCena(S, novo){ const it=S.itens||{}, f=S.fase, e1=f!=="e1", e2=["e3","fim"].includes(f), cls=k=>novo===k?" novo":"";
+  return `<div class="cid-wrap"><svg class="cid-cena" viewBox="0 0 320 130" role="img" aria-label="A ponte: ${e2?"construída":e1?"pilares prontos":"destruída"}${e2&&it.rampa?", com rampa":""}${e2&&it.luz?", iluminada":""}">
+    <rect class="agua" x="0" y="96" width="320" height="34"/><path class="terra" d="M0 70 L70 70 L86 130 L0 130Z"/><path class="terra" d="M320 70 L250 70 L234 130 L320 130Z"/>
+    ${e1?`<g class="${cls("e1")}"><rect class="pilar" x="128" y="76" width="10" height="54" rx="2"/><rect class="pilar" x="182" y="76" width="10" height="54" rx="2"/></g>`:`<path d="M70 70 L120 92 M250 70 L205 94" stroke="var(--faint)" stroke-width="5" stroke-linecap="round" stroke-dasharray="6 5"/>`}
+    ${e2?`<g class="${cls("e2")}"><rect class="deck" x="64" y="66" width="192" height="8" rx="2"/>
+      ${it.guarda?`<path class="gc" d="M70 66 V56 H250 V66 M110 56 V66 M150 56 V66 M190 56 V66 M230 56 V66" fill="none"/>`:""}
+      ${it.luz?[96,160,224].map(x=>`<rect x="${x-1}" y="40" width="2" height="26" fill="var(--faint)"/><circle class="luz" cx="${x}" cy="39" r="4"/>`).join(""):""}
+      ${it.rampa?`<path class="rampa" d="M18 70 L64 66 L64 74 L18 74Z"/>`:""}
+      ${it.placa?`<rect x="252" y="46" width="16" height="12" rx="2" fill="var(--a-op-1)"/><rect x="259" y="58" width="2" height="12" fill="var(--faint)"/>`:""}
+      ${it.pint?`<rect x="64" y="72" width="192" height="2" fill="var(--a-grad-1)"/>`:""}</g>`:""}
+    ${f==="fim"&&S.res&&S.res.dominio?`<g class="carro anda"><rect class="carro" x="40" y="54" width="28" height="12" rx="4"/><circle cx="47" cy="66" r="3.5" fill="var(--text)"/><circle cx="61" cy="66" r="3.5" fill="var(--text)"/></g>`:""}
+  </svg></div>`; }
+function cemHTML(n, dec){ return `<div class="cem" aria-hidden="true">${Array.from({length:100},(_,i)=>`<i class="${dec? (i<10?"d10":i<15?"d5":"") : i<n?"on":""}"></i>`).join("")}</div>`; }
+function openCidade(){
+  const G=gameSt(); let S=G.atual && G.atual.missao==="ponte" && G.atual.fase!=="fim" ? G.atual : null;
+  const F = FLOW = {kind:"cidade", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 50% 0%,color-mix(in srgb,var(--a-grad-1) 30%,transparent),transparent 60%),var(--bg)");
+  const novaSessao=()=>({id:"g"+Date.now(), missao:"ponte", inicio:new Date().toISOString(), fase:"intro", pct:0, t:{e1:0,e1v:0,e2:0,e3:0}, pistas:0, erros:[], itens:{}, ev:[], res:null});
+  const ev=(tipo,d)=>{ S.ev.push({t:Date.now(), tipo, ...(d||{})}); if(S.ev.length>120) S.ev=S.ev.slice(-120); G.atual=S; saveMain(); };
+  let fb="", fbok=false, dec=false, novo="", foco="";
+  function terminar(){ const t=S.t, transfer=t.e3>0&&S.e3ok;
+    const dom = S.e1ok && S.e2ok && transfer && t.e3<=2 && S.pistas<=1;
+    const conf = dom ? (t.e3===1&&S.pistas===0&&t.e1v<=1?"alta":"média") : "baixa";
+    S.res={dominio:dom, confianca:conf, tentativas:t.e1+t.e1v+t.e2+t.e3, pistas:S.pistas, transferencia:transfer, dificuldades:[...new Set(S.erros)]};
+    S.fase="fim"; S.fim=new Date().toISOString(); ev("missao_concluida",{dominio:dom});
+    G.sessoes.push({id:S.id, missao:"ponte", conceito:"Porcentagem: desconto e acréscimo", d:iso(today()), ...S.res}); if(G.sessoes.length>100) G.sessoes=G.sessoes.slice(-100);
+    // Evidências devolvidas ao app: Forja (cada dificuldade), revisão espaçada, XP.
+    S.res.dificuldades.filter(k=>k!=="outro").forEach(k=>logErro("Matemática","Porcentagem",{p:`Operação Cidade: ${DIAG_NOME[k]}`, o:["Pensar em partes: 10% + 5%", DIAG_TXT[k]], c:0, e:"Porcentagem é uma parte de cada 100. 15% = 10% + 5%. Desconto subtrai, aumento soma."},1));
+    (M.revisoes=M.revisoes||[]).push({proj:PID(), id:"r"+Date.now(), mat:Object.keys(SUBJ).find(k=>/^mat/.test(k))||Object.keys(SUBJ)[0], topic:"Porcentagem: desconto e acréscimo (Operação Cidade)", d0:iso(today()), step:1, due:iso(addDays(today(), dom?3:1)), done:false, conta:"Missão da ponte: 15% = 10% + 5%; desconto subtrai, acréscimo soma."});
+    addXP(dom?30:12); G.atual=null; saveMain(); }
+  function draw(){ if(FLOW!==F) return; let body="", next=null;
+    if(!S){ const feitas=G.sessoes.filter(x=>x.missao==="ponte"), ok=feitas.some(x=>x.dominio);
+      body=`<span class="tag">IAD 1 · GAME</span><h2 class="q">Operação Cidade Inteligente</h2>
+      <p class="muted" style="margin:0">Uma cidade para reconstruir. Cada bairro só fica de pé com a matemática certa.</p>
+      <div class="cid-mapa">${CIDADE.map(([c,m],i)=> `<div class="${i===2?"on"+(ok?" feito":""):"trava"}"><b>0${i+1}</b><span>${c}<span class="sr">${i===2?(ok?": aberta, domínio demonstrado":": aberta"):": em construção"}</span></span></div>`).join("")}</div>
+      <small class="faint">Missão 3 aberta. As outras estão em construção, na ordem da cidade.</small>
+      ${feitas.length?`<small class="muted">Você já jogou ${feitas.length}× · ${ok?"domínio demonstrado":"ainda em desenvolvimento"}.</small>`:""}
+      <button class="btn primary" style="min-height:52px" data-cd="comecar" data-foco>Missão 03 · O orçamento da ponte</button>`; }
+    else if(S.fase==="intro"){ body=`${cidadeCena(S)}<span class="tag">Missão 03 · Porcentagem</span><h2 class="q" style="font-size:clamp(26px,7vw,36px)">A ponte caiu.</h2>
+      <p style="margin:0">A prefeitura liberou <b>R$ 10.000</b> para reconstruir a ponte que liga os dois bairros. Você comanda a obra. Para cada decisão, o dinheiro precisa fechar.</p>
+      <p class="muted" style="margin:0">Leva uns 8 minutos. Você pode sair e voltar: a obra fica salva.</p>
+      <button class="btn primary" style="min-height:52px" data-cd="e1" data-foco>Começar a obra</button>`; }
+    else if(S.fase==="e1"){ const pintou=S.pctOk;
+      body=`${cidadeCena(S)}<span class="tag">Etapa 1 de 3 · Manipular</span><h2 class="q" style="font-size:clamp(22px,6vw,28px)">Pinte o desconto</h2>
+      <p style="margin:0">O fornecedor dá <b>15% de desconto</b> nos R$ 10.000 de material. Cada quadradinho é <b>1%</b> do orçamento.</p>
+      ${pintou?"":`<label class="field"><span>Pinte o desconto: <b id="cd-pv">${S.pct}%</b></span><input class="cid-range" type="range" id="cd-pct" min="0" max="30" step="1" value="${S.pct}" data-foco></label>`}
+      ${cemHTML(pintou?15:S.pct, dec)}
+      ${dec?`<div class="cid-dec" role="group" aria-label="A conta em partes"><div><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--a-grad-1)"></i> 10% = 10 quadradinhos</span><b>R$ 1.000</b></div><div><span><i style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--a-op-1)"></i> 5% = metade de 10%</span><b>R$ 500</b></div><div><span>15% = 10% + 5%</span><b>?</b></div></div>`:""}
+      ${pintou?`<label class="field"><span>Quanto é o desconto, em reais?</span><input class="inp" id="cd-v" inputmode="decimal" autocomplete="off" placeholder="Ex.: 250" data-foco></label><button class="btn primary" style="min-height:52px" data-cd="e1v">Conferir</button>`:`<button class="btn primary" style="min-height:52px" data-cd="e1p">Pintei</button>`}
+      <p class="cid-fb ${fbok?"ok":"no"}">${esc(fb)}</p>`; }
+    else if(S.fase==="e2"){ const apoio=(S.t.e1+S.t.e1v)>2, sel=PONTE_ITENS.filter(x=>S.itens[x.id]);
+      body=`${cidadeCena(S,novo)}<span class="tag">Etapa 2 de 3 · Construir</span><h2 class="q" style="font-size:clamp(22px,6vw,28px)" tabindex="-1" data-foco>Equipe a ponte</h2>
+      <p style="margin:0">Com o desconto, sobraram <b>R$ 1.500</b> para equipar a ponte. Os preços estão em % dos R$ 10.000 originais. A rampa é obrigatória por lei. Use <b>pelo menos R$ 1.300</b> sem passar de R$ 1.500.</p>
+      ${apoio?`<small class="muted">Apoio ligado: o valor em reais aparece ao lado. Lembre que 1% = R$ 100.</small>`:""}
+      <div class="cid-itens" role="group" aria-label="Equipamentos">${PONTE_ITENS.map(x=>`<button data-cd="item" data-k="${x.id}" aria-pressed="${!!S.itens[x.id]}"><span>${esc(x.n)}${x.obr?" · obrigatória":""}</span><b class="mono">${x.p}%${apoio?` · ${BRL(x.p*100)}`:""}</b></button>`).join("")}</div>
+      ${S.t.e2?`<div class="cid-dec" role="group" aria-label="Sua escolha em reais">${sel.map(x=>`<div><span>${esc(x.n)}: ${x.p}% de 10.000</span><b>${BRL(x.p*100)}</b></div>`).join("")}<div><span>Total</span><b>${BRL(sel.reduce((a,x)=>a+x.p*100,0))}</b></div></div>`:""}
+      <button class="btn primary" style="min-height:52px" data-cd="e2">Testar a ponte</button>
+      <p class="cid-fb ${fbok?"ok":"no"}">${esc(fb)}</p>`; }
+    else if(S.fase==="e3"){ const P=["15% = 10% + 5%.","10% de 8.000 é 800. 5% é a metade: 400. Depois some o aumento ao valor da obra."];
+      body=`${cidadeCena(S,novo)}<span class="tag">Etapa 3 de 3 · Situação nova</span><h2 class="q" style="font-size:clamp(22px,6vw,28px)">A escola da cidade vizinha</h2>
+      <p style="margin:0">A ponte ficou pronta. Na cidade vizinha, a reforma da escola custava <b>R$ 8.000</b>, mas o material subiu <b>15%</b>. Quanto a reforma passou a custar?</p>
+      ${S.pistas?`<div class="cid-dec">${P.slice(0,S.pistas).map((x,i)=>`<div><span>Pista ${i+1}: ${esc(x)}</span></div>`).join("")}</div>`:""}
+      <label class="field"><span>Novo custo, em reais</span><input class="inp" id="cd-v3" inputmode="decimal" autocomplete="off" data-foco></label>
+      <div class="row wrap" style="gap:8px"><button class="btn primary" style="min-height:48px" data-cd="e3">Conferir</button>${S.pistas<2?`<button class="btn" style="min-height:48px" data-cd="pista">Uma pista</button>`:""}</div>
+      <p class="cid-fb ${fbok?"ok":"no"}">${esc(fb)}</p>`; }
+    else if(S.fase==="fim"){ const r=S.res;
+      body=`${cidadeCena(S)}<span class="tag">Missão 03 concluída</span><h2 class="q" style="font-size:clamp(26px,7vw,36px)">${r.dominio?"Porcentagem: domínio demonstrado":"Porcentagem: em desenvolvimento"}</h2>
+      <p style="margin:0">${r.dominio?"Você calculou o desconto, montou a obra dentro do orçamento e resolveu uma situação nova sem ajuda.":"Você terminou a obra. Para contar como domínio, falta resolver a situação nova com até 1 pista e 2 tentativas. O app marcou uma revisão para amanhã."}</p>
+      <div class="cid-dec" role="group" aria-label="Evidências"><div><span>Tentativas</span><b>${r.tentativas}</b></div><div><span>Pistas usadas</span><b>${r.pistas}</b></div><div><span>Situação nova</span><b>${r.transferencia?"resolvida":"não resolvida"}</b></div><div><span>Confiança da avaliação</span><b>${r.confianca}</b></div></div>
+      ${r.dificuldades.length?`<div class="cid-dec"><span class="tag">O que o jogo percebeu</span>${r.dificuldades.map(k=>`<div><span>${esc(DIAG_NOME[k])}</span></div>`).join("")}<small class="muted">Isso foi para a Forja.</small></div>`:""}
+      <small class="muted">A conclusão vale pelas regras acima, não pela IA. Revisão marcada para ${r.dominio?"daqui a 3 dias":"amanhã"}.</small>
+      <div class="row wrap" style="gap:8px"><button class="btn primary" style="min-height:48px" data-cd="denovo" data-foco>Jogar de novo</button><button class="btn" style="min-height:48px" data-cd="mapa">Ver a cidade</button></div>`; }
+    sheetHTML({title:"Operação Cidade Inteligente", body});
+    SH.querySelectorAll("[data-cd]").forEach(b=>b.onclick=()=>agir(b));
+    const rg=$("#cd-pct"); if(rg) rg.oninput=()=>{ S.pct=+rg.value; $("#cd-pv").textContent=S.pct+"%"; SH.querySelectorAll(".cem i").forEach((q,i)=>q.classList.toggle("on",i<S.pct)); };
+    SH.querySelectorAll("#cd-v,#cd-v3").forEach(i=>i.onkeydown=e=>{ if(e.key==="Enter") agir({dataset:{cd:i.id==="cd-v"?"e1v":"e3"}}); });
+    const fo=SH.querySelector(foco||"[data-foco]"); if(fo) fo.focus({preventScroll:true}); foco=""; novo=""; }
+  function diz(t,ok){ fb=t; fbok=!!ok; anunciar(t); }
+  function agir(b){ const a=b.dataset.cd;
+    if(a==="comecar"){ S=novaSessao(); ev("missao_iniciada"); fb=""; draw(); }
+    else if(a==="mapa"){ S=null; draw(); }
+    else if(a==="denovo"){ S=novaSessao(); ev("missao_iniciada"); fb=""; draw(); }
+    else if(a==="e1"){ S.fase="e1"; ev("etapa",{e:1}); fb=""; draw(); }
+    else if(a==="e1p"){ S.t.e1++; ev("tentativa",{e:"1a", v:S.pct});
+      if(S.pct===15){ S.pctOk=true; diz("Isso: 15 de cada 100. Agora em reais.",true); }
+      else { diz(S.pct<15?`${S.pct}% é pouco: faltam ${15-S.pct} quadradinhos.`:`${S.pct}% passou: sobram ${S.pct-15} quadradinhos.`); if(S.t.e1>=2) dec=true; }
+      draw(); }
+    else if(a==="e1v"){ const v=numBR(($("#cd-v")||{}).value); if(!isFinite(v)){ diz("Escreva um valor, por exemplo 250."); draw(); return; }
+      S.t.e1v++; const d=diagPct(v,10000,15,"desconto"); ev("tentativa",{e:"1b", v, diag:d});
+      if(d==="certo"){ S.e1ok=true; S.fase="e2"; novo="e1"; dec=false; diz("Desconto de R$ 1.500. Os pilares estão de pé.",true); ev("etapa",{e:2}); }
+      else { S.erros.push(d); dec=true; diz(DIAG_TXT[d]); }
+      draw(); }
+    else if(a==="item"){ const k=b.dataset.k; S.itens[k]=!S.itens[k]; ev("escolha",{item:k, on:S.itens[k]}); fb=""; foco=`[data-k="${k}"]`; draw(); }
+    else if(a==="e2"){ S.t.e2++; const sel=PONTE_ITENS.filter(x=>S.itens[x.id]), pc=sel.reduce((a,x)=>a+x.p,0), rs=pc*100; ev("tentativa",{e:2, pct:pc});
+      if(!S.itens.rampa){ diz("A rampa de acessibilidade é obrigatória. Sem ela a ponte não é liberada."); }
+      else if(pc>15){ diz(`Passou do orçamento: ${pc}% de 10.000 = ${BRL(rs)}. Estourou em ${BRL(rs-1500)}.`); }
+      else if(pc<13){ diz(`Sobrou dinheiro demais: ${BRL(rs)} usados, ${BRL(1500-rs)} parados. A obra precisa de pelo menos R$ 1.300.`); }
+      else { S.e2ok=true; S.fase="e3"; novo="e2"; diz(`Ponte aprovada: ${pc}% = ${BRL(rs)}, dentro dos R$ 1.500.`,true); ev("etapa",{e:3}); }
+      draw(); }
+    else if(a==="pista"){ S.pistas=Math.min(2,S.pistas+1); ev("pista",{n:S.pistas}); fb=""; draw(); }
+    else if(a==="e3"){ const v=numBR(($("#cd-v3")||{}).value); if(!isFinite(v)){ diz("Escreva um valor em reais."); draw(); return; }
+      S.t.e3++; const d=diagPct(v,8000,15,"aumento"); ev("tentativa",{e:3, v, diag:d});
+      if(d==="certo"){ S.e3ok=true; diz("R$ 9.200. Situação nova resolvida.",true); terminar(); }
+      else { S.erros.push(d); diz(DIAG_TXT[d]); if(S.t.e3>=4){ diz("A resposta era R$ 9.200: 10% = 800, 5% = 400, aumento de 1.200, 8.000 + 1.200."); terminar(); } }
+      draw(); }
+  }
+  draw(); }
 /* ---------- Jogos de aprendizagem (27/11/2026): qualquer matéria, conteúdo gerado e conferido pela IA ---------- */
 const JOGOS={relampago:{n:"Relâmpago",d:"60 segundos de verdadeiro ou falso. Acertos seguidos valem mais.",ic:"i-flame",cor:"var(--warn)"},
   pares:{n:"Pares",d:"Ligue cada conceito, fórmula ou data ao que ele significa.",ic:"i-link",cor:"var(--a-op-1)"},
@@ -3256,7 +3419,7 @@ function openJogos(j0){
   function draw(){ if(FLOW!==F) return; const J=JOGOS[F.j]||{}, c=F.c; let body="", foco="";
     if(F.fase==="menu"){ const ult=S.partidas.slice(-1)[0];
       body=`<h2 class="q">Aprender jogando</h2><p class="muted" style="margin:0">Qualquer matéria: matemática, português, história, geografia, física, química. O conteúdo é criado para você e as respostas são conferidas antes de o jogo começar.</p>
-      <div class="jg-menu">${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-jg="j" data-v="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div>
+      <div class="jg-menu"><button class="jg-it" data-jg="cidade" style="--jc:var(--a-grad-1)"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#i-target"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>Operação Cidade Inteligente</b><small>Missão de verdade: reconstrua a ponte com porcentagem. Sem quiz.</small></span></button>${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-jg="j" data-v="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div>
       ${ult?`<small class="faint">Última partida: ${esc(JOGOS[ult.j].n)} de ${esc(ult.mat)}, ${ult.pts} pontos.</small>`:""}<small class="muted">O que você errar vai para a sua revisão.</small>`; }
     else if(F.fase==="mat"){ const ms=jogoMats();
       body=`<h2 class="q">${esc(J.n)}: qual matéria?</h2><p class="muted" style="margin:0">${esc(J.d)}${ms.length&&alvoPrep().mats.length?" As primeiras são as do seu objetivo e as que mais precisam de reforço.":""}</p>
@@ -3294,6 +3457,7 @@ function openJogos(j0){
     const alvos=[...(F.foco||[]), foco].filter(Boolean); F.foco=null;
     for(const q of alvos){ const el=SH.querySelector(q); if(el&&!el.disabled){ el.focus({preventScroll:true}); break; } } }
   function agir(b){ const a=b.dataset.jg, c=F.c;
+    if(a==="cidade"){ openCidade(); return; }
     if(a==="j"){ F.j=b.dataset.v; F.fase="mat"; F.erro=""; draw(); }
     else if(a==="menu"){ F.fase="menu"; draw(); }
     else if(a==="ir"){ const t=($("#jg-outra")||{}).value; if(t&&t.trim()) F.mat=t.trim().slice(0,60); if(!F.mat){ toast("Escolha uma matéria."); return; } comecar(); }
@@ -3572,7 +3736,8 @@ function conquistas(){
     {n:"Voltou", d:"Retomou depois de uma pausa ou semana pesada", got:(r.eventos||[]).some(e=>e.tipo==="volta")},
     {n:"70% numa matéria", d:"Chegou a 70% de acertos numa matéria, com 10 respostas ou mais", got:dom},
     {n:"50 questões", d:"Treinou 50 questões", got:todas.length>=50},
-    {n:"Primeiro jogo", d:"Jogou um jogo de aprendizagem até o fim", got:((M.jogos||{}).partidas||[]).length>0}];
+    {n:"Primeiro jogo", d:"Jogou um jogo de aprendizagem até o fim", got:((M.jogos||{}).partidas||[]).length>0},
+    {n:"Ponte de pé", d:"Demonstrou domínio de porcentagem na Operação Cidade Inteligente", got:((M.game||{}).sessoes||[]).some(x=>x.dominio)}];
 }
 function openConquistas(){ const cs=conquistas();
   FLOW={kind:"conq", next:()=>closeSheet(), back:()=>{}};
@@ -3848,6 +4013,7 @@ document.addEventListener("click", e => {
   else if(act==="pq-gerar"){ const al=alvoPrep(); if(prepSt(al).pool.length) paintPrep(); else gerarPrep(al); }
   else if(act==="conquistas") openConquistas();
   else if(act==="jogos") openJogos(a.dataset.j||"");
+  else if(act==="cidade") openCidade();
   else if(act==="painel"){ PAINEL=true; render(); window.scrollTo({top:0}); }
   else if(act==="inicio"){ PAINEL=false; SELDAY=null; render(); window.scrollTo({top:0}); }
   else if(act==="vida") openVida();

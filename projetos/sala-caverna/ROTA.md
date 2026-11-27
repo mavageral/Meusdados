@@ -262,3 +262,27 @@ A Edna reenviou o pedido original do Projeto Caverna. Na auditoria, item por ite
 
   Cada um está ligado à matéria da agenda e ao nível atual. Os concluídos acendem na Árvore e entram no Currículo vivo.
 - **Serasa:** pela Eureca, as inscrições encerraram em 04/11. O processo segue com testes online e dinâmicas em novembro e entrevistas em novembro e dezembro. Falta a Edna confirmar se a inscrição foi feita, para ajustar a Missão.
+
+## 18. Pacote de reconstrução, correções da auditoria e IAD 1 · GAME (27/11/2026)
+- **Pacote de reconstrução:** a Edna trouxe o pacote, com diagnóstico, arquitetura, plano por fases, auditoria do HTML e skills. Ele foi copiado para `docs/reconstrucao/` sem sobrescrever nada. As duas skills foram para `.claude/skills/`. A Fase 0 (auditoria do repositório real) está em `docs/reconstrucao/07_AUDITORIA_DO_REPOSITORIO_REAL.md`.
+- **Correção pendente:** se a IA falha ao corrigir a descrição ou a pergunta aberta, o app não dá mais 0,5 de nota. As respostas ficam guardadas, o bloco não é confirmado e há o botão "Corrigir agora". O estado sobrevive a fechar o app.
+- **Sincronização visível:** falha de gravação na nuvem mostra um aviso no topo ("Salvo neste aparelho… tocar para tentar de novo"). O app tenta de novo até 4 vezes.
+- **IAD 1 · GAME: Operação Cidade Inteligente, missão 03 "O orçamento da ponte" (porcentagem).** É a primeira missão da especificação GAME:
+  - narrativa: a ponte caiu e há R$ 10.000 para reconstruí-la;
+  - **manipular:** a pessoa pinta 15% num quadro de 100;
+  - **calcular:** o desconto em reais;
+  - **construir:** escolhe os equipamentos em % do orçamento, com a rampa obrigatória e o limite de R$ 1.500;
+  - **transferir:** resolve um aumento de 15% numa situação nova, com até 2 pistas.
+
+  Como o jogo ensina e avalia:
+  - Cada erro é classificado por regra (calculou o resto, tratou % como valor, esqueceu de somar o aumento, inverteu desconto e aumento, errou a casa decimal) e recebe uma explicação diferente. Do segundo erro em diante aparece a conta em partes (10% + 5%), e na etapa 2 o apoio em reais é ligado.
+  - A ponte vai sendo construída na cena SVG, e o carro atravessa quando há domínio.
+  - O domínio é calculado por regra, sem IA: etapas 1 e 2 certas, situação nova resolvida em até 2 tentativas e com até 1 pista. A confiança vai de alta a baixa.
+  - A sessão é retomável e registra eventos (o modelo interno fica pronto para xAPI no futuro).
+  - As evidências voltam ao app: Forja (cada dificuldade), revisão espaçada (3 dias com domínio, 1 dia sem), Currículo vivo, conquista "Ponte de pé" e XP.
+  - As outras 7 missões aparecem no mapa como "em construção".
+- **Decisões técnicas:**
+  - Sem Phaser e sem React: a stack é preservada, a cena é SVG e as regras são JS determinístico.
+  - Funciona sem internet e sem IA.
+  - A API do GAME e o MCP ficam para quando o site tiver servidor com IA: a especificação mesmo diz que o MCP complementa e não é o caminho de execução.
+- **Testes:** a bateria passou com 142/142, incluindo os cenários "GAME: Operação Cidade…" e "Correção pendente e sincronização visível".

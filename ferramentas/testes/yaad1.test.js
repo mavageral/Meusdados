@@ -124,6 +124,52 @@ const CENARIOS = {
     ok(r.fim && r.part === 1, "partida não terminou ou não foi salva");
     ok(r.erro, "erro do jogo não foi para a revisão");
   },
+  "GAME: Operação Cidade, regras determinísticas e evidências": async (p) => {
+    const r = await p.evaluate(async () => {
+      SAMPLE = null; M.game = {}; openCidade();
+      const clica = s => document.querySelector(s).click();
+      clica('.btn[data-cd="comecar"]'); clica('[data-cd="e1"]');
+      const rg = document.querySelector("#cd-pct"); rg.value = "15"; rg.dispatchEvent(new Event("input")); clica('[data-cd="e1p"]');
+      document.querySelector("#cd-v").value = "15"; clica('[data-cd="e1v"]'); const d1 = M.game.atual.erros.slice(-1)[0];
+      document.querySelector("#cd-v").value = "1.500"; clica('[data-cd="e1v"]');
+      clica('[data-k="rampa"]'); clica('[data-k="guarda"]'); clica('[data-k="luz"]'); clica('[data-cd="e2"]'); const estourou = M.game.atual.fase === "e2";
+      clica('[data-k="luz"]'); clica('[data-cd="e2"]');
+      closeSheet(); openCidade(); const retomou = M.game.atual && M.game.atual.fase === "e3";
+      document.querySelector("#cd-v3").value = "6800"; clica('[data-cd="e3"]'); const d3 = M.game.atual.erros.slice(-1)[0];
+      document.querySelector("#cd-v3").value = "9200"; clica('[data-cd="e3"]');
+      const s = M.game.sessoes.slice(-1)[0];
+      return { d1, d3, estourou, retomou, dom: s && s.dominio, conf: s && s.confianca, forja: (M.erros || []).filter(e => /Operação Cidade/.test(e.p)).length, rev: (M.revisoes || []).some(x => /Operação Cidade/.test(x.topic)), cv: /Porcentagem/.test(cvVivoTxt()), semIA: SAMPLE === null };
+    });
+    ok(r.d1 === "pct_valor" && r.d3 === "inverteu", "diagnóstico do erro de porcentagem errado: " + r.d1 + "/" + r.d3);
+    ok(r.estourou, "orçamento estourado foi aceito");
+    ok(r.retomou, "missão não retomou na etapa certa");
+    ok(r.dom === true && r.conf === "média", "regra de domínio/confiança inesperada: " + r.dom + "/" + r.conf);
+    ok(r.forja === 2 && r.rev && r.cv && r.semIA, "evidências não voltaram ao app ou o jogo dependeu da IA");
+  },
+  "Correção pendente e sincronização visível": async (p) => {
+    const r = await p.evaluate(async () => {
+      let falha = true;
+      SAMPLE = { limits: async () => ({}), json: async () => { if (falha) throw { code: "rate_limited" }; return { descricao: .9, nota: .9, feedback: "Bom.", lacunas: [] }; } };
+      openStudy({ dstr: iso(today()), b: null, mat: Object.keys(SUBJ)[0], topic: "Frações", livre: true });
+      Object.assign(FLOW.data, { conta: "Fração é parte de um todo; somo com o mesmo denominador.", quiz: { qs: [{ p: "1/2+1/2?", o: ["1", "2"], c: 0 }], aberta: { p: "Explique", criterio: "x" } }, ans: { 0: 0 }, aberta: "Porque..." });
+      await gradeQuiz();
+      const pend = { res: FLOW.data.result, sess: !!(M.sessao && M.sessao.data.result && M.sessao.data.result.pendente) };
+      closeSheet(); const aindaSess = !!M.sessao; resumeSession();
+      const voltouNoFim = FLOW.steps[FLOW.at] === "fim" && FLOW.data.result && FLOW.data.result.pendente;
+      falha = false; document.querySelector('[data-act="recorrigir"]').click(); await new Promise(r => setTimeout(r, 80));
+      const depois = FLOW.data.result;
+      // sincronização: nuvem recusa
+      let ok = false; DB = { collection: () => ({ doc: () => ({ set: () => ok ? Promise.resolve() : Promise.reject(new Error("offline")) }) }) }; UID = "u1";
+      dbPut("main", { a: 1 }, 0); await new Promise(r => setTimeout(r, 60)); const aviso = !!document.getElementById("sync-st");
+      ok = true; document.getElementById("sync-st").click(); await new Promise(r => setTimeout(r, 60)); const sumiu = !document.getElementById("sync-st");
+      DB = null;
+      return { pendente: pend.res && pend.res.pendente, semNota: pend.res && pend.res.score == null && !pend.res.pass, sess: pend.sess, aindaSess, voltouNoFim, passou: depois && depois.pass, aviso, sumiu };
+    });
+    ok(r.pendente && r.semNota, "falha da IA ainda gera nota ou aprovação");
+    ok(r.sess && r.aindaSess && r.voltouNoFim, "correção pendente não sobreviveu a fechar e retomar");
+    ok(r.passou, "Corrigir agora não corrigiu quando a IA voltou");
+    ok(r.aviso && r.sumiu, "falha de sincronização silenciosa ou aviso não some ao sincronizar");
+  },
   "Início com o núcleo do Caverna e certificados": async (p) => {
     const r = await p.evaluate(() => {
       M.sessao = { proj: PID(), dstr: iso(today()), k: null, mat: Object.keys(SUBJ)[0], livre: true, at: 2, ts: Date.now(), data: { topic: "Álgebra" } };
