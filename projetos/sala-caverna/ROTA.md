@@ -186,3 +186,11 @@ O botão **C** deixou de ser um chat e virou o **Assistente Yaad1**, um agente:
 - O cartão mostra, por exemplo, "30 min de carro · 43 km" (Iracema → Caracaraí, medido de verdade em 27/11 pela BR-174) ou "Na sua cidade". Oportunidades remotas não recebem distância.
 - Coordenadas e rotas ficam guardadas (`M.geo`, `M.dist`) e não se repetem chamadas. Sem o conector (ou no site), o cartão simplesmente não mostra distância.
 - Testado (Playwright, 375 e 390): 4 oportunidades, 5 chamadas na primeira abertura e 0 ao reabrir; sem erros.
+
+## 12. Vagas reais da Gupy no Radar (27/11/2026)
+
+- **MCP oficial da Gupy para candidatos** (`https://candidates.mcp.api.gupy.io/mcp`, sem login), conectado pela dona no claude.ai como "Gupy". O app declara as ferramentas `search_jobs` e `get_job_by_id`.
+- Nas lentes "Perto de você" e "Renda agora", o Radar busca direto na Gupy as vagas mais recentes do estado da pessoa (o nome completo vem da UF) e as junta às oportunidades que o Claude encontrou, sem repetir. As da cidade da pessoa aparecem primeiro, as vencidas são descartadas, e cada vaga ganha a distância de carro (TomTom). O app mostra o total ("83 vagas abertas na Gupy em Roraima", na primeira busca real, de 27/11).
+- O Claude do Radar e o Assistente ganharam a ferramenta `buscar_vagas_gupy` (por termo, estado, cidade ou remoto).
+- Uma vaga da Gupy tem o botão **"Ver a vaga e me candidatar"**, que abre o link oficial, em vez de "Quero essa", que é para concursos com edital. O salário só aparece quando a vaga o informa.
+- Testado (Playwright, 375 e 390, com o formato real da resposta): 4 vagas → 3 mostradas (1 vencida), cidade primeiro, distância, botão certo; sem erros.
