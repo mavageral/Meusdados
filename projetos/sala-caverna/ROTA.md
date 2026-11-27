@@ -233,3 +233,12 @@ Imagem de conceito recebida (vida noturna em azul neon, celular central e quatro
 - **Mapa do Radar:** as oportunidades aparecem em volta de "Você" pela posição real das cidades (geocodificação TomTom já em cache), com anéis de distância. Verde até 60 km.
 - **Currículo vivo** (em Conquistas): matérias com 70% de acerto ou mais (com 10 respostas ou mais), questões treinadas, candidaturas e marcos cumpridos, e o gráfico "Seu crescimento" com 8 semanas. Ele entra sozinho no prompt de cada candidatura, como fato medido.
 - Decisão pendente com a Edna: trocar o laranja do app pelo azul neon do conceito, ou manter.
+
+## 16. Jogos de aprendizagem (27/11/2026)
+"Aprender jogando" fica no Início (cartão) e na aba Estudar. Serve para qualquer matéria: as do objetivo da pessoa aparecem primeiro, as mais fracas na frente, depois Matemática, Português, História, Geografia, Física, Química e Biologia. Também dá para escrever um assunto livre.
+- **Relâmpago:** verdadeiro ou falso em 60 segundos (ou sem tempo). Acertos seguidos multiplicam os pontos.
+- **Pares:** ligar termo, fórmula ou data ao seu significado.
+- **Linha do tempo:** ordenar datas, etapas ou grandezas, com a explicação da ordem certa.
+- **Conteúdo conferido:** a IA cria e depois resolve sozinha às cegas. O que não bate é descartado antes do jogo começar. Usa os tópicos do edital quando há uma frente.
+- **Ligado ao resto do app:** cada erro vira cartão na revisão (FSRS), recorde por jogo e matéria, XP e a conquista "Primeiro jogo".
+- **Acessibilidade:** o foco volta ao lugar certo a cada toque, o feedback é anunciado por uma região viva fixa, o tempo fica visível e há a opção "Sem tempo".
