@@ -151,3 +151,23 @@ O erro foi acrescentar a jornada **em cima** do painel antigo: a tela ficou mais
 - Testado (Playwright, 375 e 390): lote com uma questão de gabarito divergente ficou com 5 das 6; erro registrado na Forja; estimativa só depois de 5 respostas por matéria; passo redirecionado; sem erros e sem rolagem lateral.
 
 **Próximo:** Currículo Vivo (competências das frentes e das conquistas), Corrida da Prova e mapa no Radar.
+
+## 9. Assistente que age, com voz (27/11/2026)
+
+O botão **C** deixou de ser um chat e virou o **Assistente Yaad1**, um agente:
+
+- **Ouve:** o ditado do claude.ai (capacidade `dictation`). Você fala, toca de novo e a mensagem é enviada.
+- **Age no app** com ferramentas (tool use do `sample`), em três níveis de autonomia:
+  - observar: `ver_minha_situacao`, e a busca e leitura na internet;
+  - preparar: `propor_ritmo`, `propor_tempo_da_frente`, `marcar_marco`, `atualizar_momento`, `abrir_tela`;
+  - executar: só com o toque da pessoa em **Aplicar**. "Agora não" fica registrado e nada muda.
+- **Fala:** a voz do Claude (capacidade `tts`), que se liga no alto-falante do topo. A preferência fica no aparelho.
+- **Sala viva com vozes:** cada personagem tem a sua voz do Claude. Professor: buttery. Lia: airy. Davi: glassy. Ana: rounded. Téo: glassy, mais lento. Beto: airy, mais rápido.
+- **Sem voz do Claude** (no Safari e nos apps de celular, a plataforma não oferece), o app volta à voz do navegador. **Sem ditado**, o microfone some e a pessoa escreve.
+- Capacidades declaradas: `mcp` (Parallel Search), `sample` (com imagens), `assets`, `db`, `downloads`, `user`, `dictation` e `tts`.
+- Testado (Playwright, 375 e 390, com ditado e voz simulados): fala, depois 3 propostas, aplicar uma, recusar outra, resposta falada; sem erros.
+
+**Fica para depois:**
+- Radar com distância real: conector TomTom (rotas) ou Mapbox.
+- Passo do dia no Google Agenda: via Zapier.
+- Turma ao vivo: capacidade `room`.
