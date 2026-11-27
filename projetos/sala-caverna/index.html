@@ -203,19 +203,19 @@ h1,h2,h3,p{margin:0}
 .d-passo small{color:rgb(255 255 255 / .78)}
 .jornada .d-tit h2{font-size:clamp(28px,8vw,42px)}
 .estrada{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:relative}
-.estrada::before{content:"";position:absolute;left:12%;right:12%;top:21px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--a-op-1),var(--c) 55%,rgb(255 255 255 / .18))}
+.estrada::before{content:"";position:absolute;left:12%;right:12%;top:21px;height:3px;border-radius:3px;background:linear-gradient(90deg,var(--a-op-1),var(--c) 55%,var(--edge-2))}
 .estrada li{display:grid;justify-items:center;gap:6px;position:relative;text-align:center}
-.estrada i{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid rgb(255 255 255 / .28);color:rgb(255 255 255 / .7)}
+.estrada i{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:var(--bg);border:2px solid var(--edge-2);color:var(--muted)}
 .estrada i .icon{width:20px;height:20px}
 .estrada li.ok i{border-color:var(--a-op-1);color:var(--a-op-1)}
 .estrada li.aqui i{border-color:var(--c);background:var(--c);color:var(--on-c);box-shadow:0 0 0 6px color-mix(in srgb,var(--c) 30%,transparent)}
 .estrada b{font-weight:500;font-size:13px}
-.estrada li:not(.ok):not(.aqui) b{color:rgb(255 255 255 / .7)}
-.j-hoje{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:rgb(0 0 0 / .42);border:1px solid var(--edge-2);color:inherit;min-height:64px}
+.estrada li:not(.ok):not(.aqui) b{color:var(--muted)}
+.j-hoje{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:color-mix(in srgb,var(--bg) 62%,transparent);border:1px solid var(--edge-2);color:inherit;min-height:64px}
 button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .j-hoje .grow{display:grid;gap:2px;min-width:0}
 .j-hoje b{font-weight:500;font-size:17px;line-height:1.3}.j-min{font-size:26px;font-weight:400}
-.j-hoje small{color:rgb(255 255 255 / .78)}
+.j-hoje small{color:color-mix(in srgb,var(--text) 80%,transparent)}
 .j-grid{display:grid;gap:12px}
 @media (min-width:720px){.j-grid{grid-template-columns:1fr 1fr}.j-grid>.faixas{grid-column:1/-1}}
 .faixas{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -224,9 +224,8 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .faixa.agora{border-top:3px solid var(--a-op-1)}.faixa.sonho{border-top:3px solid var(--c)}
 .faixa-ponte{grid-column:1/-1;margin:0;font-size:14px;padding:10px 14px;border-radius:14px;border:1px dashed var(--edge-2);color:var(--muted)}
 .radar,.vida-card{display:grid;gap:10px;padding:14px 16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge)}
-.radar{border-top:3px solid var(--a-op-1)}.vida-card{border-top:3px solid var(--a-grad-1)}
 .vida-card b{font-weight:500;font-size:18px}
-.radar-it{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:14px;background:rgb(255 255 255 / .04);border:1px solid var(--edge);color:inherit;min-height:56px}
+.radar-it{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 12px;border-radius:14px;background:var(--glass);border:1px solid var(--edge);color:inherit;min-height:56px}
 .radar-it .grow{display:grid;gap:4px;min-width:0}.radar-it b{font-weight:500}.radar-it small{color:var(--muted)}
 .chip.sm{min-height:24px;font-size:12px;padding:0 9px}.chip.urg{color:var(--warn)}
 .rc-l{display:grid;gap:2px;padding-bottom:8px;border-bottom:1px solid var(--edge)}.rc-l:last-child{border-bottom:0;padding-bottom:0}
@@ -928,6 +927,7 @@ function vHoje(){
       </section>
 
      <aside class="h-side side-sticky" style="display:grid;gap:18px;align-content:start">
+      ${isToday?radarHTML()+vidaCardHTML():""}
       <div class="bento">
         ${CUSTOM?`<button class="tile wide" data-act="metas" style="--g1:var(--c);--g2:#3A1204"><span class="lbl">Alvo central · ${esc(P().meta)}</span><span class="row" style="align-items:flex-end;justify-content:space-between"><span class="big">${Math.max(0,TOTAL-1-dayIdx(t))}</span><span class="sub" style="text-align:right">dias até o fim<br>do projeto</span></span></button>`:`<button class="tile wide" data-act="metas" style="--g1:var(--c);--g2:#3A1204">
           <span class="lbl">Alvo central · Serasa Experian Analytics</span>
@@ -1101,7 +1101,7 @@ function vDiario(){
 const SH = $("#sheet");
 let FLOW=null;
 let OPENER=null, RETURN=null;
-function openSheet(bg){ if(SH.hidden) OPENER=document.activeElement; SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden";
+function openSheet(bg){ document.querySelectorAll(".toast").forEach(t=>t.remove()); if(SH.hidden) OPENER=document.activeElement; SH.style.setProperty("--sbg", bg || "linear-gradient(170deg,#1A0C05,#05060A 55%)"); SH.hidden=false; document.body.style.overflow="hidden";
   $("#app").inert=true; document.querySelector(".tabbar").inert=true; setTimeout(()=>{ const x=SH.querySelector(".x,[data-sh]"); if(x&&!SH.contains(document.activeElement)) x.focus(); },60); }
 document.addEventListener("keydown", e => { if(e.key==="Escape" && !SH.hidden) closeSheet(); });
 function keepSession(){
@@ -3075,19 +3075,19 @@ function passoGeral(f){
 function jornadaHTML(){
   const f=frenteAtiva(), r=rota(), c=r.ctx, foto=fotoOk(M.profile.fotoDestino)?M.profile.fotoDestino:"", et=etapaAtual(f), pg=passoGeral(f), mar=marchaAtual();
   const pm=f?proxMarco(f):null, n=pm?diasAte(pm.d):null;
-  const titulo = f ? null : (c&&c.sonho) ? c.sonho : (OWNER!==false||P().custom) ? P().meta : "Qual é o próximo passo da sua vida?";
+  const titulo = "Qual é o próximo passo da sua vida?";
   const passo = pg.pausa||pg.feito ? `<div class="j-hoje"><span class="grow"><span class="tag">Hoje</span><b>${pg.feito?"Passo de hoje feito":"Em pausa"}</b><small>${esc(pg.txt)}</small></span></div>`
     : `<button class="j-hoje" data-act="${pg.act}" ${pg.id?`data-id="${esc(pg.id)}"`:""} ${pg.k?`data-k="${esc(pg.k)}"`:""}><svg class="icon" aria-hidden="true"><use href="#i-cal"/></svg><span class="grow"><span class="tag">Hoje</span><b><span class="j-min">${pg.min}</span> min · ${esc(pg.txt)}</b>${pg.det?`<small>${esc(pg.det)}</small>`:""}</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button>`;
   return `<section class="destino jornada${foto?" com-foto":""}" ${foto?`style="background-image:linear-gradient(180deg,rgb(5 6 10 / .58),rgb(5 6 10 / .93) 60%),url('${foto}')"`:""} aria-label="Sua jornada">
-    <div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow" style="color:rgb(255 255 255 / .8)">Sua jornada${mar!=="avancar"?` · ritmo ${MARCHAS[mar].n}`:""}</span><span class="row" style="gap:8px"><button class="x" data-act="oport" aria-label="Radar de oportunidades"><svg class="icon"><use href="#i-spark"/></svg></button><button class="x" data-act="destino-foto" aria-label="${foto?"Trocar a":"Pôr uma"} foto do seu porquê"><svg class="icon"><use href="#i-cam"/></svg></button></span></div>
+    <div class="row" style="justify-content:space-between;gap:8px"><span class="eyebrow" style="color:var(--text)">Sua jornada${f?` · ${ETAPAS[et][0]}, etapa ${et+1} de 4`:""}${mar!=="avancar"?` · ritmo ${MARCHAS[mar].n}`:""}</span><span class="row" style="gap:8px"><button class="x" data-act="oport" aria-label="Radar de oportunidades"><svg class="icon"><use href="#i-spark"/></svg></button><button class="x" data-act="destino-foto" aria-label="${foto?"Trocar a":"Pôr uma"} foto do seu porquê"><svg class="icon"><use href="#i-cam"/></svg></button></span></div>
     <div class="d-tit"><h2>${f?`<button class="d-lk" data-act="frente" data-id="${esc(f.id)}">${esc(f.titulo)}<span class="sr"> · abrir a frente</span></button>`:esc(titulo)}</h2>${f&&f.salario?`<span class="d-din">${esc(f.salario)}</span>`:""}${f&&f.beneficios?`<small>+ ${esc(f.beneficios)}</small>`:""}</div>
-    <ol class="estrada" aria-label="Etapas da jornada">${ETAPAS.map(([nm,ic],i)=>`<li class="${i<et?"ok":i===et?"aqui":""}"${i===et?' aria-current="step"':""}><i aria-hidden="true"><svg class="icon"><use href="#${ic}"/></svg></i><b>${nm}</b></li>`).join("")}</ol>
+    ${f?"":`<ol class="estrada" aria-label="Etapas da jornada">${ETAPAS.map(([nm,ic],i)=>`<li class="${i<et?"ok":i===et?"aqui":""}"${i===et?' aria-current="step"':""}><i aria-hidden="true"><svg class="icon"><use href="#${ic}"/></svg></i><b>${nm}</b></li>`).join("")}</ol>`}
     ${pm?`<p class="d-cont"><b>${n}</b><span>${n===0?"é hoje:":n===1?"dia para:":"dias para:"}<br>${esc(pm.r.replace(/\s+até$/i,""))}</span></p>`:""}
     ${f?trilhaHTML(f):""}
     ${passo}
     ${foto?"":`<button class="link" data-act="destino-foto" style="justify-self:start;min-height:44px;color:rgb(255 255 255 / .85)">Pôr uma foto do seu porquê (família, sonho, lugar)</button>`}
   </section>
-  <div class="j-grid">${faixasHTML(f)}${radarHTML()}${vidaCardHTML()}</div>`;
+  ${faixasHTML(f)}`;
 }
 function faixasHTML(f){
   const c=rota().ctx||{}, sonho=c.sonho||((OWNER!==false||P().custom)?P().meta:""), pr=PRIOR[c.prioridade];
@@ -3101,7 +3101,7 @@ function faixasHTML(f){
   </section>`;
 }
 function radarHTML(){
-  const its=[]; Object.values(M.oport||{}).forEach(c=>(c&&c.itens||[]).forEach(o=>{ const ni=diasAte(o.inscricao_ate); if(!(ni!=null&&ni<0) && !its.some(x=>x.titulo===o.titulo)) its.push({...o, _d:c.data}); }));
+  const its=[], fts=frentes().flatMap(f=>[f.titulo,f.tituloOp]); Object.values(M.oport||{}).forEach(c=>(c&&c.itens||[]).forEach(o=>{ const ni=diasAte(o.inscricao_ate); if(!(ni!=null&&ni<0) && !its.some(x=>x.titulo===o.titulo) && !fts.includes(o.titulo)) its.push({...o, _d:c.data}); }));
   const loc=localTxt();
   return `<section class="radar" aria-label="Radar da vida real">
     <div class="row" style="justify-content:space-between;gap:8px"><span class="tag">Radar da vida real${loc?` · ${esc(loc)}`:""}</span><button class="link" data-act="oport" style="min-height:44px;padding-inline:6px">Abrir</button></div>
@@ -3112,7 +3112,7 @@ function radarHTML(){
 function vidaCardHTML(){ const mar=marchaAtual(), r=rota();
   return `<section class="vida-card" aria-label="Recalcular a rota"><span class="tag">Assistente de rota</span><b>Sua rotina mudou?</b><small class="muted">Trabalho novo, semana pesada, família, mudança de cidade. O app reorganiza sem apagar nada do que você já fez.</small>
     ${mar!=="avancar"?`<small>Ritmo atual: <b style="font-weight:500">${MARCHAS[mar].n}</b>${r.ate?` até ${dataCurta(r.ate)}`:""}</small>`:""}
-    <button class="btn primary" style="min-height:48px;justify-self:start" data-act="vida">Recalcular minha rota</button></section>`; }
+    <button class="btn" style="min-height:48px;justify-self:start" data-act="vida">Recalcular minha rota</button></section>`; }
 
 /* ---------- Ponto de Partida ---------- */
 function openPartida(){
@@ -3171,7 +3171,7 @@ function openVida(){
   F.next=()=>{ ler(); if(steps[F.at]==="detalhe" && D.tipo==="vontade" && D.vontade==="conversar"){ closeSheetSoft(); openChat("Perdi a vontade de seguir o meu plano. Me ajuda a entender o que está acontecendo e a achar um próximo passo pequeno?"); return; }
     if(steps[F.at]==="proposta"){ aplicar(); return; } F.at++; draw(true); };
   F.back=()=>{ ler(); F.at=Math.max(0,F.at-1); draw(true); };
-  openSheet("radial-gradient(120% 60% at 0% 0%,rgb(110 155 255 / .25),transparent 60%),var(--bg)");
+  openSheet("radial-gradient(120% 60% at 0% 0%,color-mix(in srgb,var(--a-grad-1) 25%,transparent),transparent 60%),var(--bg)");
   const opts=(g,o,lbl,multi)=>`<div class="pick" data-pick="${g}" ${multi?"data-multi":""} role="group" aria-label="${lbl}" ${multi?"":'style="display:grid;gap:8px"'}>${Object.entries(o).map(([k,v])=>`<button data-v="${k}" aria-pressed="${multi?D[g].includes(+k):String(D[g])===String(k)}" ${multi?"":'style="border-radius:16px;min-height:56px;text-align:left;padding:8px 16px"'}>${esc(v)}</button>`).join("")}</div>`;
   const diasOpts=()=>opts("dias",Object.fromEntries([1,2,3,4,5,6,0].map(d=>[d,DIAS_N[d]])),"Dias da semana",true);
   function proposta(){ const antes={marcha:r.marcha, ate:r.ate||"", frentes:fs.map(f=>({id:f.id, t:f.titulo, min:f.min, dias:f.dias})), ctx:{...(r.ctx||{})}, local:{...l0}};
@@ -3186,7 +3186,7 @@ function openVida(){
     else { if(D.min!=null){ dep.marcha=marchaPorMin(D.min); dep.frentes.forEach(x=>x.min=Math.max(5,D.min)); } if(D.texto) dep.notas.push("O que você contou fica guardado para o Claude adaptar as próximas aulas e sugestões."); }
     return {antes, dep};
   }
-  const linha=(rot,a,b)=>a===b?"":`<div class="rc-l"><span>${esc(rot)}</span><span class="rc-v"><s>${esc(a)}</s> <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg> <b>${esc(b)}</b></span></div>`;
+  const linha=(rot,a,b)=>a===b?"":`<div class="rc-l"><span>${esc(rot)}</span><span class="rc-v"><s>${esc(a)}</s> <span style="white-space:nowrap;display:inline-flex;align-items:center;gap:6px"><svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg><b>${esc(b)}</b></span></span></div>`;
   const ritmo=(m,ate)=>MARCHAS[m].n+(ate?` até ${dataCurta(ate)}`:"");
   const diasTxt=ds=>(ds||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ");
   function draw(foco){ if(FLOW!==F) return; const s=steps[F.at]; let body="", next="Continuar";
