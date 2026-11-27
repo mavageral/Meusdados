@@ -285,6 +285,7 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 #ch-voz[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
 .chip.dist{color:var(--a-op-1);border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent)}
 .chip.dist i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
+.chip.gupy{color:var(--a-op-1)}
 .op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
 .op-lista{display:grid;gap:12px}
 .op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
@@ -2912,7 +2913,7 @@ function estudarFrente(id){ const f=frentes().find(x=>x.id===id); if(!f) return;
 function opCard(o,i){
   const ni=diasAte(o.inscricao_ate), np=diasAte(o.prova), salva=frentes().some(f=>(o.url&&f.fonteOp===o.url)||f.tituloOp===o.titulo);
   return `<article class="op-card">
-    <div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="chip">${esc(TIPO_OP[o.tipo]||o.tipo||"Oportunidade")}</span>${ni!=null?`<span class="mono op-prazo${ni<=7?" urg":""}">${ni===0?"inscrição termina hoje":`inscrição: ${ni} dia${ni>1?"s":""}`}</span>`:""}</div>
+    <div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap"><span class="row" style="gap:6px"><span class="chip">${esc(TIPO_OP[o.tipo]||o.tipo||"Oportunidade")}</span>${o.fonte==="gupy"?`<span class="chip sm gupy">Vaga real · Gupy</span>`:""}</span>${ni!=null?`<span class="mono op-prazo${ni<=7?" urg":""}">${ni===0?"inscrição termina hoje":`inscrição: ${ni} dia${ni>1?"s":""}`}</span>`:""}</div>
     <h3>${esc(o.titulo)}</h3>
     ${o.orgao||o.onde?`<small class="muted">${esc([o.orgao,o.onde].filter(Boolean).join(" · "))}</small>`:""}
     ${o.salario?`<div class="op-din"><b>${esc(o.salario)}</b>${o.beneficios?`<small>+ ${esc(o.beneficios)}</small>`:""}</div>`:""}
@@ -2920,7 +2921,7 @@ function opCard(o,i){
     ${o.porque?`<p style="margin:0">${esc(o.porque)}</p>`:""}
     ${o.barreiras?`<p style="margin:0;font-size:14px;color:var(--warn)">Pode dificultar: ${esc(o.barreiras)}</p>`:""}
     ${o.requisito||o.taxa||o.ponte||(o.competencias&&o.competencias.length)?`<details class="op-mais"><summary>O que precisa e o que desenvolve</summary><div style="display:grid;gap:6px;padding-top:6px">${o.requisito?`<span>Requisito: ${esc(o.requisito)}</span>`:""}${o.taxa?`<span>Taxa: ${esc(o.taxa)}</span>`:""}${o.competencias&&o.competencias.length?`<span class="row wrap" style="gap:6px">${o.competencias.map(c=>`<span class="chip sm">${esc(c)}</span>`).join("")}</span>`:""}${o.ponte?`<span class="muted">Ponte para o seu sonho: ${esc(o.ponte)}</span>`:""}</div></details>`:""}
-    <div class="row wrap" style="gap:8px">${salva?`<span class="chip" style="color:var(--ok)">Já está na sua rotina</span>`:`<button class="btn sm primary" style="min-height:44px" data-op="quero" data-i="${i}">Quero essa</button>`}${urlOk(o.url)?`<a class="btn sm" style="min-height:44px" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Site oficial</a>`:""}</div>
+    <div class="row wrap" style="gap:8px">${o.fonte==="gupy"&&urlOk(o.url)?`<a class="btn sm primary" style="min-height:44px" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Ver a vaga e me candidatar</a>`:`${salva?`<span class="chip" style="color:var(--ok)">Já está na sua rotina</span>`:`<button class="btn sm primary" style="min-height:44px" data-op="quero" data-i="${i}">Quero essa</button>`}${urlOk(o.url)?`<a class="btn sm" style="min-height:44px" href="${esc(o.url)}" target="_blank" rel="noopener noreferrer">Site oficial</a>`:""}`}</div>
   </article>`;
 }
 function openOportunidades(lente){
@@ -2938,7 +2939,7 @@ function openOportunidades(lente){
         <button class="btn primary" type="submit" style="min-height:48px">Salvar e pesquisar</button></form>`:""}
       ${F.erro?`<div class="ponte" role="alert"><p style="margin:0">${esc(F.erro)}</p></div>`:""}
       ${F.busy?thinking(F.busy):""}
-      ${its.length&&!F.busy?`<div class="op-lista">${its.map((o,i)=>opCard(o,i)).join("")}</div><small class="faint">Pesquisado em ${fmtD(cache.data)}. Confirme datas e valores no site oficial antes de se inscrever ou pagar.</small>`:""}
+      ${its.length&&!F.busy?`${cache.gupyTotal?`<small class="muted">${cache.gupyTotal} vagas abertas na Gupy em ${esc(UF_NOME[((M.profile.local||{}).uf||"").toUpperCase()]||"seu estado")}; as mais recentes estão abaixo.</small>`:""}<div class="op-lista">${its.map((o,i)=>opCard(o,i)).join("")}</div><small class="faint">Pesquisado em ${fmtD(cache.data)}. Confirme datas e valores no site oficial antes de se inscrever ou pagar.</small>`:""}
       ${cache&&!its.length&&!F.busy?`<p class="note">Nada aberto apareceu nesta busca. Tente outra lente ou pesquise de novo em alguns dias.</p>`:""}
       ${!F.busy&&!pedeLocal?`<button class="btn${its.length?"":" primary"}" style="min-height:48px" data-op="buscar">${cache?"Pesquisar de novo":"Pesquisar agora"}</button>`:""}
       ${frentes().length?`<section style="display:grid;gap:8px"><span class="tag">Suas frentes</span>${frentes().map(f=>`<button class="item" data-op="frente" data-id="${esc(f.id)}"><svg class="icon" style="color:var(--a-op-1)"><use href="#i-target"/></svg><span class="grow"><b>${esc(f.titulo)}</b><small>${esc(proxMarcoTxt(f))}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`).join("")}</section>`:""}`});
@@ -2952,7 +2953,7 @@ function openOportunidades(lente){
   };
   async function buscar(){
     if(!aiOn()){ F.erro="As oportunidades precisam do Claude ligado."; draw(); return; }
-    F.erro=""; const tools=await ferramentasBusca();
+    F.erro=""; const tools=(await ferramentasBusca()).concat(ferramentaGupy());
     if(!tools.length){ F.erro="A busca na internet está desligada. Ligue o conector Parallel Search no seu Claude para o app pesquisar oportunidades reais."; draw(); return; }
     F.busy="Procurando oportunidades reais para você… pode levar um minuto."; draw();
     const loc=localTxt(), lente=F.lente, uf=(M.profile.local||{}).uf||"";
@@ -2961,8 +2962,10 @@ function openOportunidades(lente){
       : lente==="alvo" ? `ligadas ao ALVO PRINCIPAL da pessoa ("${P().meta}") e às áreas de interesse dela: estágios, vagas, trainee, cursos, bolsas e certificações que aproximam do alvo. Pode ser em todo o Brasil ou remoto${loc?`; diga quando for perto de ${loc}`:""}.`
       : `de RENDA para quem precisa de dinheiro agora${loc?` e mora em ${loc}`:""}: processos seletivos temporários, concursos de nível fundamental ou médio, vagas de entrada e trabalhos remotos reais e acessíveis. PODE ser fora da área de interesse. Em "ponte", diga com honestidade o que a oportunidade traz para o alvo principal (dinheiro para estudar, experiência, horário que deixa estudar).`;
     F.ctl=new AbortController();
+    const l0=M.profile.local||{}, est=UF_NOME[(l0.uf||"").toUpperCase()]||"";
+    const gupyP = lente==="alvo" ? Promise.resolve(null) : gupyVagas({estado:est, limite:20});
     try{
-      const r=await aiJson(`Você é o Yaad1, um app de direção que liga a pessoa a oportunidades REAIS. Encontre de 3 a 6 oportunidades ${foco}
+      const r=await aiJson(`Você é o Yaad1, um app de direção que liga a pessoa a oportunidades REAIS.${tools.some(t=>t.name==="buscar_vagas_gupy")?" Para VAGAS DE EMPREGO, use também buscar_vagas_gupy (vagas reais) com termos ligados à pessoa.":""} Encontre de 3 a 6 oportunidades ${foco}
 Hoje é ${fmtD(iso(today()))}. USE a ferramenta buscar_na_internet (3 a 5 buscas) e, para confirmar datas, vagas e valores, ler_pagina. Use SOMENTE links que vieram das buscas; nunca invente link, data ou número. Descarte o que já encerrou. Prefira fontes oficiais. Considere a escolaridade, a rotina e a realidade da pessoa.
 Escreva de forma concreta: dinheiro em reais, datas, lugar e número de vagas. Frases curtas.
 Responda só com JSON: {"itens":[{"tipo":"concurso|seletivo|vaga|estagio|curso|bolsa","titulo":"curto","orgao":"","onde":"cidade - UF ou remoto","vagas_local":"ex.: 5 vagas em Iracema","salario":"ex.: R$ 1.741 + produtividade","beneficios":"ex.: vale-alimentação de R$ 1.192","taxa":"ex.: R$ 70","requisito":"ex.: fundamental completo","inscricao_ate":"AAAA-MM-DD ou vazio","prova":"AAAA-MM-DD ou vazio","porque":"1 frase: por que apareceu para esta pessoa","barreiras":"1 frase honesta do que pode dificultar (distância, custo, horário, internet, documentos) ou vazio","competencias":["até 4 competências que a oportunidade desenvolve"],"ponte":"1 frase: o que traz para o alvo principal","url":"link oficial vindo da busca"}]}
@@ -2973,7 +2976,9 @@ Avalie a VIABILIDADE para a realidade da pessoa (situação, tempo por dia, cida
         if(!urlOk(x.url) || (!window.YAAD_SITE && hosts.size && !hosts.has(host(x.url)))) x.url="";
         if(!isoOk(x.inscricao_ate)) x.inscricao_ate=""; if(!isoOk(x.prova)) x.prova=""; return x; })
         .filter(o=>!(diasAte(o.inscricao_ate)!=null && diasAte(o.inscricao_ate)<0));
-      (M.oport=M.oport||{})[lente]={itens, data:iso(today())}; M.oportLente=lente; saveMain();
+      const g=await gupyP; if(g&&g.itens.length){ const cid=norm(l0.cidade||""); const gs=g.itens.filter(o=>!(diasAte(o.inscricao_ate)!=null&&diasAte(o.inscricao_ate)<0)&&!itens.some(x=>(x.url&&x.url===o.url)||norm(x.titulo)===norm(o.titulo)))
+          .sort((a,b)=>(norm(b.onde).startsWith(cid)?1:0)-(norm(a.onde).startsWith(cid)?1:0)).slice(0,10); itens.push(...gs); }
+      (M.oport=M.oport||{})[lente]={itens, data:iso(today()), gupyTotal:g?g.total:null}; M.oportLente=lente; saveMain();
     }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); }
     F.busy=""; draw(); const h=SH.querySelector(".op-card h3,[role=alert]"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
     preencherDistancias(((M.oport||{})[lente]||{}).itens, ()=>{ if(FLOW===F && !F.busy){ const sb=$("#shb"), y=sb?sb.scrollTop:0; draw(); const sb2=$("#shb"); if(sb2) sb2.scrollTop=y; } });
@@ -3446,7 +3451,7 @@ Responda CURTO (2 a 4 frases, sem listas longas e sem markdown): a resposta pode
     ctl=new AbortController();
     try{
       const turns=[{role:"user",content:ctxTurn}, {role:"assistant",content:"Entendido."}, ...CH().slice(-12)];
-      const tools=ferramentasApp(propor).concat(await ferramentasBusca());
+      const tools=ferramentasApp(propor).concat(await ferramentasBusca(), ferramentaGupy());
       const r=await SAMPLE(turns,{cache:false, signal:ctl.signal, tools, images: sendImgs.length?sendImgs:undefined, onText:({text})=>{ box.textContent=text; const bd=$("#shb"); if(bd) bd.scrollTop=bd.scrollHeight; }});
       box.textContent=r.text; CH().push({role:"assistant", content:r.text}); M.chats[PID()]=CH().slice(-30); saveMain();
       if(VOZ_ON) falarClaude(r.text);
@@ -3520,6 +3525,27 @@ const distTxt=d=>!d?"":d.mesma?"Na sua cidade":`${d.min<60?d.min+" min":Math.flo
 async function preencherDistancias(itens, redesenhar){ let mudou=false;
   for(const o of (itens||[]).slice(0,8)){ if(o.dist!==undefined || !o.onde) continue; const d=await distanciaAte(o.onde); o.dist=d||null; if(d) mudou=true; }
   if(mudou){ saveMain(); if(redesenhar) redesenhar(); } }
+/* ====================================================================
+   VAGAS REAIS (27/11/2026): MCP oficial da Gupy para candidatos, conectado pela pessoa no claude.ai.
+   O Radar lista vagas publicadas no estado (e na cidade, primeiro) e o Claude pode buscar por termo.
+   Os dados vêm direto da Gupy: título, empresa, cidade, prazo, salário só quando informado, link oficial.
+   ==================================================================== */
+const GUPY_SERVER="Gupy";
+const UF_NOME={AC:"Acre",AL:"Alagoas",AP:"Amapá",AM:"Amazonas",BA:"Bahia",CE:"Ceará",DF:"Distrito Federal",ES:"Espírito Santo",GO:"Goiás",MA:"Maranhão",MT:"Mato Grosso",MS:"Mato Grosso do Sul",MG:"Minas Gerais",PA:"Pará",PB:"Paraíba",PR:"Paraná",PE:"Pernambuco",PI:"Piauí",RJ:"Rio de Janeiro",RN:"Rio Grande do Norte",RS:"Rio Grande do Sul",RO:"Rondônia",RR:"Roraima",SC:"Santa Catarina",SP:"São Paulo",SE:"Sergipe",TO:"Tocantins"};
+const GUPY_TIPO={vacancy_type_internship:"estagio", vacancy_type_apprentice:"vaga", vacancy_type_trainee:"vaga", vacancy_type_temporary:"seletivo"};
+function gupyParaOp(j){ const uf=Object.keys(UF_NOME).find(k=>UF_NOME[k]===j.state)||"", sal=j.salary&&["disclosed","range"].includes(j.salary.status)?String(j.salary.label||"").replace(/^Sal[aá]rio:\s*/i,""):"";
+  const mod={remote:"remoto", hybrid:"híbrido", "on-site":"presencial"}[j.workplaceType]||"", pub=String(j.publishedDate||"").slice(0,10);
+  return {tipo:GUPY_TIPO[j.type]||"vaga", titulo:String(j.name||"").slice(0,120), orgao:String(j.careerPageName||"").slice(0,80), onde:j.workplaceType==="remote"?"remoto":[j.city,uf].filter(Boolean).join(" - "),
+    salario:sal, beneficios:"", taxa:"", requisito:j.type==="vacancy_type_apprentice"?"jovem aprendiz":j.type==="vacancy_type_internship"?"estágio":"", inscricao_ate:isoOk(j.applicationDeadline)?j.applicationDeadline:"", prova:"",
+    porque:`Vaga real publicada na Gupy${isoOk(pub)?" em "+dataCurta(pub):""}${mod?" · "+mod:""}.`, barreiras:"", competencias:[], ponte:"", url:urlOk(j.jobUrl)?j.jobUrl:"", fonte:"gupy", gid:j.id}; }
+async function gupyVagas({estado, cidade, termo, remoto, limite}){ if(!MCP||window.YAAD_SITE) return null;
+  const inp={limit:Math.max(1,Math.min(30,limite||12)), sortBy:"publishedDate"}; if(estado) inp.state=estado; if(cidade) inp.city=cidade; if(termo) inp.term=String(termo).slice(0,60); if(remoto) inp.isRemote=true;
+  try{ const r=await MCP.callTool(GUPY_SERVER,"search_jobs",inp); const pl=lerPayload(r)||{}, d=(pl.data&&pl.data.data)||pl.data||[];
+    return {total:(pl.data&&pl.data.pagination&&pl.data.pagination.total)||d.length, itens:(Array.isArray(d)?d:[]).map(gupyParaOp)}; }catch(e){ return null; } }
+function ferramentaGupy(){ if(!MCP||window.YAAD_SITE) return [];
+  return [{name:"buscar_vagas_gupy", description:"Busca VAGAS DE EMPREGO REAIS na Gupy (um dos maiores portais do Brasil): por termo (cargo, área, habilidade), estado (nome completo, ex.: Roraima), cidade ou só remotas. Devolve título, empresa, cidade, prazo, salário quando informado e link oficial.",
+    inputSchema:{type:"object", properties:{termo:{type:"string"}, estado:{type:"string"}, cidade:{type:"string"}, remoto:{type:"boolean"}}},
+    execute: async(x)=>{ const g=await gupyVagas({...x, limite:8}); if(!g) return "Gupy indisponível agora."; g.itens.forEach(o=>{ if(o.url) URLS_VISTAS.add(o.url); }); return JSON.stringify({total:g.total, vagas:g.itens.map(o=>({titulo:o.titulo, empresa:o.orgao, onde:o.onde, salario:o.salario||"não informado", inscricao_ate:o.inscricao_ate, url:o.url}))}); }}]; }
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
