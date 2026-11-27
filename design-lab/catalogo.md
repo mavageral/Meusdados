@@ -113,6 +113,7 @@ Análise de cada referência enviada. As cores e fontes dos arquivos `.fig` e `.
 | **Glicose** | Cartões coloridos com indicadores em régua ou triângulo, valor grande e unidade pequena. |
 | **Quiz comportamental** (laranja/azul) | Tipografia gigante como herói, uma pergunta por tela, rodapé preto com progresso e "Next". |
 | **Ascendant** (astrologia/cripto) | Gradientes iridescentes, linhas finas, títulos grandes e leves, gráfico de linha minimalista. |
+| **IAD 1, conceito** (enviado pela Edna; app de direção) | Noite azul-neon com cidade e estrada luminosa; celular central com trilha de 4 etapas (Descobrir, Preparar, Conquistar, Evoluir) e "Hoje: 20 min"; painéis de vidro ao redor (radar com mapa e pinos, questão com domínio por matéria, medalhas e gráfico com "Currículo Vivo", assistente com agenda semanal). Perto do `neon-noir` com acento azul/ciano. Aplicado ao Yaad1 mantendo a paleta atual. |
 | **Audio Sphere** (podcast) | Leque de capas coloridas, botão circular de rolagem, controles grandes de player. |
 
 ## Padrões que se repetem em quase todas as referências
