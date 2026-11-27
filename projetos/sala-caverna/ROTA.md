@@ -194,3 +194,20 @@ O botão **C** deixou de ser um chat e virou o **Assistente Yaad1**, um agente:
 - O Claude do Radar e o Assistente ganharam a ferramenta `buscar_vagas_gupy` (por termo, estado, cidade ou remoto).
 - Uma vaga da Gupy tem o botão **"Ver a vaga e me candidatar"**, que abre o link oficial, em vez de "Quero essa", que é para concursos com edital. O salário só aparece quando a vaga o informa.
 - Testado (Playwright, 375 e 390, com o formato real da resposta): 4 vagas → 3 mostradas (1 vencida), cidade primeiro, distância, botão certo; sem erros.
+
+## 13. Preparar candidatura (27/11/2026)
+
+Nível "preparar" da autonomia: o app prepara e a pessoa envia.
+
+- Toda vaga (da Gupy ou encontrada pelo Claude) ganha o botão **"Preparar candidatura"**.
+- Na primeira vez, a pessoa cola o currículo ou conta a experiência em poucas linhas. O texto fica em `M.curriculo` e serve para todas as candidaturas. Ela pode também usar só o que o app já sabe.
+- O app lê a **vaga completa** (Gupy `get_job_by_id`) e o Claude devolve:
+  - aderência honesta (atende, em parte, falta);
+  - **currículo adaptado sem inventar**, com `[COMPLETAR: …]` onde só a pessoa sabe o dado;
+  - mensagem de apresentação;
+  - perguntas prováveis da entrevista com como responder;
+  - lista do que conferir antes de enviar;
+  - o ponto mais fraco da candidatura.
+- Botões "Copiar", "Abrir a vaga e enviar" (link oficial) e **"Treinar a entrevista com o Assistente"**.
+- **Acompanhamento:** "Preparada", "Enviada", "Entrevista marcada", "Aprovada", "Não foi dessa vez". As candidaturas aparecem no Radar e no contexto do Assistente. Conquistas novas: "Primeira candidatura" e "Entrevista".
+- Testado (Playwright, 375 e 390): a descrição completa da vaga e o currículo chegam ao Claude; pacote exibido; situação "Enviada" acende a conquista; lista e botão "Ver minha candidatura"; sem erros.
