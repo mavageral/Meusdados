@@ -127,3 +127,14 @@ No site, `M` é gravado no Supabase pelo shim, com RLS e 2FA já em vigor. **Nã
 **Consolidações pendentes:** unir a missão do dia ao passo de hoje, e as frentes a "Meus projetos" (como projetos paralelos).
 
 **Métrica principal:** a pessoa conclui uma próxima ação em até 14 dias depois de começar ou retomar uma trajetória.
+
+## 7. Início (27/11/2026, depois da crítica da dona: "parece que não mudou nada")
+
+O erro foi acrescentar a jornada **em cima** do painel antigo: a tela ficou mais longa e continuou com cara de aplicativo de banco. A tela inicial agora é outra:
+
+- **Imagem real do destino** em tela cheia. São 5 cenas geradas para o Yaad1 no Figma: campo/recenseador em Roraima, estudo à noite, profissional de dados, família e biblioteca. O app escolhe a cena pelo momento (frente, sonho, ritmo, hora do dia); a foto da própria pessoa tem prioridade.
+- **Um passo**: o número grande de minutos e "Começar agora".
+- **Seu caminho até lá**: a trilha de marcos com datas.
+- **Para você agora**: cartões com foto que deslizam (Radar, sonho, semana com 7 bolinhas, "Sua rotina mudou?").
+- **Ainda hoje**: só os 3 próximos blocos da agenda.
+- **"Ver o dia completo e o painel"** abre a tela antiga inteira, sem perder nada. Tocar em "Hoje" volta ao Início.
