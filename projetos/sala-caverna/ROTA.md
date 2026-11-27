@@ -171,3 +171,11 @@ O botão **C** deixou de ser um chat e virou o **Assistente Yaad1**, um agente:
 - Radar com distância real: conector TomTom (rotas) ou Mapbox.
 - Passo do dia no Google Agenda: via Zapier.
 - Turma ao vivo: capacidade `room`.
+
+## 10. FSRS e agenda do celular (27/11/2026)
+
+- **Revisões pelo FSRS-4.5** (algoritmo aberto da comunidade open-spaced-repetition, MIT), implementado no próprio app com os parâmetros padrão, sem dependência externa. Cada assunto guarda a estabilidade S e a dificuldade D. A próxima revisão cai no dia em que a chance de lembrar chega a 90%, **sem passar da data da prova** da frente ativa. A nota da revisão vira o grau do FSRS: abaixo de 50% é "esqueceu"; abaixo de 75%, "difícil"; abaixo de 100%, "bom"; 100% é "fácil". As revisões antigas migram usando o intervalo que já tinham como estabilidade inicial.
+- Exemplo testado: bom → 4 dias, bom → 15, bom → 50, esqueceu → 6, bom → 17, fácil → 99. Com a prova em 13 dias, o intervalo foi limitado a 12.
+- **"Pôr na minha agenda"** na tela da frente gera um arquivo `.ics` (padrão iCalendar), entregue pela capacidade `downloads`. O arquivo traz:
+  - cada marco futuro como evento do dia, com alarme às 9h da véspera;
+  - o estudo semanal nos dias e no período escolhidos, até a prova, com alarme 10 minutos antes.

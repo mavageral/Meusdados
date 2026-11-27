@@ -1569,15 +1569,15 @@ function openReview(id){
   let Q=null, ans={};
   FLOW={kind:"rev", next:async()=>{ if(!Q){ closeSheet(); return; }
       const right=Q.qs.filter((q,i)=>ans[i]===q.c).length, sc=right/Q.qs.length;
-      const i=STEPS.indexOf(STEPS.find(s=>s>=r.step)); r.done=true;
-      if(sc>=0.67 && i<STEPS.length-1){ (M.revisoes).push({...r, id:"r"+Date.now(), step:STEPS[i+1], due:iso(addDays(today(),STEPS[i+1]-STEPS[i])), done:false}); }
-      else if(sc<0.67){ (M.revisoes).push({...r, id:"r"+Date.now(), step:1, due:iso(addDays(today(),1)), done:false}); }
+      r.done=true; const g=sc<0.5?1:sc<0.75?2:sc<1?3:4, hj=iso(today());
+      const nx=fsrsNext(r.fsrs||(r.step>1?{S:r.step, D:5, last:r.d0||hj}:null), g, hj);
+      (M.revisoes).push({...r, id:"r"+Date.now(), fsrs:nx.card, step:nx.ivl, due:nx.due, done:false});
       Q.qs.forEach((q,j)=>{ if(ans[j]!==q.c) (M.erros=M.erros||[]).push({id:"e"+Date.now()+j, d:iso(today()), mat:r.mat, p:q.p, minha:q.o[ans[j]]||"", certa:q.o[q.c], e:q.e, ok:false}); });
       addXP(Math.round(10*sc)+5); saveMain();
-      SH.querySelector("#rv").innerHTML = `<div style="text-align:center"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${sc>=0.67?`Fixou. Próxima revisão em ${STEPS[Math.min(i+1,STEPS.length-1)]-STEPS[i]} dias.`:"Ainda escapando. Volta amanhã, e os erros foram para o caderno."}</p></div>` + quizHTML(Q,ans,true).replace(/<div class="mcq"><span class="tag">Questão \d+ de \d+ · aberta[\s\S]*$/,"");
+      SH.querySelector("#rv").innerHTML = `<div style="text-align:center"><div class="score">${Math.round(sc*100)}%</div><p class="title-m">${sc>=0.67?"Fixou.":"Ainda escapando, e os erros foram para a Forja."} Próxima revisão em ${(M.revisoes[M.revisoes.length-1]||{}).step||1} ${((M.revisoes[M.revisoes.length-1]||{}).step||1)===1?"dia":"dias"}.</p><small class="muted">O app calcula o dia em que você estaria prestes a esquecer este assunto (método FSRS)${provaLimite()?", sem passar da data da prova":""}.</small></div>` + quizHTML(Q,ans,true).replace(/<div class="mcq"><span class="tag">Questão \d+ de \d+ · aberta[\s\S]*$/,"");
       Q=null; SH.querySelector('[data-sh="next"]').firstChild.textContent="Fechar "; }, back:()=>{}};
   openSheet("linear-gradient(170deg,#101540,#05060A 60%)");
-  sheetHTML({title:`Revisão D${r.step} · ${SUBJ[r.mat]?SUBJ[r.mat].n:""}`, next:"Corrigir", nextOk:false, body:`
+  sheetHTML({title:`Revisão · ${SUBJ[r.mat]?SUBJ[r.mat].n:r.mat}`, next:"Corrigir", nextOk:false, body:`
     <h2 class="q" style="font-size:clamp(30px,8vw,44px)">${esc(r.topic)}<small>Recuperação ativa: responda sem consultar o caderno. É assim que a memória se fortalece.</small></h2><div id="rv">${aiOn()?thinking("Preparando 3 perguntas…"):`<p class="note">Sem o Claude nesta cópia. Escreva no caderno o que lembra de "${esc(r.topic)}" e depois confira.</p>`}</div>`});
   if(!aiOn()){ SH.querySelector('[data-sh="next"]').disabled=false; FLOW.next=()=>{ r.done=true; (M.revisoes).push({...r,id:"r"+Date.now(),step:STEPS[Math.min(STEPS.indexOf(r.step)+1,4)],due:iso(addDays(today(),3)),done:false}); saveMain(); closeSheet(); }; return; }
   aiJson(`Revisão espaçada (dia ${r.step}) do assunto "${r.topic}" (${SUBJ[r.mat]?SUBJ[r.mat].n:""}). O que a pessoa tinha escrito quando estudou: """${(r.conta||"").slice(0,800)}""". Faça 3 questões de múltipla escolha de RECUPERAÇÃO (lembrar e aplicar, não reconhecer), 4 alternativas. Responda só com JSON: {"qs":[{"p":"","o":["","","",""],"c":0,"e":""}]}`, {modelTier:"quick"})
@@ -3047,11 +3047,12 @@ function openFrente(id){
       ${f.ponte?`<p class="faixa-ponte" style="margin:0"><span class="tag">Ponte</span> ${esc(f.ponte)}</p>`:""}
       <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Seu ritmo</span><span>${f.min} min · ${(f.dias||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ")}${f.turno&&f.turno!=="qualquer"?` · à ${f.turno}`:""}</span></div>
       ${f.atencao||f.jornada?`<div class="ponte" style="animation:none"><b style="font-weight:500">Para lembrar</b><p style="margin:0">${esc([f.jornada?`Jornada: ${f.jornada}.`:"", f.atencao].filter(Boolean).join(" "))}</p></div>`:""}
-      <div class="row wrap" style="gap:8px">${urlOk(f.url)?`<a class="btn" style="min-height:48px" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Edital e inscrição</a>`:""}</div>
+      <div class="row wrap" style="gap:8px">${DL?`<button class="btn" style="min-height:48px" data-fa="agenda"><svg class="icon"><use href="#i-cal"/></svg>Pôr na minha agenda</button>`:""}${urlOk(f.url)?`<a class="btn" style="min-height:48px" href="${esc(f.url)}" target="_blank" rel="noopener noreferrer">Edital e inscrição</a>`:""}</div>
       <button class="link" data-fa="arquivar" style="justify-self:start;min-height:44px">Encerrar esta frente</button>`});
     SH.querySelectorAll("[data-mk]").forEach(b=>b.onclick=()=>{ f.ok=f.ok||{}; const i=+b.dataset.mk; f.ok[i]=!f.ok[i]; saveMain(); draw(); render(); const nb=SH.querySelector(`[data-mk="${i}"]`); if(nb) nb.focus(); });
     SH.querySelectorAll("[data-fa]").forEach(b=>b.onclick=()=>{ const k=b.dataset.fa;
       if(k==="estudar"){ closeSheetSoft(); estudarFrente(f.id); }
+      else if(k==="agenda") agendaFrente(f);
       else if(k==="arquivar"){ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para encerrar (os estudos feitos ficam salvos)"; return; } f.arquivada=iso(today()); saveMain(); closeSheet(); render(); toast("Frente encerrada."); } });
   };
   draw();
@@ -3442,6 +3443,44 @@ Responda CURTO (2 a 4 frases, sem listas longas e sem markdown): a resposta pode
   draw();
   if(prefill) setTimeout(()=>$("#chi")?.focus(),50);
 }
+/* ====================================================================
+   FSRS (Free Spaced Repetition Scheduler, comunidade open-spaced-repetition, MIT), versão 4.5 com os
+   parâmetros padrão. Para cada assunto, estima a estabilidade da memória (S, em dias) e a dificuldade (D),
+   e marca a próxima revisão no dia em que a chance de lembrar cai para 90%. Nunca agenda depois da prova da frente.
+   ==================================================================== */
+const FSRS_W=[0.4872,1.4003,3.7145,13.8206,5.1618,1.2298,0.8975,0.031,1.6474,0.1367,1.0461,2.1072,0.0793,0.3246,1.587,0.2272,2.8755];
+const FSRS_DECAY=-0.5, FSRS_FACTOR=19/81, FSRS_RET=0.9;
+const fsrsR=(t,S)=>Math.pow(1+FSRS_FACTOR*t/S, FSRS_DECAY);
+const fsrsIvl=S=>Math.max(1,Math.min(365,Math.round(S/FSRS_FACTOR*(Math.pow(FSRS_RET,1/FSRS_DECAY)-1))));
+const fsrsD=d=>Math.min(10,Math.max(1,d));
+function fsrsNext(card, g, hoje){ const w=FSRS_W; let S, D;
+  if(!card||!card.S){ S=w[g-1]; D=fsrsD(w[4]-(g-3)*w[5]); }
+  else { const t=Math.max(0,(fromIso(hoje)-fromIso(card.last||hoje))/864e5), R=fsrsR(t,card.S); D=card.D||5;
+    S = g===1 ? Math.min(card.S, w[11]*Math.pow(D,-w[12])*(Math.pow(card.S+1,w[13])-1)*Math.exp(w[14]*(1-R)))
+              : card.S*(1+Math.exp(w[8])*(11-D)*Math.pow(card.S,-w[9])*(Math.exp(w[10]*(1-R))-1)*(g===2?w[15]:1)*(g===4?w[16]:1));
+    D = fsrsD(w[7]*(w[4]-w[5]) + (1-w[7])*(D - w[6]*(g-3))); }
+  let ivl=fsrsIvl(S); const prova=provaLimite(); if(prova){ const ate=Math.round((fromIso(prova)-fromIso(hoje))/864e5)-1; if(ate>=1) ivl=Math.min(ivl,ate); }
+  return {card:{S:+S.toFixed(3), D:+D.toFixed(3), last:hoje}, ivl, due:iso(addDays(fromIso(hoje),ivl))}; }
+function provaLimite(){ const f=frenteAtiva(); if(!f) return ""; const p=marcosDe(f).find(m=>/prova/i.test(m.r)); return p&&diasAte(p.d)>0?p.d:(f.prova&&diasAte(f.prova)>0?f.prova:""); }
+
+/* ---------- Pôr na agenda do celular (.ics, padrão iCalendar) ---------- */
+function icsDaFrente(f){
+  const pad=n=>String(n).padStart(2,"0"), dt=d=>`${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}`, stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+Z$/,"Z");
+  const txt=s=>String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Yaad1//Rota//PT-BR","CALSCALE:GREGORIAN","METHOD:PUBLISH"];
+  marcosDe(f).filter(m=>diasAte(m.d)!=null&&diasAte(m.d)>=0&&!m.ok).forEach((m,i)=>{ const d=fromIso(m.d);
+    L.push("BEGIN:VEVENT",`UID:yaad1-${f.id}-m${i}@yaad1`,`DTSTAMP:${stamp}`,`DTSTART;VALUE=DATE:${dt(d)}`,`DTEND;VALUE=DATE:${dt(addDays(d,1))}`,`SUMMARY:${txt(f.titulo+": "+m.r)}`,`DESCRIPTION:${txt("Marco da sua frente no Yaad1."+(f.url?" Fonte oficial: "+f.url:""))}`,
+      "BEGIN:VALARM","ACTION:DISPLAY",`DESCRIPTION:${txt(m.r)}`,"TRIGGER:-PT15H","END:VALARM","END:VEVENT"); });
+  const hora={manhã:7, tarde:14, noite:20}[f.turno]||19, dias=(f.dias||[]).map(d=>["SU","MO","TU","WE","TH","FR","SA"][d]);
+  if(dias.length){ let ini=addDays(today(),1); for(let k=0;k<7&&!(f.dias||[]).includes(ini.getDay());k++) ini=addDays(ini,1); const fim=f.prova&&isoOk(f.prova)?fromIso(f.prova):addDays(today(),90), ini2=new Date(ini.getFullYear(),ini.getMonth(),ini.getDate(),hora,0), fim2=new Date(ini2.getTime()+(f.min||40)*60000);
+    const loc=d=>`${dt(d)}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+    L.push("BEGIN:VEVENT",`UID:yaad1-${f.id}-estudo@yaad1`,`DTSTAMP:${stamp}`,`DTSTART:${loc(ini2)}`,`DTEND:${loc(fim2)}`,`RRULE:FREQ=WEEKLY;BYDAY=${dias.join(",")};UNTIL=${dt(fim)}T235959`,`SUMMARY:${txt("Yaad1 · "+(f.min||40)+" min para "+f.titulo)}`,`DESCRIPTION:${txt("Abra o Yaad1 e toque em Começar agora. O passo do dia já está escolhido.")}`,
+      "BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:Hora do seu passo de hoje","TRIGGER:-PT10M","END:VALARM","END:VEVENT"); }
+  L.push("END:VCALENDAR"); return L.join("\r\n"); }
+async function agendaFrente(f){ const ics=icsDaFrente(f), nome=`yaad1-${norm(f.titulo).replace(/[^a-z0-9]+/g,"-").slice(0,30)}.ics`;
+  if(!DL){ toast("Baixar arquivos não está disponível aqui."); return; }
+  try{ await DL.save({filename:nome, data:new Blob([ics],{type:"text/calendar"})}); toast("Arquivo pronto: abra e toque em Adicionar à agenda."); }
+  catch(e){ if(e&&e.code==="declined") return; toast(e&&e.code==="rejected_extension"?"Este aparelho não aceitou o arquivo de agenda.":"Não foi possível salvar o arquivo agora."); } }
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
