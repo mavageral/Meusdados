@@ -46,3 +46,34 @@
    - API ENEM: questões reais.
    - Web Push: notificações no celular.
    - PostHog: medir as métricas da mesa.
+
+## D. MCPs, repositórios, skills e plugins (pesquisa de 27/11/2026)
+
+### Para o app usar (dar dados reais ao Yaad1)
+
+| Item | O que traz | Como entra | Fonte |
+|---|---|---|---|
+| **MCP oficial da Gupy para candidatos** | Busca de **vagas reais** da Gupy (um dos maiores portais do Brasil), grátis. A Gupy também oferece skills de análise de currículo e de radar de vagas | A dona adiciona o conector personalizado `https://candidates.mcp.api.gupy.io/mcp` no claude.ai. Depois, o Radar do app passa a chamá-lo pela capacidade `mcp`. É preciso conferir as ferramentas e a autenticação depois de conectado | candidatos.gupy.io/ia-para-pessoas-candidatas |
+| **mcp-brasil** (MIT) | Um servidor MCP com 70 fontes públicas brasileiras e 533 ferramentas: IBGE, Banco Central, Portal da Transparência, Câmara, Senado e outras | Precisa de servidor próprio (Python). Serve ao site, ou a mim durante o desenvolvimento | github.com/Mcp-Brasil/mcp-brasil |
+| **querido-diario-mcp-server** (comunitário) | Diários oficiais municipais, incluindo os seletivos de prefeituras | Roda localmente (Python), ou a API direto no site | pypi.org/project/querido-diario-mcp-server |
+| **Google Agenda** (conector do diretório do claude.ai, ainda não instalado) | O assistente que age poderia **criar os eventos direto na agenda**, sem baixar arquivo | A dona conecta no claude.ai; o app declara o conector | diretório de conectores do claude.ai |
+| **TomTom Maps** (já conectado) | Distância e tempo de viagem reais no Radar | Capacidade `mcp` | — |
+
+### Repositórios para estudar e reaproveitar ideias
+
+| Repositório | Por que importa |
+|---|---|
+| `Mateus-Nogueira-GT/ai-job-search-brasil` (MIT) | Busca de vagas na Gupy e no VAGAS.com.br, calculadora CLT × PJ, currículo e candidaturas no padrão brasileiro, feito para o Claude Code. É uma base para o **Currículo Vivo** e para "preparar candidatura" |
+| `leonardobora/gupy-candidate-mcp` (MIT) | MCP que cruza o perfil da pessoa com os requisitos da vaga (pontuação de aderência) e monitora prazos. É a ideia do "por que apareceu para você" |
+| `gustavobraga-byte/Skill-IBGE` (MIT) | Skill com todas as APIs públicas do IBGE |
+| `zijinz456/OpenTutor` (MIT) | Tutor adaptativo com FSRS, grafo de conhecimento e detecção de fadiga. Referência para a próxima onda |
+| `open-spaced-repetition/ts-fsrs` (MIT) | A referência do FSRS que implementamos |
+| `yunger7/enem-api` (GPL-2.0) | API de questões reais do ENEM (usar pela API pública, sem copiar o código) |
+
+### Plugins do catálogo do claude.ai (para eu construir melhor)
+
+| Plugin | Para quê |
+|---|---|
+| **Claude Education Skills Library** (165 skills pedagógicas) | Inclui geradores de prática de recuperação, escada de pistas, intenção de implementação (o plano se-então), diagnóstico de erro e agendador de prática espaçada. São métodos com evidência para a Sala de aula, a Sala viva e o Assistente |
+| **Pwa2play** | Empacotar o site como app assinado para a **Play Store**, evitando os erros que fazem a loja recusar |
+| **Ágora Learning** | Plano de 12 semanas, tutor socrático, FSRS e modo para TDAH. Boas ideias para comparar |
