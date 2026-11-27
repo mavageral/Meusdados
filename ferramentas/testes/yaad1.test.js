@@ -124,6 +124,21 @@ const CENARIOS = {
     ok(r.fim && r.part === 1, "partida não terminou ou não foi salva");
     ok(r.erro, "erro do jogo não foi para a revisão");
   },
+  "Início com o núcleo do Caverna e certificados": async (p) => {
+    const r = await p.evaluate(() => {
+      M.sessao = { proj: PID(), dstr: iso(today()), k: null, mat: Object.keys(SUBJ)[0], livre: true, at: 2, ts: Date.now(), data: { topic: "Álgebra" } };
+      TAB = "hoje"; PAINEL = false; render();
+      const ini = { going: !!document.querySelector(".inicio .going"), ribbon: !!document.querySelector(".inicio #ribbon"), prog: (document.querySelector(".hoje-prog") || {}).textContent || "" };
+      const st = dayStats(iso(today()));
+      TAB = "evolucao"; EVOTAB = "metas"; render();
+      const sel = document.querySelector("#ct-kaggle-sql"); sel.value = "concluído"; sel.dispatchEvent(new Event("change", { bubbles: true }));
+      return { ...ini, total: st.total, certs: document.querySelectorAll("[data-cert]").length, cv: /Certificado: Intro to SQL/.test(cvVivoTxt()), anb: /Produtos do mercado financeiro/.test(SUBJ.anbima.lv.join()) };
+    });
+    ok(r.going && r.ribbon, "Início sem o estudo em andamento ou sem a faixa de evolução");
+    ok(new RegExp("de " + r.total + " ").test(r.prog), "contagem do dia diferente da faixa: " + r.prog);
+    ok(r.certs === 7 && r.cv, "certificados ausentes ou não entraram no currículo vivo");
+    ok(r.anb, "ANBIMA ainda com a estrutura antiga da CPA-10");
+  },
   "Jornada, mapa do radar e currículo vivo": async (p) => {
     const r = await p.evaluate(() => {
       M.profile.local = { cidade: "Iracema", uf: "RR" }; M.geo = { "iracema|RR": [-61.05, 2.18], "boa vista|RR": [-60.67, 2.82] };

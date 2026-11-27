@@ -628,6 +628,24 @@ const VAGAS0 = [
   {id:"agibank", n:"Agibank", v:"Dados e crédito", st:"interesse"}
 ];
 const VSTATUS = ["interesse","inscrita","testes","entrevista","aprovada","não seguiu"];
+/* Certificados que fortalecem o currículo (pesquisa de 27/11/2026, conferida nas fontes oficiais). Ordem = quando fazer. */
+const CERTS = [
+  {id:"kaggle-sql", n:"Intro to SQL", org:"Kaggle Learn", mat:"sql", custo:"Grátis", quando:"Agora", por:"SQL é o primeiro requisito das vagas de dados da Serasa e dos bancos. Certificado público de conclusão.", url:"https://www.kaggle.com/learn/intro-to-sql"},
+  {id:"kaggle-py", n:"Python e Pandas", org:"Kaggle Learn", mat:"py", custo:"Grátis", quando:"Agora", por:"Prova prática de Python para análise de dados, com certificado de conclusão.", url:"https://www.kaggle.com/learn/pandas"},
+  {id:"ev-excel", n:"Excel Intermediário (30h)", org:"Escola Virtual Gov · Receita Federal", mat:"bi", custo:"Grátis", quando:"Agora", por:"Tabelas dinâmicas, gráficos e automação: base de qualquer vaga de banco. Certificado do governo.", url:"https://www.escolavirtual.gov.br/curso/1275"},
+  {id:"fb-powerbi", n:"Trilha Power BI (5 cursos)", org:"Fundação Bradesco · conteúdo Microsoft", mat:"bi", custo:"Grátis", quando:"Dezembro", por:"Power BI aparece em quase todas as vagas de Analytics. Melhor fazer no computador.", url:"https://www.ev.org.br/cursos/analise-de-dados-no-power-bi"},
+  {id:"pl300", n:"Power BI Data Analyst (PL-300)", org:"Microsoft", mat:"bi", custo:"Treino grátis · exame pago", quando:"Depois dos 100 dias", por:"A certificação de Power BI mais reconhecida do mercado. Treine de graça no Microsoft Learn e faça o exame quando o simulado oficial passar.", url:"https://learn.microsoft.com/pt-br/credentials/certifications/data-analyst-associate/"},
+  {id:"cpa", n:"CPA (nova, desde 2026)", org:"ANBIMA", mat:"anbima", custo:"R$ 225", quando:"Depois de 23/01", por:"Porta de entrada obrigatória para o mercado financeiro. 50 questões, 2h30, 70% para passar. Data decidida pela média dos seus simulados.", url:"https://anbimaedu.com.br/certificacao/cpa"},
+  {id:"febraban", n:"FBB500 Mercado Financeiro ou Prevenção a Fraudes", org:"FEBRABAN Educação", mat:"anbima", custo:"R$ 280 (FBB500)", quando:"Horizonte", por:"Prova online reconhecida pelos bancos. Prevenção a Fraudes conversa direto com o trabalho de Analytics da Serasa.", url:"https://febrabaneducacao.com.br/certificacoes"}];
+const CSTATUS = ["quero fazer","fazendo","concluído"];
+function certsHTML(){ const st=M.certs||{}, L=k=>levelOf(k).l;
+  return `<section style="display:grid;gap:10px" aria-label="Certificados"><div class="sec-h"><h2>Certificados que abrem portas</h2><span class="mono muted" style="font-size:13px">${CERTS.filter(c=>st[c.id]==="concluído").length} de ${CERTS.length}</span></div>
+    <p class="muted" style="margin:0;font-size:14px">Ligados às suas matérias: cada um usa o que você já estuda na agenda. Os grátis primeiro; os pagos quando o treino mostrar que você está pronta.</p>
+    <div class="list">${CERTS.map(c=>{ const s=st[c.id]||"", nv=SUBJ[c.mat]?`${SUBJ[c.mat].n}: nível ${["I","II","III","IV","V"][L(c.mat)]}`:"";
+      return `<div class="item" style="display:grid;gap:6px;${s==="concluído"?"border-color:var(--ok)":""}"><div class="row" style="justify-content:space-between;gap:8px;align-items:flex-start"><span style="display:grid;gap:2px;min-width:0"><b>${esc(c.n)}</b><small>${esc(c.org)} · ${esc(c.custo)} · <span style="color:var(--c)">${esc(c.quando)}</span></small></span>
+        <label class="sr" for="ct-${c.id}">Situação</label><select id="ct-${c.id}" class="inp" data-cert="${c.id}" style="width:auto;min-height:44px;padding:8px 10px;border-radius:12px;font-size:13px"><option value="">—</option>${CSTATUS.map(x=>`<option${x===s?" selected":""}>${x}</option>`).join("")}</select></div>
+        <small class="muted">${esc(c.por)}${nv?` · ${esc(nv)}`:""}</small><a class="link" href="${esc(c.url)}" target="_blank" rel="noopener noreferrer" style="justify-self:start;min-height:44px;display:inline-flex;align-items:center">Abrir o site oficial</a></div>`; }).join("")}</div>
+    <p class="faint" style="font-size:13px">Valores e regras conferidos em 27/11/2026. Confirme no site oficial antes de pagar.</p></section>`; }
 
 /* Matérias, trilhas e recursos (Documento-base e Laudo Educacional) */
 let SUBJ = {
@@ -645,8 +663,8 @@ let SUBJ = {
    rec:[["Khan Academy · Estatística","https://pt.khanacademy.org/math/statistics-probability"],["MIT · Statistics for Applications","https://ocw.mit.edu/search/?q=Statistics%20for%20Applications"]]},
  proj:{n:"Projeto de crédito", a:"tech", lv:["Pergunta e dados do BCB","Limpeza com SQL e Python","Painel v1","Painel v2 com KPIs","Modelo documentado"], st:[0,3,7,12,18],
    rec:[["BCB · dados abertos","https://dadosabertos.bcb.gov.br/"],["GitHub Skills","https://skills.github.com/"],["dados.gov.br","https://dados.gov.br/"]]},
- anbima:{n:"ANBIMA CPA", a:"anbima", lv:["Sistema Financeiro Nacional","Ética e regulação","Economia e finanças","Investimentos e fundos","Simulados"], st:[0,4,9,15,22],
-   rec:[["ANBIMA · certificações","https://anbimaedu.com.br/certificacoes"],["ANBIMA · documentos","https://anbimaedu.com.br/central-documentos"]]},
+ anbima:{n:"ANBIMA CPA", a:"anbima", lv:["Sistema Financeiro Nacional (20%)","Produtos do mercado financeiro (40%)","Relacionamento com o cliente (30%)","Inovação e mercado (10%)","Simulados no formato novo"], st:[0,4,9,15,22],
+   rec:[["ANBIMA Edu · CPA (programa e inscrição)","https://anbimaedu.com.br/certificacao/cpa"],["ANBIMA · certificações","https://anbimaedu.com.br/certificacoes"]]},
  biblia:{n:"Bíblia", a:"biblia", lv:["Leitura diária","Meditação","Estudo temático","Preparação de mensagens","Ensino"], st:[0,10,25,45,70], rec:[]}
 };
 const FROM_LABEL_C = l => /Matem/.test(l)?"mat": /Econ/.test(l)?"eco": /ANBIMA/.test(l)?"anbima": /Projeto|Power BI/.test(l)?"proj": /Python|SQL|código/.test(l)?"py": /Bíblia/.test(l)?"biblia": null;
@@ -997,11 +1015,7 @@ function vPainel(){
         </div>
         <div class="acts">${heroAct}${cur&&nxt?`<span class="chip" style="background:rgb(0 0 0 / .25)">Depois: ${esc(nxt.l)} ${fmtH(nxt.a)}</span>`:""}</div>
       </section>
-      ${M.sessao&&meu(M.sessao)?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button><button class="link" data-act="descartar" style="justify-self:start;margin-top:-10px">Descartar este estudo</button>`:""}
-      ${missaoHTML()}
-      ${ribbonHTML()}
-      ${manhaPend()?`<button class="item" data-act="manha" style="border-color:rgb(154 165 255 / .45)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
-      ${semanaPend()?`<button class="item" data-act="semana" style="border-color:rgb(255 106 26 / .45)"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Segunda é dia de prova com gabarito sobre a semana</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${nucleoHTML()}
       ${pendNow?`<button class="item" data-act="bloco" data-k="${esc(bkey(pendNow))}" style="border-color:rgb(255 194 75 / .4)"><svg class="icon" style="color:var(--warn)"><use href="#i-flame"/></svg><span class="grow"><b>Ainda falta confirmar: ${esc(pendNow.l)}</b><small>Feito ou não feito, registre agora enquanto lembra.</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
 
      </div>
@@ -1126,6 +1140,7 @@ function evoMetas(){
     ${metasConectadasHTML()}
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Portas abertas</h2><button class="link" data-act="nova-vaga">Adicionar vaga</button></div><div class="list">${vagas}</div>
       <p class="faint" style="font-size:13px">As vagas e prazos vêm do seu plano. Confirme sempre no site de cada empresa antes de se inscrever.</p></section>
+    ${certsHTML()}
     <section class="glass pad" style="display:grid;gap:10px"><h2 class="title-m">Fases do ${esc(P().nome)}</h2>${PHASES.map(p=>`<div class="ev" style="display:grid;gap:4px;padding:10px 0;border-bottom:1px solid var(--edge)"><b style="font-weight:500;${phaseOf(today())===p?"color:var(--c)":""}">${esc(p.n)} · ${fromIso(p.a).getDate()}/${fromIso(p.a).getMonth()+1} a ${fromIso(p.b).getDate()}/${fromIso(p.b).getMonth()+1}</b><span class="muted">${esc(p.f)}</span></div>`).join("")}</section>`;
 }
 function evoArvore(){
@@ -1141,7 +1156,7 @@ function evoArvore(){
     {n:"Dados", a:"tech", nodes:[{n:"SQL básico",on:true},{n:"JOIN",on:L("sql")>=2},{n:"Python básico",on:L("py")>=1},{n:"Pandas",on:L("py")>=3},{n:"Power BI e DAX",on:L("bi")>=3},{n:"Estatística e regressão",on:L("est")>=3},{n:"Painel de crédito v1",on:!!m.painel1},{n:"Modelo de crédito",on:!!m.modelo}]},
     {n:"Carreira", a:"oracao", nodes:[{n:"Inscrição Serasa",on:!!m.inscricao},{n:"Testes online",on:!!m.testes},{n:"Entrevista",on:!!m.entrevista},{n:"Estágio Analytics",on:!!m.aprovada}]},
     {n:"Portas reservas", a:"min", nodes:["PagBank","Mercantil","Sicoob","Agibank"].map(x=>({n:x,on:!!m.painel1}))},
-    {n:"Certificações", a:"anbima", nodes:[{n:"CS50 SQL",on:L("sql")>=3},{n:"CS50 Python",on:L("py")>=3},{n:"PL-300 Power BI",on:L("bi")>=4},{n:"CPA ANBIMA",on:simAvg>=.7}]},
+    {n:"Certificações", a:"anbima", nodes:CERTS.map(c=>({n:c.n.replace(/\s*\(.*\)$/,""), on:(M.certs||{})[c.id]==="concluído"}))},
     {n:"Horizonte", a:"rev", nodes:[{n:"Graduação em Matemática",on:L("mat")>=4},{n:"Ciências Econômicas",on:L("eco")>=2},{n:"Ciência da Computação",on:false},{n:"Mestrado ITA",on:false}]}
   ];
   return `<p class="muted">Cada ramo acende com evidência: blocos aprovados na prova, simulados e marcos que você confirma. O próximo nó a destravar fica tracejado.</p>
@@ -1158,7 +1173,7 @@ function evoAnbima(){
       <div class="acts"><button class="btn primary" data-act="simulado">Fazer simulado de 10 questões</button></div></section>
     <div class="kpis"><div class="kpi"><b>${L.n}</b><span>blocos aprovados</span></div><div class="kpi"><b>${sims.length}</b><span>simulados feitos</span></div><div class="kpi"><b>${last?Math.round(last.score*100)+"%":"--"}</b><span>último simulado</span></div><div class="kpi"><b>6h</b><span>por semana (ter, qui, sex)</span></div></div>
     <section class="glass pad" style="display:grid;gap:8px"><h2 class="title-m">Trilha</h2>${SUBJ.anbima.lv.map((x,i)=>`<div class="row" style="padding:8px 0;border-bottom:1px solid var(--edge)"><span class="chip" style="${i<=L.l?"background:var(--a-anbima-1);color:#1A1400;border:0":""}">${i+1}</span><span>${esc(x)}</span></div>`).join("")}
-      <p class="faint" style="font-size:13px">A prova fica para depois de 23/01, decidida pela média nos simulados. Confirme o programa oficial no site da ANBIMA.</p></section>
+      <p class="faint" style="font-size:13px">A prova fica para depois de 23/01, decidida pela média nos simulados (meta: 70%, como na prova real). Desde 2026 a CPA substituiu a CPA-10: 50 questões em 2h30, 35 acertos para passar, taxa de R$ 225. Confirme no site da ANBIMA.</p></section>
     ${sims.length?`<section style="display:grid;gap:8px"><h2 class="title-m">Histórico</h2><div class="list">${sims.map(s=>`<div class="item"><span class="grow"><b>${Math.round(s.score*100)}%</b><small>${fromIso(s.d).getDate()}/${fromIso(s.d).getMonth()+1} · ${s.n} questões</small></span></div>`).join("")}</div></section>`:""}`;
 }
 
@@ -1816,6 +1831,12 @@ function missaoHTML(){
     <div class="row wrap">${isMarco?`<button class="btn sm primary" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" data-act="metas">Ver todas as metas</button></div>
   </section>`;
 }
+/* Núcleo do Projeto Caverna (em andamento, missão, faixa de evolução, revisões de ontem e da semana): aparece no Início e no painel */
+function nucleoHTML(){ return `${M.sessao&&meu(M.sessao)?`<button class="item going" data-act="retomar"><svg class="icon" style="color:var(--c)"><use href="#i-book"/></svg><span class="grow"><b>Em andamento: ${esc(M.sessao.data.topic||"estudo")}</b><small>${esc(SUBJ[M.sessao.mat]?SUBJ[M.sessao.mat].n:"")} · toque para voltar à sala de aula</small></span><svg class="icon"><use href="#i-arrow"/></svg></button><button class="link" data-act="descartar" style="justify-self:start;margin-top:-10px;min-height:44px;display:inline-flex;align-items:center">Descartar este estudo</button>`:""}
+      ${missaoHTML()}
+      ${ribbonHTML()}
+      ${manhaPend()?`<button class="item" data-act="manha" style="border-color:color-mix(in srgb,var(--a-rev-1) 45%,transparent)"><svg class="icon" style="color:var(--a-rev-1)"><use href="#i-spark"/></svg><span class="grow"><b>Revisão de ontem</b><small>Perguntas rápidas sobre o que você estudou ontem</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}
+      ${semanaPend()?`<button class="item" data-act="semana" style="border-color:color-mix(in srgb,var(--c) 45%,transparent)"><svg class="icon" style="color:var(--c)"><use href="#i-target"/></svg><span class="grow"><b>Revisão da semana</b><small>Segunda é dia de prova com gabarito sobre a semana</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`:""}`; }
 function ribbonHTML(){ return `<section class="ribbon" id="ribbon" aria-label="Sua evolução no tempo">${ribbonInner()}</section>`; }
 function ribbonInner(){
   const t=today(), ts=iso(t), nm=nowMin(), st=dayStats(ts);
@@ -1880,7 +1901,7 @@ function temaHTML(m){ const rows=Object.entries(m).sort((a,b)=>a[1].a/a[1].n-b[1
 
 /* ---------- simulados ---------- */
 const SIMS = {
-  anbima:{n:"ANBIMA CPA", meta:.7, bg:"linear-gradient(170deg,#2A2100,#05060A 60%)", p:`Crie um SIMULADO de 10 questões no estilo da certificação ANBIMA CPA (nível de entrada), cobrindo Sistema Financeiro Nacional, ética e regulação, noções de economia e finanças, princípios de investimento, fundos e tributação. 4 alternativas, só uma certa. Use conceitos estáveis e evite números de normas que mudam. Em "tema" ponha o tópico do programa.`},
+  anbima:{n:"ANBIMA CPA", meta:.7, bg:"linear-gradient(170deg,#2A2100,#05060A 60%)", p:`Crie um SIMULADO de 10 questões no estilo da NOVA certificação ANBIMA CPA (Certificado Profissional Anbima, em vigor desde 2026, que substituiu a CPA-10). Respeite os pesos do programa oficial: 2 questões de Estrutura e dinâmica do Sistema Financeiro Nacional (20%); 4 de Produtos do mercado financeiro: renda fixa, renda variável, fundos, previdência, crédito e seguros (40%); 3 de Relacionamento com o cliente: prospecção, atendimento, suitability, finanças pessoais e conduta (30%); 1 de Inovação e desenvolvimento de mercado: Open Finance, ESG, IA, fintechs e criptoativos (10%). Formato da prova real: múltipla escolha CONTEXTUALIZADA, com um cenário curto de atendimento a um cliente antes da pergunta; inclua 2 questões no estilo "árvore de decisão" (qual a melhor conduta diante da situação). 4 alternativas, só uma certa. A aprovação real exige 70% (35 de 50). Use conceitos estáveis e evite números de normas que mudam. Em "tema" ponha um destes 4 temas.`},
   enem:{n:"Matemática estilo ENEM", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de Matemática no estilo do ENEM (situações do cotidiano, leitura de gráficos e tabelas descritas em texto, porcentagem, proporção, funções, geometria, estatística básica). Dificuldade crescente; 4 alternativas. Em "tema" ponha o conteúdo.`},
   eco:{n:"Economia", meta:.6, bg:"linear-gradient(170deg,#0B1E55,#05060A 60%)", p:`Crie um SIMULADO de 10 questões introdutórias de Ciências Econômicas (micro, macro, matemática financeira, juros, inflação, mercado de crédito). 4 alternativas. Em "tema" ponha o conteúdo.`},
   dados:{n:"Dados: SQL, Python e estatística", meta:.6, bg:"linear-gradient(170deg,#04323E,#05060A 60%)", p:`Crie um SIMULADO de 10 questões de nível estágio em dados: SQL (SELECT, WHERE, GROUP BY, JOIN), Python básico e pandas, Power BI e estatística descritiva, como em testes de processos seletivos de Analytics. Código curto dentro do enunciado quando ajudar. 4 alternativas. Em "tema" ponha o conteúdo.`}
@@ -2426,7 +2447,7 @@ const PORTAS = [
   {k:"vest", n:"Passar num vestibular", q:"Qual vestibular e qual curso?", ex:["ITA","Fuvest (USP)","Unicamp","UERJ","IME"], ph:"Ex.: ITA, Engenharia de Computação", modelo:"enem"},
   {k:"facul", n:"Entrar ou crescer na faculdade", q:"Qual curso?", ex:["Administração","Ciências Contábeis","Matemática","Pedagogia","Análise e Desenvolvimento de Sistemas","Enfermagem"], ph:"Ex.: Matemática EAD, 3º período", modelo:"faculdade"},
   {k:"emprego", n:"Conseguir um emprego", q:"Qual cargo ou área?", ex:["Dados e tecnologia","Administrativo","Bancos e finanças","Vendas e atendimento","Saúde","Educação"], ph:"Ex.: estágio em dados num banco", modelo:"emprego"},
-  {k:"curso", n:"Fazer um curso ou certificação", q:"Qual curso ou certificação?", ex:["ANBIMA (CPA)","Inglês","Programação","Excel e Power BI","Curso técnico"], ph:"Ex.: CPA-20 da ANBIMA", modelo:"emprego"},
+  {k:"curso", n:"Fazer um curso ou certificação", q:"Qual curso ou certificação?", ex:["ANBIMA (CPA)","Inglês","Programação","Excel e Power BI","Curso técnico"], ph:"Ex.: CPA da ANBIMA", modelo:"emprego"},
   {k:"mudar", n:"Mudar de carreira ou crescer onde estou", q:"Para onde você quer ir?", ex:[], ph:"Ex.: sair do comércio e ir para a área de dados", modelo:"emprego"},
   {k:"livre", n:"Prefiro escrever com as minhas palavras", q:"", ex:[], ph:"", modelo:null},
   {k:"nsei", n:"Ainda não sei", q:"", ex:[], ph:"", modelo:null}];
@@ -3147,7 +3168,7 @@ function vidaCardHTML(){ const mar=marchaAtual(), r=rota();
 /* ---------- Conceito IAD 1 (27/11/2026): jornada visível, progresso do dia, mapa do radar, currículo vivo ---------- */
 function jornadaHTML(f){ const e=etapaAtual(f);
   return `<ol class="estrada estrada-h" aria-label="Sua jornada: etapa ${e+1} de ${ETAPAS.length}, ${ETAPAS[e][0]}">${ETAPAS.map(([n,ic],i)=>`<li class="${i<e?"ok":i===e?"aqui":""}"${i===e?' aria-current="step"':""}><i aria-hidden="true"><svg class="icon"><use href="#${i<e?"i-check":ic}"/></svg></i><b>${n}</b></li>`).join("")}</ol>`; }
-function hojeProg(){ const t=today(), rec=day(iso(t)).blocks||{}; const bs=(blocksOf(t)||[]).filter(b=>!["pausa","simples"].includes(kindOf(b))); return {tot:bs.length, ok:bs.filter(b=>rec[bkey(b)]).length}; }
+function hojeProg(){ const s=dayStats(iso(today())); return {tot:s.total, ok:s.done}; }
 function hojeProgHTML(){ const h=hojeProg(); if(!h.tot) return "";
   return `<div class="hoje-prog"><small class="muted">Hoje: <b style="color:var(--text);font-weight:500">${h.ok} de ${h.tot}</b> ${h.tot===1?"etapa":"etapas"} do seu dia</small><span class="hoje-seg" aria-hidden="true">${Array.from({length:h.tot},(_,i)=>`<i class="${i<h.ok?"on":""}"></i>`).join("")}</span></div>`; }
 function geoDe(onde){ const casa=M.profile.local||{}, c=cidadeDe(onde); if(!c) return null; if(!c.uf) c.uf=casa.uf||""; return (M.geo||{})[norm(c.cidade)+"|"+c.uf]||null; }
@@ -3172,6 +3193,7 @@ function cvVivo(){ const comp=[], fatos=[];
   if(todas.length) fatos.push(`${todas.length} ${todas.length===1?"questão treinada":"questões treinadas"} no estilo de banca`);
   const env=(M.candidaturas||[]).filter(c=>c.status&&c.status!=="preparando"); if(env.length) fatos.push(`${env.length} ${env.length===1?"candidatura enviada":"candidaturas enviadas"}${env.some(c=>["entrevista","aprovada"].includes(c.status))?", com entrevista":""}`);
   const marcos=(M.frentes||[]).flatMap(f=>marcosDe(f).filter(m=>m.ok).map(m=>`${m.r.replace(/\s+até$/i,"")}: ${f.titulo}`)).slice(0,4); fatos.push(...marcos);
+  CERTS.filter(c=>(M.certs||{})[c.id]==="concluído").forEach(c=>fatos.push(`Certificado: ${c.n} (${c.org})`));
   const g=conquistas().filter(c=>c.got).map(c=>c.n); return {comp, fatos, conq:g}; }
 function cvVivoTxt(){ const v=cvVivo(); return [...v.comp.map(c=>`${c.m}: ${c.p}% de acerto nas últimas questões (${c.n} respondidas no app)`), ...v.fatos].join("; "); }
 function crescimentoSVG(){ const todas=Object.values(M.prep||{}).flatMap(s=>s.resp||[]); if(todas.length<3) return "";
@@ -3463,6 +3485,7 @@ function vInicio(){
         <p>${esc(linha)}</p>${jornadaHTML(f)}</div>
     </section>
     ${passo.replace(/<\/div>$/, hojeProgHTML()+"</div>")}
+    <div class="nucleo" style="display:grid;gap:14px">${nucleoHTML()}</div>
     ${prepHTML()}
     ${f&&(f.marcos||[]).length?`<section class="caminho" aria-label="Seu caminho até lá"><span class="tag">Seu caminho até lá</span>${trilhaHTML(f)}</section>`:""}
     <section aria-label="Para você agora" style="display:grid;gap:10px"><div class="sec-h"><h2>Para você agora</h2></div><div class="pc-row" role="group" aria-label="Cartões: deslize para ver mais">${cards.join("")}</div></section>
@@ -3850,6 +3873,7 @@ document.addEventListener("click", e => {
   else if(act==="panorama-ai") panoramaAI(a);
   else if(act==="pausas"){ M.showPausas=!M.showPausas; saveMain(); render(); }
 });
+document.addEventListener("change", e => { const c=e.target.closest("[data-cert]"); if(c){ (M.certs=M.certs||{})[c.dataset.cert]=c.value; saveMain(); return; } });
 document.addEventListener("change", e => { const s=e.target.closest("[data-vaga]"); if(!s) return; const v=M.vagas.find(x=>x.id===s.dataset.vaga); if(v){ v.st=s.value; saveMain(); } });
 document.addEventListener("submit", e => { const f=e.target.closest('[data-form="livre"]'); if(!f) return; e.preventDefault(); const q=f.q.value.trim(); if(!q) return; openStudy({mat:"mat", topic:q, livre:true}); });
 async function panoramaAI(btn){
