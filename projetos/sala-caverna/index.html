@@ -263,6 +263,15 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .dia-mini{display:grid;gap:8px}
 .dia-l{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:10px 14px;border-radius:16px;background:var(--glass);border:1px solid var(--edge);color:inherit;min-height:56px}
 .dia-l time{font:500 13px var(--mono);color:var(--muted);width:44px;flex:none}.dia-l .grow{display:grid;gap:2px;min-width:0}.dia-l b{font-weight:500}
+.prep{display:grid;gap:14px;padding:18px;border-radius:26px;background:var(--glass);border:1px solid var(--edge)}
+.pp-dom{display:grid;gap:10px}
+.pp-m{display:grid;gap:5px;font-size:14px}
+.pp-m .b{display:block;height:8px;border-radius:99px;background:var(--edge)}.pp-m .b i{display:block;height:100%;border-radius:inherit;background:var(--ok);transition:width .4s var(--ease)}
+.pp-est{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;border:1px dashed var(--edge-2)}
+.pp-est b{font:300 44px/1 var(--font);letter-spacing:-.03em}
+.pp-q{display:grid;gap:10px}.pp-p{margin:0;font-size:17px;line-height:1.45}.pp-os{display:grid;gap:8px}
+.pp-fb{padding:12px 14px;border-radius:14px;background:var(--glass-2);font-size:15px}
+.medal{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--edge-2);color:var(--muted);flex:none}.medal.on{border-color:var(--a-anbima-1);color:var(--a-anbima-1);background:color-mix(in srgb,var(--a-anbima-1) 14%,transparent)}
 .op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
 .op-lista{display:grid;gap:12px}
 .op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
@@ -2906,9 +2915,10 @@ function sessoesFrente(f){ return (M.livres||[]).filter(r=>r.frente===f.id); }
 function passoHoje(f){
   const hoje=iso(today()), wd=today().getDay(), dias=(f.dias&&f.dias.length?f.dias:[1,2,3,4,5]).map(Number), ss=sessoesFrente(f);
   const mats=(f.materias||[]).filter(m=>m&&m.n); const roda=[]; mats.forEach(m=>{ for(let k=0;k<Math.max(1,Math.round((+m.questoes||5)/5));k++) roda.push(m); });
-  const m = roda.length ? roda[ss.length % roda.length] : {n:"Revisão geral", topicos:[]};
+  let m = roda.length ? roda[ss.length % roda.length] : {n:"Revisão geral", topicos:[]}, fraca=false;
+  const pst=(M.prep||{})[f.id]; if(pst && (pst.resp||[]).length>=10 && mats.length>1){ const sc=mats.map(x=>{ const rs=pst.resp.filter(r=>r.mat===x.n).slice(-20); const p=rs.length>=3?rs.filter(r=>r.ok).length/rs.length:.5; return {x, s:(+x.questoes||5)*(1-p)}; }).sort((a,b)=>b.s-a.s); m=sc[0].x; fraca=true; }
   const feitasM = ss.filter(r=>String(r.mat||"").startsWith(m.n+" · ")).length, tps=(m.topicos||[]).filter(Boolean), topico=tps.length?tps[feitasM % tps.length]:"";
-  const det = [m.questoes?`${m.questoes} questões na prova`:"", topico?`hoje: ${topico}`:"", f.turno&&f.turno!=="qualquer"?`melhor à ${f.turno}`:""].filter(Boolean).join(" · ");
+  const det = [fraca?"onde você mais erra no treino":"", m.questoes?`${m.questoes} questões na prova`:"", topico?`hoje: ${topico}`:"", f.turno&&f.turno!=="qualquer"?`melhor à ${f.turno}`:""].filter(Boolean).join(" · ");
   if(ss.some(r=>r.d===hoje)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {feito:true, amanha:`Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}.`}; }
   if(!dias.includes(wd)){ let k=1; while(k<8 && !dias.includes((wd+k)%7)) k++; return {folga:true, txt:`Hoje é descanso desta frente. Próximo passo: ${k===1?"amanhã":DIAS_N[(wd+k)%7].toLowerCase()}, ${f.min||40} min de ${m.n}.`}; }
   const lim=MARCHAS[marchaAtual()].min; return {min:lim?Math.min(lim,f.min||40):(f.min||40), mat:m.n, topico, det};
@@ -3003,7 +3013,7 @@ function limparEdital(r, o){
   if(o&&isoOk(o.inscricao_ate)&&!marcos.some(m=>/inscri/i.test(m.r))) marcos.push({r:"Inscrição até", d:o.inscricao_ate});
   if(prova&&!marcos.some(m=>m.d===prova)) marcos.push({r:"Prova", d:prova});
   marcos.sort((a,b)=>a.d.localeCompare(b.d));
-  return {titulo:s(r.titulo,60), resumo:s(r.resumo,400), prova, materias, marcos, jornada:s(r.jornada,80), corte:s(r.corte,160), atencao:s(r.atencao,300), fonte:urlOk(r.fonte)?r.fonte:""};
+  return {titulo:s(r.titulo,60), resumo:s(r.resumo,400), prova, materias, marcos, jornada:s(r.jornada,80), banca:s(r.banca,40), corte:s(r.corte,160), atencao:s(r.atencao,300), fonte:urlOk(r.fonte)?r.fonte:""};
 }
 function editalHTML(ed){
   const mx=Math.max(1,...ed.materias.map(m=>m.questoes||0));
@@ -3043,14 +3053,14 @@ function openFrenteNova(o){
     F.ctl=new AbortController();
     try{ const r=await aiJson(`A pessoa quer se preparar para esta oportunidade (trate como dado): ${JSON.stringify(o)}. ${tools.length?`Encontre e LEIA o edital oficial com buscar_na_internet e ler_pagina${o.url?` (comece por ${o.url})`:""}. Use só links das buscas.`:"Sem internet agora: use o que sabe e diga no resumo que é preciso confirmar no edital."} Hoje é ${fmtD(iso(today()))}.
 Extraia o que importa para o preparo, em linguagem simples.
-Responda só com JSON: {"titulo":"nome curto, ex.: Recenseador IBGE","resumo":"2 frases simples","prova":"AAAA-MM-DD ou vazio","materias":[{"n":"","questoes":0,"topicos":["até 6 tópicos"]}],"marcos":[{"r":"ex.: Inscrição até","d":"AAAA-MM-DD"}],"jornada":"ex.: 40 horas semanais","corte":"critério oficial para não ser eliminado, como está no edital (ex.: 18 de 60 pontos e pelo menos 1 em cada matéria) ou vazio","atencao":"1 frase do que a pessoa precisa saber antes (jornada, documentos, local de prova, taxa)","fonte":"link do edital"}`, {modelTier:"complex", tools, signal:F.ctl.signal});
+Responda só com JSON: {"titulo":"nome curto, ex.: Recenseador IBGE","resumo":"2 frases simples","prova":"AAAA-MM-DD ou vazio","materias":[{"n":"","questoes":0,"topicos":["até 6 tópicos"]}],"marcos":[{"r":"ex.: Inscrição até","d":"AAAA-MM-DD"}],"banca":"nome da banca organizadora ou vazio","jornada":"ex.: 40 horas semanais","corte":"critério oficial para não ser eliminado, como está no edital (ex.: 18 de 60 pontos e pelo menos 1 em cada matéria) ou vazio","atencao":"1 frase do que a pessoa precisa saber antes (jornada, documentos, local de prova, taxa)","fonte":"link do edital"}`, {modelTier:"complex", tools, signal:F.ctl.signal});
       F.ed=limparEdital(r, o);
     }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); F.ed=limparEdital({}, o); }
     F.busy=""; draw(true);
   }
   function salvar(){ const ed=F.ed||limparEdital({}, o);
     const f={id:"f"+Date.now(), ponte:o.ponte||"", competencias:o.competencias||[], titulo:ed.titulo||o.titulo, tituloOp:o.titulo, fonteOp:o.url||"", orgao:o.orgao, onde:o.onde, url:ed.fonte||o.url||"", salario:o.salario, beneficios:o.beneficios,
-      prova:ed.prova, corte:ed.corte||"", materias:ed.materias.length?ed.materias:[{n:"Língua Portuguesa",questoes:0,topicos:[]},{n:"Matemática",questoes:0,topicos:[]}], marcos:ed.marcos, atencao:ed.atencao, jornada:ed.jornada,
+      prova:ed.prova, banca:ed.banca||"", corte:ed.corte||"", materias:ed.materias.length?ed.materias:[{n:"Língua Portuguesa",questoes:0,topicos:[]},{n:"Matemática",questoes:0,topicos:[]}], marcos:ed.marcos, atencao:ed.atencao, jornada:ed.jornada,
       min:F.min, dias:F.dias, turno:F.turno, criada:iso(today()), ok:{}};
     (M.frentes=M.frentes||[]).push(f); saveMain(); closeSheet(); TAB="hoje"; SELDAY=null; render(); window.scrollTo({top:0}); toast("Pronto: o passo de hoje já está no topo da tela inicial.");
   }
@@ -3272,6 +3282,7 @@ function vInicio(){
   else cards.push(card("oport","campo","Radar da vida real",`Oportunidades ${localTxt()?"em "+localTxt():"perto de você"}`,"Concursos, seletivos, vagas e cursos reais, com fonte oficial."));
   if(f && sonho && sonho!==f.titulo) cards.push(card("metas","dados","Seu sonho continua",sonho,f.ponte?"Ponte: "+f.ponte:"Ele não sai da tela enquanto você cuida do agora."));
   cards.push(`<button class="pc" data-tabgo="evolucao"><span class="pc-img cena-noite" aria-hidden="true"></span><span class="pc-body"><span class="tag">Sua semana</span><b>${feitos} ${feitos===1?"dia":"dias"} de estudo</b><span class="semana" aria-label="${feitos} de 7 dias com estudo">${sem.map(d=>`<i class="${d.on?"on":""}${d.hoje?" hj":""}" title="${DIAS_N[d.wd]}"></i>`).join("")}</span><small class="muted">${feitos?"Cada dia conta, mesmo os de 5 minutos.":"Um passo hoje já acende o primeiro."}</small></span></button>`);
+  { const cs=conquistas(), g=cs.filter(c=>c.got); cards.push(`<button class="pc" data-act="conquistas"><span class="pc-img cena-biblioteca" aria-hidden="true"></span><span class="pc-body"><span class="tag">Conquistas</span><b>${g.length} de ${cs.length}</b><span class="row wrap" style="gap:6px">${(g.length?g.slice(-3):cs.slice(0,2)).map(c=>`<span class="chip sm"${g.length?' style="color:var(--ok)"':""}>${esc(c.n)}</span>`).join("")}</span><small class="muted">${g.length?"Coisas que você fez de verdade.":"A primeira vem com a primeira questão."}</small></span></button>`); }
   cards.push(card("vida","familia","Assistente de rota","Sua rotina mudou?",mar!=="avancar"?`Ritmo atual: ${MARCHAS[mar].n}${r.ate?" até "+dataCurta(r.ate):""}.`:"Trabalho, família, semana pesada: o app recalcula sem apagar nada."));
   // o dia em 3 linhas
   const t=today(), nm=nowMin(), rec=day(iso(t)).blocks, prox=(blocksOf(t)||[]).filter(b=>kindOf(b)!=="pausa" && toMin(b.b)>nm).slice(0,3);
@@ -3285,12 +3296,96 @@ function vInicio(){
         <p>${esc(linha)}</p></div>
     </section>
     ${passo}
+    ${prepHTML()}
     ${f&&(f.marcos||[]).length?`<section class="caminho" aria-label="Seu caminho até lá"><span class="tag">Seu caminho até lá</span>${trilhaHTML(f)}</section>`:""}
     <section aria-label="Para você agora" style="display:grid;gap:10px"><div class="sec-h"><h2>Para você agora</h2></div><div class="pc-row" role="group" aria-label="Cartões: deslize para ver mais">${cards.join("")}</div></section>
     <section aria-label="Ainda hoje" style="display:grid;gap:10px"><div class="sec-h"><h2>Ainda hoje</h2></div><div class="dia-mini">${dia}</div>
       <button class="btn" style="min-height:48px" data-act="painel">Ver o dia completo e o painel</button></section>
   </div>`;
 }
+/* ====================================================================
+   SUA PREPARAÇÃO (27/11/2026): o app passa a saber o quanto a pessoa sabe.
+   Questões no estilo da banca do alvo (frente ativa, ou matérias do projeto), gabarito conferido
+   por uma segunda resolução independente, domínio por matéria só com respostas reais,
+   estimativa honesta frente ao critério do edital, e conquistas por fatos reais.
+   ==================================================================== */
+let PREP_BUSY=false, PREP_UI={id:null, j:null}, PREP_ERRO="";
+function alvoPrep(){ const f=frenteAtiva();
+  if(f) return {id:f.id, nome:f.titulo, banca:f.banca||"", corte:f.corte||"", mats:(f.materias||[]).filter(m=>m&&m.n).map(m=>({n:m.n, q:+m.questoes||0, t:m.topicos||[]}))};
+  return {id:"proj:"+PID(), nome:P().nome, banca:"", corte:"", mats:Object.values(SUBJ).filter(s=>s&&s.n).slice(0,8).map(s=>({n:s.n, q:0, t:[]}))}; }
+function prepSt(a){ M.prep=M.prep||{}; const s=M.prep[a.id]=M.prep[a.id]||{}; s.pool=s.pool||[]; s.resp=s.resp||[]; return s; }
+function dominio(a){ const st=prepSt(a); return a.mats.map(m=>{ const rs=st.resp.filter(r=>r.mat===m.n).slice(-20), n=rs.length, ok=rs.filter(r=>r.ok).length; return {...m, cnt:n, ok, p:n?ok/n:null}; }); }
+function estimativa(a){ const d=dominio(a), tot=d.reduce((s,m)=>s+m.q,0); if(!tot || d.some(m=>m.q&&m.cnt<5)) return null; return {pts:Math.round(d.reduce((s,m)=>s+m.q*(m.p||0),0)), tot}; }
+function seqAcertos(resp){ let best=0, cur=0; resp.forEach(r=>{ cur=r.ok?cur+1:0; best=Math.max(best,cur); }); return best; }
+async function gerarPrep(a){
+  if(PREP_BUSY || !aiOn() || !a.mats.length) return; PREP_BUSY=true; PREP_ERRO=""; paintPrep();
+  const st=prepSt(a), d=dominio(a);
+  const peso=d.map(m=>({n:m.n, w:(m.q||5)*(m.p==null?1:1.2-m.p)})), tw=peso.reduce((s,x)=>s+x.w,0)||1;
+  const dist=peso.map(x=>`${x.n}: ${Math.max(1,Math.round(6*x.w/tw))}`).join("; ");
+  const cesg=/cesgranrio|fgv|fcc/i.test(a.banca+a.nome);
+  try{
+    const r=await aiJson(`Crie 6 questões de múltipla escolha INÉDITAS para a pessoa treinar para "${a.nome}", no estilo ${a.banca?`da banca ${a.banca}`:"das provas desse alvo"} e no nível real da prova. Distribuição por matéria: ${dist}.
+Tópicos de cada matéria: ${JSON.stringify(a.mats.map(m=>({materia:m.n, topicos:m.t})))}.
+Regras: ${cesg?"5 alternativas (A a E)":"4 alternativas"}; uma única correta e sem ambiguidade; enunciado curto (até 4 linhas); sem pegadinha de digitação; nada de "todas as anteriores". Antes de responder, RESOLVA cada questão e confira o gabarito. Em "e", explique em até 2 frases por que a correta é a correta.
+Responda só com JSON: {"qs":[{"mat":"nome exato da matéria como na lista","tema":"tópico","p":"enunciado","o":["",""],"c":0,"e":""}]}`, {modelTier:"complex"});
+    let qs=(r&&Array.isArray(r.qs)?r.qs:[]).filter(q=>q&&q.p&&Array.isArray(q.o)&&q.o.length>=4&&q.c>=0&&q.c<q.o.length).map(q=>({id:"q"+Date.now()+Math.random().toString(36).slice(2,6), mat:(a.mats.find(m=>norm(m.n)===norm(q.mat))||a.mats.find(m=>parecida(m.n,q.mat))||a.mats[0]).n, tema:String(q.tema||"").slice(0,80), p:String(q.p).slice(0,900), o:q.o.slice(0,5).map(x=>String(x).slice(0,300)), c:+q.c, e:String(q.e||"").slice(0,500)}));
+    if(qs.length){ try{ const v=await aiJson(`Resolva cada questão abaixo, sozinho e com cuidado, sem ver nenhum gabarito. Responda só com JSON: {"r":[índice (a partir de 0) da alternativa correta de cada questão, na mesma ordem]}.
+Questões: ${JSON.stringify(qs.map(q=>({enunciado:q.p, alternativas:q.o})))}`, {modelTier:"complex"});
+        const rr=v&&Array.isArray(v.r)?v.r:[]; qs=qs.filter((q,i)=>+rr[i]===q.c).map(q=>({...q, verif:true})); }
+      catch(e){ qs=qs.map(q=>({...q, verif:false})); } }
+    st.pool=st.pool.concat(qs).slice(-12); if(!qs.length) PREP_ERRO="As questões não passaram na conferência do gabarito. Tente de novo.";
+    saveMain();
+  }catch(e){ PREP_ERRO=aiErr(e); }
+  PREP_BUSY=false; paintPrep();
+}
+function prepHTML(){
+  const a=alvoPrep(); if(!a.mats.length) return "";
+  const st=prepSt(a), d=dominio(a), est=estimativa(a), q=st.pool[0], respondida=q&&PREP_UI.id===q.id&&PREP_UI.j!=null;
+  const L="ABCDE";
+  const barras=d.map(m=>`<div class="pp-m"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.n)}</span><span class="mono" style="font-size:12px">${m.cnt?`${Math.round(m.p*100)}% · ${m.ok} de ${m.cnt}`:"sem treino ainda"}</span></div><span class="b" aria-hidden="true"><i style="width:${m.cnt?Math.round(m.p*100):0}%;${m.cnt&&m.p<.5?"background:var(--warn)":""}"></i></span></div>`).join("");
+  let corpo;
+  if(q){ corpo=`<div class="pp-q"><span class="tag">${esc(q.mat)}${q.tema?" · "+esc(q.tema):""}${q.verif===false?" · gabarito não conferido":""}</span><p class="pp-p">${esc(q.p)}</p>
+      <div class="pp-os" role="group" aria-label="Alternativas">${q.o.map((o,j)=>{ let cls=""; if(respondida){ if(j===q.c) cls="right"; else if(j===PREP_UI.j) cls="wrong"; } return `<button class="opt ${cls}" data-act="pq" data-j="${j}" ${respondida?"disabled":""} aria-pressed="${respondida&&j===PREP_UI.j}"><span class="k">${L[j]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+      ${respondida?`<div class="pp-fb" role="status" tabindex="-1"><b>${PREP_UI.j===q.c?"Isso! Acertou.":`A certa é a ${L[q.c]}.`}</b> ${esc(q.e)}</div><button class="btn primary" style="min-height:48px" data-act="pq-next">Próxima questão</button>`:""}</div>`; }
+  else if(PREP_BUSY) corpo=thinking("Preparando questões no estilo da banca e conferindo o gabarito…");
+  else corpo=`${PREP_ERRO?`<p class="ponte" role="alert" style="animation:none;margin:0">${esc(PREP_ERRO)}</p>`:""}<button class="btn primary" style="min-height:52px" data-act="pq-gerar">${st.resp.length?"Continuar treinando":"Responder a primeira questão"}</button><small class="muted">Uma questão leva um minuto. O app aprende onde você está forte e onde precisa de reforço.</small>`;
+  return `<section class="prep" aria-label="Sua preparação">
+    <div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><h2 style="font-weight:400;font-size:22px;margin:0">Sua preparação</h2><span class="muted" style="font-size:13px">${esc(a.nome)}${a.banca?" · "+esc(a.banca):""}</span></div>
+    <div class="pp-dom">${barras}</div>
+    ${est?`<div class="pp-est"><b>${est.pts}</b><span>de ${est.tot} pontos no ritmo dos seus treinos${a.corte?`<br><small class="muted">Critério do edital: ${esc(a.corte)}. É uma estimativa do treino, não uma garantia.</small>`:""}</span></div>`:a.mats.some(m=>m.q)?`<small class="muted">Com 5 respostas em cada matéria, o app estima quantos pontos você faria na prova.</small>`:""}
+    ${corpo}
+  </section>`;
+}
+function paintPrep(){ const el=document.querySelector(".prep"); if(el){ el.outerHTML=prepHTML(); } }
+function responderPrep(j){ const a=alvoPrep(), st=prepSt(a), q=st.pool[0]; if(!q||PREP_UI.id===q.id) return;
+  PREP_UI={id:q.id, j}; const ok=j===q.c;
+  st.resp.push({id:q.id, mat:q.mat, ok, d:iso(today())}); if(st.resp.length>400) st.resp=st.resp.slice(-400);
+  if(!ok) logErro(q.mat, q.tema, q, j); addXP(ok?3:1);
+  paintPrep(); const fb=document.querySelector(".pp-fb"); if(fb) fb.focus({preventScroll:false}); }
+function proximaPrep(){ const a=alvoPrep(), st=prepSt(a); st.pool.shift(); PREP_UI={id:null,j:null}; saveMain(); paintPrep();
+  if(st.pool.length<2) gerarPrep(a); const b=document.querySelector(".prep .opt"); if(b) b.focus({preventScroll:true}); }
+
+/* ---------- Conquistas por fatos reais ---------- */
+function conquistas(){
+  const todas=Object.values(M.prep||{}).flatMap(s=>s.resp||[]), r=M.rota||{}, fs=M.frentes||[], marcoOk=re=>fs.some(f=>marcosDe(f).some(m=>m.ok&&re.test(m.r)));
+  const dom=Object.values(M.prep||{}).some(s=>{ const g={}; (s.resp||[]).forEach(x=>(g[x.mat]=g[x.mat]||[]).push(x)); return Object.values(g).some(rs=>rs.length>=10&&rs.slice(-20).filter(x=>x.ok).length/Math.min(20,rs.length)>=.7); });
+  return [
+    {n:"Ponto de partida", d:"Contou onde está na vida", got:!!r.ctx},
+    {n:"Primeira questão", d:"Respondeu a primeira questão de treino", got:todas.length>=1},
+    {n:"10 questões", d:"Treinou 10 questões", got:todas.length>=10},
+    {n:"5 seguidas", d:"Acertou 5 questões seguidas", got:seqAcertos(todas)>=5},
+    {n:"Inscrição feita", d:"Marcou a inscrição de uma oportunidade", got:marcoOk(/inscri/i)},
+    {n:"Taxa paga", d:"Marcou a taxa como paga", got:marcoOk(/taxa/i)},
+    {n:"Semana de 5 dias", d:"Estudou em 5 dias da mesma semana", got:semanaFeita().filter(x=>x.on).length>=5},
+    {n:"Voltou", d:"Retomou depois de uma pausa ou semana pesada", got:(r.eventos||[]).some(e=>e.tipo==="volta")},
+    {n:"70% numa matéria", d:"Chegou a 70% de acertos numa matéria, com 10 respostas ou mais", got:dom},
+    {n:"50 questões", d:"Treinou 50 questões", got:todas.length>=50}];
+}
+function openConquistas(){ const cs=conquistas();
+  FLOW={kind:"conq", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-anbima-1) 24%,transparent),transparent 60%),var(--bg)");
+  sheetHTML({title:"Conquistas", body:`<h2 class="q" style="font-size:clamp(30px,8vw,44px)">${cs.filter(c=>c.got).length} de ${cs.length}</h2><p class="muted" style="margin:0">Só contam coisas que aconteceram de verdade.</p>
+    <div class="list">${cs.map(c=>`<div class="item" style="${c.got?"":"opacity:.6"}"><span class="medal${c.got?" on":""}" aria-hidden="true"><svg class="icon"><use href="#i-${c.got?"check":"target"}"/></svg></span><span class="grow"><b>${esc(c.n)}</b><small>${esc(c.d)}${c.got?"":" · ainda não"}</small></span></div>`).join("")}</div>`}); }
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
@@ -3313,6 +3408,10 @@ document.addEventListener("click", e => {
   else if(act==="menu") openMenu();
   else if(act==="oport") openOportunidades();
   else if(act==="partida") openPartida();
+  else if(act==="pq") responderPrep(+a.dataset.j);
+  else if(act==="pq-next") proximaPrep();
+  else if(act==="pq-gerar"){ const al=alvoPrep(); if(prepSt(al).pool.length) paintPrep(); else gerarPrep(al); }
+  else if(act==="conquistas") openConquistas();
   else if(act==="painel"){ PAINEL=true; render(); window.scrollTo({top:0}); }
   else if(act==="inicio"){ PAINEL=false; SELDAY=null; render(); window.scrollTo({top:0}); }
   else if(act==="vida") openVida();
