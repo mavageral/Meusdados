@@ -218,6 +218,20 @@ h1,h2,h3,p{margin:0}
 @media (prefers-reduced-motion:no-preference){.rmapa .casa-p{animation:rpulse 2.4s var(--ease) infinite;transform-box:fill-box;transform-origin:center}@keyframes rpulse{from{transform:scale(1);opacity:.6}to{transform:scale(3.2);opacity:0}}}
 .cvv{display:grid;gap:10px;padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge)}.cvv ul{margin:0;padding-left:18px;display:grid;gap:6px}
 .cresc{width:100%;height:auto;display:block}.cresc .ln{fill:none;stroke:var(--ok);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.cresc .ar{fill:color-mix(in srgb,var(--ok) 16%,transparent)}.cresc .pt{fill:var(--ok)}.cresc .lb{fill:var(--faint);font:11px var(--mono)}
+.jg-menu{display:grid;gap:10px}.jg-it{display:flex;gap:14px;align-items:center;width:100%;text-align:left;padding:16px;border-radius:20px;background:var(--glass);border:1px solid var(--edge);color:inherit;min-height:72px}
+.jg-it .ic{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;flex:none;background:color-mix(in srgb,var(--jc) 18%,transparent);color:var(--jc)}.jg-it b{font-weight:500;font-size:17px}.jg-it small{color:var(--muted)}
+.jg-hud{display:flex;justify-content:space-between;gap:8px;font:500 14px var(--mono)}.jg-hud .t{color:var(--warn)}.jg-hud .t.fim{color:var(--bad)}
+.jg-af{font-size:clamp(21px,5.6vw,26px);line-height:1.3;padding:22px 18px;border-radius:22px;background:var(--glass-2);border:1px solid var(--edge-2);min-height:150px;display:grid;align-items:center}
+.jg-vf{display:grid;grid-template-columns:1fr 1fr;gap:10px}.jg-vf button{min-height:72px;border-radius:20px;font-size:18px;font-weight:500;border:1px solid var(--edge-2)}
+.jg-vf .v{background:color-mix(in srgb,var(--ok) 18%,transparent);border-color:var(--ok)}.jg-vf .f{background:color-mix(in srgb,var(--bad) 18%,transparent);border-color:var(--bad)}
+.jg-fb{min-height:44px;font-size:15px}.jg-fb.ok{color:var(--ok)}.jg-fb.no{color:var(--bad)}
+.jg-pares{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-items:start}.jg-col{display:grid;gap:8px}
+.jg-pares button{min-height:56px;padding:10px 12px;border-radius:16px;border:1px solid var(--edge-2);background:var(--glass);text-align:left;font-size:14px;line-height:1.3;overflow-wrap:anywhere}
+.jg-pares button[aria-pressed="true"]{border-color:var(--text);background:var(--glass-2)}.jg-pares button.feito{border-color:var(--ok);color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}.jg-pares button.erro{border-color:var(--bad)}
+.jg-ord{display:grid;gap:8px}.jg-ord button{display:flex;gap:12px;align-items:center;min-height:56px;padding:10px 14px;border-radius:16px;border:1px solid var(--edge-2);background:var(--glass);text-align:left}
+.jg-ord .n{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;border:1px solid var(--edge-2);font:500 13px var(--mono)}.jg-ord button[disabled]{opacity:1}.jg-ord button.on .n{background:var(--text);color:var(--on-light);border-color:transparent}
+.jg-ord .ok .n{background:var(--ok);color:var(--on-ok);border-color:transparent}.jg-ord .no .n{background:var(--bad);color:var(--on-bad);border-color:transparent}
+.jg-pts{font:300 clamp(56px,16vw,80px)/1 var(--font);letter-spacing:-.04em}
 .j-hoje{display:flex;gap:12px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:color-mix(in srgb,var(--bg) 62%,transparent);border:1px solid var(--edge-2);color:inherit;min-height:64px}
 button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .j-hoje .grow{display:grid;gap:2px;min-width:0}
@@ -1027,6 +1041,7 @@ function vEstudar(){
       <input class="inp" id="q-livre" name="q" placeholder="O que você quer aprender agora?" style="border-radius:var(--pill)">
       <button class="btn c" type="submit" aria-label="Gerar aula"><svg class="icon"><use href="#i-spark"/></svg></button>
     </form>
+    <section style="display:grid;gap:10px" aria-label="Jogos"><div class="sec-h"><h2>Aprender jogando</h2></div><div class="jg-menu">${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-act="jogos" data-j="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div></section>
     <section style="display:grid;gap:4px"><div class="sec-h"><h2>Suas matérias</h2><span class="muted" style="font-size:13px">deslize</span></div>
       <div class="fan">${cards}</div></section>
     <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
@@ -3161,6 +3176,117 @@ function cvVivoHTML(){ const v=cvVivo(), tem=v.comp.length||v.fatos.length, gr=c
     ${tem?`<ul>${v.comp.map(c=>`<li><b style="font-weight:500">${esc(c.m)}</b>: ${c.p}% de acerto nas últimas questões <small class="muted">(${c.n} respondidas)</small></li>`).join("")}${v.fatos.map(x=>`<li>${esc(x)}</li>`).join("")}</ul>`:`<p class="muted" style="margin:0">Ainda vazio. Ele se escreve sozinho com o que você prova no app: matérias com 70% de acerto, candidaturas, inscrições.</p>`}
     ${gr?`<span class="tag">Seu crescimento</span>${gr}`:""}
     ${tem?`<small class="muted">Entra sozinho em cada candidatura que o app prepara. Nada é inventado: só fatos do seu treino.</small><button class="btn sm" style="min-height:44px;justify-self:start" data-cv="copiar">Copiar</button>`:""}</section>`; }
+/* ---------- Jogos de aprendizagem (27/11/2026): qualquer matéria, conteúdo gerado e conferido pela IA ---------- */
+const JOGOS={relampago:{n:"Relâmpago",d:"60 segundos de verdadeiro ou falso. Acertos seguidos valem mais.",ic:"i-flame",cor:"var(--warn)"},
+  pares:{n:"Pares",d:"Ligue cada conceito, fórmula ou data ao que ele significa.",ic:"i-link",cor:"var(--a-op-1)"},
+  ordem:{n:"Linha do tempo",d:"Ponha na ordem certa: datas, etapas, do menor ao maior.",ic:"i-chart",cor:"var(--a-grad-1)"}};
+const MATS_BASE=["Matemática","Português","História","Geografia","Física","Química","Biologia"];
+function jogoMats(){ const a=alvoPrep(), d=a.mats.length?dominio(a):[], fracas=d.filter(m=>m.cnt&&m.p<.7).sort((x,y)=>x.p-y.p).map(m=>m.n);
+  const l=[...fracas, ...a.mats.map(m=>m.n), ...MATS_BASE]; return l.filter((x,i)=>l.findIndex(y=>norm(y)===norm(x))===i).slice(0,12); }
+function jogosSt(){ const j=M.jogos=M.jogos||{}; j.rec=j.rec||{}; j.partidas=j.partidas||[]; return j; }
+function anunciar(t){ let el=document.getElementById("jg-live"); if(!el){ el=document.createElement("p"); el.id="jg-live"; el.className="sr"; el.setAttribute("role","status"); document.body.appendChild(el); } el.textContent=""; setTimeout(()=>{ el.textContent=t||""; },40); }
+const embaralhar=a=>{ const b=a.slice(); for(let i=b.length-1;i>0;i--){ const k=Math.floor(Math.random()*(i+1)); [b[i],b[k]]=[b[k],b[i]]; } return b; };
+async function gerarJogo(j, mat, signal){
+  const f=frenteAtiva(), m=alvoPrep().mats.find(x=>norm(x.n)===norm(mat)), tp=m&&m.t&&m.t.length?m.t.slice(0,12):[];
+  const base=`Matéria: ${mat}. ${tp.length?"Tópicos do edital: "+JSON.stringify(tp)+". ":""}Nível: ${f?`o da prova "${f.titulo}"${f.banca?" (banca "+f.banca+")":""}`:"ensino médio, ENEM e concursos de nível médio"}. Use só conteúdo consolidado, sem ambiguidade e sem opinião. Português do Brasil.`;
+  const o={modelTier:"complex", semPerfil:true, signal}, arr=x=>Array.isArray(x)?x:[];
+  if(j==="relampago"){
+    const r=await aiJson(`${base}\nCrie 16 afirmações curtas (até 110 caracteres) para um jogo de VERDADEIRO ou FALSO. Metade verdadeiras, metade falsas. As falsas devem ser erros comuns e plausíveis, nunca absurdos. Varie os tópicos. Em "e", explique em 1 frase curta o porquê.\nResponda só com JSON: {"af":[{"t":"afirmação","v":true,"tema":"tópico","e":"explicação"}]}`, o);
+    let af=arr(r&&r.af).filter(x=>x&&x.t&&typeof x.v==="boolean").slice(0,20).map(x=>({t:String(x.t).slice(0,200), v:x.v, tema:String(x.tema||"").slice(0,60), e:String(x.e||"").slice(0,240)}));
+    const v=await aiJson(`Julgue cada afirmação, sozinho e com cuidado. Responda só com JSON: {"r":[true ou false para cada uma, na mesma ordem]}.\nAfirmações: ${JSON.stringify(af.map(x=>x.t))}`, o);
+    const rr=arr(v&&v.r); return {af:embaralhar(af.filter((x,i)=>rr[i]===x.v))}; }
+  if(j==="pares"){
+    const r=await aiJson(`${base}\nCrie 6 pares para um jogo de ligar: um termo, nome, fórmula ou data (até 40 caracteres) e o que ele significa ou a que corresponde (até 70 caracteres). Cada significado combina com UM único termo.\nResponda só com JSON: {"p":[{"a":"termo","b":"significado"}]}`, o);
+    let ps=arr(r&&r.p).filter(x=>x&&x.a&&x.b).slice(0,6).map(x=>({a:String(x.a).slice(0,60), b:String(x.b).slice(0,120)}));
+    ps=ps.filter((x,i)=>ps.findIndex(y=>y.a===x.a||y.b===x.b)===i);
+    const bs=embaralhar(ps.map(x=>x.b)), v=await aiJson(`Para cada termo, diga o índice (a partir de 0) do significado correto. Responda só com JSON: {"r":[índice para cada termo, na ordem]}.\nTermos: ${JSON.stringify(ps.map(x=>x.a))}\nSignificados: ${JSON.stringify(bs)}`, o);
+    const rr=arr(v&&v.r); return {p:ps.filter((x,i)=>bs[+rr[i]]===x.b)}; }
+  const r=await aiJson(`${base}\nCrie 3 desafios de ORDENAR. Cada um tem uma instrução (ex.: "do mais antigo ao mais recente", "do menor ao maior", "na ordem em que acontecem") e 4 itens curtos (até 60 caracteres) já na ordem CORRETA, sem empates. Em "e", explique a ordem em 1 ou 2 frases.\nResponda só com JSON: {"d":[{"q":"instrução","itens":["","","",""],"e":""}]}`, o);
+  let ds=arr(r&&r.d).filter(x=>x&&x.q&&Array.isArray(x.itens)&&x.itens.length>=3).slice(0,3).map(x=>({q:String(x.q).slice(0,140), itens:x.itens.slice(0,5).map(y=>String(y).slice(0,90)), e:String(x.e||"").slice(0,300)})).filter(x=>new Set(x.itens).size===x.itens.length);
+  const mix=ds.map(x=>embaralhar(x.itens)), v=await aiJson(`Ordene os itens de cada desafio, sozinho e com cuidado. Responda só com JSON: {"r":[[os itens de cada desafio, na ordem correta]]}.\nDesafios: ${JSON.stringify(ds.map((x,i)=>({instrucao:x.q, itens:mix[i]})))}`, o);
+  const rr=arr(v&&v.r); return {d:ds.filter((x,i)=>Array.isArray(rr[i])&&rr[i].length===x.itens.length&&rr[i].every((y,k)=>String(y)===x.itens[k])).map(x=>({...x, mix:embaralhar(x.itens)}))}; }
+function openJogos(j0){
+  const S=jogosSt(), F=FLOW={kind:"jogos", fase:j0?"mat":"menu", j:j0||"", mat:"", erro:"", next:()=>closeSheet(), back:()=>{ if(F.timer){ clearInterval(F.timer); F.timer=null; } if(F.ctl) F.ctl.abort(); F.fase=F.fase==="mat"?"menu":"mat"; draw(); }};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--warn) 22%,transparent),transparent 60%),var(--bg)");
+  const L=["Verdadeiro","Falso"];
+  const fim=()=>{ if(F.timer){ clearInterval(F.timer); F.timer=null; } const c=F.c, k=F.j+"|"+norm(F.mat), rec=S.rec[k]||0;
+    S.partidas.push({j:F.j, mat:F.mat, ok:c.ok, tot:c.tot, pts:c.pts, d:iso(today())}); if(S.partidas.length>200) S.partidas=S.partidas.slice(-200);
+    if(c.pts>rec) S.rec[k]=c.pts; c.erros.forEach(e=>logErro(F.mat, e.q.tema||"", e.q, e.a)); addXP(c.ok); saveMain();
+    F.res={rec, novo:c.pts>rec&&rec>0}; F.fase="fim"; draw(); };
+  async function comecar(){ F.fase="carregando"; F.erro=""; draw(); F.ctl=new AbortController();
+    try{ const g=await gerarJogo(F.j, F.mat, F.ctl.signal); if(FLOW!==F) return;
+      const n=F.j==="relampago"?(g.af||[]).length:F.j==="pares"?(g.p||[]).length:(g.d||[]).length;
+      if(n<(F.j==="ordem"?1:F.j==="pares"?3:6)){ F.erro="O conteúdo não passou na conferência das respostas. Tente de novo."; F.fase="mat"; draw(); return; }
+      F.c={g, i:0, ok:0, pts:0, seq:0, tot:0, erros:[], fb:"", t:60, sel:null, feitos:[], errou:[], pick:[], visto:false};
+      if(F.j==="pares"){ F.c.L=embaralhar(g.p.map((_,i)=>i)); F.c.R=embaralhar(g.p.map((_,i)=>i)); F.c.tot=g.p.length; }
+      if(F.j==="ordem") F.c.tot=g.d.length;
+      F.fase="jogo"; draw();
+      if(F.j==="relampago"&&!F.semTempo) F.timer=setInterval(()=>{ if(FLOW!==F){ clearInterval(F.timer); return; } F.c.t--; const el=SH.querySelector(".jg-hud .t"); if(el){ el.textContent="Tempo: "+F.c.t+" s"; el.classList.toggle("fim",F.c.t<=10); } if(F.c.t<=0) fim(); },1000); }
+    catch(e){ if(e&&e.code==="cancelled"||FLOW!==F) return; F.erro=aiErr(e); F.fase="mat"; draw(); } }
+  function draw(){ if(FLOW!==F) return; const J=JOGOS[F.j]||{}, c=F.c; let body="", foco="";
+    if(F.fase==="menu"){ const ult=S.partidas.slice(-1)[0];
+      body=`<h2 class="q">Aprender jogando</h2><p class="muted" style="margin:0">Qualquer matéria: matemática, português, história, geografia, física, química. O conteúdo é criado para você e as respostas são conferidas antes de o jogo começar.</p>
+      <div class="jg-menu">${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-jg="j" data-v="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div>
+      ${ult?`<small class="faint">Última partida: ${esc(JOGOS[ult.j].n)} de ${esc(ult.mat)}, ${ult.pts} pontos.</small>`:""}<small class="muted">O que você errar vai para a sua revisão.</small>`; }
+    else if(F.fase==="mat"){ const ms=jogoMats();
+      body=`<h2 class="q">${esc(J.n)}: qual matéria?</h2><p class="muted" style="margin:0">${esc(J.d)}${ms.length&&alvoPrep().mats.length?" As primeiras são as do seu objetivo e as que mais precisam de reforço.":""}</p>
+      ${F.erro?`<p class="ponte" role="alert" style="animation:none;margin:0">${esc(F.erro)}</p>`:""}
+      <div class="pick" data-pick="jmat" role="group" aria-label="Matéria">${ms.map(m=>`<button data-v="${esc(m)}" aria-pressed="${F.mat===m}">${esc(m)}</button>`).join("")}</div>
+      ${F.j==="relampago"?`<div class="pick" data-pick="jtempo" role="group" aria-label="Tempo"><button data-v="0" aria-pressed="${!F.semTempo}">Com 60 segundos</button><button data-v="1" aria-pressed="${!!F.semTempo}">Sem tempo</button></div>`:""}
+      <label class="field"><span>Ou escreva um assunto</span><input class="inp" id="jg-outra" maxlength="60" placeholder="Ex.: frações, Brasil Colônia" value="${esc(ms.includes(F.mat)?"":F.mat)}"></label>
+      <button class="btn primary" style="min-height:52px" data-jg="ir" ${aiOn()?"":"disabled"}>Começar</button>${aiOn()?"":`<small class="muted">Os jogos precisam da IA ligada.</small>`}`; }
+    else if(F.fase==="carregando") body=`<h2 class="q">${esc(J.n)} · ${esc(F.mat)}</h2>${thinking("Criando o jogo e conferindo cada resposta… leva uns 30 segundos.")}`;
+    else if(F.fase==="jogo" && F.j==="relampago"){ const q=c.g.af[c.i];
+      body=`<div class="jg-hud"><span class="t${!F.semTempo&&c.t<=10?" fim":""}">${F.semTempo?"Sem tempo":"Tempo: "+c.t+" s"}</span><span>${c.pts} pts${c.seq>=3?` · ×${1+Math.floor(c.seq/3)}`:""}</span></div>
+      <p class="jg-af">${esc(q.t)}</p>
+      <div class="jg-vf"><button class="v" data-jg="vf" data-v="1" data-foco>Verdadeiro</button><button class="f" data-jg="vf" data-v="0">Falso</button></div>
+      <p class="jg-fb ${c.fbok?"ok":"no"}">${esc(c.fb)}</p>`; foco="[data-foco]"; }
+    else if(F.fase==="jogo" && F.j==="pares"){ const P_=c.g.p, cls=(lado,i)=>c.feitos.includes(i)?"feito":c.errPar&&c.errPar[lado==="a"?0:1]===i?"erro":"", sel=(lado,i)=>c.sel&&c.sel.lado===lado&&c.sel.i===i;
+      body=`<div class="jg-hud"><span>${c.feitos.length} de ${P_.length}</span><span>${c.erros.length} ${c.erros.length===1?"erro":"erros"}</span></div><p class="muted" style="margin:0">Toque num termo e depois no significado dele.</p>
+      <div class="jg-pares"><div class="jg-col" role="group" aria-label="Termos">${c.L.map(i=>`<button class="${cls("a",i)}" data-jg="par" data-l="a" data-i="${i}" aria-pressed="${sel("a",i)}" ${c.feitos.includes(i)?"disabled":""}>${esc(P_[i].a)}</button>`).join("")}</div>
+      <div class="jg-col" role="group" aria-label="Significados">${c.R.map(i=>`<button class="${cls("b",i)}" data-jg="par" data-l="b" data-i="${i}" aria-pressed="${sel("b",i)}" ${c.feitos.includes(i)?"disabled":""}>${esc(P_[i].b)}</button>`).join("")}</div></div>
+      <p class="jg-fb ${c.fbok?"ok":"no"}">${esc(c.fb)}</p>`; }
+    else if(F.fase==="jogo" && F.j==="ordem"){ const d=c.g.d[c.i], n=d.itens.length;
+      body=`<div class="jg-hud"><span>Desafio ${c.i+1} de ${c.g.d.length}</span><span>${c.pts} pts</span></div><h2 class="q" style="font-size:clamp(22px,6vw,30px)">${esc(d.q)}</h2>
+      ${!c.visto?`<p class="muted" style="margin:0">Toque nos itens na ordem certa.</p><div class="jg-ord">${d.mix.map((it,k)=>{ const p=c.pick.indexOf(k); return `<button class="${p>=0?"on":""}" data-jg="ord" data-k="${k}" ${p>=0?'disabled aria-pressed="true"':""}><span class="n">${p>=0?p+1:""}</span><span>${esc(it)}</span></button>`; }).join("")}</div>
+        ${c.pick.length?`<button class="btn sm" style="min-height:44px;justify-self:start" data-jg="desfazer">Desfazer</button>`:""}`
+      :`<div class="jg-ord" role="status">${d.itens.map((it,k)=>{ const meu=d.mix[c.pick[k]], certo=meu===it; return `<div class="item ${certo?"ok":"no"}" style="display:flex;gap:12px;align-items:center"><span class="n">${k+1}</span><span class="grow" style="display:grid;gap:2px"><b style="font-weight:500">${esc(it)}</b>${certo?"":`<small class="muted">Você pôs: ${esc(meu)}</small>`}</span></div>`; }).join("")}</div>
+        ${d.e?`<p style="margin:0">${esc(d.e)}</p>`:""}<button class="btn primary" style="min-height:52px" data-jg="ord-prox" data-foco>${c.i+1<c.g.d.length?"Próximo desafio":"Ver resultado"}</button>`}`; if(c.visto) foco="[data-foco]"; }
+    else if(F.fase==="fim"){ const r=F.res;
+      body=`<span class="tag">${esc(J.n)} · ${esc(F.mat)}</span><div><b class="jg-pts">${c.pts}</b> <span class="muted">pontos</span></div>
+      <p style="margin:0">${c.ok} de ${c.tot} ${F.j==="ordem"?"desafios certos":F.j==="pares"?"pares de primeira":"certas"}.${r.novo?" <b style='color:var(--ok);font-weight:500'>Novo recorde!</b>":r.rec?` Seu recorde: ${r.rec}.`:""}</p>
+      ${c.erros.length?`<section style="display:grid;gap:8px"><span class="tag">Para aprender com os erros</span><div class="list">${c.erros.slice(0,8).map(e=>`<div class="item"><span class="grow" style="display:grid;gap:2px"><b style="font-weight:500">${esc(e.q.p)}</b><small>Certo: ${esc(e.q.o[e.q.c])}${e.q.e?" · "+esc(e.q.e):""}</small></span></div>`).join("")}</div><small class="muted">Eles já estão na sua revisão.</small></section>`:`<p class="muted" style="margin:0">Nenhum erro. Hora de subir o nível.</p>`}
+      <div class="row wrap" style="gap:8px"><button class="btn primary" style="min-height:48px" data-jg="denovo" data-foco>Jogar de novo</button><button class="btn" style="min-height:48px" data-jg="menu">Outro jogo</button></div>`; foco="[data-foco]"; }
+    sheetHTML({title:"Jogos", body, steps:F.fase==="jogo"||F.fase==="fim"?0:undefined, at:F.fase==="menu"?0:1, back:F.fase==="mat"});
+    SH.querySelectorAll("[data-jg]").forEach(b=>b.onclick=()=>agir(b));
+    const pt=SH.querySelector('[data-pick="jtempo"]'); if(pt) pt.querySelectorAll("button").forEach(b=>b.onclick=()=>{ F.semTempo=b.dataset.v==="1"; pt.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); });
+    const pk=SH.querySelector('[data-pick="jmat"]'); if(pk) pk.querySelectorAll("button").forEach(b=>b.onclick=()=>{ F.mat=b.dataset.v; pk.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); const t=$("#jg-outra"); if(t) t.value=""; });
+    const alvos=[...(F.foco||[]), foco].filter(Boolean); F.foco=null;
+    for(const q of alvos){ const el=SH.querySelector(q); if(el&&!el.disabled){ el.focus({preventScroll:true}); break; } } }
+  function agir(b){ const a=b.dataset.jg, c=F.c;
+    if(a==="j"){ F.j=b.dataset.v; F.fase="mat"; F.erro=""; draw(); }
+    else if(a==="menu"){ F.fase="menu"; draw(); }
+    else if(a==="ir"){ const t=($("#jg-outra")||{}).value; if(t&&t.trim()) F.mat=t.trim().slice(0,60); if(!F.mat){ toast("Escolha uma matéria."); return; } comecar(); }
+    else if(a==="denovo") comecar();
+    else if(a==="vf"){ const q=c.g.af[c.i], v=b.dataset.v==="1", ok=v===q.v; c.tot++;
+      if(ok){ c.seq++; c.ok++; const g=10*(1+Math.floor((c.seq-1)/3)); c.pts+=g; c.fb=`Certo! +${g}`; c.fbok=true; }
+      else { c.seq=0; c.fb=`Era ${q.v?"verdadeiro":"falso"}. ${q.e}`; c.fbok=false; c.erros.push({q:{p:q.t, o:L, c:q.v?0:1, e:q.e, tema:q.tema}, a:v?0:1}); }
+      anunciar(c.fb); c.i++; if(c.i>=c.g.af.length) return fim(); draw(); }
+    else if(a==="par"){ const lado=b.dataset.l, i=+b.dataset.i;
+      c.errPar=null; F.foco=[`[data-l="${lado}"][data-i="${i}"]`, `[data-jg="par"][data-l="${lado==="a"?"b":"a"}"]:not([disabled])`, `[data-jg="par"]:not([disabled])`];
+      if(!c.sel||c.sel.lado===lado){ c.sel={lado,i}; c.fb=""; F.foco=[`[data-jg="par"][data-l="${lado==="a"?"b":"a"}"]:not([disabled])`]; draw(); return; }
+      const ia=lado==="a"?i:c.sel.i, ib=lado==="b"?i:c.sel.i, P_=c.g.p; c.sel=null;
+      if(ia===ib){ c.feitos.push(ia); c.fb=`Isso: ${P_[ia].a}.`; c.fbok=true; if(!c.errou.includes(ia)){ c.ok++; c.pts+=10; } if(c.feitos.length===P_.length) return fim(); }
+      else { c.fb="Esses dois não combinam. Tente outro."; c.fbok=false; c.errPar=[ia,ib]; if(!c.errou.includes(ia)){ c.errou.push(ia); c.erros.push({q:{p:`O que corresponde a "${P_[ia].a}"?`, o:[P_[ia].b, P_[ib].b], c:0, e:""}, a:1}); } }
+      anunciar(c.fb); draw(); }
+    else if(a==="ord"){ c.pick.push(+b.dataset.k); const d=c.g.d[c.i]; F.foco=['[data-jg="ord"]:not([disabled])','[data-foco]'];
+      if(c.pick.length===d.itens.length){ c.visto=true; const meu=c.pick.map(k=>d.mix[k]), certo=meu.every((x,k)=>x===d.itens[k]);
+        if(certo){ c.ok++; c.pts+=30; } else c.erros.push({q:{p:`${d.q}: ${d.mix.join(", ")}`, o:[d.itens.join(" → "), meu.join(" → ")], c:0, e:d.e}, a:1}); }
+      draw(); }
+    else if(a==="desfazer"){ c.pick.pop(); F.foco=[c.pick.length?'[data-jg="desfazer"]':'[data-jg="ord"]:not([disabled])']; draw(); }
+    else if(a==="ord-prox"){ c.i++; c.pick=[]; c.visto=false; if(c.i>=c.g.d.length) return fim(); draw(); }
+  }
+  draw(); }
 /* ---------- Ponto de Partida ---------- */
 function openPartida(){
   const c0=rota().ctx||{}, l0=M.profile.local||{};
@@ -3315,6 +3441,7 @@ function vInicio(){
   if(f && sonho && sonho!==f.titulo) cards.push(card("metas","dados","Seu sonho continua",sonho,f.ponte?"Ponte: "+f.ponte:"Ele não sai da tela enquanto você cuida do agora."));
   cards.push(`<button class="pc" data-tabgo="evolucao"><span class="pc-img cena-noite" aria-hidden="true"></span><span class="pc-body"><span class="tag">Sua semana</span><b>${feitos} ${feitos===1?"dia":"dias"} de estudo</b><span class="semana" aria-label="${feitos} de 7 dias com estudo">${sem.map(d=>`<i class="${d.on?"on":""}${d.hoje?" hj":""}" title="${DIAS_N[d.wd]}"></i>`).join("")}</span><small class="muted">${feitos?"Cada dia conta, mesmo os de 5 minutos.":"Um passo hoje já acende o primeiro."}</small></span></button>`);
   { const cs=conquistas(), g=cs.filter(c=>c.got); cards.push(`<button class="pc" data-act="conquistas"><span class="pc-img cena-biblioteca" aria-hidden="true"></span><span class="pc-body"><span class="tag">Conquistas</span><b>${g.length} de ${cs.length}</b><span class="row wrap" style="gap:6px">${(g.length?g.slice(-3):cs.slice(0,2)).map(c=>`<span class="chip sm"${g.length?' style="color:var(--ok)"':""}>${esc(c.n)}</span>`).join("")}</span><small class="muted">${g.length?"Coisas que você fez de verdade.":"A primeira vem com a primeira questão."}</small></span></button>`); }
+  { const ult=(jogosSt().partidas||[]).slice(-1)[0]; cards.push(card("jogos","noite","Aprender jogando","Jogos das suas matérias",ult?`Última: ${JOGOS[ult.j].n} de ${ult.mat}, ${ult.pts} pontos.`:"Relâmpago, Pares e Linha do tempo. Erros viram revisão.")); }
   cards.push(card("vida","familia","Assistente de rota","Sua rotina mudou?",mar!=="avancar"?`Ritmo atual: ${MARCHAS[mar].n}${r.ate?" até "+dataCurta(r.ate):""}.`:"Trabalho, família, semana pesada: o app recalcula sem apagar nada."));
   // o dia em 3 linhas
   const t=today(), nm=nowMin(), rec=day(iso(t)).blocks, prox=(blocksOf(t)||[]).filter(b=>kindOf(b)!=="pausa" && toMin(b.b)>nm).slice(0,3);
@@ -3413,7 +3540,8 @@ function conquistas(){
     {n:"Semana de 5 dias", d:"Estudou em 5 dias da mesma semana", got:semanaFeita().filter(x=>x.on).length>=5},
     {n:"Voltou", d:"Retomou depois de uma pausa ou semana pesada", got:(r.eventos||[]).some(e=>e.tipo==="volta")},
     {n:"70% numa matéria", d:"Chegou a 70% de acertos numa matéria, com 10 respostas ou mais", got:dom},
-    {n:"50 questões", d:"Treinou 50 questões", got:todas.length>=50}];
+    {n:"50 questões", d:"Treinou 50 questões", got:todas.length>=50},
+    {n:"Primeiro jogo", d:"Jogou um jogo de aprendizagem até o fim", got:((M.jogos||{}).partidas||[]).length>0}];
 }
 function openConquistas(){ const cs=conquistas();
   FLOW={kind:"conq", next:()=>closeSheet(), back:()=>{}};
@@ -3688,6 +3816,7 @@ document.addEventListener("click", e => {
   else if(act==="pq-next") proximaPrep();
   else if(act==="pq-gerar"){ const al=alvoPrep(); if(prepSt(al).pool.length) paintPrep(); else gerarPrep(al); }
   else if(act==="conquistas") openConquistas();
+  else if(act==="jogos") openJogos(a.dataset.j||"");
   else if(act==="painel"){ PAINEL=true; render(); window.scrollTo({top:0}); }
   else if(act==="inicio"){ PAINEL=false; SELDAY=null; render(); window.scrollTo({top:0}); }
   else if(act==="vida") openVida();

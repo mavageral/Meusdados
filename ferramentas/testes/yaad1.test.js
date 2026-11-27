@@ -107,6 +107,23 @@ const CENARIOS = {
     ok(r[0] === 4 && r[1] === 15, "intervalos do FSRS fora do esperado: " + r);
     ok(r[2] <= 12, "FSRS agendou depois da prova");
   },
+  "Jogos: conteúdo conferido, partida e erros na revisão": async (p) => {
+    const r = await p.evaluate(async () => {
+      const AF = [["2+2=4.", true], ["3 é par.", false], ["10/2=5.", true], ["7 é múltiplo de 2.", false], ["1 km = 1000 m.", true], ["0 é negativo.", false], ["5² = 25.", true]];
+      SAMPLE = { limits: async () => ({}), json: async (pr) => {
+        if (/VERDADEIRO ou FALSO/.test(pr)) return { af: AF.map(([t, v]) => ({ t, v, tema: "x", e: "y" })).concat([{ t: "Afirmação com gabarito errado.", v: true, e: "" }]) };
+        if (/Julgue cada/.test(pr)) { const l = JSON.parse(pr.split("Afirmações: ")[1]); return { r: l.map(t => { const a = AF.find(x => x[0] === t); return a ? a[1] : false; }) }; }
+        return {}; } };
+      openJogos("relampago"); document.querySelector('[data-pick="jmat"] button').click(); document.querySelector('[data-jg="ir"]').click();
+      await new Promise(r => setTimeout(r, 200));
+      const n = FLOW.c.g.af.length; let i = 0;
+      while (document.querySelector(".jg-af")) { const t = document.querySelector(".jg-af").textContent, v = AF.find(x => x[0] === t)[1]; document.querySelector(`[data-jg="vf"][data-v="${(i++ === 0 ? !v : v) ? 1 : 0}"]`).click(); }
+      return { n, fim: /pontos/.test(document.querySelector("#shb").textContent), part: M.jogos.partidas.length, erro: (M.erros || []).some(e => e.certa === "Verdadeiro" || e.certa === "Falso") };
+    });
+    ok(r.n === 7, "afirmação com gabarito errado não foi descartada na conferência (" + r.n + ")");
+    ok(r.fim && r.part === 1, "partida não terminou ou não foi salva");
+    ok(r.erro, "erro do jogo não foi para a revisão");
+  },
   "Jornada, mapa do radar e currículo vivo": async (p) => {
     const r = await p.evaluate(() => {
       M.profile.local = { cidade: "Iracema", uf: "RR" }; M.geo = { "iracema|RR": [-61.05, 2.18], "boa vista|RR": [-60.67, 2.82] };
