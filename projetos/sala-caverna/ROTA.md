@@ -286,3 +286,21 @@ A Edna reenviou o pedido original do Projeto Caverna. Na auditoria, item por ite
   - Funciona sem internet e sem IA.
   - A API do GAME e o MCP ficam para quando o site tiver servidor com IA: a especificação mesmo diz que o MCP complementa e não é o caminho de execução.
 - **Testes:** a bateria passou com 142/142, incluindo os cenários "GAME: Operação Cidade…" e "Correção pendente e sincronização visível".
+
+## 19. Sala viva no rodapé e prioridade do IBGE na agenda (27/11/2026)
+
+- **Pedido:** a Sala viva estava escondida (só aparecia depois de uma aula). Ela deveria estar no rodapé e, ao entrar, mostrar tudo o que foi projetado. Além disso, o estudo do IBGE Recenseador 2027 tem de entrar no Yaad1 com prioridade na agenda.
+- **Sala viva (aba do rodapé, no lugar de "Estudar"):** abre o Hall da escola.
+  - presença dos últimos 7 dias (`M.presenca`, marcada ao entrar);
+  - a aula de hoje: continua a sessão aberta, ou o próximo bloco de estudo, ou o passo da frente. "Entrar na aula ao vivo" abre o estudo e, quando a aula fica pronta, a Sala viva começa sozinha (`FLOW.salaAuto`);
+  - a turma (professor, Lia, Davi, Ana, Téo e Beto);
+  - seis ambientes: Aula ao vivo, Caderno (o que veio da aula separado do que a pessoa escreveu, mais anotações livres em `M.caderno`), Laboratório e jogos, Biblioteca (material da frente primeiro, depois os cursos de cada matéria), Plantão do professor (chat) e Sala de estudos (revisões, Forja e erros).
+  - Tudo o que já existia na aba continua lá embaixo.
+- **IBGE (modelo `IBGE_2027`, dados públicos do edital nº 03/2026):**
+  - frente "Recenseador IBGE 2027" com Cesgranrio, corte de 18 de 60 com pelo menos 1 ponto por disciplina, 3 matérias com os tópicos do edital e da apostila, 8 marcos (inscrição 30/11, taxa 09/12, 3 simulados, prova 31/01, gabarito, resultado) e a biblioteca (guia, apostila, edital, provas do IBFC);
+  - as 24 questões conferidas do guia entram no treino da preparação;
+  - entra uma vez só, para a dona do Projeto Caverna (`semearIBGE`, marcado em `M.semente`). Se já existir uma frente de recenseador, ela é completada em vez de duplicada;
+  - **agenda de 28/11/2026 a 30/01/2027** (`focoBlocos`): seg 09h45 e qui 14h Conhecimentos Técnicos, ter 14h Matemática, qua 15h15 Português, dom 15h questões leves (opcional). Fé, família, ministério, graduação, o projeto da Serasa e a ANBIMA de sexta ficam como estão. Depois da prova a agenda volta sozinha;
+  - o bloco do IBGE abre o estudo da frente com o próximo tópico da matéria e conta como passo do dia da frente;
+  - metas novas: inscrição, taxa e prova (meta de 36 de 60). A missão dá preferência à meta da frente quando há empate de urgência. Marcar o marco na frente conclui a meta.
+- **Testes:** 180/180, com os cenários "IBGE: frente, questões do guia, prioridade na agenda e metas" e "Sala viva no rodapé…".
