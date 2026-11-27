@@ -276,6 +276,8 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .acao .grow{display:grid;gap:2px;min-width:0}.acao b{font-weight:500}
 .mic.on{background:var(--bad);border-color:var(--bad);color:var(--on-bad);animation:pulseb 1.6s ease-in-out infinite}
 #ch-voz[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
+.chip.dist{color:var(--a-op-1);border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent)}
+.chip.dist i{width:8px;height:8px;border-radius:50%;background:currentColor;display:block}
 .op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
 .op-lista{display:grid;gap:12px}
 .op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
@@ -2906,7 +2908,7 @@ function opCard(o,i){
     <h3>${esc(o.titulo)}</h3>
     ${o.orgao||o.onde?`<small class="muted">${esc([o.orgao,o.onde].filter(Boolean).join(" · "))}</small>`:""}
     ${o.salario?`<div class="op-din"><b>${esc(o.salario)}</b>${o.beneficios?`<small>+ ${esc(o.beneficios)}</small>`:""}</div>`:""}
-    <div class="row wrap" style="gap:6px">${o.vagas_local?`<span class="chip">${esc(o.vagas_local)}</span>`:""}${np!=null&&np>=0?`<span class="chip">Prova em ${np} dias</span>`:""}</div>
+    <div class="row wrap" style="gap:6px">${o.dist?`<span class="chip dist"><i aria-hidden="true"></i>${esc(distTxt(o.dist))}</span>`:""}${o.vagas_local?`<span class="chip">${esc(o.vagas_local)}</span>`:""}${np!=null&&np>=0?`<span class="chip">Prova em ${np} dias</span>`:""}</div>
     ${o.porque?`<p style="margin:0">${esc(o.porque)}</p>`:""}
     ${o.barreiras?`<p style="margin:0;font-size:14px;color:var(--warn)">Pode dificultar: ${esc(o.barreiras)}</p>`:""}
     ${o.requisito||o.taxa||o.ponte||(o.competencias&&o.competencias.length)?`<details class="op-mais"><summary>O que precisa e o que desenvolve</summary><div style="display:grid;gap:6px;padding-top:6px">${o.requisito?`<span>Requisito: ${esc(o.requisito)}</span>`:""}${o.taxa?`<span>Taxa: ${esc(o.taxa)}</span>`:""}${o.competencias&&o.competencias.length?`<span class="row wrap" style="gap:6px">${o.competencias.map(c=>`<span class="chip sm">${esc(c)}</span>`).join("")}</span>`:""}${o.ponte?`<span class="muted">Ponte para o seu sonho: ${esc(o.ponte)}</span>`:""}</div></details>`:""}
@@ -2966,9 +2968,11 @@ Avalie a VIABILIDADE para a realidade da pessoa (situação, tempo por dia, cida
       (M.oport=M.oport||{})[lente]={itens, data:iso(today())}; M.oportLente=lente; saveMain();
     }catch(e){ if(e.code==="cancelled") return; F.erro=aiErr(e); }
     F.busy=""; draw(); const h=SH.querySelector(".op-card h3,[role=alert]"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); }
+    preencherDistancias(((M.oport||{})[lente]||{}).itens, ()=>{ if(FLOW===F && !F.busy){ const sb=$("#shb"), y=sb?sb.scrollTop:0; draw(); const sb2=$("#shb"); if(sb2) sb2.scrollTop=y; } });
   }
   draw();
   if(!(M.oport||{})[F.lente] && (localTxt()||F.lente==="alvo")) buscar();
+  else preencherDistancias(((M.oport||{})[F.lente]||{}).itens, ()=>{ if(FLOW===F && !F.busy){ const sb=$("#shb"), y=sb?sb.scrollTop:0; draw(); const sb2=$("#shb"); if(sb2) sb2.scrollTop=y; } });
 }
 function limparEdital(r, o){
   r=r||{}; const s=(v,n)=>String(v==null?"":v).slice(0,n||240);
@@ -3244,7 +3248,7 @@ function vInicio(){
   const card=(act,img,tag,b,small,extra,attrs)=>`<button class="pc" data-act="${act}" ${attrs||""}><span class="pc-img cena-${img}" aria-hidden="true"></span><span class="pc-body"><span class="tag">${tag}</span><b>${esc(b)}</b>${small?`<small class="muted">${esc(small)}</small>`:""}${extra||""}</span></button>`;
   const cards=[];
   if(!r.ctx) cards.push(card("partida","biblioteca","Comece por aqui","Seu ponto de partida","5 perguntas sobre a sua vida agora. O app mostra o que existe perto de você."));
-  if(ops.length){ const o=ops[0], ni=diasAte(o.inscricao_ate); cards.push(card("oport","campo",`Radar · ${esc(localTxt()||"oportunidade")}`,o.titulo,[o.salario,o.onde].filter(Boolean).join(" · "),`<span class="row wrap" style="gap:6px">${o.url?`<span class="chip sm">Fonte oficial</span>`:""}${ni!=null?`<span class="chip sm${ni<=7?" urg":""}">Inscrição: ${ni===0?"hoje":ni+" dias"}</span>`:""}${ops.length>1?`<span class="chip sm">+${ops.length-1}</span>`:""}</span>`)); }
+  if(ops.length){ const o=ops[0], ni=diasAte(o.inscricao_ate); cards.push(card("oport","campo",`Radar · ${esc(localTxt()||"oportunidade")}`,o.titulo,[o.salario,o.onde].filter(Boolean).join(" · "),`<span class="row wrap" style="gap:6px">${o.dist?`<span class="chip sm">${esc(distTxt(o.dist))}</span>`:""}${o.url?`<span class="chip sm">Fonte oficial</span>`:""}${ni!=null?`<span class="chip sm${ni<=7?" urg":""}">Inscrição: ${ni===0?"hoje":ni+" dias"}</span>`:""}${ops.length>1?`<span class="chip sm">+${ops.length-1}</span>`:""}</span>`)); }
   else cards.push(card("oport","campo","Radar da vida real",`Oportunidades ${localTxt()?"em "+localTxt():"perto de você"}`,"Concursos, seletivos, vagas e cursos reais, com fonte oficial."));
   if(f && sonho && sonho!==f.titulo) cards.push(card("metas","dados","Seu sonho continua",sonho,f.ponte?"Ponte: "+f.ponte:"Ele não sai da tela enquanto você cuida do agora."));
   cards.push(`<button class="pc" data-tabgo="evolucao"><span class="pc-img cena-noite" aria-hidden="true"></span><span class="pc-body"><span class="tag">Sua semana</span><b>${feitos} ${feitos===1?"dia":"dias"} de estudo</b><span class="semana" aria-label="${feitos} de 7 dias com estudo">${sem.map(d=>`<i class="${d.on?"on":""}${d.hoje?" hj":""}" title="${DIAS_N[d.wd]}"></i>`).join("")}</span><small class="muted">${feitos?"Cada dia conta, mesmo os de 5 minutos.":"Um passo hoje já acende o primeiro."}</small></span></button>`);
@@ -3481,6 +3485,33 @@ async function agendaFrente(f){ const ics=icsDaFrente(f), nome=`yaad1-${norm(f.t
   if(!DL){ toast("Baixar arquivos não está disponível aqui."); return; }
   try{ await DL.save({filename:nome, data:new Blob([ics],{type:"text/calendar"})}); toast("Arquivo pronto: abra e toque em Adicionar à agenda."); }
   catch(e){ if(e&&e.code==="declined") return; toast(e&&e.code==="rejected_extension"?"Este aparelho não aceitou o arquivo de agenda.":"Não foi possível salvar o arquivo agora."); } }
+/* ====================================================================
+   DISTÂNCIA REAL NO RADAR (27/11/2026): conector TomTom Maps da própria pessoa (capacidade mcp).
+   Geocodifica a cidade de casa e a da oportunidade e calcula a rota de carro (km e minutos).
+   Resultados ficam guardados (M.geo, M.dist) para não repetir chamadas. Sem conector, nada aparece.
+   ==================================================================== */
+const ROTA_SERVER="TomTom Maps";
+function lerPayload(r){ let pl=r?(r.payload ?? r.content):null; if(Array.isArray(pl)){ const t=pl.find(x=>x&&x.type==="text"); if(t) try{ pl=JSON.parse(t.text); }catch(e){} } if(typeof pl==="string") try{ pl=JSON.parse(pl); }catch(e){} return pl; }
+function cidadeDe(onde){ const s=String(onde||"").trim(); if(!s||/remot|online|a dist[aâ]ncia|ead/i.test(s)) return null;
+  const m=/^(.+?)\s*(?:[-–,/(]\s*)([A-Za-z]{2})\)?\s*$/.exec(s); if(m) return {cidade:m[1].trim(), uf:m[2].toUpperCase()};
+  const l=M.profile.local||{}; return {cidade:s.split(/[,;(]/)[0].trim(), uf:l.uf||""}; }
+async function geoCidade(c){ const k=norm(c.cidade)+"|"+c.uf; M.geo=M.geo||{}; if(M.geo[k]) return M.geo[k];
+  const r=await MCP.callTool(ROTA_SERVER,"tomtom-geocode",{query:`${c.cidade}, ${c.uf}, Brasil`, countries:["BR"], entityTypeSet:"Municipality", limit:1});
+  const f=(lerPayload(r)||{}).features||[]; const xy=f[0]&&f[0].geometry&&f[0].geometry.coordinates; if(!Array.isArray(xy)||xy.length<2) return null;
+  M.geo[k]=[+xy[0],+xy[1]]; return M.geo[k]; }
+async function distanciaAte(onde){
+  if(!MCP||window.YAAD_SITE) return null; const casa=M.profile.local; if(!casa||!casa.cidade) return null;
+  const dest=cidadeDe(onde); if(!dest) return null; if(!dest.uf) dest.uf=casa.uf||"";
+  if(norm(dest.cidade)===norm(casa.cidade) && (!dest.uf||dest.uf===casa.uf)) return {km:0, min:0, mesma:true};
+  const k=norm(casa.cidade)+"|"+casa.uf+">"+norm(dest.cidade)+"|"+dest.uf; M.dist=M.dist||{}; if(M.dist[k]) return M.dist[k];
+  try{ const a=await geoCidade({cidade:casa.cidade, uf:casa.uf||""}), b=await geoCidade(dest); if(!a||!b) return null;
+    const r=await MCP.callTool(ROTA_SERVER,"tomtom-routing",{locations:[a,b]}); const f=((lerPayload(r)||{}).features||[])[0], sm=f&&f.properties&&f.properties.summary; if(!sm) return null;
+    M.dist[k]={km:Math.round(sm.lengthInMeters/1000), min:Math.round(sm.travelTimeInSeconds/60), d:iso(today())}; return M.dist[k]; }
+  catch(e){ return null; } }
+const distTxt=d=>!d?"":d.mesma?"Na sua cidade":`${d.min<60?d.min+" min":Math.floor(d.min/60)+"h"+(d.min%60?String(d.min%60).padStart(2,"0"):"")} de carro · ${d.km} km`;
+async function preencherDistancias(itens, redesenhar){ let mudou=false;
+  for(const o of (itens||[]).slice(0,8)){ if(o.dist!==undefined || !o.onde) continue; const d=await distanciaAte(o.onde); o.dist=d||null; if(d) mudou=true; }
+  if(mudou){ saveMain(); if(redesenhar) redesenhar(); } }
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
