@@ -179,3 +179,10 @@ O botão **C** deixou de ser um chat e virou o **Assistente Yaad1**, um agente:
 - **"Pôr na minha agenda"** na tela da frente gera um arquivo `.ics` (padrão iCalendar), entregue pela capacidade `downloads`. O arquivo traz:
   - cada marco futuro como evento do dia, com alarme às 9h da véspera;
   - o estudo semanal nos dias e no período escolhidos, até a prova, com alarme 10 minutos antes.
+
+## 11. Distância real no Radar (27/11/2026)
+
+- Conector **TomTom Maps** da própria pessoa (capacidade `mcp`, ferramentas `tomtom-geocode` e `tomtom-routing`). O app localiza a cidade de casa e a da oportunidade e calcula a rota de carro.
+- O cartão mostra, por exemplo, "30 min de carro · 43 km" (Iracema → Caracaraí, medido de verdade em 27/11 pela BR-174) ou "Na sua cidade". Oportunidades remotas não recebem distância.
+- Coordenadas e rotas ficam guardadas (`M.geo`, `M.dist`) e não se repetem chamadas. Sem o conector (ou no site), o cartão simplesmente não mostra distância.
+- Testado (Playwright, 375 e 390): 4 oportunidades, 5 chamadas na primeira abertura e 0 ao reabrir; sem erros.
