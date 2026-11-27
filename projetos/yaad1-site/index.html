@@ -279,6 +279,10 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .pp-q{display:grid;gap:10px}.pp-p{margin:0;font-size:17px;line-height:1.45}.pp-os{display:grid;gap:8px}
 .pp-fb{padding:12px 14px;border-radius:14px;background:var(--glass-2);font-size:15px}
 .medal{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--edge-2);color:var(--muted);flex:none}.medal.on{border-color:var(--a-anbima-1);color:var(--a-anbima-1);background:color-mix(in srgb,var(--a-anbima-1) 14%,transparent)}
+.acao{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:12px 14px;border-radius:18px;border:1px solid color-mix(in srgb,var(--c) 55%,transparent);background:color-mix(in srgb,var(--c) 10%,var(--glass));max-width:92%}
+.acao .grow{display:grid;gap:2px;min-width:0}.acao b{font-weight:500}
+.mic.on{background:var(--bad);border-color:var(--bad);color:var(--on-bad);animation:pulseb 1.6s ease-in-out infinite}
+#ch-voz[aria-pressed="true"]{background:var(--text);color:var(--on-light)}
 .op-entrada{border-color:color-mix(in srgb,var(--a-op-1) 45%,transparent);background:linear-gradient(120deg,color-mix(in srgb,var(--a-op-1) 16%,transparent),var(--glass))}
 .op-lista{display:grid;gap:12px}
 .op-card{display:grid;gap:10px;padding:16px;border-radius:var(--r);background:var(--glass);border:1px solid var(--edge);border-top:3px solid var(--a-op-1)}
@@ -733,6 +737,8 @@ async function boot(){
     MCP = await claude.use("mcp").catch(()=>null);
     ASSETS = await claude.use("assets");
     DL = await claude.use("downloads");
+    DICT = await claude.use("dictation").catch(()=>null);
+    TTS = await claude.use("tts").catch(()=>null);
   }catch(e){}
   render();
   if(OWNER===null) OWNER=true;
@@ -1367,7 +1373,8 @@ function salaQuadroHTML(q){ if(!q||!Array.isArray(q.linhas)||!q.linhas.length) r
     : `<div class="mono">${esc(L.join("\n"))}</div>`;
   return `<div class="sala-quadro" role="figure" aria-label="Quadro${q.titulo?": "+esc(q.titulo):""}"><span class="tag">Quadro${q.titulo?" · "+esc(q.titulo):""}</span>${corpo}</div>`; }
 let SALA_U=null;
-function salaFalar(texto, aoFim){ try{ if(SALA_U) SALA_U.onend=null; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(texto); u.lang="pt-BR"; u.rate=1.02; SALA_U=u; if(aoFim) u.onend=aoFim; speechSynthesis.speak(u); return true; }catch(e){ return false; } }
+const VOZES={professor:"buttery", assistente:"airy", curioso:"glassy", anotadora:"rounded", pensador:"glassy", brincalhao:"airy"};
+function salaFalar(texto, aoFim, quem){ if(TTS){ const v=VOZES[quem]||"buttery"; TTS.speak(String(texto).slice(0,1900), {voice:v, rate:quem==="brincalhao"?1.1:quem==="pensador"?.95:1}).then(()=>{ if(aoFim) aoFim(); }).catch(()=>{}); return true; } try{ if(SALA_U) SALA_U.onend=null; speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(texto); u.lang="pt-BR"; u.rate=1.02; SALA_U=u; if(aoFim) u.onend=aoFim; speechSynthesis.speak(u); return true; }catch(e){ return false; } }
 function abrirSala(){ const F=FLOW, D=F.data; if(!D.aula) return;
   if(!aiOn()){ toast("A Sala viva precisa do Claude ligado."); return; }
   if(!D.sala){ const el=$("#aula"); if(el) el.innerHTML=thinking("Montando a sala: professor, colegas e quadro…"); gerarSala(); return; }
@@ -1422,15 +1429,15 @@ function desenharSala(falar, foco){ const F=FLOW, D=F.data, S=D.sala, el=$("#aul
   const avancar = () => { if(S.at<S.cenas.length-1){ S.at++; desenharSala(true); } else { S.auto=false; desenharSala(); toast("Aula concluída. Siga para o foco quando quiser."); } };
   el.querySelectorAll("[data-sp]").forEach(b=>b.addEventListener("click",()=>{ const j=+b.dataset.sp; S.resp[S.at]=j; S.total++; if(j===c.pausa.c) S.acertos++;
     else { logErro(F.mat, D.aula.titulo||D.topic||"", {p:c.pausa.p, o:c.pausa.o, c:c.pausa.c, e:c.pausa.porque}, j); saveMain(); }
-    desenharSala(false,"explain"); salaFalar((j===c.pausa.c?"Isso! ":"Quase. ")+c.pausa.porque, S.auto?avancar:null); }));
+    desenharSala(false,"explain"); salaFalar((j===c.pausa.c?"Isso! ":"Quase. ")+c.pausa.porque, S.auto?avancar:null, "professor"); }));
   el.querySelector('[data-sl="prev"]').onclick=()=>{ S.at=Math.max(0,S.at-1); desenharSala(true); };
   el.querySelector('[data-sl="next"]').onclick=avancar;
-  el.querySelector('[data-sl="ouvir"]').onclick=()=>salaFalar(p.n+": "+c.fala);
+  el.querySelector('[data-sl="ouvir"]').onclick=()=>salaFalar(c.fala, null, c.quem);
   el.querySelector('[data-sl="texto"]').onclick=()=>{ try{ speechSynthesis.cancel(); }catch(e){} S.auto=false; el.innerHTML=lessonHTML(D.aula); };
-  el.querySelector("#sl-auto").onchange=ev=>{ S.auto=ev.target.checked; if(S.auto && !pausaAberta) salaFalar(c.fala, avancar); };
+  el.querySelector("#sl-auto").onchange=ev=>{ S.auto=ev.target.checked; if(S.auto && !pausaAberta) salaFalar(c.fala, avancar, c.quem); };
   el.querySelector("#sl-form").onsubmit=ev=>{ ev.preventDefault(); const q=(el.querySelector("#sl-q").value||"").trim(); if(q.length<4){ el.querySelector("#sl-q").focus(); return; } S.auto=false;
     el.querySelectorAll("[data-sl],[data-sp]").forEach(x=>x.disabled=true); el.querySelector("#sl-form").insertAdjacentHTML("afterend",thinking("A turma está pensando na sua pergunta…")); gerarSala(q); };
-  if(falar) salaFalar(c.fala, S.auto&&!pausaAberta?avancar:null);
+  if(falar) salaFalar(c.fala, S.auto&&!pausaAberta?avancar:null, c.quem);
 }
 async function genLesson(){
   const F=FLOW, D=F.data, mat=SUBJ[F.mat]?SUBJ[F.mat].n:F.mat, lv=levelOf(F.mat);
@@ -1698,7 +1705,7 @@ function closeDay(){
   Dy.final = {closed:true, nota:D.nota, frases:[D.f1,D.f2,D.f3], resumos:F.feitos.map((x,i)=>({bloco:x.b.l, txt:D.resumos[i]||""})), geral:D.geral, recall:D.recall?{acertos:Object.keys(D.rans).filter(i=>D.rans[i]===D.recall.qs[i].c).length, total:D.recall.qs.length}:null, sint:D.sint, grato:D.grato, ts:Date.now()};
   saveDay(dstr); addXP(30); closeSheet(); toast("Dia registrado. Boa noite.");
 }
-function speak(t){ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="pt-BR"; u.rate=1; speechSynthesis.speak(u); }catch(e){ toast("A leitura em voz alta não está disponível aqui."); } }
+function speak(t){ if(TTS){ TTS.speak(String(t||"").slice(0,1900)).catch(()=>{}); return; } try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(t); u.lang="pt-BR"; u.rate=1; speechSynthesis.speak(u); }catch(e){ toast("A leitura em voz alta não está disponível aqui."); } }
 
 /* ---------- um dia do diário ---------- */
 function openDay(dstr){
@@ -1956,48 +1963,6 @@ function openPrograma(k){
 
 
 /* ---------- chat C ---------- */
-function openChat(prefill){
-  M.chats = M.chats || {}; if(PID()==="caverna" && M.chat && !M.chats.caverna) M.chats.caverna = M.chat;
-  const CH = () => (M.chats[PID()] = M.chats[PID()] || []);
-  let ctl=null, imgs=[], thumbs=[];
-  FLOW={kind:"chat", next:()=>{}, back:()=>{}};
-  openSheet("radial-gradient(120% 70% at 50% 0%,rgb(255 106 26 / .45),transparent 60%),linear-gradient(180deg,#160904,#05060A 60%)");
-  const cur = blocksOf(today()).find(b=>nowMin()>=toMin(b.a)&&nowMin()<toMin(b.b));
-  const draw = () => {
-    SH.innerHTML = `<div class="sh-top"><span class="eyebrow grow">Claude · seu tutor</span>${CH().length?`<button class="btn sm ghost" id="ch-clear">Limpar</button>`:""}<button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
-      <div class="sh-body" id="shb">${CH().length?"":`<div class="orb"></div><h2 class="q" style="text-align:center">O que vamos estudar agora?<small style="text-align:center">${cur?`Agora: ${esc(cur.l)}. `:""}Pergunte, mande uma foto do exercício ou peça uma estratégia.</small></h2>`}
-        <div class="chat" id="chl">${CH().map(m=>`<div class="msg ${m.role==="user"?"me":"ai"}">${esc(m.content)}</div>`).join("")}</div></div>
-      <div class="sh-foot"><div class="in" style="display:grid;gap:10px">
-        <div class="sugs">${["Explique o assunto deste bloco","Monte 5 exercícios graduais","Como estou indo esta semana?","Me ajude a planejar amanhã","Estratégia para lembrar fórmulas"].map(s=>`<button data-sug="${esc(s)}">${esc(s)}</button>`).join("")}</div>
-        <div class="thumbs">${thumbs.map(t=>`<img src="${t}" alt="Imagem anexada">`).join("")}</div>
-        <form class="composer" id="chf">${canImg()?`<button type="button" class="x" id="ch-img" aria-label="Anexar foto"><svg class="icon"><use href="#i-cam"/></svg></button>`:""}<label class="sr" for="chi">Mensagem</label><textarea class="ta" id="chi" rows="1" placeholder="Pergunte ao Claude">${esc(prefill||"")}</textarea><button class="btn c" style="width:52px;padding:0" aria-label="Enviar"><svg class="icon"><use href="#i-send"/></svg></button></form>
-      </div></div>`;
-    const bd=$("#shb"); bd.scrollTop=bd.scrollHeight;
-    $("#chf").addEventListener("submit", e=>{ e.preventDefault(); send($("#chi").value); });
-    $("#chi").addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); send($("#chi").value); } });
-    SH.querySelectorAll("[data-sug]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.sug)));
-    $("#ch-img")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); imgs=p.blobs; thumbs=p.thumbs; const v=$("#chi").value; draw(); $("#chi").value=v; });
-    $("#ch-clear")?.addEventListener("click",()=>{ M.chats[PID()]=[]; saveMain(); draw(); });
-  };
-  const send = async (txt) => {
-    txt=(txt||"").trim(); if(!txt) return;
-    if(!aiOn()){ toast("O chat funciona na versão publicada, com o Claude ligado."); return; }
-    CH().push({role:"user", content: txt + (thumbs.length?"\n[foto anexada]":"")}); const sendImgs=imgs; imgs=[]; thumbs=[]; draw();
-    const box=document.createElement("div"); box.className="msg ai"; box.innerHTML=thinking(""); $("#chl").append(box);
-    const hoje = blocksOf(today()).map(b=>{ const r=day(iso(today())).blocks[bkey(b)]; return `${b.a} ${b.l}${r?(r.st==="feito"?" ✓"+(r.topic?" ("+r.topic+")":""):" ✗"):""}`; }).join("; ");
-    const ctxTurn = perfil()+`\nAgenda de hoje: ${hoje}. Constância: ${streak()} dias. Média nas provas: ${quizAvg()==null?"-":Math.round(quizAvg()*100)+"%"}. Revisões vencidas: ${dueReviews().map(r=>r.topic).join(", ")||"nenhuma"}. Erros abertos recentes: ${(M.erros||[]).filter(e=>!e.ok&&meu(e)).slice(-5).map(e=>e.p).join(" | ")||"nenhum"}.
-Você é o tutor dentro do app Yaad1, no projeto ${P().nome}. Ensine com perguntas e pistas antes de dar a resposta pronta (a meta é ela pensar sozinha). Respostas curtas e práticas, em texto simples sem markdown pesado.`;
-    ctl=new AbortController();
-    try{
-      const turns=[{role:"user",content:ctxTurn}, ...CH().slice(-12)];
-      const r=await SAMPLE(turns,{cache:false, signal:ctl.signal, images: sendImgs.length?sendImgs:undefined, onText:({text})=>{ box.textContent=text; const bd=$("#shb"); if(bd) bd.scrollTop=bd.scrollHeight; }});
-      CH().push({role:"assistant", content:r.text}); M.chats[PID()]=CH().slice(-30); saveMain();
-    }catch(e){ box.textContent = e.text || aiErr(e); }
-  };
-  draw();
-  if(prefill) setTimeout(()=>$("#chi")?.focus(),50);
-}
-
 /* ---------- perfil ---------- */
 function openMenu(){
   FLOW={kind:"menu", next:()=>closeSheet(), back:()=>{}};
@@ -3394,6 +3359,97 @@ function openConquistas(){ const cs=conquistas();
   openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-anbima-1) 24%,transparent),transparent 60%),var(--bg)");
   sheetHTML({title:"Conquistas", body:`<h2 class="q" style="font-size:clamp(30px,8vw,44px)">${cs.filter(c=>c.got).length} de ${cs.length}</h2><p class="muted" style="margin:0">Só contam coisas que aconteceram de verdade.</p>
     <div class="list">${cs.map(c=>`<div class="item" style="${c.got?"":"opacity:.6"}"><span class="medal${c.got?" on":""}" aria-hidden="true"><svg class="icon"><use href="#i-${c.got?"check":"target"}"/></svg></span><span class="grow"><b>${esc(c.n)}</b><small>${esc(c.d)}${c.got?"":" · ainda não"}</small></span></div>`).join("")}</div>`}); }
+/* ====================================================================
+   ASSISTENTE QUE AGE (27/11/2026): você fala (ditado), o Claude entende, usa ferramentas do próprio app
+   e responde em voz alta (voz do Claude). Mudanças só com o "sim" da pessoa: o Claude prepara, a pessoa aplica.
+   Níveis de autonomia: observar (ver_minha_situacao, buscar) · preparar (propostas com botão) · executar só com toque.
+   ==================================================================== */
+let DICT=null, TTS=null, VOZ_ON=(()=>{ try{ return localStorage.getItem("yaad:voz")==="1"; }catch(e){ return false; } })();
+function falarClaude(t, opts){ const txt=String(t||"").replace(/\s+/g," ").trim().slice(0,1900); if(!txt) return Promise.resolve();
+  if(TTS) return TTS.speak(txt, opts||{}).catch(()=>{});
+  return new Promise(ok=>{ try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(txt); u.lang="pt-BR"; u.onend=ok; u.onerror=ok; speechSynthesis.speak(u); }catch(e){ ok(); } }); }
+function pararFala(){ try{ TTS&&TTS.stop&&TTS.stop(); }catch(e){} try{ speechSynthesis.cancel(); }catch(e){} }
+function situacaoAgora(){ const f=frenteAtiva(), r=rota(), a=alvoPrep(), pg=passoGeral(f), pm=f?proxMarco(f):null;
+  return {hoje:fmtD(iso(today())), ritmo:MARCHAS[marchaAtual()].n+(r.ate?" até "+fmtD(r.ate):""), momento:r.ctx||null, cidade:localTxt()||null,
+    frente:f?{titulo:f.titulo, salario:f.salario||"", proximo_marco:pm?{marco:pm.r, data:fmtD(pm.d), faltam_dias:diasAte(pm.d)}:null, marcos:marcosDe(f).map(m=>({marco:m.r, data:fmtD(m.d), feito:m.ok})), minutos_por_dia:f.min, dias:(f.dias||[]).map(d=>DIAS_N[d]), corte:f.corte||""}:null,
+    passo_de_hoje:pg.pausa||pg.feito?pg.txt:`${pg.min} min · ${pg.txt}`, dominio:dominio(a).map(m=>({materia:m.n, respostas:m.cnt, acertos:m.ok})), conquistas:conquistas().filter(c=>c.got).map(c=>c.n),
+    agenda_hoje:blocksOf(today()).filter(b=>kindOf(b)!=="pausa").map(b=>`${b.a} ${b.l}${day(iso(today())).blocks[bkey(b)]?" (registrado)":""}`), oportunidades_salvas:Object.values(M.oport||{}).flatMap(c=>(c.itens||[]).map(o=>o.titulo)).slice(0,6)}; }
+function ferramentasApp(propor){
+  const T=(name,description,props,req,execute)=>({name,description,inputSchema:{type:"object",properties:props,required:req||[]},execute});
+  return [
+    T("ver_minha_situacao","Mostra a situação real da pessoa no app: ritmo, momento de vida, frente (oportunidade em preparo) com marcos e datas, passo de hoje, domínio por matéria, conquistas, agenda de hoje. Use antes de aconselhar.",{},[],async()=>situacaoAgora()),
+    T("propor_ritmo","Prepara uma mudança de ritmo para a pessoa aprovar: avancar (rotina completa), manter (20 min/dia), proteger (5 min/dia) ou pausa (nada atrasa). 'dias' é por quanto tempo; depois volta ao ritmo anterior.",{ritmo:{type:"string",enum:["avancar","manter","proteger","pausa"]},dias:{type:"integer"},motivo:{type:"string"}},["ritmo","motivo"],
+      async({ritmo,dias,motivo})=>{ if(!MARCHAS[ritmo]) throw new Error("ritmo inválido"); const n=Math.max(0,Math.min(60,+dias||0));
+        propor({titulo:`Mudar o ritmo para ${MARCHAS[ritmo].n}${n?` por ${n} dias`:""}`, det:MARCHAS[ritmo].d+(motivo?" · "+motivo:""), aplicar:()=>{ const r=rota(), antes=r.marcha; r.volta=n?(antes==="pausa"?"avancar":antes):""; r.marcha=ritmo; r.ate=n?iso(addDays(today(),n)):""; r.planos.push({d:iso(today()), tipo:"assistente", status:"aplicado", antes:{marcha:antes}, depois:{marcha:ritmo, ate:r.ate}}); r.eventos.push({d:iso(today()), tipo:"vida", mudanca:"assistente"}); } }); return "Proposta mostrada como cartão. A pessoa decide com um toque; não diga que já mudou."; }),
+    T("propor_tempo_da_frente","Prepara nova quantidade de minutos por dia (e opcionalmente dias da semana, 0=domingo a 6=sábado) para a frente ativa, para a pessoa aprovar.",{minutos:{type:"integer"},dias_semana:{type:"array",items:{type:"integer"}}},["minutos"],
+      async({minutos,dias_semana})=>{ const f=frenteAtiva(); if(!f) return "Não há frente ativa. Sugira abrir as oportunidades."; const m=Math.max(5,Math.min(240,+minutos||40)), ds=Array.isArray(dias_semana)&&dias_semana.length?[...new Set(dias_semana.map(Number).filter(d=>d>=0&&d<=6))].sort():null;
+        propor({titulo:`${f.titulo}: ${m} min por dia${ds?" · "+ds.map(d=>DIAS_N[d].slice(0,3)).join(", "):""}`, det:`Antes: ${f.min} min · ${(f.dias||[]).map(d=>DIAS_N[d].slice(0,3)).join(", ")}`, aplicar:()=>{ f.min=m; if(ds) f.dias=ds; } }); return "Proposta mostrada como cartão para a pessoa aprovar."; }),
+    T("marcar_marco","Prepara para a pessoa confirmar que cumpriu um marco da frente ativa (ex.: inscrição feita, taxa paga).",{marco:{type:"string",description:"nome do marco, ex.: inscrição"}},["marco"],
+      async({marco})=>{ const f=frenteAtiva(); if(!f) return "Não há frente ativa."; const ms=marcosDe(f), m=ms.find(x=>norm(x.r).includes(norm(marco).split(" ")[0]))||ms.find(x=>parecida(x.r,marco)); if(!m) return "Marco não encontrado. Marcos: "+ms.map(x=>x.r).join(", ");
+        propor({titulo:`Marcar como feito: ${m.r}`, det:`${f.titulo} · ${fmtD(m.d)}`, aplicar:()=>{ f.ok=f.ok||{}; f.ok[m.i]=true; } }); return "Cartão de confirmação mostrado."; }),
+    T("atualizar_momento","Prepara a atualização do momento de vida da pessoa (o que ela contou na conversa) para ela aprovar.",{situacao:{type:"string",enum:Object.keys(SITU)},prioridade:{type:"string",enum:Object.keys(PRIOR)},sonho:{type:"string"},minutos_por_dia:{type:"integer"}},[],
+      async(x)=>{ const r=rota(), c={...(r.ctx||{})}; if(x.situacao&&SITU[x.situacao]) c.situacao=x.situacao; if(x.prioridade&&PRIOR[x.prioridade]) c.prioridade=x.prioridade; if(x.sonho) c.sonho=String(x.sonho).slice(0,160); if(x.minutos_por_dia) c.min=Math.max(5,Math.min(240,+x.minutos_por_dia));
+        propor({titulo:"Atualizar o seu momento de vida", det:[SITU[c.situacao],(PRIOR[c.prioridade]||{}).n,c.sonho,c.min?c.min+" min/dia":""].filter(Boolean).join(" · "), aplicar:()=>{ r.ctx={...c, data:iso(today())}; r.eventos.push({d:iso(today()), tipo:"partida", via:"assistente"}); } }); return "Cartão mostrado para a pessoa aprovar."; }),
+    T("abrir_tela","Mostra um botão para a pessoa abrir uma parte do app: oportunidades, ponto_de_partida, vida_mudou, treino (questões da preparação), conquistas, frente, estudar (o passo de hoje).",{tela:{type:"string",enum:["oportunidades","ponto_de_partida","vida_mudou","treino","conquistas","frente","estudar"]},rotulo:{type:"string"}},["tela"],
+      async({tela,rotulo})=>{ const nomes={oportunidades:"Abrir oportunidades",ponto_de_partida:"Abrir o ponto de partida",vida_mudou:"Recalcular a rota",treino:"Treinar uma questão",conquistas:"Ver conquistas",frente:"Abrir a frente",estudar:"Começar o passo de hoje"};
+        propor({titulo:rotulo||nomes[tela]||"Abrir", botao:"Abrir", aplicar:()=>{ closeSheet(); const f=frenteAtiva(), pg=passoGeral(f);
+          if(tela==="oportunidades") openOportunidades(); else if(tela==="ponto_de_partida") openPartida(); else if(tela==="vida_mudou") openVida(); else if(tela==="conquistas") openConquistas();
+          else if(tela==="frente"&&f) openFrente(f.id); else if(tela==="treino"){ TAB="hoje"; PAINEL=false; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>document.querySelector(".prep")?.scrollIntoView({block:"start"}),80); }
+          else if(tela==="estudar"){ if(pg.act==="frente-estudar") estudarFrente(pg.id); else if(pg.act==="bloco") openBlock(iso(today()),pg.k); } }, semRegistro:true }); return "Botão mostrado."; })];
+}
+function openChat(prefill){
+  M.chats = M.chats || {}; if(PID()==="caverna" && M.chat && !M.chats.caverna) M.chats.caverna = M.chat;
+  const CH = () => (M.chats[PID()] = M.chats[PID()] || []);
+  let ctl=null, imgs=[], thumbs=[], ouvindo=false, base="", acoes=[], unsub=[];
+  FLOW={kind:"chat", next:()=>{}, back:()=>{}};
+  openSheet("radial-gradient(120% 70% at 50% 0%,color-mix(in srgb,var(--c) 45%,transparent),transparent 60%),linear-gradient(180deg,var(--bg-2),var(--bg) 60%)");
+  const acaoHTML=a=>`<div class="acao" data-ai="${a.id}"><span class="grow"><b>${esc(a.titulo)}</b>${a.det?`<small class="muted">${esc(a.det)}</small>`:""}</span>${a.feito?`<span class="chip sm" style="color:${a.feito==="sim"?"var(--ok)":"var(--muted)"}">${a.feito==="sim"?"Feito":"Deixado de lado"}</span>`:`<span class="row" style="gap:6px"><button class="btn sm primary" style="min-height:44px" data-ac="sim">${esc(a.botao||"Aplicar")}</button>${a.semRegistro?"":`<button class="btn sm ghost" style="min-height:44px" data-ac="nao">Agora não</button>`}</span>`}</div>`;
+  const propor=a=>{ a.id="a"+Date.now()+Math.random().toString(36).slice(2,5); acoes.push(a); const box=$("#chl"); if(box){ box.insertAdjacentHTML("beforeend", acaoHTML(a)); ligarAcoes(); const bd=$("#shb"); if(bd) bd.scrollTop=bd.scrollHeight; } };
+  const ligarAcoes=()=>SH.querySelectorAll(".acao [data-ac]").forEach(b=>b.onclick=()=>{ const el=b.closest(".acao"), a=acoes.find(x=>x.id===el.dataset.ai); if(!a||a.feito) return; a.feito=b.dataset.ac;
+    if(a.feito==="sim"){ a.aplicar(); if(!a.semRegistro){ saveMain(); render(); toast("Feito."); } } if(FLOW&&FLOW.kind==="chat") el.outerHTML=acaoHTML(a); });
+  const draw = () => {
+    unsub.forEach(u=>{ try{u();}catch(e){} }); unsub=[];
+    SH.innerHTML = `<div class="sh-top"><span class="eyebrow grow">Assistente Yaad1</span>${(TTS||window.speechSynthesis)?`<button class="x" id="ch-voz" aria-pressed="${VOZ_ON}" aria-label="${VOZ_ON?"Desligar":"Ligar"} as respostas em voz alta"><svg class="icon"><use href="#i-sound"/></svg></button>`:""}${CH().length?`<button class="btn sm ghost" id="ch-clear" style="min-height:44px">Limpar</button>`:""}<button class="x" data-sh="close" aria-label="Fechar"><svg class="icon"><use href="#i-x"/></svg></button></div>
+      <div class="sh-body" id="shb">${CH().length?"":`<div class="orb"></div><h2 class="q" style="text-align:center">Fale comigo<small style="text-align:center">Conte o que aconteceu, peça um plano, pergunte sobre o edital. Eu mexo no app com você: mudo o ritmo, marco a inscrição, abro o treino. Você confirma com um toque.</small></h2>`}
+        <div class="chat" id="chl">${CH().map(m=>`<div class="msg ${m.role==="user"?"me":"ai"}">${esc(m.content)}</div>`).join("")}${acoes.map(acaoHTML).join("")}</div></div>
+      <div class="sh-foot"><div class="in" style="display:grid;gap:10px">
+        <div class="sugs">${["Arrumei um trabalho das 8h às 17h","Fiz a inscrição do IBGE","O que estudo hoje?","Estou desanimado, me ajuda","Tem oportunidade perto de mim?"].map(s=>`<button data-sug="${esc(s)}">${esc(s)}</button>`).join("")}</div>
+        <div class="thumbs">${thumbs.map(t=>`<img src="${t}" alt="Imagem anexada">`).join("")}</div>
+        <form class="composer" id="chf">${canImg()?`<button type="button" class="x" id="ch-img" aria-label="Anexar foto"><svg class="icon"><use href="#i-cam"/></svg></button>`:""}${DICT?`<button type="button" class="x mic${ouvindo?" on":""}" id="ch-mic" aria-pressed="${ouvindo}" aria-label="${ouvindo?"Parar e enviar":"Falar"}"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>`:""}<label class="sr" for="chi">Mensagem</label><textarea class="ta" id="chi" rows="1" placeholder="${DICT?"Fale ou escreva":"Escreva para o assistente"}">${esc(prefill||"")}</textarea><button class="x" type="submit" aria-label="Enviar" style="background:var(--text);color:var(--on-light)"><svg class="icon"><use href="#i-send"/></svg></button></form>
+        ${ouvindo?`<small class="muted" role="status">Ouvindo… toque no microfone para enviar.</small>`:""}
+      </div></div>`;
+    const bd=$("#shb"); bd.scrollTop=bd.scrollHeight; ligarAcoes();
+    $("#chf").addEventListener("submit", e=>{ e.preventDefault(); send($("#chi").value); });
+    $("#chi").addEventListener("keydown", e=>{ if(e.key==="Enter"&&!e.shiftKey){ e.preventDefault(); send($("#chi").value); } });
+    SH.querySelectorAll("[data-sug]").forEach(b=>b.addEventListener("click",()=>send(b.dataset.sug)));
+    $("#ch-img")?.addEventListener("click", async()=>{ const f=await pickFiles(); if(!f.length) return; const p=await prepPhotos(f); imgs=p.blobs; thumbs=p.thumbs; const v=$("#chi").value; draw(); $("#chi").value=v; });
+    $("#ch-clear")?.addEventListener("click",()=>{ M.chats[PID()]=[]; acoes=[]; saveMain(); draw(); });
+    $("#ch-voz")?.addEventListener("click",()=>{ VOZ_ON=!VOZ_ON; try{ localStorage.setItem("yaad:voz",VOZ_ON?"1":"0"); }catch(e){} if(!VOZ_ON) pararFala(); draw(); });
+    if(DICT){ unsub.push(DICT.onPartial(({text})=>{ const t=$("#chi"); if(t) t.value=(base+" "+text).trim(); }), DICT.onFinal(({text})=>{ base=(base+" "+text).trim(); const t=$("#chi"); if(t) t.value=base; }),
+      DICT.onState(({state})=>{ if(state==="idle" && ouvindo){ ouvindo=false; const v=($("#chi")||{}).value||base; base=""; draw(); if(v.trim()) send(v); } }));
+      $("#ch-mic")?.addEventListener("click",()=>{ if(ouvindo){ DICT.stop().catch(()=>{}); return; } pararFala(); base=($("#chi").value||"").trim(); const pr=DICT.start({language:"pt-BR"}); ouvindo=true; draw(); pr.catch(e=>{ ouvindo=false; draw(); if(e&&e.code==="not_granted"){ DICT=null; draw(); toast("Microfone recusado. Você pode escrever."); } }); }); }
+  };
+  const send = async (txt) => {
+    txt=(txt||"").trim(); if(!txt) return;
+    if(!aiOn()){ toast("O assistente funciona na versão publicada, com o Claude ligado."); return; }
+    pararFala(); CH().push({role:"user", content: txt + (thumbs.length?"\n[foto anexada]":"")}); const sendImgs=imgs; imgs=[]; thumbs=[]; draw();
+    const box=document.createElement("div"); box.className="msg ai"; box.innerHTML=thinking(""); $("#chl").append(box);
+    const ctxTurn = perfil()+`
+Você é o ASSISTENTE do app Yaad1 (projeto ${P().nome}): tutor e guia de rota. Você pode AGIR no app com as ferramentas: veja a situação real com ver_minha_situacao antes de aconselhar; para mudar algo (ritmo, tempo da frente, marco cumprido, momento de vida) use as ferramentas de proposta: elas mostram um cartão e a PESSOA confirma com um toque. Nunca diga que mudou algo; diga que deixou pronto para ela confirmar. Para abrir partes do app use abrir_tela. Para fatos do mundo (editais, vagas, datas) use a busca e cite a fonte; nunca invente.
+Ao ensinar, use perguntas e pistas antes de dar a resposta pronta. Quando a pessoa estiver desanimada ou a vida apertar, acolha primeiro e proponha o menor passo possível.
+Responda CURTO (2 a 4 frases, sem listas longas e sem markdown): a resposta pode ser lida em voz alta.`;
+    ctl=new AbortController();
+    try{
+      const turns=[{role:"user",content:ctxTurn}, {role:"assistant",content:"Entendido."}, ...CH().slice(-12)];
+      const tools=ferramentasApp(propor).concat(await ferramentasBusca());
+      const r=await SAMPLE(turns,{cache:false, signal:ctl.signal, tools, images: sendImgs.length?sendImgs:undefined, onText:({text})=>{ box.textContent=text; const bd=$("#shb"); if(bd) bd.scrollTop=bd.scrollHeight; }});
+      box.textContent=r.text; CH().push({role:"assistant", content:r.text}); M.chats[PID()]=CH().slice(-30); saveMain();
+      if(VOZ_ON) falarClaude(r.text);
+    }catch(e){ box.textContent = e.text || aiErr(e); }
+  };
+  draw();
+  if(prefill) setTimeout(()=>$("#chi")?.focus(),50);
+}
 /* ---------- ações da página ---------- */
 document.addEventListener("click", e => {
   if(e.target.closest("#sheet")) return;
