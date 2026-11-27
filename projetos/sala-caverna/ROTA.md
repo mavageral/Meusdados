@@ -138,3 +138,16 @@ O erro foi acrescentar a jornada **em cima** do painel antigo: a tela ficou mais
 - **Para você agora**: cartões com foto que deslizam (Radar, sonho, semana com 7 bolinhas, "Sua rotina mudou?").
 - **Ainda hoje**: só os 3 próximos blocos da agenda.
 - **"Ver o dia completo e o painel"** abre a tela antiga inteira, sem perder nada. Tocar em "Hoje" volta ao Início.
+
+## 8. Sua preparação (27/11/2026): o app passa a saber o quanto a pessoa sabe
+
+- **Questão na tela inicial**, uma por vez, no estilo da banca do alvo. A banca vem do edital (a frente guarda `banca`); sem frente, o app usa as matérias do projeto. A resposta e a explicação aparecem ali mesmo.
+- **Gabarito conferido:** cada lote de 6 questões é resolvido uma segunda vez pelo Claude, sem ver o gabarito. Só ficam as que batem; as outras são descartadas. Se a conferência falhar, a questão aparece marcada como "gabarito não conferido".
+- **Domínio por matéria do edital** calculado só das últimas 20 respostas reais de cada matéria. Matéria sem treino aparece como "sem treino ainda", nunca com porcentagem inventada.
+- **Estimativa de pontos** (domínio × número de questões de cada matéria) só aparece com 5 ou mais respostas em cada matéria, com o critério do edital ao lado e o aviso de que é uma estimativa do treino, não uma garantia.
+- **O passo de hoje vai para a matéria mais fraca**, a partir de 10 respostas; o passo diz "onde você mais erra no treino".
+- **Os erros vão para a Forja** (`logErro`), o que alimenta a Caça ao Erro no futuro.
+- **Conquistas por fatos reais** (10): ponto de partida, primeira questão, 10 e 50 questões, 5 seguidas, inscrição feita, taxa paga, semana de 5 dias, retomada depois de pausa e 70% numa matéria.
+- Testado (Playwright, 375 e 390): lote com uma questão de gabarito divergente ficou com 5 das 6; erro registrado na Forja; estimativa só depois de 5 respostas por matéria; passo redirecionado; sem erros e sem rolagem lateral.
+
+**Próximo:** Currículo Vivo (competências das frentes e das conquistas), Corrida da Prova e mapa no Radar.
