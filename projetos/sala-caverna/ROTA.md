@@ -242,3 +242,23 @@ Imagem de conceito recebida (vida noturna em azul neon, celular central e quatro
 - **Conteúdo conferido:** a IA cria e depois resolve sozinha às cegas. O que não bate é descartado antes do jogo começar. Usa os tópicos do edital quando há uma frente.
 - **Ligado ao resto do app:** cada erro vira cartão na revisão (FSRS), recorde por jogo e matéria, XP e a conquista "Primeiro jogo".
 - **Acessibilidade:** o foco volta ao lugar certo a cada toque, o feedback é anunciado por uma região viva fixa, o tempo fica visível e há a opção "Sem tempo".
+
+## 17. Volta do núcleo do Caverna ao Início e certificados (27/11/2026)
+A Edna reenviou o pedido original do Projeto Caverna. Na auditoria, item por item, quase tudo já existia (sala de aula com ementa, prova para confirmar, revisão da manhã e da semana, Forja, Finalizar o dia, Diário, Árvore, simulados ANBIMA, C laranja). Mas a nova tela inicial de 27/11 tinha escondido no painel cinco peças centrais: o "Em andamento" pulsando, a Missão ligada à meta, a faixa fina de evolução com pinça e os avisos das revisões de ontem e da semana.
+- **`nucleoHTML()`** reúne as cinco peças e aparece no Início, logo abaixo do passo de hoje, e também no painel. O código é um só.
+- "Hoje: x de y etapas" agora usa a mesma contagem da faixa (`dayStats`).
+- **ANBIMA atualizada para a nova CPA (2026):**
+  - a CPA-10 deixou de existir;
+  - a prova tem 50 questões em 2h30, exige 70% (35 acertos) e custa R$ 225;
+  - são 4 temas com pesos: SFN 20%, Produtos 40%, Relacionamento 30% e Inovação 10%;
+  - a trilha de níveis e o simulado seguem esses pesos, com questões contextualizadas e de árvore de decisão.
+- **Certificados que abrem portas** (Evolução → Metas): 7 certificados conferidos nas fontes em 27/11:
+  - Kaggle SQL e Pandas (grátis);
+  - Excel Intermediário da Escola Virtual Gov (grátis);
+  - trilha Power BI da Fundação Bradesco (grátis);
+  - PL-300 da Microsoft (treino grátis, exame pago);
+  - CPA ANBIMA;
+  - FEBRABAN FBB500 ou Prevenção a Fraudes.
+
+  Cada um está ligado à matéria da agenda e ao nível atual. Os concluídos acendem na Árvore e entram no Currículo vivo.
+- **Serasa:** pela Eureca, as inscrições encerraram em 04/11. O processo segue com testes online e dinâmicas em novembro e entrevistas em novembro e dezembro. Falta a Edna confirmar se a inscrição foi feita, para ajustar a Missão.
