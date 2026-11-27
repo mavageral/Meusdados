@@ -135,7 +135,7 @@ h1,h2,h3,p{margin:0}
 .tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:40;display:flex;align-items:center;gap:4px;padding:6px;border-radius:var(--pill);
   background:rgb(14 16 24 / .82);border:1px solid var(--edge-2);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);box-shadow:0 20px 50px rgb(0 0 0 / .55)}
 .tabbar button{border:0;background:none;color:var(--muted);min-width:52px;height:50px;border-radius:var(--pill);display:grid;place-items:center;gap:0;padding:0 10px}
-.tabbar button span{font-size:11px;font-weight:500}
+.tabbar button span{font-size:11px;font-weight:500;white-space:nowrap}
 .tabbar button[aria-current="page"]{background:var(--glass-2);color:var(--text)}
 .tabbar .cbtn{width:58px;height:58px;margin:0 4px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFB37A,var(--c) 55%,#B83A00);color:var(--on-c);font:700 24px/1 var(--font);box-shadow:0 0 0 4px rgb(255 106 26 / .16),0 10px 30px rgb(255 106 26 / .45)}
 .tabbar .cbtn.pulse{animation:pulse 2.2s ease-in-out infinite}
@@ -545,11 +545,35 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
   .bento{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (min-width:640px){.kpis{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* Sala viva · Hall da escola */
+.hall{display:grid;gap:16px}
+.hall-pres{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.hall-pres span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font:500 11px var(--mono);border:1px solid var(--edge-2);color:var(--muted)}
+.hall-pres span.on{background:var(--c);border-color:var(--c);color:var(--on-c)}
+.hall-pres small{margin-left:4px}
+.hall-aula{display:grid;gap:10px;padding:18px;border-radius:var(--r);border:1px solid var(--edge-2);background:radial-gradient(120% 90% at 100% 0%,color-mix(in srgb,var(--a-grad-1) 40%,transparent),transparent 62%),var(--bg-2)}
+.hall-aula>b{font-weight:500;font-size:clamp(20px,5.4vw,26px);line-height:1.2}
+.hall-turma{display:flex;gap:10px;flex-wrap:wrap}
+.hall-p{display:grid;justify-items:center;gap:3px;min-width:40px}
+.hall-p i{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:600;color:var(--bg);background:var(--pc)}
+.hall-p small{font-size:11px;color:var(--muted)}
+.hall-amb{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hall-it{display:grid;gap:4px;align-content:start;text-align:left;min-height:112px;padding:14px;border-radius:var(--r);border:1px solid var(--edge-2);background:linear-gradient(160deg,color-mix(in srgb,var(--hc) 22%,var(--bg-2)),var(--bg-2));color:var(--text);font:inherit;cursor:pointer}
+.hall-it .ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,var(--hc) 30%,transparent);color:var(--hc);margin-bottom:4px}
+.hall-it b{font-weight:500;font-size:15px}
+.hall-it small{font-size:12px;color:var(--muted);line-height:1.35}
+.hall-it:focus-visible{outline:2px solid var(--c);outline-offset:2px}
+a.item{text-decoration:none;color:inherit}
+.cad-it{display:grid;gap:4px;padding:12px 14px;border-radius:12px;border:1px solid var(--edge-2);background:var(--glass)}
+.cad-it p{margin:0;line-height:1.5}
+.cad-it.mine{border-color:color-mix(in srgb,var(--c) 45%,var(--edge-2))}
+@media (min-width:760px){.hall-amb{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style>
 </head><body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></symbol>
+  <symbol id="i-sala" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3.5" width="18" height="11" rx="1.5"/><path d="M7 8h6M7 11h4"/><circle cx="12" cy="18.5" r="2"/><path d="M8.5 21.5a3.5 3.5 0 0 1 7 0"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5"/></symbol>
   <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
   <symbol id="i-cal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
@@ -571,7 +595,7 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 
 <nav class="tabbar" aria-label="Navegação principal">
   <button data-tab="hoje" aria-current="page"><svg class="icon"><use href="#i-home"/></svg><span>Hoje</span></button>
-  <button data-tab="estudar"><svg class="icon"><use href="#i-book"/></svg><span>Estudar</span></button>
+  <button data-tab="estudar"><svg class="icon"><use href="#i-sala"/></svg><span>Sala viva</span></button>
   <button class="cbtn pulse" id="cbtn" aria-label="Falar com o Claude">C</button>
   <button data-tab="evolucao"><svg class="icon"><use href="#i-chart"/></svg><span>Evolução</span></button>
   <button data-tab="diario"><svg class="icon"><use href="#i-cal"/></svg><span>Diário</span></button>
@@ -606,7 +630,7 @@ function applyProjeto(){ const pj=P(); if(pj.weekOverride && !pj.weekHist){ M.pr
 
 const AREAS = {
   oracao:{n:"Oração"}, biblia:{n:"Bíblia"}, min:{n:"Ministério"}, saude:{n:"Saúde e família"},
-  grad:{n:"Graduação"}, tech:{n:"Dados e programação"}, anbima:{n:"ANBIMA"}, pausa:{n:"Pausa"}, rev:{n:"Revisão"}
+  grad:{n:"Graduação"}, tech:{n:"Dados e programação"}, anbima:{n:"ANBIMA"}, pausa:{n:"Pausa"}, rev:{n:"Revisão"}, op:{n:"Concurso"}
 };
 const g1 = a => `var(--a-${a}-1)`, g2 = a => `var(--a-${a}-2)`;
 
@@ -705,22 +729,28 @@ let GOALS = [
   {id:"painel", n:"Painel de crédito v1 com dados do BCB", due:"2026-12-24", mats:["proj","bi","sql","py"], need:16, marco:"painel1", how:"O SQL extrai, o Python limpa e o Power BI mostra. É a prova de competência que abre as 5 portas."},
   {id:"cpa", n:"Certificação ANBIMA CPA", due:"2027-01-23", mats:["anbima"], sim:"anbima", how:"Ter, qui e sex, 14h–16h. A data da prova é decidida pela média de 70% nos simulados."},
   {id:"cs50", n:"Certificados CS50 (SQL e Python)", due:"2027-01-23", mats:["sql","py"], need:30, how:"Estude só os módulos da fase e guarde cada exercício no GitHub."},
-  {id:"base", n:"Base matemática sólida (ITA no horizonte)", due:"2027-01-23", mats:["mat"], need:35, how:"Aritmética e álgebra consolidadas antes de avançar. Cada bloco de Matemática aprovado conta."}
+  {id:"base", n:"Base matemática sólida (ITA no horizonte)", due:"2027-01-23", mats:["mat"], need:35, how:"Aritmética e álgebra consolidadas antes de avançar. Cada bloco de Matemática aprovado conta."},
+  {id:"ibge-insc", frente:"ibge2027", fm:"Inscrição", n:"Inscrição no IBGE · Recenseador", due:"2026-11-30", mats:[], marco:"ibge_insc", how:"Faça a inscrição no site da Cesgranrio e escolha a área de trabalho perto de casa. Leva uns 20 minutos."},
+  {id:"ibge-taxa", frente:"ibge2027", fm:"Taxa", n:"Pagar a taxa do IBGE (R$ 70)", due:"2026-12-09", mats:[], marco:"ibge_taxa", how:"Pague o boleto até 9/12. Sem o pagamento, a inscrição não vale."},
+  {id:"ibge-prova", frente:"ibge2027", n:"Prova do IBGE · meta de 36 de 60 pontos", due:"2027-01-31", mats:[], prep:"ibge2027", alvo:36, how:"O corte é 18 de 60, com pelo menos 1 ponto em cada matéria. A meta de 36 dá folga. Cada questão do treino conta."}
 ];
+function metas(){ return GOALS.filter(g=>!g.frente || frentes().some(f=>f.id===g.frente||f.modelo===g.frente)); }
 function blockMat(b){
+  if(b.foco) return null;
   if(b.m && SUBJ[b.m]) return b.m;
   if(CUSTOM){ const l=b.l.toLowerCase(); const k=Object.keys(SUBJ).find(k=>l.includes(SUBJ[k].n.toLowerCase())); return k||null; }
   return FROM_LABEL_C(b.l);
 }
 const FROM_LABEL = l => FROM_LABEL_C(l);
-function matsOfBlock(b){ if(CUSTOM){ const k=blockMat(b); return k?[k]:[]; } const l=b.l; if(/Matem/.test(l)) return ["mat"]; if(/Econ/.test(l)) return ["eco"]; if(/ANBIMA/.test(l)) return ["anbima"];
+function matsOfBlock(b){ if(b.foco) return []; if(CUSTOM){ const k=blockMat(b); return k?[k]:[]; } const l=b.l; if(/Matem/.test(l)) return ["mat"]; if(/Econ/.test(l)) return ["eco"]; if(/ANBIMA/.test(l)) return ["anbima"];
   if(/Python|SQL|código/.test(l)) return ["py","sql"]; if(/Projeto|Power BI/.test(l)) return ["proj","bi"]; if(/Graduação/.test(l)) return ["mat","eco"]; return []; }
 const BASE = {WEEK, SUBJ, GOALS, PHASES, FRASES};
 let CUSTOM = false;
 function goalProgress(g){
   const parts=[];
-  if(g.marco) parts.push(M.marcos && M.marcos[g.marco] ? 1 : 0);
+  if(g.marco) parts.push((M.marcos && M.marcos[g.marco]) || (g.fm && frentes().some(f=>(f.id===g.frente||f.modelo===g.frente) && marcosDe(f).some(m=>m.ok && m.r.startsWith(g.fm)))) ? 1 : 0);
   if(g.need) parts.push(Math.min(1, g.mats.reduce((a,m)=>a+countBy(m),0)/g.need));
+  if(g.prep){ const f=frentes().find(x=>x.id===g.prep||x.modelo===g.prep); if(f){ const a=alvoDe(f), e=estimativa(a), n=prepSt(a).resp.length; parts.push(e?Math.min(1,e.pts/(g.alvo||e.tot)):Math.min(.4,n/150)); } else parts.push(0); }
   if(g.sim){ const l=(M.simulados||[]).filter(x=>(x.tipo||"anbima")===g.sim).slice(-3); parts.push(l.length?Math.min(1,(l.reduce((a,x)=>a+x.score,0)/l.length)/0.7):0); }
   if(g.marco && g.need) return (M.marcos&&M.marcos[g.marco]) ? 1 : parts[1]*0.9;
   return parts.length ? parts.reduce((a,b)=>a+b,0)/parts.length : 0;
@@ -729,12 +759,12 @@ function goalInfo(g){
   const t=today(), due=fromIso(g.due), left=Math.round((due-t)/864e5), p=goalProgress(g);
   const base = CUSTOM ? START : (M.inicio ? fromIso(M.inicio) : t), span=Math.max(1,(due-base)/864e5), exp=Math.max(0,Math.min(1,((t-base)/864e5)/span));
   const mins = Object.values(WEEK).reduce((a,W)=>a+W.b.filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))).reduce((x,b)=>x+toMin(b.b)-toMin(b.a),0),0);
-  const done = p>=1, late = !done && left<0, behind = !done && !!(g.need||g.sim) && p+0.15<exp;
+  const done = p>=1, late = !done && left<0, behind = !done && !!(g.need||g.sim||g.prep) && p+0.15<exp;
   return {g, left, p, exp, mins, done, late, behind, urgent: !done && left<=7};
 }
-function goalsFor(mat){ return GOALS.filter(g=>g.mats.includes(mat)).map(goalInfo).filter(x=>!x.done); }
-function topGoal(){ const all=GOALS.map(goalInfo).filter(x=>!x.done && x.left>=-3); all.sort((a,b)=>(b.urgent-a.urgent)||(b.behind-a.behind)||(a.left-b.left)); return all[0]||null; }
-function goalsText(){ return GOALS.map(goalInfo).map(x=>`${x.g.n}: prazo ${fromIso(x.g.due).getDate()}/${fromIso(x.g.due).getMonth()+1}, faltam ${x.left} dias, progresso ${Math.round(x.p*100)}% (esperado ${Math.round(x.exp*100)}%)${x.done?" CONCLUÍDA":x.behind?" ATRÁS DO RITMO":""}`).join("; "); }
+function goalsFor(mat){ return metas().filter(g=>g.mats.includes(mat)).map(goalInfo).filter(x=>!x.done); }
+function topGoal(){ const all=metas().map(goalInfo).filter(x=>!x.done && x.left>=-3); all.sort((a,b)=>(b.urgent-a.urgent)||((!!b.g.frente)-(!!a.g.frente))||(b.behind-a.behind)||(a.left-b.left)); return all[0]||null; }
+function goalsText(){ return metas().map(goalInfo).map(x=>`${x.g.n}: prazo ${fromIso(x.g.due).getDate()}/${fromIso(x.g.due).getMonth()+1}, faltam ${x.left} dias, progresso ${Math.round(x.p*100)}% (esperado ${Math.round(x.exp*100)}%)${x.done?" CONCLUÍDA":x.behind?" ATRÁS DO RITMO":""}`).join("; "); }
 
 /* ====================================================================
    ESTADO E MEMÓRIA
@@ -784,7 +814,7 @@ async function boot(){
   if(!M.inicio){ M.inicio = iso(today()); lsSet("cav:main", M); }
   for(let i=0;i<TOTAL;i++){ const k=iso(addDays(START,i)); const v=lsGet("cav:d:"+k); if(v) DAYS[k]=v; }
   render();
-  if(!window.claude || !claude.use) return;
+  if(!window.claude || !claude.use){ if(semearIBGE()) render(); return; }
   try{
     const u = await claude.use("user");
     if(u){ try{ UID = await u.id(); }catch(e){} }
@@ -815,6 +845,7 @@ async function boot(){
   }catch(e){}
   render();
   if(OWNER===null) OWNER=true;
+  semearIBGE();
   render();
   if(NOVO()){ if(!M.tourVisto && SH.hidden) openTour(); return; }
   if(aiOn() && manhaPend() && SH.hidden && (M.manhaVista||"")!==iso(today())){ M.manhaVista=iso(today()); saveMain(); openManha(); }
@@ -883,11 +914,15 @@ async function ferramentaLer(sid){
 function phaseOf(d){ const s=iso(d); return PHASES.find(p => s>=p.a && s<=p.b) || null; }
 function baseWeek(){ const c=P().custom; return (c&&c.week) ? c.week : (P().weekOverride || BASE.WEEK); }
 function weekFor(d){ const s=iso(d); let w=baseWeek(); (P().weekHist||[]).slice().sort((x,y)=>x.desde<y.desde?-1:1).forEach(h=>{ if(h.desde<=s) w=h.week; }); return w; }
-function blocksOf(d){ return weekFor(d)[d.getDay()].b; }
+function blocksOf(d){ return focoBlocos(d, weekFor(d)[d.getDay()].b); }
+/* Prioridade de uma frente na agenda (ex.: IBGE até a prova): troca só os blocos combinados, no período combinado. Fé, família e ministério nunca mudam. */
+function focoBlocos(d, bs){ if(CUSTOM || !M.frentes) return bs; const s=iso(d), wd=d.getDay();
+  const fs=frentes().filter(f=>f.agenda && f.agenda.desde<=s && s<=f.agenda.ate); if(!fs.length) return bs;
+  return bs.map(b=>{ for(const f of fs){ const r=(f.agenda.blocos||[]).find(x=>+x.dia===wd && x.a===b.a && (!x.de || x.de===b.c)); if(r) return {...b, l:r.l, c:"op", s:r.s||"", foco:f.id, fm:r.m||""}; } return b; }); }
 function kindOf(b){
   if(b.c==="rev") return /integral/.test(b.l) ? "final" : /espaçada/.test(b.l) ? "revisao" : "simples";
   if(b.c==="biblia") return "biblia";
-  if(["grad","tech","anbima"].includes(b.c)) return "estudo";
+  if(["grad","tech","anbima","op"].includes(b.c)) return "estudo";
   if(b.c==="pausa") return "pausa";
   return "simples";
 }
@@ -937,7 +972,7 @@ function render(){
 }
 document.querySelector(".tabbar").addEventListener("click", e => {
   const b = e.target.closest("[data-tab]"); if(!b) return;
-  TAB = b.dataset.tab; SELDAY=null; if(TAB==="hoje") PAINEL=false; render(); window.scrollTo({top:0});
+  TAB = b.dataset.tab; SELDAY=null; if(TAB==="hoje") PAINEL=false; if(TAB==="estudar") marcarPresenca(); render(); window.scrollTo({top:0});
 });
 $("#cbtn").addEventListener("click", () => openChat());
 
@@ -954,7 +989,7 @@ function topBar(){
 }
 function proximidade(){
   const di=Math.max(0,Math.min(TOTAL,dayIdx(today())+1)), tp=Math.round(di/TOTAL*100);
-  const gp=Math.round(GOALS.map(goalProgress).reduce((a,b)=>a+b,0)/GOALS.length*100);
+  const MS=metas(), gp=Math.round(MS.map(goalProgress).reduce((a,b)=>a+b,0)/Math.max(1,MS.length)*100);
   return {tp, gp, msg: gp>=tp ? "No ritmo para o alvo. Continue assim." : gp>=tp-15 ? "Perto do ritmo. A missão de hoje te coloca em dia." : "Hora de acelerar: a missão de hoje é o próximo passo até o alvo."};
 }
 function carteiraHTML(){
@@ -973,7 +1008,7 @@ function carteiraHTML(){
 function vHoje(){ return (PAINEL||SELDAY) ? vPainel() : vInicio(); }
 function vPainel(){
   const t = today(), sel = SELDAY ? fromIso(SELDAY) : t, isToday = iso(sel)===iso(t);
-  const di = dayIdx(t)+1, ph = phaseOf(t), W = weekFor(sel)[sel.getDay()], bs = W.b, rec = day(iso(sel)).blocks, nm = nowMin();
+  const di = dayIdx(t)+1, ph = phaseOf(t), W = weekFor(sel)[sel.getDay()], bs = blocksOf(sel), rec = day(iso(sel)).blocks, nm = nowMin();
   const hour = new Date().getHours(), hi = hour<12?"Bom dia":hour<18?"Boa tarde":"Boa noite";
   let cur = isToday ? bs.find(b => nm>=toMin(b.a) && nm<toMin(b.b)) : null;
   let nxt = isToday ? bs.find(b => toMin(b.a)>nm) : bs[0];
@@ -1007,7 +1042,7 @@ function vPainel(){
     const k=bkey(b), r=rec[k], kd=kindOf(b), past=isToday&&toMin(b.b)<=nm, isn=cur===b;
     const st = r ? (r.st==="feito" ? `<span class="st done"><svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg></span>` : `<span class="st miss"><svg class="icon" style="width:14px;height:14px"><use href="#i-x"/></svg></span>`) : `<span class="st"></span>`;
     const tag = kd==="estudo"?"aula + prova":kd==="biblia"?"leitura + pergunta":kd==="revisao"?"recuperação ativa":"";
-    const gm = matsOfBlock(b).length ? GOALS.find(g=>!goalInfo(g).done && g.mats.some(m=>matsOfBlock(b).includes(m))) : null;
+    const gm = matsOfBlock(b).length ? metas().find(g=>!goalInfo(g).done && g.mats.some(m=>matsOfBlock(b).includes(m))) : null;
     tl += `<li class="${isn?"isnow":""} ${past?"past":""} ${r?"closed":""}" style="--g1:${g1(b.c)}"><button data-act="${kd==="final"?"finalizar":kd==="simples"||kd==="pausa"?"ok":"bloco"}" data-k="${esc(k)}" data-d="${iso(sel)}">
       <time>${fmtH(b.a)}<br>${fmtH(b.b)}</time>
       <span class="t"><b><span class="bul"></span>${esc(b.l)}</b><small>${esc(b.s || AREAS[b.c].n)}${tag?` · ${tag}`:""}${gm?`<span class="gtag">→ ${esc(gm.n.split(" (")[0])}</span>`:""}</small></span>${st}</button></li>`;
@@ -1084,16 +1119,16 @@ function vEstudar(){
   const due = dueReviews(), er = (M.erros||[]).filter(e=>!e.ok&&meu(e)).slice(-5).reverse();
   return `<div class="view">
     ${topBar()}
-    <section style="display:grid;gap:8px"><span class="eyebrow">Sala de estudos</span><h1 class="title-l">Explore e aprenda</h1></section>
-    <form class="composer" data-form="livre" autocomplete="off">
-      <label class="sr" for="q-livre">O que você quer aprender agora?</label>
-      <input class="inp" id="q-livre" name="q" placeholder="O que você quer aprender agora?" style="border-radius:var(--pill)">
+    ${hallHTML()}
+    <form class="composer" data-form="livre" autocomplete="off" id="hall-livre">
+      <label class="sr" for="q-livre">Peça uma aula sobre qualquer assunto</label>
+      <input class="inp" id="q-livre" name="q" placeholder="Peça uma aula sobre qualquer assunto" style="border-radius:var(--pill)">
       <button class="btn c" type="submit" aria-label="Gerar aula"><svg class="icon"><use href="#i-spark"/></svg></button>
     </form>
-    <section style="display:grid;gap:10px" aria-label="Jogos"><div class="sec-h"><h2>Aprender jogando</h2></div><div class="jg-menu"><button class="jg-it" data-act="cidade" style="--jc:var(--a-grad-1)"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#i-target"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>Operação Cidade Inteligente</b><small>Reconstrua a ponte com porcentagem.</small></span></button>${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-act="jogos" data-j="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div></section>
+    <section style="display:grid;gap:10px" aria-label="Laboratório e jogos" id="hall-lab"><div class="sec-h"><h2>Laboratório e jogos</h2></div><div class="jg-menu"><button class="jg-it" data-act="cidade" style="--jc:var(--a-grad-1)"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#i-target"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>Operação Cidade Inteligente</b><small>Reconstrua a ponte com porcentagem.</small></span></button>${Object.entries(JOGOS).map(([k,v])=>`<button class="jg-it" data-act="jogos" data-j="${k}" style="--jc:${v.cor}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${v.ic}"/></svg></span><span class="grow" style="display:grid;gap:2px"><b>${v.n}</b><small>${v.d}</small></span></button>`).join("")}</div></section>
     <section style="display:grid;gap:4px"><div class="sec-h"><h2>Suas matérias</h2><span class="muted" style="font-size:13px">deslize</span></div>
       <div class="fan">${cards}</div></section>
-    <section style="display:grid;gap:10px"><div class="sec-h"><h2>Revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
+    <section style="display:grid;gap:10px" id="hall-estudos"><div class="sec-h"><h2>Sala de estudos · revisões de hoje</h2><span class="mono muted" style="font-size:13px">1 · 3 · 7 · 14 · 30 dias</span></div>
       ${due.length?`<div class="list">${due.map(r=>`<button class="item" data-act="revisar" data-id="${r.id}"><span class="chip" style="color:${g1(SUBJ[r.mat]?SUBJ[r.mat].a:"rev")}"><i></i>D${r.step}</span><span class="grow"><b>${esc(r.topic)}</b><small>${esc(SUBJ[r.mat]?SUBJ[r.mat].n:"")} · estudado em ${fromIso(r.d0).getDate()}/${fromIso(r.d0).getMonth()+1}</small></span><svg class="icon"><use href="#i-arrow"/></svg></button>`).join("")}</div>`:`<p class="note">Nenhuma revisão vencida. Cada assunto aprovado volta para revisão em 1, 3, 7, 14 e 30 dias.</p>`}
     </section>
     ${forjaHTML()}
@@ -1101,6 +1136,79 @@ function vEstudar(){
       ${er.length?`<div class="list">${er.map(e=>`<button class="item" data-act="erro" data-id="${e.id}"><svg class="icon" style="color:var(--bad)"><use href="#i-x"/></svg><span class="grow"><b>${esc(e.p)}</b><small>Certa: ${esc(e.certa)}</small></span></button>`).join("")}</div>`:`<p class="note">Nenhum erro aberto. Errar é normal; errar duas vezes pelo mesmo motivo é o que vamos evitar.</p>`}
     </section>
   </div>`;
+}
+
+/* ---------------- SALA VIVA · HALL DA ESCOLA ----------------
+   A porta de entrada da escola: presença, a aula de hoje com a turma, e os ambientes (caderno, laboratório,
+   biblioteca, plantão do professor e sala de estudos). Junta o que já existe; nada é inventado. */
+function marcarPresenca(){ const hj=iso(today()); M.presenca=M.presenca||{}; if(M.presenca[hj]) return; M.presenca[hj]=1;
+  const ks=Object.keys(M.presenca).sort(); if(ks.length>90) ks.slice(0,ks.length-90).forEach(k=>delete M.presenca[k]); saveMain(); }
+function presencaSemana(){ const out=[]; for(let i=6;i>=0;i--){ const d=addDays(today(),-i), k=iso(d); out.push({d, on:!!((M.presenca||{})[k]) || dayStats(k).done>0 || allStudy().some(r=>r.d===k)}); } return out; }
+function aulaHoje(){
+  if(M.sessao && meu(M.sessao)) return {tipo:"retomar", t:"Continuar de onde parou", d:`${M.sessao.data.topic||"Seu estudo"} · a turma guardou o seu lugar`};
+  const t=today(), ds=iso(t), nm=nowMin(), rec=day(ds).blocks;
+  const b=blocksOf(t).find(x=>kindOf(x)==="estudo" && !rec[bkey(x)] && toMin(x.b)>nm);
+  if(b) return {tipo:"bloco", k:bkey(b), t:b.l, d:`${toMin(b.a)<=nm?"Agora":"Hoje"} · ${fmtH(b.a)}–${fmtH(b.b)}${b.foco?" · prioridade até a prova":""}`};
+  const f=frenteAtiva(); if(f){ const ps=passoHoje(f); if(!ps.feito && !ps.folga) return {tipo:"frente", id:f.id, t:`${ps.mat} · ${f.titulo}`, d:`${ps.min} min${ps.topico?" · "+ps.topico:""}`}; }
+  return {tipo:"livre", t:"Aula livre", d:"Escolha qualquer assunto: a turma entra com você"};
+}
+const AMBIENTES = [
+  ["aula","Aula ao vivo","Professor, colegas e quadro","i-sound","var(--a-grad-1)"],
+  ["caderno","Caderno","O que o professor ensinou e o que você anotou","i-book","var(--a-biblia-1)"],
+  ["lab","Laboratório e jogos","Operação Cidade e jogos rápidos","i-target","var(--a-op-1)"],
+  ["biblioteca","Biblioteca","Apostilas, editais e cursos","i-link","var(--a-tech-1)"],
+  ["plantao","Plantão do professor","Tire uma dúvida agora","i-spark","var(--a-anbima-1)"],
+  ["estudos","Sala de estudos","Revisões e a Forja de erros","i-check","var(--a-rev-1)"]];
+function hallHTML(){
+  const a=aulaHoje(), ps=presencaSemana(), np=ps.filter(x=>x.on).length, nome=(M.profile.name||"").split(" ")[0];
+  const turma=["professor","assistente","curioso","anotadora","pensador","brincalhao"].map(k=>`<span class="hall-p" style="--pc:${TURMA[k].c}"><i aria-hidden="true">${esc(TURMA[k].n[0])}</i><small>${esc(TURMA[k].n)}</small></span>`).join("");
+  return `<section class="hall" aria-label="Sala viva">
+    <div style="display:grid;gap:6px"><span class="eyebrow">Sala viva · escola Yaad1</span><h1 class="title-l" style="margin:0">${nome?`${esc(nome)}, sua turma está aqui`:"Sua turma está aqui"}</h1></div>
+    <div class="hall-pres" role="img" aria-label="Presença nos últimos 7 dias: ${np} de 7">${ps.map(x=>`<span class="${x.on?"on":""}" aria-hidden="true">${DIAS_N[x.d.getDay()][0]}</span>`).join("")}<small class="muted">${np} de 7 dias na escola</small></div>
+    <article class="hall-aula">
+      <span class="tag">${a.tipo==="retomar"?"Em andamento":"Aula de hoje"}</span>
+      <b>${esc(a.t)}</b><small class="muted">${esc(a.d)}</small>
+      <div class="hall-turma" role="group" aria-label="Turma: professor, Lia, Davi, Ana, Téo e Beto">${turma}</div>
+      <button class="btn primary" style="min-height:52px" data-act="hall-aula">${a.tipo==="retomar"?"Voltar para a aula":aiOn()?"Entrar na aula ao vivo":"Entrar na aula"}</button>
+      ${aiOn()?`<small class="muted">Você monta o plano, o professor explica e a turma acompanha no quadro, com pausas para você responder.</small>`:`<small class="muted">Com o Claude ligado, o professor e a turma dão a aula. Sem ele, você registra o estudo e responde à prova.</small>`}
+    </article>
+    <div class="hall-amb" role="group" aria-label="Ambientes da escola">${AMBIENTES.map(([k,n,d,ic,c])=>`<button class="hall-it" data-act="hall-amb" data-k="${k}" style="--hc:${c}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${ic}"/></svg></span><b>${n}</b><small>${d}</small></button>`).join("")}</div>
+  </section>`;
+}
+function entrarAula(){ const a=aulaHoje();
+  if(a.tipo==="retomar") return resumeSession();
+  if(a.tipo==="bloco"){ openBlock(iso(today()), a.k); if(FLOW && FLOW.kind==="study") FLOW.salaAuto=true; return; }
+  if(a.tipo==="frente"){ estudarFrente(a.id); if(FLOW && FLOW.kind==="study") FLOW.salaAuto=true; return; }
+  const i=$("#q-livre"); if(i){ i.scrollIntoView({block:"center"}); i.focus(); } }
+function ambiente(k){
+  if(k==="aula") return entrarAula();
+  if(k==="caderno") return openCaderno();
+  if(k==="biblioteca") return openBiblioteca();
+  if(k==="plantao") return openChat("Professor, tenho uma dúvida: ");
+  const el=$(k==="lab"?"#hall-lab":"#hall-estudos"); if(el){ el.scrollIntoView({block:"start", behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}); const f=el.querySelector("button"); if(f) f.focus({preventScroll:true}); }
+}
+function cadernoItens(){ return allStudy().filter(r=>(r.notes&&r.notes.trim())||(r.aula&&r.aula.titulo)).sort((a,b)=>(b.ts||0)-(a.ts||0)).slice(0,30); }
+const nomeMat = m => SUBJ[m] ? SUBJ[m].n : String(m||"").split(" · ")[0];
+function openCaderno(){
+  FLOW={kind:"caderno", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-biblia-1) 28%,transparent),transparent 60%),var(--bg)");
+  const draw=(foco)=>{ if(!FLOW||FLOW.kind!=="caderno") return; const its=cadernoItens(), minhas=(M.caderno||[]).filter(meu).slice(-20).reverse();
+    sheetHTML({title:"Caderno", body:`<h2 class="q">Seu caderno<small>O que veio da aula fica separado do que você escreveu. Tudo aqui é seu.</small></h2>
+      <div class="field"><label for="cad-t">Nova anotação</label><textarea class="ta" id="cad-t" maxlength="1200" placeholder="Uma fórmula, uma dúvida, uma frase que você quer lembrar"></textarea><button class="btn primary" style="min-height:48px;justify-self:start" data-cad="salvar">Guardar no caderno</button></div>
+      ${minhas.length?`<section style="display:grid;gap:8px" aria-label="Suas anotações"><span class="tag">Escrito por você</span>${minhas.map(n=>`<article class="cad-it mine"><small class="muted mono">${dataCurta(n.d)}</small><p>${esc(n.t)}</p></article>`).join("")}</section>`:""}
+      <section style="display:grid;gap:8px" aria-label="Das aulas"><span class="tag">Das suas aulas</span>${its.length?its.map(r=>`<article class="cad-it"><small class="muted mono">${dataCurta(r.d)} · ${esc(nomeMat(r.mat))}${r.topic?" · "+esc(r.topic):""}</small>${r.aula&&r.aula.titulo?`<p><b style="font-weight:500">Do professor:</b> ${esc(r.aula.titulo)}${r.aula.ideia?`. ${esc(r.aula.ideia)}`:""}</p>`:""}${r.notes&&r.notes.trim()?`<p><b style="font-weight:500">Você anotou:</b> ${esc(r.notes.trim().slice(0,600))}</p>`:""}</article>`).join(""):`<p class="note">Quando você estudar um bloco, a ideia central da aula e as suas anotações aparecem aqui.</p>`}</section>`});
+    const bt=SH.querySelector('[data-cad="salvar"]'); if(bt) bt.onclick=()=>{ const t=($("#cad-t").value||"").trim(); if(!t){ $("#cad-t").focus(); return; } (M.caderno=M.caderno||[]).push({proj:PID(), d:iso(today()), t:t.slice(0,1200), ts:Date.now()}); if(M.caderno.length>300) M.caderno=M.caderno.slice(-300); saveMain(); draw(true); toast("Guardado no caderno."); };
+    if(foco){ const h=$("#cad-t"); if(h) h.focus(); }
+  };
+  draw();
+}
+function openBiblioteca(){
+  FLOW={kind:"biblioteca", next:()=>closeSheet(), back:()=>{}};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-tech-1) 26%,transparent),transparent 60%),var(--bg)");
+  const lk=(n,u)=>urlOk(u)?`<a class="item" href="${esc(u)}" target="_blank" rel="noopener noreferrer"><svg class="icon"><use href="#i-link"/></svg><span class="grow"><b>${esc(n)}</b><small>${esc(u.replace(/^https?:\/\//,"").split("/")[0])}</small></span></a>`:"";
+  const fr=frentes().map(f=>{ const ls=(f.guia||[]).concat(f.url&&!(f.guia||[]).some(g=>g[1]===f.url)?[["Edital e inscrição",f.url]]:[]).map(([n,u])=>lk(n,u)).filter(Boolean); return ls.length?`<section style="display:grid;gap:8px"><span class="tag">${esc(f.titulo)}</span><div class="list">${ls.join("")}</div></section>`:""; }).join("");
+  const ms=Object.values(SUBJ).filter(x=>x&&(x.rec||[]).length).map(x=>`<section style="display:grid;gap:8px"><span class="tag">${esc(x.n)}</span><div class="list">${x.rec.map(([n,u])=>lk(n,u)).join("")}</div></section>`).join("");
+  sheetHTML({title:"Biblioteca", body:`<h2 class="q">Biblioteca<small>Primeiro o material da prova mais próxima. Depois, os cursos de cada matéria. Os links abrem fora do app.</small></h2>${fr}${ms||`<p class="note">Ainda não há materiais salvos.</p>`}`});
 }
 
 /* ---------------- EVOLUÇÃO ---------------- */
@@ -1138,7 +1246,7 @@ function evoPanorama(){
       ${aiOn()?"":`<p class="faint" style="font-size:13px">Disponível na versão publicada, com o Claude ligado.</p>`}</section>`;
 }
 function metasConectadasHTML(){
-  const xs=GOALS.map(goalInfo);
+  const xs=metas().map(goalInfo);
   return `<section style="display:grid;gap:10px"><div class="sec-h"><h2>Metas conectadas à rotina</h2><span class="mono muted" style="font-size:13px">barra: feito · traço: ritmo esperado</span></div>
     <div class="list">${xs.map(x=>{ const h=(x.mins/60); const warn = x.g.mats.length && x.mins===0 ? "Nenhum horário da agenda alimenta esta meta. Encaixe um bloco na semana." : x.behind ? `Atrás do ritmo: ${Math.round(x.p*100)}% feito, o esperado hoje era ${Math.round(x.exp*100)}%.` : "";
       return `<div class="glass pad" style="display:grid;gap:8px;${x.urgent&&!x.done?"border-color:rgb(255 106 26 / .5)":""}">
@@ -1173,7 +1281,7 @@ function evoMetas(){
 function evoArvore(){
   if(CUSTOM){
     const B = Object.entries(SUBJ).map(([k,v])=>({n:v.n, a:v.a, nodes:v.lv.map((x,i)=>({n:x, on:levelOf(k).l>=i && (i>0 || levelOf(k).n>0)}))}));
-    B.push({n:"Metas", a:"oracao", nodes:GOALS.map(g=>({n:g.n, on:goalProgress(g)>=1}))});
+    B.push({n:"Metas", a:"oracao", nodes:metas().map(g=>({n:g.n, on:goalProgress(g)>=1}))});
     return `<p class="muted">Cada ramo acende com evidência: blocos aprovados na prova e metas cumpridas. O próximo nó a destravar fica tracejado.</p>
     <div class="tree">${B.map(b=>{ let firstOff=false; return `<div class="branch" style="--g1:${g1(b.a)}"><span class="eyebrow">${esc(b.n)}</span><div class="nodes">${b.nodes.map((x,i)=>{ let cls=x.on?"on":""; if(!x.on&&!firstOff){cls="is-next";firstOff=true;} return `${i?'<span class="link-l"></span>':""}<span class="node ${cls}">${x.on?'<svg class="icon" style="width:14px;height:14px"><use href="#i-check"/></svg>':""}${esc(x.n)}</span>`; }).join("")}</div></div>`; }).join("")}</div>`;
   }
@@ -1284,6 +1392,9 @@ function openBlock(dstr,k){
   const r = day(dstr).blocks[k];
   if(r && r.st) return openRecord(dstr,b,r);
   if(M.sessao && meu(M.sessao) && M.sessao.k===k && M.sessao.dstr===dstr) return resumeSession();
+  if(b.foco){ const f=frentes().find(x=>x.id===b.foco); if(f){ const ps=passoHoje(f), nm=b.fm||ps.mat||((f.materias||[])[0]||{}).n||"Revisão geral", m=(f.materias||[]).find(x=>x.n===nm)||{};
+    const feitas=sessoesFrente(f).filter(r=>String(r.mat||"").startsWith(nm+" · ")).length, tps=(m.topicos||[]).filter(Boolean);
+    openStudy({dstr, b, mat:nm+" · "+f.titulo, topic:tps.length?tps[feitas%tps.length]:(ps.topico||"")}); FLOW.frente=f.id; return; } }
   openStudy({dstr, b, mat: blockMat(b) || (CUSTOM ? Object.keys(SUBJ)[0] : (b.c==="anbima"?"anbima":b.c==="tech"?"py":"mat"))});
 }
 function resumeSession(){
@@ -1526,7 +1637,7 @@ Responda só com JSON neste formato:
 Use 3 a 5 passos. As buscas devem ser frases de pesquisa (não links).`;
   try{
     D.aula = await aiJson(prompt, {signal:F.ctl.signal, images: D.fotos.length?D.fotos:undefined});
-    if(FLOW===F && F.steps[F.at]==="aula") drawStudy();
+    if(FLOW===F && F.steps[F.at]==="aula"){ drawStudy(); if(F.salaAuto){ F.salaAuto=false; abrirSala(); } }
   }catch(e){ if(e.code==="cancelled") return; const el=$("#aula"); if(el) el.innerHTML=`<p class="note">${esc(aiErr(e))}</p><button class="btn sm" data-act="aula-retry">Tentar de novo</button>`; SH.querySelector('[data-sh="next"]').disabled=false; }
 }
 async function genQuiz(){
@@ -2001,7 +2112,7 @@ function openSemana(){
     prompt:`Revisão semanal com gabarito. Faça 10 questões de múltipla escolha cobrindo os assuntos da semana, níveis misturados, priorizando os pontos em que houve erro. Assuntos: ${JSON.stringify(es.slice(0,14).map(r=>({assunto:r.topic, materia:SUBJ[r.mat]?SUBJ[r.mat].n:""})))}. Erros recentes: ${JSON.stringify(erros)}. Em "tema" ponha o assunto exatamente como listado.`,
     onDone:(Q,ans,sc)=>{ const m=porTema(Q,ans); (M.semanas=M.semanas||{})[pkey(weekKey())]={score:sc, temas:m};
       Q.qs.forEach((x,i)=>{ if(ans[i]!==x.c){ const r=es.find(z=>z.topic===x.tema)||es[0]; logErro(r.mat, x.tema, x, ans[i]); } }); addXP(Math.round(sc*40)); saveMain();
-      const atr=GOALS.map(goalInfo).filter(x=>x.behind||x.urgent);
+      const atr=metas().map(goalInfo).filter(x=>x.behind||x.urgent);
       return temaHTML(m)+`<p class="note">Os assuntos em vermelho são o foco desta semana. Treine-os na Forja.</p>`+(atr.length?`<div class="ponte"><span class="tag" style="color:#FFD2B0">Metas que pedem atenção esta semana</span>${atr.map(x=>`<p style="margin:0"><b style="font-weight:600">${esc(x.g.n)}</b> · ${x.left>=0?"faltam "+x.left+" dias":"prazo passou"} · ${Math.round(x.p*100)}% feito</p>`).join("")}</div>`:""); }});
 }
 
@@ -2968,8 +3079,21 @@ function frentes(){ return (M.frentes||[]).filter(f=>f && !f.arquivada); }
 function marcosDe(f){ const ok=f.ok||{}; return (f.marcos||[]).map((m,i)=>({...m, i, ok:!!ok[i]})).sort((a,b)=>String(a.d).localeCompare(String(b.d))); }
 function proxMarco(f){ return marcosDe(f).find(m=>!m.ok && diasAte(m.d)!=null && diasAte(m.d)>=0) || null; }
 function proxMarcoTxt(f){ const m=proxMarco(f); if(!m) return f.onde||"Frente ativa"; const n=diasAte(m.d); return `${m.r}: ${n===0?"hoje":n===1?"amanhã":"em "+n+" dias"} (${dataCurta(m.d)})`; }
+/* Modelo público do Recenseador IBGE 2027 (edital nº 03/2026, Cesgranrio). Entra uma vez para a dona do Projeto Caverna. */
+const IBGE_2027 = {"id": "ibge2027", "modelo": "ibge2027", "titulo": "Recenseador IBGE 2027", "orgao": "IBGE · Censo Agropecuário, Florestal e Aquícola", "salario": "R$ 1.741 por mês", "beneficios": "parte variável de até R$ 2.629 e R$ 1.192 de auxílio-alimentação", "banca": "Cesgranrio", "prova": "2027-01-31", "corte": "18 de 60 pontos e pelo menos 1 ponto em cada disciplina", "url": "https://ftp.ibge.gov.br/edital/PSS_Censo_Agro/2026_03/EDITAL_03_2026_PSS_RECENSEADOR_IBGE.pdf", "guia": [["Guia de estudo do Yaad1: edital, apostila e 24 questões", "https://claude.ai/artifact/19gKDTtQbbtMa15Jg9W5Vc"], ["Apostila oficial dos conhecimentos técnicos (IBGE)", "https://ftp.ibge.gov.br/edital/PSS_Censo_Agro/2026_02/Edital_2_2026_AC_ACQ_Apostila_de_Estudo_dos_conhecimentos_tecnicos.pdf"], ["Edital nº 03/2026 · Recenseador", "https://ftp.ibge.gov.br/edital/PSS_Censo_Agro/2026_03/EDITAL_03_2026_PSS_RECENSEADOR_IBGE.pdf"], ["Provas do IBFC de 27/09/2026 (mesma apostila)", "https://servidor-arquivos.ibfc.org.br/publicacao_listas/2606-site-cadernos/index.html"]], "atencao": "Prova em 31/01/2027, das 13h às 17h: 60 questões com 5 alternativas. Taxa de R$ 70 paga até 09/12.", "ponte": "Renda em 2027 e experiência real de coleta de dados, que conta para a carreira em dados.", "materias": [{"n": "Conhecimentos Técnicos", "questoes": 30, "topicos": ["O IBGE e o Censo Agro", "Estrutura censitária e quem faz o quê", "Instrumentos de trabalho e elementos do mapa", "Navegação em campo e descritivo do setor", "Divisão político-administrativa e setor censitário", "Tipos de setores e comunidades tradicionais", "Endereço e coordenadas geográficas", "Unidades recenseáveis e não recenseáveis", "Subsistência e produtores sem área", "Situações especiais: sede, áreas separadas, sucessão"]}, {"n": "Matemática", "questoes": 15, "topicos": ["Múltiplos e divisores", "Inteiros e racionais", "Razão, proporção e regra de três", "Porcentagem", "Equação do 1º grau", "Medidas e conversões", "Áreas, perímetros e volumes", "Tabelas e gráficos", "Mapas, croquis e escalas"]}, {"n": "Língua Portuguesa", "questoes": 15, "topicos": ["Compreensão de texto", "Sinônimos, antônimos e homônimos", "Pontuação", "Ortografia e acentuação", "Classes de palavras", "Concordância", "Regência", "Verbos e vozes", "Pronomes"]}], "marcos": [{"r": "Inscrição até", "d": "2026-11-30"}, {"r": "Taxa paga até", "d": "2026-12-09"}, {"r": "Simulado completo 1", "d": "2027-01-10"}, {"r": "Simulado completo 2", "d": "2027-01-17"}, {"r": "Simulado completo 3", "d": "2027-01-24"}, {"r": "Prova", "d": "2027-01-31"}, {"r": "Gabarito", "d": "2027-02-01"}, {"r": "Resultado final", "d": "2027-04-30"}], "min": 90, "dias": [0, 1, 2, 3, 4], "turno": "qualquer", "agenda": {"desde": "2026-11-28", "ate": "2027-01-30", "blocos": [{"dia": 1, "a": "09:45", "de": "tech", "l": "IBGE: Conhecimentos Técnicos", "m": "Conhecimentos Técnicos", "s": "Apostila oficial: um assunto por bloco"}, {"dia": 2, "a": "14:00", "de": "anbima", "l": "IBGE: Matemática da prova", "m": "Matemática", "s": "Porcentagem, regra de três, escalas e gráficos"}, {"dia": 3, "a": "15:15", "de": "tech", "l": "IBGE: Língua Portuguesa", "m": "Língua Portuguesa", "s": "Leitura, regência e concordância"}, {"dia": 4, "a": "14:00", "de": "anbima", "l": "IBGE: Conhecimentos Técnicos", "m": "Conhecimentos Técnicos", "s": "Apostila e questões no estilo Cesgranrio"}, {"dia": 0, "a": "15:00", "de": "pausa", "l": "IBGE: questões leves (opcional)", "m": "", "s": "Só se o domingo deixar. A matéria é a que você mais erra"}]}};
+const IBGE_QS = [{"id": "ibge-q1", "mat": "Conhecimentos Técnicos", "tema": "escala", "p": "Antes de sair para o setor, um recenseador mede 4 cm entre o posto de apoio e a sede de um estabelecimento num mapa de escala 1:50.000. A distância real é de", "o": ["2 km", "4 km", "20 km", "200 m", "500 m"], "c": 0, "e": "4 cm × 50.000 = 200.000 cm = 2.000 m = 2 km.", "verif": true}, {"id": "ibge-q2", "mat": "Conhecimentos Técnicos", "tema": "estrutura", "p": "Durante a coleta, um recenseador tem dúvida sobre como registrar uma área arrendada. Segundo a apostila, ele deve se reportar ao", "o": ["Agente Censitário de Informática (ACI)", "Agente Censitário Regional (ACR)", "Assistente Operacional Regional (AOR)", "Agente Censitário Supervisor (ACS)", "Agente Censitário de Qualidade (ACQ)"], "c": 3, "e": "O recenseador trabalha sob supervisão do ACS e é a ele que se reporta em dúvidas ou dificuldades.", "verif": true}, {"id": "ibge-q3", "mat": "Conhecimentos Técnicos", "tema": "sede", "p": "A área de um estabelecimento se estende pelos setores A e B. A maior parte das terras está no setor A, mas a sede, onde o produtor administra o trabalho, fica no setor B. O estabelecimento deve ser recenseado", "o": ["nos dois setores, dividindo a área", "no setor que o recenseador visitar primeiro", "no setor indicado pelo próprio produtor", "no setor A, por ter a maior parte das terras", "no setor B, onde está a sede"], "c": 4, "e": "Regra: recenseia-se no setor da sede. A maior parte das terras só decide quando não existe sede.", "verif": true}, {"id": "ibge-q4", "mat": "Conhecimentos Técnicos", "tema": "áreas não contínuas", "p": "Um produtor explora duas áreas separadas no mesmo município, com os mesmos tratores e os mesmos empregados. Porém, cada área tem um administrador próprio, sem subordinação a uma administração única. Nesse caso, devem ser considerados", "o": ["um único estabelecimento, pois estão no mesmo município", "um único estabelecimento, pois usam os mesmos recursos técnicos", "dois estabelecimentos, pois falta uma das quatro condições", "dois estabelecimentos, pois as áreas são separadas por uma estrada", "nenhum estabelecimento, até o supervisor decidir"], "c": 2, "e": "As 4 condições são simultâneas: mesmo município, mesmos recursos técnicos, mesmo pessoal e uma única administração. Faltou a última.", "verif": true}, {"id": "ibge-q5", "mat": "Conhecimentos Técnicos", "tema": "pesque-pague", "p": "Um pesque-pague compra peixes já criados em outra propriedade e apenas os solta nos tanques para os clientes. Para o Censo Agro, ele", "o": ["é estabelecimento, se vender mais de 100 kg por mês", "só é estabelecimento se estiver em área rural", "é estabelecimento, por ser atividade aquícola", "é estabelecimento, se tiver mais de um tanque", "não é estabelecimento, pois não cria nem engorda os peixes"], "c": 4, "e": "O pesque-pague só é estabelecimento quando há criação e engorda. Só comprar peixes criados não conta.", "verif": true}, {"id": "ibge-q6", "mat": "Conhecimentos Técnicos", "tema": "produtor sem área", "p": "O Sr. Mário arrendou sua terra ao Sr. Jorge, que produziu nela durante o período de referência, mas saiu antes da data de referência. O recenseador localiza o Sr. Jorge. Ele deve", "o": ["não registrar nada, pois o Sr. Jorge já saiu", "entrevistar o Sr. Jorge e marcá-lo como produtor sem área", "entrevistar os dois e somar a produção", "aguardar o próximo censo", "entrevistar o Sr. Mário, dono da terra"], "c": 1, "e": "É o caso da apostila: coleta-se com quem produziu (Sr. Jorge), assinalando produtor sem área.", "verif": true}, {"id": "ibge-q7", "mat": "Conhecimentos Técnicos", "tema": "abordagem", "p": "Ao passar por uma casa na zona rural, o recenseador vê por cima do muro uma pequena horta e algumas galinhas. A conduta correta é", "o": ["pedir ao supervisor que visite o local", "registrar como estabelecimento, pois há criação de animais", "ignorar, pois parece produção para lazer", "perguntar à pessoa se há atividade agropecuária; o questionário de abordagem inicial define", "registrar como unidade não recenseável sem entrar"], "c": 3, "e": "Não dá para saber olhando. O recenseador pergunta, e quem classifica é o questionário de abordagem inicial.", "verif": true}, {"id": "ibge-q8", "mat": "Conhecimentos Técnicos", "tema": "endereço", "p": "Qual registro de ponto de referência está em desacordo com as orientações do IBGE?", "o": ["Ao lado da Igreja Nossa Senhora Aparecida", "Casa do Sr. Antônio, o vaqueiro", "Após a porteira da Fazenda Boa Vista", "Próximo à caixa d'água", "Primeira casa após a ponte do Rio Pedra Linda"], "c": 1, "e": "É proibido identificar pessoas nos componentes do endereço: fere o sigilo estatístico.", "verif": true}, {"id": "ibge-q9", "mat": "Conhecimentos Técnicos", "tema": "coordenadas", "p": "O DMC registrou latitude −3,12 e longitude −60,02 para a sede de um estabelecimento. Esse ponto está", "o": ["ao norte do Equador e a leste de Greenwich", "ao sul do Equador e a leste de Greenwich", "ao norte do Equador e a oeste de Greenwich", "ao sul do Equador e a oeste de Greenwich", "sobre a linha do Equador"], "c": 3, "e": "Latitude negativa = Sul do Equador; longitude negativa = Oeste de Greenwich.", "verif": true}, {"id": "ibge-q10", "mat": "Conhecimentos Técnicos", "tema": "descritivo", "p": "Um córrego que servia de limite do setor mudou de curso e o recenseador não consegue identificar o limite. Ele deve", "o": ["usar o limite do setor vizinho", "encerrar a coleta naquele trecho", "ajustar o perímetro ao novo curso do córrego", "seguir pelo limite que parecer mais lógico", "comunicar imediatamente à supervisão"], "c": 4, "e": "O recenseador não pode alterar o perímetro em hipótese alguma. Limite com dificuldade: comunicar à supervisão.", "verif": true}, {"id": "ibge-q11", "mat": "Conhecimentos Técnicos", "tema": "herança", "p": "Um estabelecimento está em partilha de herança e há consenso entre os herdeiros. Ele deve ser recenseado como", "o": ["um único estabelecimento, com informações do inventariante", "nenhum estabelecimento, até o fim da partilha", "estabelecimento do herdeiro mais velho", "estabelecimento do município", "um estabelecimento por herdeiro"], "c": 0, "e": "Com consenso: um único estabelecimento; informa o inventariante, seu representante legal ou o condômino responsável.", "verif": true}, {"id": "ibge-q12", "mat": "Conhecimentos Técnicos", "tema": "tipos de setor", "p": "Para que um setor censitário seja classificado como Agrupamento Quilombola, deve haver, entre outras características,", "o": ["mais de 50 habitantes há mais de um ano", "10 ou mais pessoas autodeclaradas quilombolas", "15 ou mais pessoas autodeclaradas quilombolas", "50 ou mais domicílios", "território oficialmente delimitado"], "c": 2, "e": "Agrupamento indígena ou quilombola: 15 ou mais pessoas, em moradias contíguas e com vínculos familiares ou comunitários.", "verif": true}, {"id": "ibge-q13", "mat": "Conhecimentos Técnicos", "tema": "boitel", "p": "Um confinamento de gado (boitel) possui apenas animais de outros produtores e nenhuma outra atividade. Segundo a apostila,", "o": ["é estabelecimento só se tiver mais de 100 cabeças", "é estabelecimento industrial, fora do censo", "depende da autorização do supervisor", "é estabelecimento e registra todos os animais", "não é estabelecimento; os animais contam nos estabelecimentos dos donos"], "c": 4, "e": "Boitel só é estabelecimento com animais próprios ou outra atividade. Animais de terceiros contam nos estabelecimentos dos donos.", "verif": true}, {"id": "ibge-q14", "mat": "Conhecimentos Técnicos", "tema": "território", "p": "Sobre a divisão político-administrativa do Brasil, é correto afirmar que", "o": ["os distritos têm autonomia administrativa", "os municípios são criados por lei municipal", "os distritos são criados por lei estadual", "os municípios são criados por lei estadual e os distritos, por lei municipal", "todos os municípios têm subdistritos"], "c": 3, "e": "Municípios: lei estadual. Distritos: lei municipal, sem autonomia. Subdistritos só em grandes cidades (cerca de 645).", "verif": true}, {"id": "ibge-q15", "mat": "Matemática", "tema": "regra de três", "p": "Um recenseador caminha 3 km em 40 minutos. Mantendo o mesmo ritmo, em quanto tempo percorrerá 7,5 km?", "o": ["2h", "2h30", "1h", "1h20", "1h40"], "c": 4, "e": "7,5 ÷ 3 = 2,5. 40 × 2,5 = 100 min = 1h40.", "verif": true}, {"id": "ibge-q16", "mat": "Matemática", "tema": "porcentagem", "p": "Num município, 35% dos 840 estabelecimentos agropecuários são de agricultura patronal. Quantos estabelecimentos são patronais?", "o": ["264", "280", "294", "315", "240"], "c": 2, "e": "10% de 840 = 84; 30% = 252; 5% = 42. 252 + 42 = 294.", "verif": true}, {"id": "ibge-q17", "mat": "Matemática", "tema": "área", "p": "Uma lavoura retangular mede 250 m por 400 m. Sabendo que 1 hectare equivale a 10.000 m², a área da lavoura é de", "o": ["100 ha", "1 ha", "4 ha", "10 ha", "25 ha"], "c": 3, "e": "250 × 400 = 100.000 m². 100.000 ÷ 10.000 = 10 ha.", "verif": true}, {"id": "ibge-q18", "mat": "Matemática", "tema": "equação", "p": "Um supervisor distribuiu 156 endereços entre três recenseadores. Ana recebeu o dobro de Bruno, e Carla recebeu 12 a mais que Bruno. Quantos endereços Bruno recebeu?", "o": ["40", "44", "48", "32", "36"], "c": 4, "e": "B + 2B + (B + 12) = 156 → 4B = 144 → B = 36.", "verif": true}, {"id": "ibge-q19", "mat": "Matemática", "tema": "MMC", "p": "Um recenseador volta ao posto a cada 6 dias e outro a cada 8 dias. Se os dois estiveram no posto hoje, voltarão a se encontrar lá daqui a", "o": ["12 dias", "14 dias", "16 dias", "24 dias", "48 dias"], "c": 3, "e": "MMC(6, 8) = 24.", "verif": true}, {"id": "ibge-q20", "mat": "Matemática", "tema": "conversão", "p": "Um tanque de piscicultura tem 6 m de comprimento, 4 m de largura e 1,5 m de profundidade. Cheio, ele comporta", "o": ["36.000 L", "360.000 L", "36 L", "360 L", "3.600 L"], "c": 0, "e": "6 × 4 × 1,5 = 36 m³. 1 m³ = 1.000 L → 36.000 L.", "verif": true}, {"id": "ibge-q21", "mat": "Língua Portuguesa", "tema": "sentido", "p": "Em \"A coleta exige minúcia no registro de cada área\", a palavra minúcia pode ser substituída, sem mudança de sentido, por", "o": ["detalhamento", "economia", "brevidade", "descuido", "pressa"], "c": 0, "e": "Minúcia é cuidado com os detalhes. Na frase, detalhamento mantém o sentido.", "verif": true}, {"id": "ibge-q22", "mat": "Língua Portuguesa", "tema": "concordância", "p": "A frase que segue a norma-padrão é:", "o": ["Existe muitas propriedades no setor.", "Haviam muitos produtores no assentamento.", "Fazem dois meses que a coleta começou.", "Havia muitos produtores no assentamento.", "Houveram dúvidas sobre o descritivo."], "c": 3, "e": "Haver com sentido de existir e fazer indicando tempo ficam no singular. Existir concorda: \"Existem muitas propriedades\".", "verif": true}, {"id": "ibge-q23", "mat": "Língua Portuguesa", "tema": "regência", "p": "Está de acordo com a regência da norma-padrão:", "o": ["O recenseador assistiu ao treinamento presencial.", "Prefiro mais o mapa do que o GPS.", "Ele chegou no posto às 7h.", "O recenseador assistiu o treinamento presencial.", "Os candidatos obedeceram o edital."], "c": 0, "e": "Assistir, no sentido de ver, pede \"a\": assistiu ao treinamento. Obedecer ao edital; preferir algo a algo; chegar ao posto.", "verif": true}, {"id": "ibge-q24", "mat": "Língua Portuguesa", "tema": "vozes", "p": "Na voz passiva, a frase \"O recenseador preencheu os questionários\" fica:", "o": ["Os questionários preencheram o recenseador.", "Os questionários foram preenchidos pelo recenseador.", "O recenseador foi preenchido pelos questionários.", "Preencheu-se o recenseador.", "Os questionários preenchem-se pelo recenseador ontem."], "c": 1, "e": "O objeto (os questionários) vira sujeito; o verbo vai para ser + particípio, no mesmo tempo (foram preenchidos); o agente vem com \"por\".", "verif": true}];
+function semearIBGE(){ try{
+  if(window.__SEM_SEMENTE || CUSTOM || OWNER===false || PID()!=="caverna" || NOVO() || iso(today())>IBGE_2027.prova) return false;
+  M.semente=M.semente||{}; if(M.semente.ibge2027) return false; M.semente.ibge2027=iso(today());
+  const fs=M.frentes=M.frentes||[]; let f=fs.find(x=>!x.arquivada && (x.modelo==="ibge2027" || /recenseador/i.test(x.titulo||"") && /ibge/i.test((x.titulo||"")+(x.orgao||""))));
+  const base=JSON.parse(JSON.stringify(IBGE_2027));
+  if(f){ ["modelo","guia","agenda","corte","banca","prova","materias","marcos"].forEach(k=>{ if(k==="modelo"||k==="guia"||k==="agenda"||!f[k]||(Array.isArray(f[k])&&!f[k].length)) f[k]=base[k]; }); }
+  else { f={...base, criada:iso(today()), ok:{}}; fs.push(f); }
+  const st=prepSt({id:f.id}); const tem=new Set(st.pool.map(q=>q.id)); st.pool=st.pool.concat(IBGE_QS.filter(q=>!tem.has(q.id)).map(q=>({...q, o:q.o.slice()})));
+  saveMain(); return true; }catch(e){ return false; } }
 function frenteAtiva(){ const fs=frentes(); if(!fs.length) return null; const k=f=>{ const m=proxMarco(f); return m?diasAte(m.d):9999; }; return fs.slice().sort((a,b)=>k(a)-k(b))[0]; }
-function sessoesFrente(f){ return (M.livres||[]).filter(r=>r.frente===f.id); }
+function sessoesFrente(f){ const out=(M.livres||[]).filter(r=>r.frente===f.id);
+  Object.entries(DAYS).forEach(([d,v])=>Object.values(v.blocks||{}).forEach(r=>{ if(r && r.st==="feito" && r.frente===f.id) out.push({...r, d}); })); return out; }
 function passoHoje(f){
   const hoje=iso(today()), wd=today().getDay(), dias=(f.dias&&f.dias.length?f.dias:[1,2,3,4,5]).map(Number), ss=sessoesFrente(f);
   const mats=(f.materias||[]).filter(m=>m&&m.n); const roda=[]; mats.forEach(m=>{ for(let k=0;k<Math.max(1,Math.round((+m.questoes||5)/5));k++) roda.push(m); });
@@ -3664,8 +3788,9 @@ function vInicio(){
    estimativa honesta frente ao critério do edital, e conquistas por fatos reais.
    ==================================================================== */
 let PREP_BUSY=false, PREP_UI={id:null, j:null}, PREP_ERRO="";
+function alvoDe(f){ return {id:f.id, nome:f.titulo, banca:f.banca||"", corte:f.corte||"", mats:(f.materias||[]).filter(m=>m&&m.n).map(m=>({n:m.n, q:+m.questoes||0, t:m.topicos||[]}))}; }
 function alvoPrep(){ const f=frenteAtiva();
-  if(f) return {id:f.id, nome:f.titulo, banca:f.banca||"", corte:f.corte||"", mats:(f.materias||[]).filter(m=>m&&m.n).map(m=>({n:m.n, q:+m.questoes||0, t:m.topicos||[]}))};
+  if(f) return alvoDe(f);
   return {id:"proj:"+PID(), nome:P().nome, banca:"", corte:"", mats:Object.values(SUBJ).filter(s=>s&&s.n).slice(0,8).map(s=>({n:s.n, q:0, t:[]}))}; }
 function prepSt(a){ M.prep=M.prep||{}; const s=M.prep[a.id]=M.prep[a.id]||{}; s.pool=s.pool||[]; s.resp=s.resp||[]; return s; }
 function dominio(a){ const st=prepSt(a); return a.mats.map(m=>{ const rs=st.resp.filter(r=>r.mat===m.n).slice(-20), n=rs.length, ok=rs.filter(r=>r.ok).length; return {...m, cnt:n, ok, p:n?ok/n:null}; }); }
@@ -4014,6 +4139,8 @@ document.addEventListener("click", e => {
   else if(act==="conquistas") openConquistas();
   else if(act==="jogos") openJogos(a.dataset.j||"");
   else if(act==="cidade") openCidade();
+  else if(act==="hall-aula") entrarAula();
+  else if(act==="hall-amb") ambiente(a.dataset.k);
   else if(act==="painel"){ PAINEL=true; render(); window.scrollTo({top:0}); }
   else if(act==="inicio"){ PAINEL=false; SELDAY=null; render(); window.scrollTo({top:0}); }
   else if(act==="vida") openVida();
