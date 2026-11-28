@@ -653,3 +653,10 @@ Ficaram de fora, de propósito:
   - a troca de concorrência é anunciada;
   - os termos ficaram simples e a metodologia está em "Como calculamos".
 - **Testes:** 320/320.
+
+## 34. Nome do usuário e textos neutros (28/11/2026)
+
+- O nome padrão do app passou a ser o nome atual do usuário. Um perfil salvo com o nome antigo é renomeado automaticamente.
+- Textos da interface que estavam no feminino ficaram neutros ("seguir na disputa", "chegou a hora", "isso elimina da prova").
+- CLAUDE.md, as skills e o hook das referências pétreas passaram a dizer "o usuário".
+- Os dados da inscrição ficam fora do repositório (repositório público).

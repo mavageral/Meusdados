@@ -355,7 +355,7 @@ const CENARIOS = {
   },
   "Nuvem: a cópia mais recente vence, aviso sem nuvem e respostas do curso preservadas": async (p) => {
     const montar = (remAtual, comDb) => (args) => { const [remAtual, comDb] = args;
-      localStorage.setItem("cav:main", JSON.stringify({ inicio: "2026-10-30", profile: { name: "Edna", photo: "" }, xp: 99, erros: [{ id: "x1" }], atualizado: 2000 }));
+      localStorage.setItem("cav:main", JSON.stringify({ inicio: "2026-10-30", profile: { name: "Renner", photo: "" }, xp: 99, erros: [{ id: "x1" }], atualizado: 2000 }));
       localStorage.setItem("cav:d:2026-11-29", JSON.stringify({ blocks: { "05:30|Oração da manhã": { st: "feito" } }, final: null, atualizado: 2000 }));
       window.__sets = [];
       const doc = k => ({ get: async () => ({ exists: k === "main", data: () => ({ xp: 5, erros: [], inicio: "2026-10-30", atualizado: remAtual }) }), set: async v => { window.__sets.push(k); } });

@@ -645,7 +645,7 @@ details[open].glass>summary::after,details[open].cad-it>summary::after{transform
    DADOS FIXOS DO PROJETO CAVERNA
    ==================================================================== */
 let START = new Date(2026, 9, 16), TOTAL = 100;
-const NAME_DEFAULT = "Edna";
+const NAME_DEFAULT = "Renner";
 const nomeExib = () => M.profile.name || (OWNER===false ? "" : NAME_DEFAULT);
 const PROJ0 = {nome:"Projeto Caverna", lema:"Deus · Disciplina · Conhecimento · Propósito", meta:"Carreira em dados e crédito", inicio:"2026-10-16", dias:100};
 const P = () => Object.assign({id:"caverna"}, PROJ0, M.projeto||{});
@@ -716,7 +716,7 @@ const CERTS = [
 const CSTATUS = ["quero fazer","fazendo","concluído"];
 function certsHTML(){ const st=M.certs||{}, L=k=>levelOf(k).l;
   return `<section style="display:grid;gap:10px" aria-label="Certificados"><div class="sec-h"><h2>Certificados que abrem portas</h2><span class="mono muted" style="font-size:13px">${CERTS.filter(c=>st[c.id]==="concluído").length} de ${CERTS.length}</span></div>
-    <p class="muted" style="margin:0;font-size:14px">Ligados às suas matérias: cada um usa o que você já estuda na agenda. Os grátis primeiro; os pagos quando o treino mostrar que você está pronta.</p>
+    <p class="muted" style="margin:0;font-size:14px">Ligados às suas matérias: cada um usa o que você já estuda na agenda. Os grátis primeiro; os pagos quando o treino mostrar que chegou a hora.</p>
     <div class="list">${CERTS.map(c=>{ const s=st[c.id]||"", nv=SUBJ[c.mat]?`${SUBJ[c.mat].n}: nível ${["I","II","III","IV","V"][L(c.mat)]}`:"";
       return `<div class="item" style="display:grid;gap:6px;${s==="concluído"?"border-color:var(--ok)":""}"><div class="row" style="justify-content:space-between;gap:8px;align-items:flex-start"><span style="display:grid;gap:2px;min-width:0"><b>${esc(c.n)}</b><small>${esc(c.org)} · ${esc(c.custo)} · <span style="color:var(--c)">${esc(c.quando)}</span></small></span>
         <label class="sr" for="ct-${c.id}">Situação</label><select id="ct-${c.id}" class="inp" data-cert="${c.id}" style="width:auto;min-height:44px;padding:8px 10px;border-radius:12px;font-size:13px"><option value="">—</option>${CSTATUS.map(x=>`<option${x===s?" selected":""}>${x}</option>`).join("")}</select></div>
@@ -856,6 +856,7 @@ async function boot(){
     if(u){ try{ UID = await u.id(); }catch(e){} }
     try{ OWNER = (u && typeof u.isOwner==="function") ? !!(await Promise.resolve(u.isOwner())) : null; }catch(e){ OWNER=null; }
     if(OWNER!==null && M.donoCache!==OWNER){ M.donoCache=OWNER; lsSet("cav:main", M); }
+    if(M.profile && M.profile.name==="Edna") M.profile.name=NAME_DEFAULT;
     if(OWNER===false && M.profile.name===NAME_DEFAULT && !temProprio()) M.profile.name="";
     DB = await claude.use("db");
     const c = coll();
@@ -1777,7 +1778,7 @@ function openMiss(dstr,b){
   sheetHTML({title:`${b.l} · ${fmtH(b.a)}`, next:"Registrar", body:`
     <h2 class="q">O que aconteceu?<small>Sem culpa. O motivo ajuda a achar a causa em vez de empilhar tarefas.</small></h2>
     <div class="pick" data-pick="motivo">${MOTIVOS.map(m=>`<button data-v="${m}" aria-pressed="false">${m}</button>`).join("")}</div>
-    <label class="field"><span>Detalhe (opcional)</span><textarea class="ta" id="ms-t" placeholder="Ex.: a visita atrasou e cheguei cansada"></textarea></label>`});
+    <label class="field"><span>Detalhe (opcional)</span><textarea class="ta" id="ms-t" placeholder="Ex.: a visita atrasou e cheguei sem energia"></textarea></label>`});
 }
 
 /* ---------- registro de um bloco já feito ---------- */
@@ -3381,8 +3382,8 @@ document.addEventListener("click", e=>{ const b=e.target.closest(".cv-box [data-
 function chanceHTML(){ const c=chanceIBGE(); if(!c) return "";
   if(c.falta) return `<div class="glass pad cv-box" style="display:grid;gap:4px"><span class="tag">Chance de passar</span><small class="muted">Com pelo menos 10 respostas em cada matéria, o app calcula sua chance de passar. Faltam: ${esc(c.falta.join(", "))}.</small></div>`;
   return `<div class="glass pad cv-box" style="display:grid;gap:8px"><span class="tag">Chance de passar, pelos seus acertos</span>
-    <div class="row wrap" style="gap:14px"><span><b class="mono" style="font-size:30px">${pctTxt(c.vaga)}</b><br><small class="muted">de pegar a vaga (precisa de uns ${c.kVaga} pontos)</small></span><span><b class="mono" style="font-size:18px">${pctTxt(c.corte)}</b><br><small class="muted">de não ser eliminada (mínimo de 18 pontos e pelo menos 1 em cada matéria)</small></span><span><b class="mono" style="font-size:18px">${c.esp}</b><br><small class="muted">pontos esperados</small></span></div>
-    <div style="display:grid;gap:6px"><small class="muted">Escolha quantas pessoas disputam cada vaga na sua área. Não ser eliminada não garante a vaga: ela sai por ordem de nota. Quando a Cesgranrio divulgar a concorrência, escolha a mais próxima.</small><div class="row wrap" role="group" aria-label="Candidatos por vaga" style="gap:6px">${Object.keys(CV_CORTE).map(v=>`<button class="chip" data-cv="${v}" aria-pressed="${+v===c.cv}" style="min-height:44px;min-width:56px">${v} por vaga</button>`).join("")}</div></div>
+    <div class="row wrap" style="gap:14px"><span><b class="mono" style="font-size:30px">${pctTxt(c.vaga)}</b><br><small class="muted">de pegar a vaga (precisa de uns ${c.kVaga} pontos)</small></span><span><b class="mono" style="font-size:18px">${pctTxt(c.corte)}</b><br><small class="muted">de seguir na disputa (mínimo de 18 pontos e pelo menos 1 em cada matéria)</small></span><span><b class="mono" style="font-size:18px">${c.esp}</b><br><small class="muted">pontos esperados</small></span></div>
+    <div style="display:grid;gap:6px"><small class="muted">Escolha quantas pessoas disputam cada vaga na sua área. Passar do corte não garante a vaga: ela sai por ordem de nota. Quando a Cesgranrio divulgar a concorrência, escolha a mais próxima.</small><div class="row wrap" role="group" aria-label="Candidatos por vaga" style="gap:6px">${Object.keys(CV_CORTE).map(v=>`<button class="chip" data-cv="${v}" aria-pressed="${+v===c.cv}" style="min-height:44px;min-width:56px">${v} por vaga</button>`).join("")}</div></div>
     <small class="muted">Meta segura: 45 pontos (75%). Chance de chegar lá: ${pctTxt(c.meta)}.</small>
     <small class="muted">Use como bússola, não como garantia.</small><details><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center" class="muted">Como calculamos</summary><small class="muted">${c.ds.map(d=>`${d.n}: ${Math.round(d.ok/d.cnt*100)}% em ${d.cnt}`).join(" · ")}. Cálculo estatístico (beta-binomial) pelas suas últimas 40 respostas em cada matéria, contando só a primeira vez que você respondeu cada questão (repetir a mesma questão infla o acerto). A nota da vaga vem de uma simulação com hipóteses sobre os concorrentes. A prova real pode ser mais fácil ou mais difícil: use como bússola, não como garantia.</small></details></div>`; }
 const ESTRATEGIA=[
@@ -3432,7 +3433,7 @@ function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual)
         ${grupos.map(([g,a,z])=>`<section style="display:grid;gap:14px" aria-label="${esc(g)}"><span class="tag">${esc(g)} · questões ${a+1} a ${z}</span>${S.qs.slice(a,z).map((q,n)=>{ const b=B[q.key], k=a+n+1; return `<div class="tr-q${S.resp[q.key]!=null?" feita":""}"><p class="pp-p" id="smq${k}"><b class="mono" style="font-weight:500">${k}.</b> ${esc(b.p)}</p><div class="pp-os" role="group" aria-labelledby="smq${k}">${q.ord.map((j,x)=>`<button class="opt" data-sq="${esc(q.key)}" data-j="${j}" aria-pressed="${S.resp[q.key]===j}"><span class="k">${L[x]}</span><span>${esc(b.o[j])}</span></button>`).join("")}</div></div>`; }).join("")}</section>`).join("")}
         <button class="link" data-sm="novo" style="justify-self:start;min-height:44px">Descartar e montar outro simulado</button>`});
     } else { const R=F.R;
-      sheetHTML({title:"Resultado do simulado", next:"Concluir", body:`<h2 class="q" tabindex="-1">${R.pts} de 60<small>${R.passa?"Passaria do corte (18 e pelo menos 1 em cada matéria).":R.zero.length?`Zerou ${esc(R.zero.join(" e "))}: seria eliminada. Reforce já essa matéria.`:"Abaixo do corte de 18. Os erros foram para a Forja."} Meta para garantir a vaga: 45 ou mais.</small></h2>
+      sheetHTML({title:"Resultado do simulado", next:"Concluir", body:`<h2 class="q" tabindex="-1">${R.pts} de 60<small>${R.passa?"Passaria do corte (18 e pelo menos 1 em cada matéria).":R.zero.length?`Zerou ${esc(R.zero.join(" e "))}: isso elimina da prova. Reforce já essa matéria.`:"Abaixo do corte de 18. Os erros foram para a Forja."} Meta para garantir a vaga: 45 ou mais.</small></h2>
         ${Object.entries(R.por).map(([k,v])=>`<div class="pp-m"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(k)}</span><span class="mono" style="font-size:12px">${v.ok} de ${v.tot}</span></div><span class="b" aria-hidden="true"><i style="width:${Math.round(v.ok/v.tot*100)}%;${v.ok/v.tot<.5?"background:var(--warn)":""}"></i></span></div>`).join("")}
         <small class="muted">Tempo: ${R.dur} min. Em caso de empate, conta primeiro a nota de Técnicos e depois a de Matemática.</small>
         ${R.ajuste&&(R.ajuste.reforco.length||R.ajuste.antecipada.length)?`<div class="ponte" style="animation:none"><b style="font-weight:500">O app ajustou o seu estudo</b><p style="margin:0">${R.ajuste.reforco.length?`Voltaram para reforço: ${esc(R.ajuste.reforco.map(i=>licao(i).titulo).join("; "))}. `:""}${R.ajuste.antecipada.length?`Revisão antecipada para amanhã: ${esc(R.ajuste.antecipada.map(i=>licao(i).titulo).join("; "))}.`:""}</p></div>`:""}
@@ -3465,7 +3466,7 @@ function termometroHTML(compacto){ const A=aptidao(); if(!A) return ""; const [f
   return `<div class="glass pad apt" style="display:grid;gap:8px">
     <div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><span class="tag">Termômetro de aptidão</span><span class="mono" style="font-size:12px;color:${cor}">${fx}</span></div>
     <div class="row" style="gap:12px;align-items:center"><b class="mono apt-n">${A.apt}%</b><div style="flex:1;display:grid;gap:4px"><div class="apt-tubo" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${A.apt}" aria-valuetext="${A.apt}%, ${fx}" aria-label="Aptidão para a prova"><i style="width:${A.apt}%;background:${cor}"></i><em style="left:30%" aria-hidden="true"></em><em style="left:60%" aria-hidden="true"></em><em style="left:90%" aria-hidden="true"></em></div><div class="apt-leg" aria-hidden="true"><span style="left:30%">corte</span><span style="left:60%">meta</span><span style="left:90%">excelente</span></div></div></div>
-    <small class="muted">${A.naoVistas===Object.keys(DISC).reduce((n,d)=>n+(trilha()[d]||[]).length,0)?"Faça a 1ª aula para o termômetro começar a medir você. Por enquanto, ele supõe só o chute (1 em 5). ":""}Se a prova fosse hoje, você faria cerca de <b style="white-space:nowrap">${A.pts} de 60</b>. Precisa de 18 para não ser eliminada e de uns 45 para garantir a vaga.${tend}${compacto?"":` Acerto estimado: Técnicos ${Math.round(A.por.tec.media*100)}%, Matemática ${Math.round(A.por.mat.media*100)}%, Português ${Math.round(A.por.por.media*100)}%. ${A.naoVistas&&A.naoVistas<36?`${A.naoVistas} aulas você ainda não estudou; nelas o app supõe só o chute (1 em 5).`:""} 90% ou mais é excelente.`}</small>
+    <small class="muted">${A.naoVistas===Object.keys(DISC).reduce((n,d)=>n+(trilha()[d]||[]).length,0)?"Faça a 1ª aula para o termômetro começar a medir você. Por enquanto, ele supõe só o chute (1 em 5). ":""}Se a prova fosse hoje, você faria cerca de <b style="white-space:nowrap">${A.pts} de 60</b>. Precisa de 18 para seguir na disputa e de uns 45 para garantir a vaga.${tend}${compacto?"":` Acerto estimado: Técnicos ${Math.round(A.por.tec.media*100)}%, Matemática ${Math.round(A.por.mat.media*100)}%, Português ${Math.round(A.por.por.media*100)}%. ${A.naoVistas&&A.naoVistas<36?`${A.naoVistas} aulas você ainda não estudou; nelas o app supõe só o chute (1 em 5).`:""} 90% ou mais é excelente.`}</small>
     ${!compacto&&A.fracas.length?`<div style="display:grid;gap:6px"><span class="tag">Seus pontos fracos · onde mais rende estudar</span>${A.fracas.map(x=>`<button class="item" data-fraca="${x.L.id}"><span class="tr-dot" style="background:var(--warn)" aria-hidden="true"></span><span class="grow"><b style="font-weight:500">${esc(x.L.titulo)}</b><small>${esc(DISC[x.d].n)} · ${x.ok} de ${x.n} certas · pode render ${ganhoTxt(x.ganho)} na prova</small></span></button>`).join("")}</div>`:""}
   </div>`; }
 /* Depois de um simulado: aula aprovada com metade ou mais de erros volta para reforço; com algum erro, revisão amanhã. */

@@ -1,11 +1,11 @@
 ---
 name: meusdados-design
-description: Método de design do repositório Meusdados. Use SEMPRE que for criar, redesenhar ou revisar um site, app, landing page, dashboard ou tela neste repositório. Combina os 8 temas próprios (design-lab/tokens/temas.css, extraídos das referências da usuária) com as regras de UX/acessibilidade do ui-ux-pro-max, e termina com verificação visual por screenshot.
+description: Método de design do repositório Meusdados. Use SEMPRE que for criar, redesenhar ou revisar um site, app, landing page, dashboard ou tela neste repositório. Combina os 8 temas próprios (design-lab/tokens/temas.css, extraídos das referências do usuário) com as regras de UX/acessibilidade do ui-ux-pro-max, e termina com verificação visual por screenshot.
 ---
 
 # Método Meusdados de design
 
-A usuária reuniu referências (Figma, Sketch, mockups) e quer resultados de nível profissional. Este é o processo obrigatório. A conversa com ela é em **português do Brasil**.
+O usuário reuniu referências (Figma, Sketch, mockups) e quer resultados de nível profissional. Este é o processo obrigatório. A conversa com ela é em **português do Brasil**.
 
 ## 1. Briefing (no máximo 1 pergunta por vez, só o que faltar)
 Antes de desenhar, tenha clareza sobre:
@@ -17,7 +17,7 @@ Se der para inferir, não pergunte. Decida e diga o que decidiu.
 ## 2. Escolher a direção visual
 Leia `design-lab/catalogo.md` (seção "Mapa rápido") e escolha **um** dos temas:
 `neon-noir`, `sol-grafite`, `ardosia-coral`, `salvia-vidro`, `brasa`, `aurora`, `oceano`, `lavanda`, `cinema`.
-- Se a usuária mandar uma referência nova, compare com o catálogo e diga qual tema está mais perto. Se nenhum servir, crie um tema novo no mesmo formato em `temas.css` e registre a origem no catálogo.
+- Se o usuário mandar uma referência nova, compare com o catálogo e diga qual tema está mais perto. Se nenhum servir, crie um tema novo no mesmo formato em `temas.css` e registre a origem no catálogo.
 - A vitrine `design-lab/index.html` mostra todos os temas lado a lado.
 
 ## 3. Consultar o ui-ux-pro-max para as regras (não para a paleta)
@@ -27,7 +27,7 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<assunto>" --domain ux
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "<assunto>" --stack html-tailwind   # ou react, nextjs, flutter…
 ```
 Use dele: **padrão de página** (ordem das seções, CTA), **regras de UX**, **anti-padrões** e boas práticas da stack.
-As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. As referências da usuária têm prioridade.
+As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. As referências do usuário têm prioridade.
 
 ## 4. Construir
 - Importe `design-lab/tokens/temas.css`, depois `design-lab/componentes/componentes.css`, e aplique `data-tema="<tema>"` no elemento raiz.
@@ -51,5 +51,5 @@ As **cores e fontes vêm do tema escolhido**, não da sugestão genérica dele. 
 
 ## 7. Entregar
 - Commit no repositório com mensagem clara.
-- Para a usuária ver no celular: publique a página como Artifact, com os arquivos de apoio em `files`.
+- Para o usuário ver no celular: publique a página como Artifact, com os arquivos de apoio em `files`.
 - Termine com: o que foi feito, o link, e 1 ou 2 próximos passos possíveis.
