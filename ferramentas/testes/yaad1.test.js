@@ -263,7 +263,8 @@ const CENARIOS = {
   "Provas do IBFC 2026, frases da apostila e textos de interpretação": async (p) => {
     await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); TAB = "hoje"; PAINEL = false; render(); });
     await p.click('[data-act="provas-lista"]'); await p.waitForTimeout(80);
-    ok((await p.$$("[data-pl]")).length === 3, "a lista não mostra as 3 provas reais");
+    ok((await p.$$("[data-pl]")).length === 5 && await p.evaluate(() => [...document.querySelectorAll("[data-pl]")].map(b => b.dataset.pl).slice(0, 3).join() === "ibge2010,ibge2006,ibge2009"), "a lista não mostra as 5 provas com as de Recenseador primeiro");
+    ok(await p.evaluate(() => PROVAS_REAIS.ibge2006.gab.slice(30) === "BCCBCABEEEDAADEEABCD" && PROVAS_REAIS.ibge2009.gab.slice(30) === "DBACBAEEACBEACBEDDCA" && PROVAS_REAIS.ibge2006.gab[0] === "A" && PROVAS_REAIS.ibge2009.gab[9] === "D"), "gabarito oficial de 2006 ou 2009 fora do lugar");
     await p.click('[data-pl="ibfc2026acs"]'); await p.waitForTimeout(80);
     const a = await p.evaluate(() => ({ n: document.querySelectorAll("[data-pq]").length, so27: !!document.querySelector('[data-pr="so27"]'), pdf: !!document.querySelector('a[href*="163263"]'), anul: (document.querySelector("#shb").textContent.match(/Anulada/g) || []).length }));
     ok(a.n === 12 * 5 && !a.so27 && a.pdf && a.anul === 3, "cartão do IBFC ACS errado (12 questões válidas, 5 letras, 3 anuladas, PDF): " + JSON.stringify(a));

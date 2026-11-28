@@ -600,3 +600,14 @@ Ficaram de fora, de propósito:
   - **Estratégia:** 2 regras novas sobre os comandos em maiúscula e sobre responder pelo texto.
 - **Testes:** 316/316, com o cenário "Provas do IBFC 2026, frases da apostila e textos de interpretação".
 - **Bug achado pelo teste e corrigido:** as opções da frase mudavam de ordem depois da resposta.
+
+## 32. Foco no Recenseador: provas da Cesgranrio de 2006 e 2009 (28/11/2026)
+
+- **Pedido da Edna:** o foco da pesquisa é a prova de Recenseador do IBGE e os assuntos dela.
+- **Duas provas de Recenseador da Cesgranrio entraram no cartão-resposta:**
+  - **2006** (Censo Agropecuário 2006 e Contagem 2007), a mais parecida com a de 2027;
+  - **2009** (Censo Experimental).
+- **Gabaritos:** oficiais, conferidos no PDF da Cesgranrio.
+- **Formato no app:** cada questão vale 1 ponto, como em 2027. Na prova original, as questões tinham pesos diferentes.
+- **Ordem da lista:** primeiro as de Recenseador (2010, 2006, 2009). As do IBFC 2026 vêm depois, marcadas como "outro cargo do mesmo censo", só para treinar Técnicos.
+- **Testes:** 318/318.
