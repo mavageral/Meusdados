@@ -512,3 +512,14 @@ Ficaram de fora, de propósito:
     - os 88 títulos da apostila aparecem separados do texto;
     - o link do PDF tem 44 px de altura;
     - o destaque é aplicado antes do escape do texto, sem quebrar símbolos especiais.
+
+## 28. Banco de Conhecimentos Técnicos dobrado (madrugada de 29/11/2026)
+
+- **Autorização:** a dona autorizou seguir à noite com as melhores decisões.
+- **O que foi feito:**
+  - 70 questões novas de Técnicos (5 por aula), todas baseadas na apostila e com a página no comentário, em `conteudo/trilha-ibge/tecnicos-extra.json`.
+  - O 2º teste de uma aula técnica usa as 5 questões novas, para a pessoa não decorar as respostas; as tentativas seguintes alternam entre os dois conjuntos.
+  - As revisões sorteiam entre as 10 questões da aula.
+  - O simulado passa a usar um banco de 274 questões.
+  - O validador agora aceita 5 ou 10 questões por aula e recusa enunciados repetidos.
+- **Testes:** 286/286.

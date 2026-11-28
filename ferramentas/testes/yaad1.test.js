@@ -267,7 +267,7 @@ const CENARIOS = {
     ok(/Sede, setores/.test(await p.textContent("#shb")) && /apostila, p\. 61/.test(await p.textContent("#shb")), "aula t02 sem título ou sem página da apostila");
     ok(await p.evaluate(() => trEstado("t02") === "aprendendo"), "abrir a aula não marcou 'aprendendo'");
     await p.click('[data-sh="next"]');
-    for (const [i, c] of await p.evaluate(() => licao("t02").qs.map((q, i) => [i, q.c]))) await p.click(`[data-tq="${i}"][data-j="${c}"]`);
+    for (const [i, c] of await p.evaluate(() => FLOW.ordem.map(o => [o.i, licao("t02").qs[o.i].c]))) await p.click(`[data-tq="${i}"][data-j="${c}"]`);
     await p.click('[data-sh="next"]'); await p.waitForTimeout(80);
     const a = await p.evaluate(() => ({ st: trSt("t02"), txt: document.querySelector("#shb").textContent, resp: M.prep.ibge2027.resp.filter(r => r.id.startsWith("tr-t02-")).length, livre: (M.livres || []).some(r => r.trilha === "t02" && r.frente === "ibge2027") }));
     ok(a.st.st === "revisao" && a.st.prox === "2026-11-28" && /5 de 5/.test(a.txt), "aprovação com 5 de 5 não levou à revisão de amanhã: " + JSON.stringify(a.st));
@@ -275,6 +275,8 @@ const CENARIOS = {
     const b = await p.evaluate(() => { openLicao("t03"); FLOW.tela = "teste"; licao("t03").qs.forEach((q, i) => FLOW.resp[i] = (q.c + 1) % 5); FLOW.next(); return { st: trEstado("t03"), erros: M.erros.filter(e => e.id.startsWith("etr-t03-")).length }; });
     ok(b.st === "reforco" && b.erros === 5, "teste abaixo de 80% não foi para reforço e Forja: " + JSON.stringify(b));
     const c = await p.evaluate(() => { closeSheet(); M.trilha.t02.prox = iso(today()); const rv = revisoesTrilha().map(L => L.id); openLicao("t02", { rev: true }); const n = FLOW.ordem.length; FLOW.ordem.forEach(o => FLOW.resp[o.i] = licao("t02").qs[o.i].c); FLOW.next(); return { rv, n, st: trSt("t02") }; });
+    const segunda = await p.evaluate(() => { closeSheet(); openLicao("t03"); return FLOW.ordem.map(o => o.i).join(","); });
+    ok(segunda === "5,6,7,8,9", "o segundo teste de uma aula técnica não usou as 5 questões novas: " + segunda);
     ok(c.rv.includes("t02") && c.n === 3 && c.st.step === 1 && c.st.prox === "2026-11-30", "revisão não avançou para 3 dias: " + JSON.stringify(c));
     await p.clock.setFixedTime(new Date(2026, 10, 30, 8, 30));
     const d = await p.evaluate(() => { closeSheet(); const ibge = blocksOf(new Date(2026, 10, 30)).find(b => b.foco); return { prox: proximaLicao("tec").id, passo: passoHoje(frenteIBGE()).topico || "" }; });
@@ -283,7 +285,7 @@ const CENARIOS = {
   "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes": async (p) => {
     const a = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); openSimulado(); const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
       const mats = S.qs.map(q => B[q.key].mat); return { n: S.qs.length, tec: mats.filter(m => m === "Conhecimentos Técnicos").length, mat: mats.filter(m => m === "Matemática").length, por: mats.filter(m => m === "Língua Portuguesa").length, banco: bancoIBGE().length }; });
-    ok(a.n === 60 && a.tec === 30 && a.mat === 15 && a.por === 15 && a.banco === 204, "simulado fora do formato do edital: " + JSON.stringify(a));
+    ok(a.n === 60 && a.tec === 30 && a.mat === 15 && a.por === 15 && a.banco === 274, "simulado fora do formato do edital: " + JSON.stringify(a));
     const b = await p.evaluate(() => { const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
       S.qs.forEach((q, i) => S.resp[q.key] = i % 3 === 0 ? (B[q.key].c + 1) % 5 : B[q.key].c); FLOW.next();
       const h = M.simulado.hist.slice(-1)[0]; return { pts: h.pts, atual: M.simulado.atual, erros: M.erros.filter(e => e.id.startsWith("esim-")).length, marco: marcosDe(frenteIBGE()).find(m => /Simulado completo 1/.test(m.r)).ok, txt: document.querySelector("#shb").textContent }; });

@@ -15,6 +15,13 @@ def validar():
         for a in arqs:
             with open(os.path.join(PASTA, a), encoding="utf-8") as f:
                 dados[disc] += json.load(f)
+    extra_p = os.path.join(PASTA, "tecnicos-extra.json")
+    if os.path.exists(extra_p):
+        with open(extra_p, encoding="utf-8") as f: extra = json.load(f)
+        for L in dados["tec"]:
+            L["qs"] = L["qs"] + extra.get(L["id"], [])
+        sobra = set(extra) - {L["id"] for L in dados["tec"]}
+        if sobra: erros.append(f"questões extras para aulas inexistentes: {sobra}")
     for disc, ls in dados.items():
         for L in ls:
             i = L.get("id", "?")
@@ -25,7 +32,9 @@ def validar():
                 if not L.get(k): erros.append(f"{i}: falta {k}")
             if disc == "tec" and not L.get("pag"): erros.append(f"{i}: aula técnica sem página da apostila")
             qs = L.get("qs", [])
-            if len(qs) != 5: erros.append(f"{i}: {len(qs)} questões (esperado 5)")
+            if len(qs) not in (5, 10): erros.append(f"{i}: {len(qs)} questões (esperado 5 ou 10)")
+            vistos = [q.get("p", "").strip().lower() for q in qs]
+            if len(set(vistos)) != len(vistos): erros.append(f"{i}: enunciado repetido")
             for n, q in enumerate(qs, 1):
                 o = q.get("o", [])
                 if len(o) != 5: erros.append(f"{i} q{n}: {len(o)} alternativas")
