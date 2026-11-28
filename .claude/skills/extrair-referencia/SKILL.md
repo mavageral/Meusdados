@@ -1,6 +1,6 @@
 ---
 name: extrair-referencia
-description: Analisa uma referência de design enviada pela usuária (.fig, .sketch, .zip com esses arquivos, .ai/.eps com preview, ou imagem/print de app) e a registra no Design Lab, medindo cores, fontes e telas e decidindo se encaixa num tema existente ou vira um tema novo. Use sempre que ela mandar um arquivo ou imagem de design como inspiração.
+description: Analisa uma referência de design enviada pelo usuário (.fig, .sketch, .zip com esses arquivos, .ai/.eps com preview, ou imagem/print de app) e a registra no Design Lab, medindo cores, fontes e telas e decidindo se encaixa num tema existente ou vira um tema novo. Use sempre que ele mandar um arquivo ou imagem de design como inspiração.
 ---
 
 # Extrair referência para o Design Lab
@@ -41,5 +41,5 @@ Para cada referência, registre:
 3. Se criou tema: adicione-o ao array `temas` em `design-lab/index.html` (com conteúdo de exemplo coerente com o uso) e ao `FONTES` de `ferramentas/novo-projeto.py`. Depois republique a vitrine como Artifact.
 4. Commit: `Catálogo: adiciona <referência>`.
 
-## 6. Responder à usuária (em português)
+## 6. Responder ao usuário (em português)
 Em poucas linhas: o que a referência tem de especial, em qual tema ela entrou (ou qual tema novo nasceu) e para que tipo de projeto serve.
