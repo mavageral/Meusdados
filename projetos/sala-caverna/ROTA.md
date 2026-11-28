@@ -523,3 +523,9 @@ Ficaram de fora, de propósito:
   - O simulado passa a usar um banco de 274 questões.
   - O validador agora aceita 5 ou 10 questões por aula e recusa enunciados repetidos.
 - **Testes:** 286/286.
+- **Na sequência (mesma madrugada):** mais 55 questões de Matemática e 55 de Português, 5 por aula.
+  - As 49 contas de Matemática foram conferidas por script.
+  - Agora o curso tem 360 questões (10 por aula) e o simulado sorteia de um banco de 384.
+  - O validador pegou 2 enunciados repetidos em Português, que foram reescritos.
+  - O embutidor junta os extras de qualquer matéria.
+  - **Testes:** 286/286.

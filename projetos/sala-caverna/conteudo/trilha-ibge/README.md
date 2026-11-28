@@ -1,6 +1,6 @@
 # Curso da prova: Recenseador IBGE 2027
 
-São 36 aulas escritas para o Yaad1, com 250 questões comentadas. Cada aula técnica tem 10 questões: as 5 da aula e mais 5 de `tecnicos-extra.json`. O app mostra o curso em "Curso da prova", na aba Sala viva, e também o abre pelos blocos do IBGE na agenda.
+São 36 aulas escritas para o Yaad1, com 360 questões comentadas. Cada aula tem 10 questões: as 5 da aula e mais 5 de `tecnicos-extra.json`, `matematica-extra.json` ou `portugues-extra.json`. O app mostra o curso em "Curso da prova", na aba Sala viva, e também o abre pelos blocos do IBGE na agenda.
 
 ## Fontes
 
@@ -61,6 +61,6 @@ As regras são fixas e não dependem da IA:
 
 ## Banco de questões
 
-- **Conhecimentos Técnicos:** 10 questões por aula. O 1º teste usa as 5 primeiras, o 2º usa as 5 novas, e as tentativas seguintes continuam alternando.
+- **Todas as matérias:** 10 questões por aula. O 1º teste usa as 5 primeiras, o 2º usa as 5 novas, e as tentativas seguintes continuam alternando.
 - **Revisões:** sorteiam 3 questões entre todas as da aula.
-- **Simulado completo:** usa as 250 questões do curso e as 24 do guia, 274 no total.
+- **Simulado completo:** usa as 360 questões do curso e as 24 do guia, 384 no total.
