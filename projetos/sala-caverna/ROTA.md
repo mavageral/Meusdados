@@ -332,4 +332,6 @@ Ficaram de fora, de propósito:
 - **Faixa de 3 dias com texto miúdo:** é uma decisão anterior (escada de 3 dias, com o gesto de pinça para ampliar).
 - **Diário:** o calendário já diferencia os dias do projeto.
 
+**Revisor de UI:** nada grave. Foram aplicados os ajustes de foco (enunciado da questão ao abrir o treino), "Último dia: hoje" legível, botões da missão com 44 px, matéria fixa sem aparência de campo e "Apostila" já marcada.
+
 **Testes:** 202/202, com o cenário "UX: matéria fixa na frente, treino recolhido e último dia da missão".

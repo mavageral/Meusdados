@@ -228,7 +228,7 @@ const CENARIOS = {
   },
   "UX: matéria fixa na frente, treino recolhido e último dia da missão": async (p) => {
     const r = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const ibge = blocksOf(new Date(2026, 10, 30)).find(b => b.foco); openBlock("2026-11-30", bkey(ibge));
-      const sh = document.querySelector("#shb"); const out = { picker: !!sh.querySelector('[data-pick="mat"]'), chip: /Conhecimentos Técnicos\s*Recenseador IBGE 2027/.test(sh.textContent), larg: document.documentElement.scrollWidth <= innerWidth && SH.scrollWidth <= SH.clientWidth, apostila: !!sh.querySelector('[data-pick="fonte"] [data-v="Apostila"]'), plano: /já veio do seu plano/.test(sh.textContent) };
+      const sh = document.querySelector("#shb"); const out = { picker: !!sh.querySelector('[data-pick="mat"]'), chip: /Conhecimentos Técnicos\s*do seu plano · Recenseador IBGE 2027/.test(sh.textContent), larg: document.documentElement.scrollWidth <= innerWidth && SH.scrollWidth <= SH.clientWidth, apostila: !!sh.querySelector('[data-pick="fonte"] [data-v="Apostila"]'), plano: /já veio do seu plano/.test(sh.textContent) };
       closeSheet(); TAB = "hoje"; PAINEL = false; render(); out.recolhido = !document.querySelector(".prep .pp-p") && !!document.querySelector('[data-act="pq-abrir"]'); return out; });
     ok(!r.picker && r.chip && r.larg && r.apostila && r.plano, "estudo da frente ainda mostra a lista de matérias do Caverna: " + JSON.stringify(r));
     ok(r.recolhido, "a questão do treino abre sozinha no Início");
@@ -237,8 +237,8 @@ const CENARIOS = {
     await p.evaluate(() => { TAB = "estudar"; render(); }); await p.click('[data-k="treino"]'); await p.waitForTimeout(150);
     ok(await p.evaluate(() => TAB === "hoje" && !!document.querySelector(".prep .pp-p")), "Treino da prova na Sala viva não levou à questão");
     await p.clock.setFixedTime(new Date(2026, 10, 30, 9, 0)); await p.evaluate(() => render());
-    const m = await p.textContent(".missao .dd");
-    ok(/Hoje/.test(m) && /último dia/.test(m) && !(await p.$(".missao .gbar")), "missão no dia do prazo não diz Hoje: " + m);
+    const m = await p.textContent(".missao .mh");
+    ok(/Último dia: hoje/.test(m) && !(await p.$(".missao .gbar")), "missão no dia do prazo não diz Hoje: " + m);
   },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
