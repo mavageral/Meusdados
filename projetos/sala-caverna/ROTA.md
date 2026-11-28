@@ -529,3 +529,16 @@ Ficaram de fora, de propósito:
   - O validador pegou 2 enunciados repetidos em Português, que foram reescritos.
   - O embutidor junta os extras de qualquer matéria.
   - **Testes:** 286/286.
+- **Auditoria independente das 360 questões:** um revisor de conteúdo conferiu Técnicos contra a apostila, refez todas as contas de Matemática e checou Português pela norma tradicional.
+  - **1 erro, corrigido:** na t01, questão 0, havia mais de uma alternativa defensável; as alternativas D e E foram trocadas por condições exigidas de fato.
+  - **2 pontos discutíveis, ajustados:** a vírgula de vocativo na p06 e o "namorar com" na p01, agora explicado como regência da norma tradicional.
+  - **8 ajustes de texto, feitos:**
+    - área contínua no enunciado da t02;
+    - "sede dentro da fazenda" no exemplo da t02;
+    - complementos de geografia na t09 marcados como "fora da apostila";
+    - "segundo o edital" no comentário das 27.279 vagas (t12);
+    - ACS no exemplo do DMC travado (t12);
+    - "na qual" no lugar de "no qual" (t13);
+    - aviso sobre a frase literal das UFs na p. 32 (t13);
+    - comentários de Português revisados.
+  - Matemática não teve nenhum problema.
