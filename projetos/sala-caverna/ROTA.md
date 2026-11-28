@@ -304,3 +304,15 @@ A Edna reenviou o pedido original do Projeto Caverna. Na auditoria, item por ite
   - o bloco do IBGE abre o estudo da frente com o próximo tópico da matéria e conta como passo do dia da frente;
   - metas novas: inscrição, taxa e prova (meta de 36 de 60). A missão dá preferência à meta da frente quando há empate de urgência. Marcar o marco na frente conclui a meta.
 - **Testes:** 180/180, com os cenários "IBGE: frente, questões do guia, prioridade na agenda e metas" e "Sala viva no rodapé…".
+
+## 20. Sem Serasa 2027 (28/11/2026)
+
+- **Fato confirmado pela dona:** a inscrição na Serasa (prazo 04/11) não foi feita.
+- **O que mudou:**
+  - saem as metas "Inscrição na Serasa" e "Testes online da Serasa";
+  - o alvo central virou "Carreira em dados e crédito". O cartão do alvo conta os dias até a prova do IBGE, a primeira renda da rota;
+  - a linha do tempo do alvo agora tem inscrição e taxa do IBGE, painel de crédito v1, prova do IBGE e candidaturas em fevereiro;
+  - na Árvore, o ramo "Carreira" segue a nova rota;
+  - a Serasa salva nos dados passa para "não seguiu" e deixa de ser alvo (`semearSerasa`, uma vez só);
+  - o contexto do tutor foi atualizado.
+- **Testes:** 188/188, com o cenário "Sem Serasa: metas, alvo e vagas".

@@ -220,6 +220,12 @@ const CENARIOS = {
     const m = await p.evaluate(() => { closeSheet(); const f = frentes()[0]; f.ok[0] = true; return Math.round(goalProgress(GOALS.find(g => g.id === "ibge-insc")) * 100); });
     ok(m === 100, "marcar a inscrição na frente não concluiu a meta");
   },
+  "Sem Serasa: metas, alvo e vagas": async (p) => {
+    const r = await p.evaluate(() => { semearSerasa(); TAB = "hoje"; PAINEL = true; render(); const t1 = document.body.textContent; TAB = "evolucao"; EVOTAB = "metas"; render();
+      return { metas: metas().map(g => g.id), alvo: (M.vagas || []).some(v => v.alvo), txt: t1 + document.body.textContent }; });
+    ok(!r.metas.includes("testes") && !r.metas.includes("inscricao"), "metas da Serasa continuam");
+    ok(!r.alvo && !/Serasa Experian/.test(r.txt), "Serasa ainda aparece como alvo na tela");
+  },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
     await p.click('.tabbar [data-tab="estudar"]'); await p.waitForTimeout(200);
