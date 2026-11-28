@@ -376,3 +376,65 @@ Ficaram de fora, de propósito:
 - **Textos atualizados:** certificados, painel da ANBIMA, simulado e contexto do tutor.
 - **Revisor de UI:** não rodou, porque a mudança é só de texto e data, sem tela nova.
 - **Testes:** 222/222.
+
+## 24. Curso da prova: Recenseador IBGE 2027 (28/11/2026)
+
+- **Pedido:** a dona quer estudar tudo o que cai na prova dentro do Yaad1, com aulas criadas pelo próprio app e na ordem do mais difícil para o mais fácil (quadro "Projeto de Preparação Completa"). O método pedido: revisão, aula, exemplos, exercícios, questões no padrão da banca, correção, avaliação com meta de 80% e registro. As revisões ficam em 1, 3, 7, 15 e 30 dias. Não deve depender só de videoaulas nem de apostilas pagas.
+- **Estudo feito antes de escrever:**
+  - a apostila oficial inteira, inclusive as tabelas em imagem (páginas 33, 34, 43, 47, 54 e 55);
+  - o Anexo III do edital;
+  - a prova de 2010 com o gabarito conferido;
+  - os assuntos das provas do IBFC de 27/09/2026, que usaram a mesma apostila.
+- **O curso:**
+  - 36 aulas e 180 questões, em `conteudo/trilha-ibge/` (veja o README).
+  - Técnicos tem 14 aulas, com a página da apostila em cada regra. Matemática e Português têm 11 aulas cada.
+  - O curso é validado e embutido por `ferramentas/embutir-trilha.py`. O `checar-sintaxe.py` agora ignora blocos JSON.
+- **No app:**
+  - **`openTrilha()`:** mapa do curso, com o estado de cada aula (não iniciada, aprendendo, reforço, em revisão, dominada) e as revisões do dia em primeiro lugar.
+  - **`openLicao()`:** a aula mostra por que o assunto cai, explicação, exemplos com a resolução escondida, pegadinhas e resumo. Também tem as opções de ouvir, guardar o resumo no caderno e "explicar de outro jeito" (Claude, só a partir do texto da aula).
+  - **Teste e revisão:** 5 questões no teste, com as letras embaralhadas a cada tentativa, e 3 questões na revisão. A correção é comentada.
+  - **Regras:** com 80% ou mais, a aula vai para revisão. Ela fica dominada depois das revisões de 1, 3 e 7 dias. Erro vai para a Forja. As respostas entram em "Sua preparação".
+- **Ligações:**
+  - o bloco do IBGE na agenda abre primeiro a revisão vencida daquela matéria e, se não houver, a próxima aula; o bloco fica registrado;
+  - "Estudar agora" da frente abre a próxima aula;
+  - o passo de hoje mostra o título da próxima aula;
+  - na Sala viva, o ambiente "Curso da prova" substitui "Treino da prova", e o treino de questões fica dentro do curso;
+  - a frente e "Sua preparação" também têm atalhos para o curso.
+- **Testes:** 244/244, com o cenário novo "Curso da prova: 36 aulas, teste com 80%, Forja, revisões e agenda".
+
+## 25. Para passar: plano, simulado completo, chance estatística e estratégia (28/11/2026)
+
+- **Pedido:** deixar tudo pronto para o estudo, usando testes, matemática e estatística para tornar a aprovação o mais provável possível.
+- **Plano até a prova (`planoIBGE`):**
+  - as 36 aulas vão de 30/11 a 09/01, com simulados completos em 10/01, 17/01 e 24/01 e só revisão na última semana;
+  - o app mostra se você está em dia (com tolerância de 1 aula), adiantada ou atrasada, e qual ritmo semanal alcança o plano.
+- **Simulado completo (`openSimulado`):**
+  - 60 questões no formato do edital (30 de Técnicos, 15 de Matemática, 15 de Português), tiradas do banco de 204 (180 do curso e 24 do guia);
+  - prioriza as que você errou e as que não viu nos dois últimos simulados, e embaralha as letras;
+  - dá para parar e continuar;
+  - o resultado mostra nota por matéria, o corte, o aviso de matéria zerada, o desempate e a correção comentada;
+  - os erros vão para a Forja, as respostas para "Sua preparação", e o próximo marco "Simulado completo" é marcado sozinho.
+- **Chance de passar (`chanceIBGE`):**
+  - usa as últimas 40 respostas de cada matéria (exige pelo menos 10 em cada);
+  - o modelo é beta-binomial, que leva em conta a incerteza de ter poucas respostas;
+  - mostra a chance de passar do corte (18 pontos e pelo menos 1 por matéria), a chance de chegar à meta de 36 e os pontos esperados.
+- **Estratégia para o dia da prova:** 7 regras conferidas no edital e citadas pelo número do item:
+  - não deixar questão em branco, porque errar não desconta (10.7.1);
+  - começar por Técnicos, que é o critério de desempate (12.3.1);
+  - administrar o tempo (10.2);
+  - usar caneta e evitar rasura (10.7.2 e 10.20);
+  - não contar com calculadora;
+  - ficar pelo menos 2 horas e sair na última hora levando o caderno de questões (10.17 a 10.19);
+  - mirar além do corte, porque a vaga sai pela ordem de nota (11.1 e 12.5).
+- **Revisor de UI (curso):**
+  - **Grave, corrigido:** corrigir de novo depois de "Rever a aula" contava a mesma resposta outra vez e permitia virar "dominada" sem estudo. Agora a correção conta uma vez só e "Rever" zera as respostas.
+  - **Também corrigido:**
+    - a letra marcada agora é lida pelo leitor de tela, e os avisos são anunciados;
+    - o foco vai para o título ao abrir a aula;
+    - pede confirmação antes de sair de um teste já respondido;
+    - quando a aula é reprovada, o botão principal passa a ser "Refazer o teste";
+    - "Próxima aula" aparece no resultado;
+    - os itens que abrem ganharam uma seta;
+    - "dificuldade" substituiu "nível" (concordância).
+  - **Aceito sem mudança:** os blocos de texto longos das aulas.
+- **Testes:** 258/258, com o cenário "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes".

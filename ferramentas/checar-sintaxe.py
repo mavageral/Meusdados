@@ -4,7 +4,7 @@ Sai com código 1 e mostra o erro se o código não compila. Um erro desses deix
 import re, subprocess, sys, tempfile, os
 alvo = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), "..", "projetos", "sala-caverna", "index.html")
 html = open(alvo, encoding="utf-8").read()
-blocos = [m.group(1) for m in re.finditer(r"<script(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.S)]
+blocos = [m.group(1) for m in re.finditer(r"<script(?![^>]*\b(?:src=|type=\"application/json\"))[^>]*>(.*?)</script>", html, re.S)]
 ok = True
 for i, js in enumerate(blocos):
     with tempfile.NamedTemporaryFile("w", suffix=".js", delete=False, encoding="utf-8") as f:
