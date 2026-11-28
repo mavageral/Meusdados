@@ -1,86 +1,940 @@
 {
-"t01":[
-{"nv":1,"p":"É exemplo de aquicultura, segundo a apostila:","o":["a criação de rãs","a lavoura de arroz","a criação de abelhas","o plantio de eucalipto","a horta de alface"],"c":0,"e":"Aquicultura é a criação de peixes, camarões, moluscos, jacarés e rãs."},
-{"nv":2,"p":"A hidroponia, citada como 'cultivo em outros meios', é","o":["a criação de peixes em tanques escavados","o cultivo de plantas sem solo, com as raízes recebendo uma solução nutritiva","a irrigação por gotejamento em lavoura permanente","a coleta de frutos em matas nativas","o plantio de árvores para celulose"],"c":1,"e":"Hidroponia é cultivar plantas sem solo; as raízes recebem uma solução nutritiva balanceada (p. 56)."},
-{"nv":2,"p":"Um pesque-pague compra peixes já adultos de outro produtor e apenas os solta nos tanques para os clientes pescarem. Para o Censo Agro, ele","o":["é estabelecimento, por ser atividade aquícola","é estabelecimento, se tiver mais de um tanque","só é estabelecimento se estiver em área rural","não é estabelecimento, pois não há criação nem engorda de peixes","é estabelecimento, desde que venda mais de 100 kg por mês"],"c":3,"e":"O pesque-pague só é estabelecimento quando há criação e engorda; se apenas compra peixes criados, não é considerado (p. 56)."},
-{"nv":2,"p":"Seu Lauro cria canários e calopsitas no quintal e vende os filhotes para lojas. Segundo a apostila, essa atividade","o":["é pecuária de pequeno porte e deve ser recenseada","é recenseável apenas se ele tiver mais de 50 aves","não é considerada atividade agropecuária, pois é criação de pássaros","é aquicultura","deve ser recenseada como produção de subsistência"],"c":2,"e":"A criação de pássaros, cães e gatos não é considerada atividade agropecuária, florestal ou aquícola (p. 54)."},
-{"nv":3,"p":"Segundo a apostila, a produção de subsistência é aquela","o":["destinada exclusivamente ao lazer dos moradores","feita apenas em áreas maiores que um hectare","voltada às necessidades vitais do produtor e da família, podendo parte dela ser vendida ou trocada","que nunca pode ser vendida","destinada somente à exportação"],"c":2,"e":"Produção de subsistência atende às necessidades vitais do produtor e da família; eventualmente parte é vendida ou trocada (p. 53)."}],
-"t02":[
-{"nv":2,"p":"Um produtor explora duas áreas não contínuas localizadas TOTALMENTE em municípios diferentes. Segundo a apostila,","o":["forma um único estabelecimento, se usar as mesmas máquinas","cada área será considerada um estabelecimento diferente, e o Recenseador deve contatar o supervisor","a área menor deve ser ignorada","as duas áreas são registradas no município de residência do produtor","o produtor escolhe onde quer ser recenseado"],"c":1,"e":"Áreas totalmente em municípios distintos são estabelecimentos diferentes, com cuidado para não duplicar dados e contato com o supervisor (p. 62)."},
-{"nv":2,"p":"NÃO é uma das quatro condições para que áreas não contínuas formem um único estabelecimento:","o":["estar no mesmo município","usar os mesmos recursos técnicos","usar os mesmos recursos humanos","estar no mesmo setor censitário","estar subordinadas a uma única administração"],"c":3,"e":"As quatro condições são: mesmo município, mesmos recursos técnicos, mesmos recursos humanos e administração única. Não se exige o mesmo setor."},
-{"nv":2,"p":"Um produtor tem cinco áreas não contínuas (20 ha, 25 ha, 10 ha, 5 ha e 15 ha) que atendem às quatro condições. A área total do estabelecimento a ser informada é de","o":["25 ha","20 ha","60 ha","75 ha","5 ha"],"c":3,"e":"Atendidas as quatro condições, é um único estabelecimento: 20 + 25 + 10 + 5 + 15 = 75 ha (p. 64)."},
-{"nv":1,"p":"Um estabelecimento tem sede no município A e terras nos municípios A e B. A sua produção será computada","o":["metade em A e metade em B","inteira no município B","inteira no município A, onde está a sede","no município com maior população","no município escolhido pelo supervisor"],"c":2,"e":"No caso de setores de municípios distintos, toda a produção é computada no município onde estiver a sede (p. 61)."},
-{"nv":3,"p":"Um produtor explora duas áreas separadas no mesmo município, com os mesmos tratores e sob a sua própria administração, mas cada área tem a sua própria equipe de trabalhadores, que não se reveza com a outra. Para o Censo Agro, são","o":["um único estabelecimento, pois o município é o mesmo","um único estabelecimento, pois a administração é única","nenhum estabelecimento, até o supervisor decidir","um estabelecimento sem sede","dois estabelecimentos, pois falta a condição de usar os mesmos recursos humanos"],"c":4,"e":"As quatro condições precisam ser atendidas ao mesmo tempo. Sem o mesmo pessoal, cada área é um estabelecimento."}],
-"t03":[
-{"nv":1,"p":"Na apostila, 'sucessão' é definida como","o":["transmissão de direitos, obrigações e bens de uma pessoa para outra após a sua morte","divisão de bens, de herança ou de lucros","disputa judicial entre herdeiros","empréstimo de terra sem pagamento","venda da propriedade a terceiros"],"c":0,"e":"Sucessão é a transmissão de direitos, obrigações e bens após a morte; partilha é divisão; litígio é disputa judicial (p. 64 e 65)."},
-{"nv":2,"p":"Em um estabelecimento em partilha, cada herdeiro já ocupa e explora uma parte do terreno. Nesse caso,","o":["recenseia-se um único estabelecimento","cada parte será considerada um estabelecimento diferente","nenhuma parte é recenseada até o fim do inventário","só a parte do herdeiro mais velho é recenseada","recenseia-se como exploração comunitária"],"c":1,"e":"Quando cada herdeiro ocupa uma parte do terreno, cada parte é um estabelecimento diferente (p. 65)."},
-{"nv":2,"p":"Em um estabelecimento em sucessão, com consenso entre os herdeiros, as informações devem ser prestadas pelo","o":["herdeiro mais novo","vizinho mais próximo","inventariante, seu representante legal ou o condômino responsável","Agente Censitário Supervisor","cartório de registro de imóveis"],"c":2,"e":"Com consenso, é um único estabelecimento e as informações cabem ao inventariante, ao seu representante legal ou ao condômino responsável (p. 65)."},
-{"nv":2,"p":"Uma usina de açúcar tem como atividade principal a indústria, mas também cultiva cana-de-açúcar em terras próprias. O Censo Agro deverá investigar","o":["toda a usina, inclusive a produção de açúcar e os salários","somente a parte diretamente ligada à atividade agropecuária, como o canavial","nada, pois a atividade principal é industrial","apenas os trabalhadores da indústria","somente as vendas de açúcar"],"c":1,"e":"Em estabelecimentos de indústrias, investiga-se só a parte agropecuária; os dados industriais são coletados por outras pesquisas do IBGE (p. 59)."},
-{"nv":2,"p":"Numa área de exploração comunitária, as famílias trabalham juntas na mesma área e dividem a produção entre si. Deve-se preencher","o":["um questionário por família","um questionário por produto","nenhum questionário","apenas um questionário","um questionário por hectare"],"c":3,"e":"Na produção coletiva, preenche-se apenas um questionário; na produção individual, um por família (p. 66)."}],
-"t04":[
-{"nv":1,"p":"Na apostila, a data de referência indica","o":["o intervalo de tempo de toda a pesquisa","o momento específico a que determinadas informações devem se referir","o dia da entrevista","a data de nascimento do produtor","o prazo de entrega do questionário"],"c":1,"e":"Data de referência é um momento específico; período de referência é o intervalo considerado (p. 51)."},
-{"nv":2,"p":"Um extrativista coleta castanha-do-brasil em matas que não lhe pertencem e vende o que coleta. Para o Censo Agro, ele é","o":["não recenseável, por não ter terra","produtor sem área, e o questionário deve ser aplicado","recenseado no estabelecimento dono da mata","recenseado apenas se tiver documento da coleta","recenseado como indústria"],"c":1,"e":"O extrativista que coleta babaçu, castanha-do-brasil, látex ou lenha em matas é exemplo de produtor sem área (p. 57)."},
-{"nv":2,"p":"Um criador mantém cabras pastando em beira de estrada, sem área própria. Segundo a apostila, ele","o":["não deve ser recenseado","deve ser recenseado no estabelecimento mais próximo","só é recenseado se tiver mais de 20 animais","é produtor sem área, e a atividade deve ser registrada no questionário","deve ser encaminhado à prefeitura"],"c":3,"e":"O criador de animais em beira de estradas é exemplo de produtor sem área (p. 57)."},
-{"nv":2,"p":"No exemplo da apostila, com data de referência 31/12/2025 e período de 01/01/2025 a 31/12/2025, as informações coletadas devem considerar","o":["apenas o dia da entrevista","somente o mês de dezembro","a situação existente na data de referência e os acontecimentos ao longo de todo o ano de 2025","os últimos cinco anos","apenas a produção vendida"],"c":2,"e":"Considera-se a situação na data de referência e o que aconteceu durante todo o período de referência (p. 51)."},
-{"nv":3,"p":"Sobre os produtores sem área, é correto afirmar que","o":["nunca respondem ao questionário","só existem em áreas indígenas","devem ser recenseados pela prefeitura","precisam apresentar escritura","têm a atividade registrada e o questionário aplicado, mesmo sem área própria"],"c":4,"e":"Quando ocorre o caso de produtor sem área, registra-se a atividade e aplica-se o questionário (p. 57)."}],
-"t05":[
-{"nv":1,"p":"É exemplo de povo ou comunidade tradicional citado na apostila:","o":["quebradeiras de coco-babaçu","empresários do agronegócio","operários da indústria","moradores de condomínio urbano","servidores públicos"],"c":0,"e":"Entre os extrativistas citados como PCTs estão as quebradeiras de coco-babaçu, os raizeiros e as andirobeiras (p. 39)."},
-{"nv":2,"p":"Quando o setor censitário está total ou parcialmente em uma Área de Interesse Operacional (AIO),","o":["o Recenseador deve desenhar a AIO no DMC","a área aparece automaticamente no mapa digital e as perguntas específicas surgem automaticamente no DMC","a coleta é suspensa","a AIO substitui o setor censitário","o supervisor faz a coleta sozinho"],"c":1,"e":"A AIO é carregada automaticamente no mapa do setor e as entrevistas trazem perguntas específicas no DMC (p. 41)."},
-{"nv":2,"p":"Nas áreas de povos e comunidades tradicionais, as condições de acesso e deslocamento","o":["são decididas pelo Recenseador no dia da visita","dispensam qualquer contato prévio","são negociadas previamente com lideranças comunitárias, associações e órgãos parceiros do IBGE","dependem de autorização da polícia","são definidas pelo produtor de cada estabelecimento"],"c":2,"e":"O acesso é previamente negociado com lideranças, associações e órgãos parceiros, como assegura a Convenção 169 da OIT (p. 41 e 42)."},
-{"nv":2,"p":"Na classificação da apostila, as Unidades de Conservação estão na categoria de","o":["agrupamentos identificados pelo IBGE","Áreas de Interesse Operacional","setores a serem excluídos","territórios oficialmente reconhecidos pelo Estado brasileiro","estruturas não setorizadas"],"c":3,"e":"Territórios reconhecidos pelo Estado: Terras Indígenas e Territórios Quilombolas delimitados, Unidades de Conservação e parte dos Projetos de Assentamento (p. 40)."},
-{"nv":3,"p":"Segundo o Censo Demográfico 2022, citado na apostila, a proporção de indígenas residentes em terras indígenas que falam português no domicílio é de apenas","o":["17,1%","37,1%","50,0%","87,1%","67,1%"],"c":4,"e":"Apenas 67,1% falam português no domicílio, por isso muitas vezes é preciso guia institucional e/ou guia-intérprete (p. 42)."}],
-"t06":[
-{"nv":1,"p":"No aglomerado rural, os domicílios normalmente ficam distantes entre si","o":["não mais que 50 m","entre 500 m e 1 km","mais de 1 km","exatamente 100 m","mais de 5 km"],"c":0,"e":"Aglomerado rural: domicílios normalmente a não mais de 50 m entre si e separados da franja das cidades por mais de 1 km (p. 36)."},
-{"nv":2,"p":"O setor censitário do tipo unidade prisional é aquele relacionado a unidades que abrigam","o":["15 ou mais presos","mais de 50 presos permanentes","mais de 100 funcionários","qualquer número de presos","mais de 50 domicílios"],"c":1,"e":"Unidade prisional: mais de 50 presos permanentes (p. 37)."},
-{"nv":2,"p":"O termo ILPI, usado nos tipos de setores, substituiu o termo popular","o":["orfanato","convento","asilo","hospital","alojamento"],"c":2,"e":"ILPI (Instituição de Longa Permanência para Idosos) substituiu asilo; IACA substituiu orfanato (p. 38)."},
-{"nv":2,"p":"Os setores classificados como massa d'água","o":["são as principais áreas de coleta do Censo Agro","são grandes porções de água interiores ou costeiras que não são áreas de coleta, mas podem interferir na operação","só existem no litoral","devem ser percorridos de barco por todos os Recenseadores","são áreas de aquicultura obrigatória"],"c":1,"e":"Massa d'água: grandes porções de água que, embora não sejam áreas de coleta, podem interferir na operação (p. 36)."},
-{"nv":2,"p":"Segundo a apostila, os setores mais trabalhados no Censo Agro são","o":["áreas urbanas de alta densidade e núcleos urbanos","quartéis e unidades prisionais","massas d'água e setores com baixo patamar domiciliar","conventos e hospitais","áreas rurais de ocupação dispersa, aglomerados rurais e áreas urbanas de baixa densidade de edificações"],"c":4,"e":"São esses três os mais trabalhados; em algumas realidades pode haver estabelecimentos também em áreas urbanas de alta densidade (p. 35)."}],
-"t07":[
-{"nv":2,"p":"Num mapa de escala 1:50.000, dois pontos estão a 5 cm de distância. No terreno, a distância é de","o":["250 m","25 km","2,5 km","500 m","5 km"],"c":2,"e":"5 × 50.000 = 250.000 cm = 2.500 m = 2,5 km."},
-{"nv":2,"p":"Ao interpretar imagens de satélite, as rotatórias costumam aparecer como círculos. Essa observação se refere à característica de","o":["forma","cor","tamanho","localização","legenda"],"c":0,"e":"A apostila usa a rotatória como exemplo de forma característica (p. 26)."},
-{"nv":1,"p":"Na imagem de satélite, segundo a apostila, a pastagem aparece geralmente em","o":["tons de vermelho","tons de verde","tons de cinza","tons de branco","tons de laranja"],"c":1,"e":"Pastagem em tons de verde; telhados em vermelho, laranja, cinza ou branco (p. 27)."},
-{"nv":2,"p":"Medir com os dedos (polegar e indicador) a barra desenhada no mapa e transferir essa medida para o trecho desejado é uma forma de usar a","o":["legenda","rosa dos ventos","escala numérica","imagem de satélite","escala gráfica"],"c":4,"e":"É o uso rápido da escala gráfica para estimar distâncias em metros (p. 25)."},
-{"nv":3,"p":"A apostila recomenda observar sempre a escala do mapa antes de sair para o campo porque","o":["ela indica o nome do proprietário de cada estabelecimento","ela substitui o descritivo do setor","ajuda a calcular as distâncias e a planejar o deslocamento, principalmente a pé em setores rurais","permite alterar os limites do setor","define a data de referência"],"c":2,"e":"A escala ajuda a calcular distâncias e planejar o deslocamento, principalmente a pé (p. 26)."}],
-"t08":[
-{"nv":1,"p":"Segundo a apostila, o descritivo do setor censitário é composto de","o":["duas partes","três partes","quatro partes","cinco partes","seis partes"],"c":3,"e":"São cinco partes: ponto inicial e final; perímetro; setores a excluir; estruturas não setorizadas; acessibilidade e observações (p. 28)."},
-{"nv":2,"p":"Aglomerados rurais e localidades indígenas que não formam setor próprio por não terem o mínimo de domicílios devem ser","o":["recenseados normalmente no setor, com atenção especial ao acesso e à abordagem","excluídos da coleta","recenseados por outro Recenseador","registrados apenas pela imagem de satélite","visitados somente pelo supervisor"],"c":0,"e":"Estruturas territoriais não setorizadas são recenseadas normalmente no setor, com atenção ao acesso e à abordagem (p. 31)."},
-{"nv":2,"p":"Rios, córregos, igarapés, arroios e lagoas, quando usados como limite de setor, pertencem ao grupo dos","o":["caminhos e ramais","linhas secas","rodovias","corpos hídricos","setores a serem excluídos"],"c":3,"e":"Os setores rurais são frequentemente limitados por corpos hídricos (p. 29)."},
-{"nv":2,"p":"Sobre o perímetro do setor censitário, é correto afirmar que o Recenseador","o":["pode ajustá-lo quando encontrar uma estrada nova","pode incluir estabelecimentos do setor vizinho, se forem próximos","pode alterá-lo com autorização do produtor","não pode alterá-lo em hipótese alguma","deve redesenhá-lo no DMC no primeiro dia"],"c":3,"e":"O Recenseador não pode alterar o perímetro do setor em hipótese alguma (p. 30)."},
-{"nv":3,"p":"Um limite de setor descrito como 'faixa de 10 km ao norte do Rio X' é exemplo de","o":["linha seca","corpo hídrico","rodovia","ramal","massa d'água"],"c":0,"e":"Linhas secas podem representar uma distância fixa a partir de um elemento visível no terreno, como a faixa de 10 km ao norte de um rio (p. 29)."}],
-"t09":[
-{"nv":1,"p":"O GPS integrado ao DMC é usado, no Censo Agro, para obter","o":["a escala do mapa","as coordenadas geográficas (latitude e longitude)","o CEP do endereço","a área do estabelecimento em hectares","o nome do logradouro"],"c":1,"e":"As coordenadas são obtidas por receptor de satélites, como o GPS integrado ao DMC (p. 48)."},
-{"nv":2,"p":"O meridiano de Greenwich é a referência para medir a","o":["latitude","altitude","longitude","escala","temperatura"],"c":2,"e":"Longitude é o afastamento, em graus, do meridiano de Greenwich; latitude parte do Equador (p. 48)."},
-{"nv":2,"p":"Um ponto com latitude positiva está localizado","o":["ao sul do Equador","a oeste de Greenwich","a leste de Greenwich","ao norte do Equador","sobre o meridiano de Greenwich"],"c":3,"e":"Latitude negativa indica sul; positiva, norte do Equador."},
-{"nv":2,"p":"Conhecido o par de coordenadas de um ponto, a apostila indica que é possível visualizar ou planejar uma rota até ele usando","o":["o computador do Posto Censitário","o descritivo do setor","a legenda do mapa","o questionário","o crachá"],"c":0,"e":"Com o par de coordenadas, pode-se ver ou planejar a rota no computador do Posto Censitário (p. 49)."},
-{"nv":3,"p":"A coordenada do estabelecimento deve ser capturada, de preferência, na entrada da edificação da sede porque","o":["é onde o sinal de GPS é mais forte","é exigência do produtor","é o centro geométrico da propriedade","as coordenadas devem representar o ponto de acesso à unidade","é onde fica o maior plantio"],"c":3,"e":"Como componente do endereço, a coordenada deve representar o ponto de acesso à unidade (p. 49)."}],
-"t10":[
-{"nv":1,"p":"O CEP é um cadastro mantido pela","o":["Empresa Brasileira de Correios e Telégrafos (ECT), com oito dígitos","prefeitura, com cinco dígitos","IBGE, com dez dígitos","Receita Federal, com oito dígitos","Cesgranrio, com seis dígitos"],"c":0,"e":"CEP: cadastro de áreas de endereçamento mantido pelos Correios, com oito dígitos (p. 45)."},
-{"nv":2,"p":"Nas áreas rurais, o componente localidade indica","o":["o número da casa","o nome do proprietário","o nome dos povoados, lugarejos, assentamentos ou comunidades onde está o endereço","a distância até a cidade","o tipo de produção"],"c":2,"e":"Localidade é o nome do local ou região do endereço; na área rural, povoados, lugarejos, assentamentos, comunidades quilombolas etc. (p. 44)."},
-{"nv":2,"p":"Quando o logradouro não tem nome oficial, ou não é possível identificá-lo, deve-se registrar","o":["o nome do produtor mais antigo","'sem nome'","apenas as coordenadas","o nome localmente reconhecido","o número do setor"],"c":3,"e":"Sem nome oficial, usa-se prioritariamente o nome localmente reconhecido (p. 44)."},
-{"nv":2,"p":"É exemplo de complemento citado na apostila:","o":["gleba","CEP","Rodovia BR 101","Assentamento Chico Mendes","latitude"],"c":0,"e":"Exemplos de complemento: lote, gleba, casa, frente, fundos, sobrado, sala, andar (p. 46)."},
-{"nv":3,"p":"No endereço 'Fazenda Alegria, 25, em frente ao Açude do Cedro - Povoado de Areia Branca, 65056-000', o trecho 'em frente ao Açude do Cedro' corresponde ao","o":["complemento","modificador","logradouro","ponto de referência","CEP"],"c":3,"e":"É ponto de referência: descreve um ponto fixo e visível com expressão de posição ('em frente a') (p. 47)."}],
-"t11":[
-{"nv":1,"p":"No verso do Mapa do Setor Censitário consta","o":["a lista de produtores","a descrição dos seus limites","o questionário","o Manual do Recenseador","o geocódigo de todos os setores do estado"],"c":1,"e":"Em seu verso, o mapa do setor traz a descrição dos limites (p. 20)."},
-{"nv":2,"p":"No DMC, o Mapa do Setor Censitário digital é exibido","o":["como desenho feito à mão","como imagem obtida por satélites, com os limites do setor destacados em cor","apenas como texto","somente quando há internet","como planta da prefeitura"],"c":1,"e":"É uma imagem de satélite com a área do setor e o entorno, e os limites destacados em cor adequada (p. 21)."},
-{"nv":2,"p":"O Manual do Recenseador será utilizado","o":["apenas depois da coleta","somente pelo supervisor","durante o treinamento e como fonte de consulta no planejamento e na execução do trabalho de campo","apenas para preencher o questionário em papel","só em caso de recusa do informante"],"c":2,"e":"O Manual reúne conceitos, procedimentos e sistemas e serve no treinamento e como consulta em campo (p. 22)."},
-{"nv":2,"p":"Durante a coleta, o Recenseador encontra um estabelecimento agropecuário que não consta da lista de endereços. Ele deve","o":["ignorá-lo, pois a lista é definitiva","visitá-lo e incluí-lo na lista, atualizando o DMC","pedir que o produtor procure o IBGE","excluí-lo do setor","registrá-lo no setor vizinho"],"c":1,"e":"O Recenseador visita todos os estabelecimentos do setor, mesmo fora da lista, e inclui os novos (p. 21)."},
-{"nv":2,"p":"NÃO está entre os quesitos do questionário citados na apostila:","o":["identificação e características do estabelecimento","área do estabelecimento","distribuição do uso das terras","identificação e características da produção","renda dos vizinhos do estabelecimento"],"c":4,"e":"Os quesitos citados são de identificação, localização, produtor, produção, área e uso das terras. Renda de vizinhos não é quesito."}],
-"t12":[
-{"nv":1,"p":"O Agente Censitário de Informática (ACI) é responsável por","o":["supervisionar os Recenseadores","coordenar o posto","prestar apoio relativo à tecnologia da informação ao AOR","monitorar a qualidade nacional","realizar a coleta regular"],"c":2,"e":"O ACI presta apoio de tecnologia da informação ao AOR (p. 15)."},
-{"nv":2,"p":"O Agente Censitário Administrativo (ACA) tem como função","o":["apoiar as atividades administrativas executadas pelo AOR","supervisionar a qualidade dos dados","treinar os Recenseadores","coordenar o CNQ","gerir o posto censitário"],"c":0,"e":"O ACA apoia as atividades administrativas do AOR (p. 15)."},
-{"nv":2,"p":"O Centro Estadual de Qualidade (CEQ) é vinculado","o":["à Sede do IBGE","aos postos censitários","às prefeituras","às Superintendências Estaduais (SES)","ao Ministério da Agricultura"],"c":3,"e":"O CEQ é vinculado às SES e monitora a qualidade em nível estadual (p. 13)."},
-{"nv":1,"p":"Para o 12º Censo Agropecuário, a apostila informa que serão contratados cerca de","o":["5 mil temporários","27 mil temporários","36 mil temporários","50 mil temporários","100 mil temporários"],"c":2,"e":"A apostila fala em cerca de 36 mil profissionais temporários (p. 11). As 27.279 vagas do edital são só de Recenseador."},
-{"nv":2,"p":"O Agente Censitário de Qualidade (ACQ) é responsável por","o":["gerir o posto censitário","supervisionar a qualidade dos dados coletados e orientar ACS e Recenseadores na correção de erros","prestar apoio de informática","realizar a coleta regular em rotas diárias","contratar os Recenseadores"],"c":1,"e":"O ACQ supervisiona a qualidade e orienta ACS e Recenseadores na correção de erros ou em reforço de treinamento (p. 15)."}],
-"t13":[
-{"nv":1,"p":"Segundo a apostila, o número de distritos no Brasil é","o":["645","5.569","10.744","27","566"],"c":2,"e":"10.744 distritos; 5.569 municípios; 645 subdistritos (p. 33)."},
-{"nv":2,"p":"O geocódigo do setor censitário aparece","o":["só no crachá do Recenseador","no título e no rodapé dos mapas e no canto superior direito do Descritivo do Setor","apenas no questionário","no CEP do endereço","somente no sistema do posto"],"c":1,"e":"Além de constar no título e rodapé dos mapas, aparece no canto superior direito do Descritivo do Setor (p. 34)."},
-{"nv":2,"p":"O geocódigo reúne, nesta ordem, informações de","o":["município, estado, setor, distrito e subdistrito","setor, subdistrito, distrito, município e estado","CEP, logradouro e número","UF, município, distrito, subdistrito e número do setor","latitude, longitude e altitude"],"c":3,"e":"Estado, município, distrito, subdistrito e setor (p. 34)."},
-{"nv":2,"p":"Na figura da apostila sobre a divisão político-administrativa, Fernando de Noronha aparece como","o":["distrito estadual","município autônomo","estado","subdistrito do Recife","Distrito Federal"],"c":0,"e":"A figura mostra 26 estados, 1 Distrito Federal e 1 distrito estadual (Fernando de Noronha) (p. 33)."},
-{"nv":3,"p":"Segundo a apostila, registros de endereços de estabelecimentos e entrevistas NÃO devem ser feitos","o":["em áreas rurais","em setores com aglomerados","fora da área no qual o Recenseador foi designado","em dias de chuva","em municípios com distrito único"],"c":2,"e":"Os limites do setor delimitam a área de coleta; não se registra nada fora da área designada (p. 33)."}],
-"t14":[
-{"nv":1,"p":"O primeiro Censo Agropecuário do Brasil foi realizado em","o":["1872","1920","1936","1940","1975"],"c":1,"e":"Primeiro Censo Agropecuário: 1920. O IBGE foi fundado em 1936."},
-{"nv":2,"p":"Sobre o Censo Agropecuário de 1990, a apostila informa que","o":["foi o primeiro feito com DMC","foi realizado por amostra","não foi possível a sua execução, sendo realizado somente em 1996","foi feito em conjunto com o Censo Demográfico","teve coleta só em áreas urbanas"],"c":2,"e":"Em 1990 não foi possível a execução; foi realizado somente em 1996 (p. 8)."},
-{"nv":2,"p":"A concepção do Censo Agro leva em conta as recomendações do Programa Mundial de Censos Agropecuários da","o":["OIT","OMS","UNESCO","FAO","OMC"],"c":3,"e":"A FAO (Organização das Nações Unidas para Alimentação e Agricultura) (p. 10)."},
-{"nv":2,"p":"Entre os objetivos do 12º Censo Agro citados na apostila está","o":["estruturar um cadastro de estabelecimentos agropecuários para a implementação de pesquisas amostrais","cobrar impostos dos produtores","fiscalizar o uso de agrotóxicos","emitir títulos de propriedade","definir o preço mínimo dos produtos"],"c":0,"e":"Um dos objetivos é estruturar um cadastro de estabelecimentos para pesquisas amostrais (p. 9)."},
-{"nv":2,"p":"A missão institucional do IBGE, segundo a apostila, é","o":["fiscalizar a produção agropecuária","arrecadar tributos sobre a terra","retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania","conceder crédito aos produtores rurais","organizar as eleições"],"c":2,"e":"Missão: retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania (p. 4)."}]
+"t01": [
+{
+"nv": 1,
+"p": "É exemplo de aquicultura, segundo a apostila:",
+"o": [
+"a criação de rãs",
+"a lavoura de arroz",
+"a criação de abelhas",
+"o plantio de eucalipto",
+"a horta de alface"
+],
+"c": 0,
+"e": "Aquicultura é a criação de peixes, camarões, moluscos, jacarés e rãs."
+},
+{
+"nv": 2,
+"p": "A hidroponia, citada como 'cultivo em outros meios', é",
+"o": [
+"a criação de peixes em tanques escavados",
+"o cultivo de plantas sem solo, com as raízes recebendo uma solução nutritiva",
+"a irrigação por gotejamento em lavoura permanente",
+"a coleta de frutos em matas nativas",
+"o plantio de árvores para celulose"
+],
+"c": 1,
+"e": "Hidroponia é cultivar plantas sem solo; as raízes recebem uma solução nutritiva balanceada (p. 56)."
+},
+{
+"nv": 2,
+"p": "Um pesque-pague compra peixes já adultos de outro produtor e apenas os solta nos tanques para os clientes pescarem. Para o Censo Agro, ele",
+"o": [
+"é estabelecimento, por ser atividade aquícola",
+"é estabelecimento, se tiver mais de um tanque",
+"só é estabelecimento se estiver em área rural",
+"não é estabelecimento, pois não há criação nem engorda de peixes",
+"é estabelecimento, desde que venda mais de 100 kg por mês"
+],
+"c": 3,
+"e": "O pesque-pague só é estabelecimento quando há criação e engorda; se apenas compra peixes criados, não é considerado (p. 56)."
+},
+{
+"nv": 2,
+"p": "Seu Lauro cria canários e calopsitas no quintal e vende os filhotes para lojas. Segundo a apostila, essa atividade",
+"o": [
+"é pecuária de pequeno porte e deve ser recenseada",
+"é recenseável apenas se ele tiver mais de 50 aves",
+"não é considerada atividade agropecuária, pois é criação de pássaros",
+"é aquicultura",
+"deve ser recenseada como produção de subsistência"
+],
+"c": 2,
+"e": "A criação de pássaros, cães e gatos não é considerada atividade agropecuária, florestal ou aquícola (p. 54)."
+},
+{
+"nv": 3,
+"p": "Segundo a apostila, a produção de subsistência é aquela",
+"o": [
+"destinada exclusivamente ao lazer dos moradores",
+"feita apenas em áreas maiores que um hectare",
+"voltada às necessidades vitais do produtor e da família, podendo parte dela ser vendida ou trocada",
+"que nunca pode ser vendida",
+"destinada somente à exportação"
+],
+"c": 2,
+"e": "Produção de subsistência atende às necessidades vitais do produtor e da família; eventualmente parte é vendida ou trocada (p. 53)."
+}
+],
+"t02": [
+{
+"nv": 2,
+"p": "Um produtor explora duas áreas não contínuas localizadas TOTALMENTE em municípios diferentes. Segundo a apostila,",
+"o": [
+"forma um único estabelecimento, se usar as mesmas máquinas",
+"cada área será considerada um estabelecimento diferente, e o Recenseador deve contatar o supervisor",
+"a área menor deve ser ignorada",
+"as duas áreas são registradas no município de residência do produtor",
+"o produtor escolhe onde quer ser recenseado"
+],
+"c": 1,
+"e": "Áreas totalmente em municípios distintos são estabelecimentos diferentes, com cuidado para não duplicar dados e contato com o supervisor (p. 62)."
+},
+{
+"nv": 2,
+"p": "NÃO é uma das quatro condições para que áreas não contínuas formem um único estabelecimento:",
+"o": [
+"estar no mesmo município",
+"usar os mesmos recursos técnicos",
+"usar os mesmos recursos humanos",
+"estar no mesmo setor censitário",
+"estar subordinadas a uma única administração"
+],
+"c": 3,
+"e": "As quatro condições são: mesmo município, mesmos recursos técnicos, mesmos recursos humanos e administração única. Não se exige o mesmo setor."
+},
+{
+"nv": 2,
+"p": "Um produtor tem cinco áreas não contínuas (20 ha, 25 ha, 10 ha, 5 ha e 15 ha) que atendem às quatro condições. A área total do estabelecimento a ser informada é de",
+"o": [
+"25 ha",
+"20 ha",
+"60 ha",
+"75 ha",
+"5 ha"
+],
+"c": 3,
+"e": "Atendidas as quatro condições, é um único estabelecimento: 20 + 25 + 10 + 5 + 15 = 75 ha (p. 64)."
+},
+{
+"nv": 1,
+"p": "Um estabelecimento de área contínua, com sede no município A, estende-se pelos municípios A e B. A sua produção será computada",
+"o": [
+"metade em A e metade em B",
+"inteira no município B",
+"inteira no município A, onde está a sede",
+"no município com maior população",
+"no município escolhido pelo supervisor"
+],
+"c": 2,
+"e": "No caso de setores de municípios distintos, toda a produção é computada no município onde estiver a sede (p. 61)."
+},
+{
+"nv": 3,
+"p": "Um produtor explora duas áreas separadas no mesmo município, com os mesmos tratores e sob a sua própria administração, mas cada área tem a sua própria equipe de trabalhadores, que não se reveza com a outra. Para o Censo Agro, são",
+"o": [
+"um único estabelecimento, pois o município é o mesmo",
+"um único estabelecimento, pois a administração é única",
+"nenhum estabelecimento, até o supervisor decidir",
+"um estabelecimento sem sede",
+"dois estabelecimentos, pois falta a condição de usar os mesmos recursos humanos"
+],
+"c": 4,
+"e": "As quatro condições precisam ser atendidas ao mesmo tempo. Sem o mesmo pessoal, cada área é um estabelecimento."
+}
+],
+"t03": [
+{
+"nv": 1,
+"p": "Na apostila, 'sucessão' é definida como",
+"o": [
+"transmissão de direitos, obrigações e bens de uma pessoa para outra após a sua morte",
+"divisão de bens, de herança ou de lucros",
+"disputa judicial entre herdeiros",
+"empréstimo de terra sem pagamento",
+"venda da propriedade a terceiros"
+],
+"c": 0,
+"e": "Sucessão é a transmissão de direitos, obrigações e bens após a morte; partilha é divisão; litígio é disputa judicial (p. 64 e 65)."
+},
+{
+"nv": 2,
+"p": "Em um estabelecimento em partilha, cada herdeiro já ocupa e explora uma parte do terreno. Nesse caso,",
+"o": [
+"recenseia-se um único estabelecimento",
+"cada parte será considerada um estabelecimento diferente",
+"nenhuma parte é recenseada até o fim do inventário",
+"só a parte do herdeiro mais velho é recenseada",
+"recenseia-se como exploração comunitária"
+],
+"c": 1,
+"e": "Quando cada herdeiro ocupa uma parte do terreno, cada parte é um estabelecimento diferente (p. 65)."
+},
+{
+"nv": 2,
+"p": "Em um estabelecimento em sucessão, com consenso entre os herdeiros, as informações devem ser prestadas pelo",
+"o": [
+"herdeiro mais novo",
+"vizinho mais próximo",
+"inventariante, seu representante legal ou o condômino responsável",
+"Agente Censitário Supervisor",
+"cartório de registro de imóveis"
+],
+"c": 2,
+"e": "Com consenso, é um único estabelecimento e as informações cabem ao inventariante, ao seu representante legal ou ao condômino responsável (p. 65)."
+},
+{
+"nv": 2,
+"p": "Uma usina de açúcar tem como atividade principal a indústria, mas também cultiva cana-de-açúcar em terras próprias. O Censo Agro deverá investigar",
+"o": [
+"toda a usina, inclusive a produção de açúcar e os salários",
+"somente a parte diretamente ligada à atividade agropecuária, como o canavial",
+"nada, pois a atividade principal é industrial",
+"apenas os trabalhadores da indústria",
+"somente as vendas de açúcar"
+],
+"c": 1,
+"e": "Em estabelecimentos de indústrias, investiga-se só a parte agropecuária; os dados industriais são coletados por outras pesquisas do IBGE (p. 59)."
+},
+{
+"nv": 2,
+"p": "Numa área de exploração comunitária, as famílias trabalham juntas na mesma área e dividem a produção entre si. Deve-se preencher",
+"o": [
+"um questionário por família",
+"um questionário por produto",
+"nenhum questionário",
+"apenas um questionário",
+"um questionário por hectare"
+],
+"c": 3,
+"e": "Na produção coletiva, preenche-se apenas um questionário; na produção individual, um por família (p. 66)."
+}
+],
+"t04": [
+{
+"nv": 1,
+"p": "Na apostila, a data de referência indica",
+"o": [
+"o intervalo de tempo de toda a pesquisa",
+"o momento específico a que determinadas informações devem se referir",
+"o dia da entrevista",
+"a data de nascimento do produtor",
+"o prazo de entrega do questionário"
+],
+"c": 1,
+"e": "Data de referência é um momento específico; período de referência é o intervalo considerado (p. 51)."
+},
+{
+"nv": 2,
+"p": "Um extrativista coleta castanha-do-brasil em matas que não lhe pertencem e vende o que coleta. Para o Censo Agro, ele é",
+"o": [
+"não recenseável, por não ter terra",
+"produtor sem área, e o questionário deve ser aplicado",
+"recenseado no estabelecimento dono da mata",
+"recenseado apenas se tiver documento da coleta",
+"recenseado como indústria"
+],
+"c": 1,
+"e": "O extrativista que coleta babaçu, castanha-do-brasil, látex ou lenha em matas é exemplo de produtor sem área (p. 57)."
+},
+{
+"nv": 2,
+"p": "Um criador mantém cabras pastando em beira de estrada, sem área própria. Segundo a apostila, ele",
+"o": [
+"não deve ser recenseado",
+"deve ser recenseado no estabelecimento mais próximo",
+"só é recenseado se tiver mais de 20 animais",
+"é produtor sem área, e a atividade deve ser registrada no questionário",
+"deve ser encaminhado à prefeitura"
+],
+"c": 3,
+"e": "O criador de animais em beira de estradas é exemplo de produtor sem área (p. 57)."
+},
+{
+"nv": 2,
+"p": "No exemplo da apostila, com data de referência 31/12/2025 e período de 01/01/2025 a 31/12/2025, as informações coletadas devem considerar",
+"o": [
+"apenas o dia da entrevista",
+"somente o mês de dezembro",
+"a situação existente na data de referência e os acontecimentos ao longo de todo o ano de 2025",
+"os últimos cinco anos",
+"apenas a produção vendida"
+],
+"c": 2,
+"e": "Considera-se a situação na data de referência e o que aconteceu durante todo o período de referência (p. 51)."
+},
+{
+"nv": 3,
+"p": "Sobre os produtores sem área, é correto afirmar que",
+"o": [
+"nunca respondem ao questionário",
+"só existem em áreas indígenas",
+"devem ser recenseados pela prefeitura",
+"precisam apresentar escritura",
+"têm a atividade registrada e o questionário aplicado, mesmo sem área própria"
+],
+"c": 4,
+"e": "Quando ocorre o caso de produtor sem área, registra-se a atividade e aplica-se o questionário (p. 57)."
+}
+],
+"t05": [
+{
+"nv": 1,
+"p": "É exemplo de povo ou comunidade tradicional citado na apostila:",
+"o": [
+"quebradeiras de coco-babaçu",
+"empresários do agronegócio",
+"operários da indústria",
+"moradores de condomínio urbano",
+"servidores públicos"
+],
+"c": 0,
+"e": "Entre os extrativistas citados como PCTs estão as quebradeiras de coco-babaçu, os raizeiros e as andirobeiras (p. 39)."
+},
+{
+"nv": 2,
+"p": "Quando o setor censitário está total ou parcialmente em uma Área de Interesse Operacional (AIO),",
+"o": [
+"o Recenseador deve desenhar a AIO no DMC",
+"a área aparece automaticamente no mapa digital e as perguntas específicas surgem automaticamente no DMC",
+"a coleta é suspensa",
+"a AIO substitui o setor censitário",
+"o supervisor faz a coleta sozinho"
+],
+"c": 1,
+"e": "A AIO é carregada automaticamente no mapa do setor e as entrevistas trazem perguntas específicas no DMC (p. 41)."
+},
+{
+"nv": 2,
+"p": "Nas áreas de povos e comunidades tradicionais, as condições de acesso e deslocamento",
+"o": [
+"são decididas pelo Recenseador no dia da visita",
+"dispensam qualquer contato prévio",
+"são negociadas previamente com lideranças comunitárias, associações e órgãos parceiros do IBGE",
+"dependem de autorização da polícia",
+"são definidas pelo produtor de cada estabelecimento"
+],
+"c": 2,
+"e": "O acesso é previamente negociado com lideranças, associações e órgãos parceiros, como assegura a Convenção 169 da OIT (p. 41 e 42)."
+},
+{
+"nv": 2,
+"p": "Na classificação da apostila, as Unidades de Conservação estão na categoria de",
+"o": [
+"agrupamentos identificados pelo IBGE",
+"Áreas de Interesse Operacional",
+"setores a serem excluídos",
+"territórios oficialmente reconhecidos pelo Estado brasileiro",
+"estruturas não setorizadas"
+],
+"c": 3,
+"e": "Territórios reconhecidos pelo Estado: Terras Indígenas e Territórios Quilombolas delimitados, Unidades de Conservação e parte dos Projetos de Assentamento (p. 40)."
+},
+{
+"nv": 3,
+"p": "Segundo o Censo Demográfico 2022, citado na apostila, a proporção de indígenas residentes em terras indígenas que falam português no domicílio é de apenas",
+"o": [
+"17,1%",
+"37,1%",
+"50,0%",
+"87,1%",
+"67,1%"
+],
+"c": 4,
+"e": "Apenas 67,1% falam português no domicílio, por isso muitas vezes é preciso guia institucional e/ou guia-intérprete (p. 42)."
+}
+],
+"t06": [
+{
+"nv": 1,
+"p": "No aglomerado rural, os domicílios normalmente ficam distantes entre si",
+"o": [
+"não mais que 50 m",
+"entre 500 m e 1 km",
+"mais de 1 km",
+"exatamente 100 m",
+"mais de 5 km"
+],
+"c": 0,
+"e": "Aglomerado rural: domicílios normalmente a não mais de 50 m entre si e separados da franja das cidades por mais de 1 km (p. 36)."
+},
+{
+"nv": 2,
+"p": "O setor censitário do tipo unidade prisional é aquele relacionado a unidades que abrigam",
+"o": [
+"15 ou mais presos",
+"mais de 50 presos permanentes",
+"mais de 100 funcionários",
+"qualquer número de presos",
+"mais de 50 domicílios"
+],
+"c": 1,
+"e": "Unidade prisional: mais de 50 presos permanentes (p. 37)."
+},
+{
+"nv": 2,
+"p": "O termo ILPI, usado nos tipos de setores, substituiu o termo popular",
+"o": [
+"orfanato",
+"convento",
+"asilo",
+"hospital",
+"alojamento"
+],
+"c": 2,
+"e": "ILPI (Instituição de Longa Permanência para Idosos) substituiu asilo; IACA substituiu orfanato (p. 38)."
+},
+{
+"nv": 2,
+"p": "Os setores classificados como massa d'água",
+"o": [
+"são as principais áreas de coleta do Censo Agro",
+"são grandes porções de água interiores ou costeiras que não são áreas de coleta, mas podem interferir na operação",
+"só existem no litoral",
+"devem ser percorridos de barco por todos os Recenseadores",
+"são áreas de aquicultura obrigatória"
+],
+"c": 1,
+"e": "Massa d'água: grandes porções de água que, embora não sejam áreas de coleta, podem interferir na operação (p. 36)."
+},
+{
+"nv": 2,
+"p": "Segundo a apostila, os setores mais trabalhados no Censo Agro são",
+"o": [
+"áreas urbanas de alta densidade e núcleos urbanos",
+"quartéis e unidades prisionais",
+"massas d'água e setores com baixo patamar domiciliar",
+"conventos e hospitais",
+"áreas rurais de ocupação dispersa, aglomerados rurais e áreas urbanas de baixa densidade de edificações"
+],
+"c": 4,
+"e": "São esses três os mais trabalhados; em algumas realidades pode haver estabelecimentos também em áreas urbanas de alta densidade (p. 35)."
+}
+],
+"t07": [
+{
+"nv": 2,
+"p": "Num mapa de escala 1:50.000, dois pontos estão a 5 cm de distância. No terreno, a distância é de",
+"o": [
+"250 m",
+"25 km",
+"2,5 km",
+"500 m",
+"5 km"
+],
+"c": 2,
+"e": "5 × 50.000 = 250.000 cm = 2.500 m = 2,5 km."
+},
+{
+"nv": 2,
+"p": "Ao interpretar imagens de satélite, as rotatórias costumam aparecer como círculos. Essa observação se refere à característica de",
+"o": [
+"forma",
+"cor",
+"tamanho",
+"localização",
+"legenda"
+],
+"c": 0,
+"e": "A apostila usa a rotatória como exemplo de forma característica (p. 26)."
+},
+{
+"nv": 1,
+"p": "Na imagem de satélite, segundo a apostila, a pastagem aparece geralmente em",
+"o": [
+"tons de vermelho",
+"tons de verde",
+"tons de cinza",
+"tons de branco",
+"tons de laranja"
+],
+"c": 1,
+"e": "Pastagem em tons de verde; telhados em vermelho, laranja, cinza ou branco (p. 27)."
+},
+{
+"nv": 2,
+"p": "Medir com os dedos (polegar e indicador) a barra desenhada no mapa e transferir essa medida para o trecho desejado é uma forma de usar a",
+"o": [
+"legenda",
+"rosa dos ventos",
+"escala numérica",
+"imagem de satélite",
+"escala gráfica"
+],
+"c": 4,
+"e": "É o uso rápido da escala gráfica para estimar distâncias em metros (p. 25)."
+},
+{
+"nv": 3,
+"p": "A apostila recomenda observar sempre a escala do mapa antes de sair para o campo porque",
+"o": [
+"ela indica o nome do proprietário de cada estabelecimento",
+"ela substitui o descritivo do setor",
+"ajuda a calcular as distâncias e a planejar o deslocamento, principalmente a pé em setores rurais",
+"permite alterar os limites do setor",
+"define a data de referência"
+],
+"c": 2,
+"e": "A escala ajuda a calcular distâncias e planejar o deslocamento, principalmente a pé (p. 26)."
+}
+],
+"t08": [
+{
+"nv": 1,
+"p": "Segundo a apostila, o descritivo do setor censitário é composto de",
+"o": [
+"duas partes",
+"três partes",
+"quatro partes",
+"cinco partes",
+"seis partes"
+],
+"c": 3,
+"e": "São cinco partes: ponto inicial e final; perímetro; setores a excluir; estruturas não setorizadas; acessibilidade e observações (p. 28)."
+},
+{
+"nv": 2,
+"p": "Aglomerados rurais e localidades indígenas que não formam setor próprio por não terem o mínimo de domicílios devem ser",
+"o": [
+"recenseados normalmente no setor, com atenção especial ao acesso e à abordagem",
+"excluídos da coleta",
+"recenseados por outro Recenseador",
+"registrados apenas pela imagem de satélite",
+"visitados somente pelo supervisor"
+],
+"c": 0,
+"e": "Estruturas territoriais não setorizadas são recenseadas normalmente no setor, com atenção ao acesso e à abordagem (p. 31)."
+},
+{
+"nv": 2,
+"p": "Rios, córregos, igarapés, arroios e lagoas, quando usados como limite de setor, pertencem ao grupo dos",
+"o": [
+"caminhos e ramais",
+"linhas secas",
+"rodovias",
+"corpos hídricos",
+"setores a serem excluídos"
+],
+"c": 3,
+"e": "Os setores rurais são frequentemente limitados por corpos hídricos (p. 29)."
+},
+{
+"nv": 2,
+"p": "Sobre o perímetro do setor censitário, é correto afirmar que o Recenseador",
+"o": [
+"pode ajustá-lo quando encontrar uma estrada nova",
+"pode incluir estabelecimentos do setor vizinho, se forem próximos",
+"pode alterá-lo com autorização do produtor",
+"não pode alterá-lo em hipótese alguma",
+"deve redesenhá-lo no DMC no primeiro dia"
+],
+"c": 3,
+"e": "O Recenseador não pode alterar o perímetro do setor em hipótese alguma (p. 30)."
+},
+{
+"nv": 3,
+"p": "Um limite de setor descrito como 'faixa de 10 km ao norte do Rio X' é exemplo de",
+"o": [
+"linha seca",
+"corpo hídrico",
+"rodovia",
+"ramal",
+"massa d'água"
+],
+"c": 0,
+"e": "Linhas secas podem representar uma distância fixa a partir de um elemento visível no terreno, como a faixa de 10 km ao norte de um rio (p. 29)."
+}
+],
+"t09": [
+{
+"nv": 1,
+"p": "O GPS integrado ao DMC é usado, no Censo Agro, para obter",
+"o": [
+"a escala do mapa",
+"as coordenadas geográficas (latitude e longitude)",
+"o CEP do endereço",
+"a área do estabelecimento em hectares",
+"o nome do logradouro"
+],
+"c": 1,
+"e": "As coordenadas são obtidas por receptor de satélites, como o GPS integrado ao DMC (p. 48)."
+},
+{
+"nv": 2,
+"p": "O meridiano de Greenwich é a referência para medir a",
+"o": [
+"latitude",
+"altitude",
+"longitude",
+"escala",
+"temperatura"
+],
+"c": 2,
+"e": "Longitude é o afastamento, em graus, do meridiano de Greenwich; latitude parte do Equador (p. 48)."
+},
+{
+"nv": 2,
+"p": "Um ponto com latitude positiva está localizado",
+"o": [
+"ao sul do Equador",
+"a oeste de Greenwich",
+"a leste de Greenwich",
+"ao norte do Equador",
+"sobre o meridiano de Greenwich"
+],
+"c": 3,
+"e": "Latitude negativa indica sul; positiva, norte do Equador."
+},
+{
+"nv": 2,
+"p": "Conhecido o par de coordenadas de um ponto, a apostila indica que é possível visualizar ou planejar uma rota até ele usando",
+"o": [
+"o computador do Posto Censitário",
+"o descritivo do setor",
+"a legenda do mapa",
+"o questionário",
+"o crachá"
+],
+"c": 0,
+"e": "Com o par de coordenadas, pode-se ver ou planejar a rota no computador do Posto Censitário (p. 49)."
+},
+{
+"nv": 3,
+"p": "A coordenada do estabelecimento deve ser capturada, de preferência, na entrada da edificação da sede porque",
+"o": [
+"é onde o sinal de GPS é mais forte",
+"é exigência do produtor",
+"é o centro geométrico da propriedade",
+"as coordenadas devem representar o ponto de acesso à unidade",
+"é onde fica o maior plantio"
+],
+"c": 3,
+"e": "Como componente do endereço, a coordenada deve representar o ponto de acesso à unidade (p. 49)."
+}
+],
+"t10": [
+{
+"nv": 1,
+"p": "O CEP é um cadastro mantido pela",
+"o": [
+"Empresa Brasileira de Correios e Telégrafos (ECT), com oito dígitos",
+"prefeitura, com cinco dígitos",
+"IBGE, com dez dígitos",
+"Receita Federal, com oito dígitos",
+"Cesgranrio, com seis dígitos"
+],
+"c": 0,
+"e": "CEP: cadastro de áreas de endereçamento mantido pelos Correios, com oito dígitos (p. 45)."
+},
+{
+"nv": 2,
+"p": "Nas áreas rurais, o componente localidade indica",
+"o": [
+"o número da casa",
+"o nome do proprietário",
+"o nome dos povoados, lugarejos, assentamentos ou comunidades onde está o endereço",
+"a distância até a cidade",
+"o tipo de produção"
+],
+"c": 2,
+"e": "Localidade é o nome do local ou região do endereço; na área rural, povoados, lugarejos, assentamentos, comunidades quilombolas etc. (p. 44)."
+},
+{
+"nv": 2,
+"p": "Quando o logradouro não tem nome oficial, ou não é possível identificá-lo, deve-se registrar",
+"o": [
+"o nome do produtor mais antigo",
+"'sem nome'",
+"apenas as coordenadas",
+"o nome localmente reconhecido",
+"o número do setor"
+],
+"c": 3,
+"e": "Sem nome oficial, usa-se prioritariamente o nome localmente reconhecido (p. 44)."
+},
+{
+"nv": 2,
+"p": "É exemplo de complemento citado na apostila:",
+"o": [
+"gleba",
+"CEP",
+"Rodovia BR 101",
+"Assentamento Chico Mendes",
+"latitude"
+],
+"c": 0,
+"e": "Exemplos de complemento: lote, gleba, casa, frente, fundos, sobrado, sala, andar (p. 46)."
+},
+{
+"nv": 3,
+"p": "No endereço 'Fazenda Alegria, 25, em frente ao Açude do Cedro - Povoado de Areia Branca, 65056-000', o trecho 'em frente ao Açude do Cedro' corresponde ao",
+"o": [
+"complemento",
+"modificador",
+"logradouro",
+"ponto de referência",
+"CEP"
+],
+"c": 3,
+"e": "É ponto de referência: descreve um ponto fixo e visível com expressão de posição ('em frente a') (p. 47)."
+}
+],
+"t11": [
+{
+"nv": 1,
+"p": "No verso do Mapa do Setor Censitário consta",
+"o": [
+"a lista de produtores",
+"a descrição dos seus limites",
+"o questionário",
+"o Manual do Recenseador",
+"o geocódigo de todos os setores do estado"
+],
+"c": 1,
+"e": "Em seu verso, o mapa do setor traz a descrição dos limites (p. 20)."
+},
+{
+"nv": 2,
+"p": "No DMC, o Mapa do Setor Censitário digital é exibido",
+"o": [
+"como desenho feito à mão",
+"como imagem obtida por satélites, com os limites do setor destacados em cor",
+"apenas como texto",
+"somente quando há internet",
+"como planta da prefeitura"
+],
+"c": 1,
+"e": "É uma imagem de satélite com a área do setor e o entorno, e os limites destacados em cor adequada (p. 21)."
+},
+{
+"nv": 2,
+"p": "O Manual do Recenseador será utilizado",
+"o": [
+"apenas depois da coleta",
+"somente pelo supervisor",
+"durante o treinamento e como fonte de consulta no planejamento e na execução do trabalho de campo",
+"apenas para preencher o questionário em papel",
+"só em caso de recusa do informante"
+],
+"c": 2,
+"e": "O Manual reúne conceitos, procedimentos e sistemas e serve no treinamento e como consulta em campo (p. 22)."
+},
+{
+"nv": 2,
+"p": "Durante a coleta, o Recenseador encontra um estabelecimento agropecuário que não consta da lista de endereços. Ele deve",
+"o": [
+"ignorá-lo, pois a lista é definitiva",
+"visitá-lo e incluí-lo na lista, atualizando o DMC",
+"pedir que o produtor procure o IBGE",
+"excluí-lo do setor",
+"registrá-lo no setor vizinho"
+],
+"c": 1,
+"e": "O Recenseador visita todos os estabelecimentos do setor, mesmo fora da lista, e inclui os novos (p. 21)."
+},
+{
+"nv": 2,
+"p": "NÃO está entre os quesitos do questionário citados na apostila:",
+"o": [
+"identificação e características do estabelecimento",
+"área do estabelecimento",
+"distribuição do uso das terras",
+"identificação e características da produção",
+"renda dos vizinhos do estabelecimento"
+],
+"c": 4,
+"e": "Os quesitos citados são de identificação, localização, produtor, produção, área e uso das terras. Renda de vizinhos não é quesito."
+}
+],
+"t12": [
+{
+"nv": 1,
+"p": "O Agente Censitário de Informática (ACI) é responsável por",
+"o": [
+"supervisionar os Recenseadores",
+"coordenar o posto",
+"prestar apoio relativo à tecnologia da informação ao AOR",
+"monitorar a qualidade nacional",
+"realizar a coleta regular"
+],
+"c": 2,
+"e": "O ACI presta apoio de tecnologia da informação ao AOR (p. 15)."
+},
+{
+"nv": 2,
+"p": "O Agente Censitário Administrativo (ACA) tem como função",
+"o": [
+"apoiar as atividades administrativas executadas pelo AOR",
+"supervisionar a qualidade dos dados",
+"treinar os Recenseadores",
+"coordenar o CNQ",
+"gerir o posto censitário"
+],
+"c": 0,
+"e": "O ACA apoia as atividades administrativas do AOR (p. 15)."
+},
+{
+"nv": 2,
+"p": "O Centro Estadual de Qualidade (CEQ) é vinculado",
+"o": [
+"à Sede do IBGE",
+"aos postos censitários",
+"às prefeituras",
+"às Superintendências Estaduais (SES)",
+"ao Ministério da Agricultura"
+],
+"c": 3,
+"e": "O CEQ é vinculado às SES e monitora a qualidade em nível estadual (p. 13)."
+},
+{
+"nv": 1,
+"p": "Para o 12º Censo Agropecuário, a apostila informa que serão contratados cerca de",
+"o": [
+"5 mil temporários",
+"27 mil temporários",
+"36 mil temporários",
+"50 mil temporários",
+"100 mil temporários"
+],
+"c": 2,
+"e": "A apostila fala em cerca de 36 mil profissionais temporários (p. 11). Segundo o edital nº 03/2026, são 27.279 vagas só para Recenseador."
+},
+{
+"nv": 2,
+"p": "O Agente Censitário de Qualidade (ACQ) é responsável por",
+"o": [
+"gerir o posto censitário",
+"supervisionar a qualidade dos dados coletados e orientar ACS e Recenseadores na correção de erros",
+"prestar apoio de informática",
+"realizar a coleta regular em rotas diárias",
+"contratar os Recenseadores"
+],
+"c": 1,
+"e": "O ACQ supervisiona a qualidade e orienta ACS e Recenseadores na correção de erros ou em reforço de treinamento (p. 15)."
+}
+],
+"t13": [
+{
+"nv": 1,
+"p": "Segundo a apostila, o número de distritos no Brasil é",
+"o": [
+"645",
+"5.569",
+"10.744",
+"27",
+"566"
+],
+"c": 2,
+"e": "10.744 distritos; 5.569 municípios; 645 subdistritos (p. 33)."
+},
+{
+"nv": 2,
+"p": "O geocódigo do setor censitário aparece",
+"o": [
+"só no crachá do Recenseador",
+"no título e no rodapé dos mapas e no canto superior direito do Descritivo do Setor",
+"apenas no questionário",
+"no CEP do endereço",
+"somente no sistema do posto"
+],
+"c": 1,
+"e": "Além de constar no título e rodapé dos mapas, aparece no canto superior direito do Descritivo do Setor (p. 34)."
+},
+{
+"nv": 2,
+"p": "O geocódigo reúne, nesta ordem, informações de",
+"o": [
+"município, estado, setor, distrito e subdistrito",
+"setor, subdistrito, distrito, município e estado",
+"CEP, logradouro e número",
+"UF, município, distrito, subdistrito e número do setor",
+"latitude, longitude e altitude"
+],
+"c": 3,
+"e": "Estado, município, distrito, subdistrito e setor (p. 34)."
+},
+{
+"nv": 2,
+"p": "Na figura da apostila sobre a divisão político-administrativa, Fernando de Noronha aparece como",
+"o": [
+"distrito estadual",
+"município autônomo",
+"estado",
+"subdistrito do Recife",
+"Distrito Federal"
+],
+"c": 0,
+"e": "A figura mostra 26 estados, 1 Distrito Federal e 1 distrito estadual (Fernando de Noronha) (p. 33)."
+},
+{
+"nv": 3,
+"p": "Segundo a apostila, registros de endereços de estabelecimentos e entrevistas NÃO devem ser feitos",
+"o": [
+"em áreas rurais",
+"em setores com aglomerados",
+"fora da área na qual o Recenseador foi designado",
+"em dias de chuva",
+"em municípios com distrito único"
+],
+"c": 2,
+"e": "Os limites do setor delimitam a área de coleta; não se registra nada fora da área designada (p. 33)."
+}
+],
+"t14": [
+{
+"nv": 1,
+"p": "O primeiro Censo Agropecuário do Brasil foi realizado em",
+"o": [
+"1872",
+"1920",
+"1936",
+"1940",
+"1975"
+],
+"c": 1,
+"e": "Primeiro Censo Agropecuário: 1920. O IBGE foi fundado em 1936."
+},
+{
+"nv": 2,
+"p": "Sobre o Censo Agropecuário de 1990, a apostila informa que",
+"o": [
+"foi o primeiro feito com DMC",
+"foi realizado por amostra",
+"não foi possível a sua execução, sendo realizado somente em 1996",
+"foi feito em conjunto com o Censo Demográfico",
+"teve coleta só em áreas urbanas"
+],
+"c": 2,
+"e": "Em 1990 não foi possível a execução; foi realizado somente em 1996 (p. 8)."
+},
+{
+"nv": 2,
+"p": "A concepção do Censo Agro leva em conta as recomendações do Programa Mundial de Censos Agropecuários da",
+"o": [
+"OIT",
+"OMS",
+"UNESCO",
+"FAO",
+"OMC"
+],
+"c": 3,
+"e": "A FAO (Organização das Nações Unidas para Alimentação e Agricultura) (p. 10)."
+},
+{
+"nv": 2,
+"p": "Entre os objetivos do 12º Censo Agro citados na apostila está",
+"o": [
+"estruturar um cadastro de estabelecimentos agropecuários para a implementação de pesquisas amostrais",
+"cobrar impostos dos produtores",
+"fiscalizar o uso de agrotóxicos",
+"emitir títulos de propriedade",
+"definir o preço mínimo dos produtos"
+],
+"c": 0,
+"e": "Um dos objetivos é estruturar um cadastro de estabelecimentos para pesquisas amostrais (p. 9)."
+},
+{
+"nv": 2,
+"p": "A missão institucional do IBGE, segundo a apostila, é",
+"o": [
+"fiscalizar a produção agropecuária",
+"arrecadar tributos sobre a terra",
+"retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania",
+"conceder crédito aos produtores rurais",
+"organizar as eleições"
+],
+"c": 2,
+"e": "Missão: retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania (p. 4)."
+}
+]
 }

@@ -1,146 +1,851 @@
 [
-{"id":"t08","disc":"tec","nivel":"alta","titulo":"Descritivo do setor: as cinco partes","pag":"27 a 31",
-"porque":"O descritivo define o limite exato do trabalho. A apostila lista cinco partes, e a banca pode pedir a ordem, o nome ou a conduta em cada uma.",
-"blocos":[
-{"t":"O que é","txt":"O Descritivo do Setor é um texto que define em detalhe os limites da área do Recenseador e orienta a cobertura correta do setor. Ele acompanha o mapa. (p. 27)"},
-{"t":"Parte 1: Ponto inicial e ponto final","txt":"Indicam a referência para começar e terminar o percurso. O ponto inicial costuma ser um local de fácil acesso. Se não for possível, o Recenseador pode adotar outro ponto mais fácil, mas deve SEMPRE comunicar o Supervisor, que avalia a mudança e orienta o percurso. (p. 28)"},
-{"t":"Parte 2: Descrição do perímetro","txt":"É o texto que descreve todo o limite do setor, definido por elementos fáceis de reconhecer em campo: A) corpos hídricos (rios, córregos, riachos, igarapés, arroios, lagos, lagoas, mar); B) rodovias, estradas e ferrovias, de qualquer esfera e pavimento; C) caminhos, ramais, acessos e estradas secundárias; D) linhas secas: retas que não existem no terreno e ligam um ponto visível a outro ou marcam uma distância fixa a partir de um elemento visível (por exemplo, uma faixa de 10 km ao norte de um rio). (p. 28 e 29)"},
-{"t":"Regras do perímetro","txt":"Se encontrar inconsistências ou dificuldade para identificar um limite, comunique imediatamente a supervisão. Observar o perímetro garante que o Recenseador não invada o setor de outro nem deixe parte do seu sem coleta. O Recenseador NÃO pode alterar o perímetro do setor em hipótese alguma. (p. 29 e 30)"},
-{"t":"Parte 3: Setores a serem excluídos","txt":"Indica setores que estão dentro do perímetro do seu setor, mas não são sua responsabilidade, como um setor urbano dentro de uma área rural. Neles o Recenseador não coleta, porque outro Recenseador fará isso. (p. 30)"},
-{"t":"Partes 4 e 5: não setorizadas, acessibilidade e observações","txt":"Estruturas territoriais não setorizadas são agrupamentos, como aglomerados rurais e localidades indígenas, que não viraram um setor próprio por não terem o mínimo de domicílios. Eles são recenseados normalmente no seu setor, com atenção especial ao acesso e à abordagem. Acessibilidade e observações registram informações sobre o acesso e o percurso, por exemplo: RESTRIÇÃO DE ACESSO: ACESSO FLUVIAL. Isso indica que pode ser preciso uma embarcação, que o deslocamento será mais longo e que é necessário um planejamento logístico prévio com a supervisão. (p. 31)"}],
-"exemplos":[
-{"p":"O ponto inicial do descritivo é uma ponte que caiu com a chuva.","r":"O Recenseador pode começar por outro ponto de fácil acesso, mas comunica o Supervisor, que avalia e orienta."},
-{"p":"Dentro do setor rural existe um pequeno setor urbano listado em 'setores a serem excluídos'.","r":"Não se coleta nele: outro Recenseador é o responsável."}],
-"pegadinhas":["Mudar o ponto inicial pode; mudar o perímetro, nunca.","Linha seca não existe no chão: é uma reta imaginária.","Estrutura não setorizada É recenseada no seu setor; setor a ser excluído NÃO é.","Dúvida ou inconsistência no limite: supervisão imediatamente."],
-"resumo":["5 partes: ponto inicial e final; perímetro; setores a excluir; estruturas não setorizadas; acessibilidade e observações.","Limites: água, rodovias e ferrovias, caminhos e ramais, linhas secas.","O Recenseador nunca altera o perímetro.","Acesso fluvial e outras restrições exigem planejamento com a supervisão."],
-"qs":[
-{"nv":1,"p":"Os limites de um setor censitário definidos por retas que não estão materializadas no terreno, ligando um ponto visível a outro, são chamados de","o":["ramais","linhas secas","igarapés","perímetros urbanos","escalas gráficas"],"c":1,"e":"Linhas secas são retas imaginárias que definem um limite sem existir fisicamente no terreno."},
-{"nv":2,"p":"O ponto inicial indicado no descritivo é de difícil acesso. Segundo a apostila, o Recenseador","o":["deve aguardar a melhora do acesso para começar","pode alterar livremente o perímetro do setor","pode adotar outro ponto de mais fácil acesso, comunicando sempre o Supervisor","deve iniciar pelo ponto final, sem avisar ninguém","deve pedir ao produtor que escolha o ponto de partida"],"c":2,"e":"Pode adotar outro ponto mais acessível, desde que comunique o Supervisor, que avalia e orienta o percurso."},
-{"nv":2,"p":"No item 'Setores a serem excluídos' do descritivo constam","o":["setores contidos no perímetro do seu setor que não fazem parte da sua responsabilidade","estabelecimentos que se recusaram a responder","setores que serão recenseados apenas no próximo censo","áreas de massa d'água obrigatórias para coleta","aglomerados rurais que devem ser recenseados com atenção especial"],"c":0,"e":"São setores dentro do seu perímetro, como um setor urbano em área rural, em que você não coleta. Os aglomerados não setorizados, ao contrário, são recenseados."},
-{"nv":2,"p":"Um Recenseador percebe que um limite descrito no perímetro não corresponde ao que vê em campo, por causa de uma estrada nova. Ele deve","o":["ajustar o perímetro no DMC conforme a nova estrada","ignorar a diferença e seguir pela estrada nova","coletar também no setor vizinho, para não perder estabelecimentos","encerrar a coleta do setor","comunicar imediatamente a supervisão, sem alterar o perímetro"],"c":4,"e":"Inconsistências no limite devem ser comunicadas imediatamente à supervisão, e o Recenseador não pode alterar o perímetro em hipótese alguma."},
-{"nv":3,"p":"No campo 'Acessibilidade e Observações' de um setor consta: RESTRIÇÃO DE ACESSO: ACESSO FLUVIAL. Essa informação indica que","o":["o setor não deve ser recenseado","o acesso é feito por rio, o deslocamento será mais longo e exige planejamento logístico prévio com a supervisão","o Recenseador deve atravessar a nado, se necessário","o setor deve ser trocado por outro de acesso terrestre","a coleta será feita por telefone"],"c":1,"e":"Acesso fluvial indica possível uso de embarcação, maior tempo de deslocamento e planejamento logístico prévio com a supervisão."}]},
-
-{"id":"t09","disc":"tec","nivel":"alta","titulo":"Coordenadas geográficas","pag":"48 a 50",
-"porque":"Latitude e longitude caem em Técnicos e podem aparecer em leitura de mapas na Matemática. Sinais negativos e o ponto certo de captura são detalhes cobrados.",
-"blocos":[
-{"t":"O sistema de coordenadas","txt":"Para localizar qualquer ponto da Terra num mapa, foi criado um sistema de linhas imaginárias, o Sistema de Coordenadas Geográficas. Cada ponto tem um par de valores: latitude e longitude. No Censo, as coordenadas vêm de um receptor de satélites, como o GPS integrado ao DMC. (p. 48)"},
-{"t":"Latitude","txt":"É o afastamento, em graus, da linha do Equador até o ponto. Vai de 0° a 90° e pode ser Norte ou Sul. No mapa, lê-se pela linha horizontal que passa pelo ponto (os paralelos). (p. 48)"},
-{"t":"Longitude","txt":"É o afastamento, em graus, do meridiano de Greenwich até o ponto. Vai de 0° a 180° e pode ser Leste ou Oeste. No mapa, lê-se pela linha vertical que passa pelo ponto (os meridianos). O cruzamento das duas linhas dá o par de coordenadas. (p. 48)"},
-{"t":"Sinais negativos","txt":"No exemplo da apostila: latitude -22,326 indica que o ponto está ao SUL do Equador; longitude -42,669 indica que está a OESTE de Greenwich. Todo o Brasil fica a oeste de Greenwich, por isso as longitudes brasileiras são negativas; a maior parte do país está ao sul do Equador (latitude negativa), e o extremo norte, como Roraima e o Amapá, tem latitude positiva. (p. 49)"},
-{"t":"Como capturar no campo","txt":"Nas áreas rurais, toda captura de coordenadas dos estabelecimentos é MANUAL: o Recenseador se posiciona com o DMC no local correto antes de deixar o aparelho registrar. A coordenada deve representar o ponto de acesso à unidade; o local ideal é a entrada da edificação da sede, se houver. Com o par de coordenadas, é possível ver ou planejar uma rota no computador do Posto Censitário. (p. 49)"},
-{"t":"Cuidado com o GPS","txt":"Confiar exclusivamente no GPS ou deixar de usar o mapa em papel são erros. A tecnologia ajuda, mas a interpretação depende do Recenseador. (p. 50)"}],
-"exemplos":[
-{"p":"Um ponto tem latitude -10,5 e longitude -48,3.","r":"Está ao sul do Equador (latitude negativa) e a oeste de Greenwich (longitude negativa)."},
-{"p":"O estabelecimento tem a casa-sede a 300 m da porteira.","r":"O ponto ideal de captura é a entrada da edificação da sede, e não a porteira nem o meio da lavoura."}],
-"pegadinhas":["Latitude vai até 90°; longitude vai até 180°.","Latitude parte do Equador; longitude parte de Greenwich.","Negativo na latitude = Sul; negativo na longitude = Oeste.","Na área rural a captura é manual, no ponto de acesso (entrada da sede)."],
-"resumo":["Latitude: Equador, 0° a 90°, Norte ou Sul.","Longitude: Greenwich, 0° a 180°, Leste ou Oeste.","Negativos: Sul e Oeste.","Captura manual na entrada da edificação da sede, se houver."],
-"qs":[
-{"nv":1,"p":"A latitude é o afastamento, medido em graus,","o":["do meridiano de Greenwich até um ponto, de 0° a 180°","da linha do Equador até um ponto, de 0° a 90°, podendo ser Norte ou Sul","do polo Sul até o polo Norte","de Brasília até um ponto qualquer do país","do nível do mar até o ponto"],"c":1,"e":"Latitude: a partir do Equador, de 0° a 90°, Norte ou Sul. Longitude: a partir de Greenwich, de 0° a 180°."},
-{"nv":1,"p":"A longitude varia de","o":["0° a 45°","0° a 90°","0° a 360°","0° a 180°, podendo ser Leste ou Oeste","-90° a 90°, apenas no hemisfério Norte"],"c":3,"e":"Longitude vai de 0° a 180°, Leste ou Oeste de Greenwich."},
-{"nv":2,"p":"Um ponto com latitude -22,326 e longitude -42,669 está localizado","o":["ao norte do Equador e a leste de Greenwich","ao sul do Equador e a leste de Greenwich","ao norte do Equador e a oeste de Greenwich","exatamente sobre a linha do Equador","ao sul do Equador e a oeste de Greenwich"],"c":4,"e":"Latitude negativa indica Sul; longitude negativa indica Oeste (exemplo da p. 49)."},
-{"nv":2,"p":"Nas áreas rurais, a captura das coordenadas geográficas dos estabelecimentos deve ser feita","o":["manualmente, com o Recenseador posicionado no local correto, de preferência na entrada da edificação da sede","automaticamente pelo DMC, a cada 10 minutos","pelo Agente Censitário Supervisor, no posto","pela prefeitura, a partir do cadastro de imóveis","no ponto mais alto do terreno, para melhor sinal"],"c":0,"e":"A captura é manual. A coordenada deve representar o ponto de acesso; o ideal é a entrada da edificação que representa a sede."},
-{"nv":3,"p":"Sobre o uso do GPS do DMC durante a coleta, a apostila orienta que","o":["o mapa em papel pode ser descartado quando o GPS funciona","o GPS substitui a leitura do descritivo do setor","confiar exclusivamente no GPS é um erro, pois a interpretação correta depende do Recenseador","o GPS só deve ser usado em áreas urbanas","as coordenadas só valem se capturadas pelo supervisor"],"c":2,"e":"A apostila alerta: confiar exclusivamente no GPS ou deixar de usar o mapa em papel são erros a evitar."}]},
-
-{"id":"t10","disc":"tec","nivel":"intermediária","titulo":"Endereço no padrão CNEFE","pag":"43 a 47",
-"porque":"São sete componentes com definições curtas. É conteúdo fácil de pontuar se você souber diferenciar número, modificador, complemento e ponto de referência.",
-"blocos":[
-{"t":"O padrão","txt":"Endereço é um texto que identifica uma unidade construída ou em construção dentro de um município. O IBGE segue o padrão do Cadastro Nacional de Endereços para Fins Estatísticos (CNEFE): prioriza o endereço formal e, na falta dele, usa referências reconhecidas localmente que permitam individualizar e reencontrar a unidade. Componentes: logradouro, localidade, CEP, número e modificador, complemento, ponto de referência e coordenadas geográficas. (p. 43)"},
-{"t":"Logradouro","txt":"Área pública de circulação de pessoas, veículos e mercadorias, reconhecida pela comunidade: estrada, rodovia, travessa, acesso e até um rio. Registra-se o nome oficial da prefeitura, sem omitir termos e sem abreviar. Sem nome oficial, usa-se o nome localmente reconhecido. Exemplos: Estrada Buriti, Rodovia BR 101, Rio Imperador, Acesso para Lavras. (p. 43 e 44)"},
-{"t":"Localidade e CEP","txt":"Localidade é o nome do lugar ou região do endereço: na área rural, povoados, lugarejos, assentamentos, comunidades quilombolas; na urbana, parece com o bairro. Evite expressões genéricas e pergunte o nome à população local. Exemplos: Serra das Flores, Assentamento Chico Mendes, Comunidade Quilombola do Campinho. CEP é o Código de Endereçamento Postal, cadastro mantido pelos Correios (ECT), com oito dígitos. (p. 44 e 45)"},
-{"t":"Número, modificador e complemento","txt":"Número é o valor que indica a posição da edificação no logradouro; pode existir ou não. Modificador é alfanumérico, ligado ao número, e diferencia posições com a mesma numeração ou acrescenta informação (em 'Rodovia BR-101, 6 Km', o '6' é o número e 'Km' é o modificador). Complemento diferencia unidades com a mesma posição no logradouro, quando várias têm acesso pelo mesmo número: lote, gleba, casa, frente, fundos, sobrado, sala, andar. (p. 45 a 47)"},
-{"t":"Ponto de referência","txt":"Descrição de pontos fixos, estáveis e fáceis de ver, com expressões como 'ao lado de', 'em frente a', 'próximo à'. É OBRIGATÓRIO quando o endereço não tem número ou complemento que permita localizá-lo, o que é comum em área rural. Deve ser usado sempre que ajudar, mas nunca de forma redundante. Exemplos: Primeira casa após a ponte do Rio Pedra Linda; Ao lado da Igreja Nossa Senhora Aparecida. (p. 46 e 47)"},
-{"t":"Regra de ouro: sigilo","txt":"Não é permitido identificar pessoas nos componentes do endereço. Escrever 'casa do Seu João' fere o sigilo estatístico que o IBGE tem obrigação legal de preservar. (p. 47)"}],
-"exemplos":[
-{"p":"Endereço: Acesso Guanumbi, 19, Lote 3, Galpão 1 - Cajueiros, 31546-090.","r":"Logradouro: Acesso Guanumbi. Número: 19. Complemento: Lote 3, Galpão 1. Localidade: Cajueiros. CEP: 31546-090."},
-{"p":"Uma casa rural não tem número. O morador diz: 'é depois da porteira da Fazenda Boa Vista'.","r":"Registra-se como ponto de referência: Após a porteira da Fazenda Boa Vista. Ele é obrigatório quando não há número nem complemento."}],
-"pegadinhas":["Nunca use nome de pessoa no endereço (sigilo).","Logradouro sem abreviação: 'Rodovia', e não 'Rod.'.","Um rio pode ser logradouro.","Ponto de referência: obrigatório sem número/complemento; proibido de forma redundante."],
-"resumo":["7 componentes: logradouro, localidade, CEP, número e modificador, complemento, ponto de referência, coordenadas.","Formal primeiro; sem formal, referência local.","Complemento diferencia unidades com o mesmo número.","Sigilo: nada de nomes de pessoas."],
-"qs":[
-{"nv":1,"p":"O componente do endereço que consiste em área pública de circulação de pessoas, veículos e mercadorias, reconhecida pela comunidade, é o","o":["complemento","modificador","logradouro","CEP","ponto de referência"],"c":2,"e":"Essa é a definição de logradouro, que pode ser estrada, rodovia, travessa, acesso ou até um rio."},
-{"nv":2,"p":"Em uma mesma posição do logradouro há várias unidades com acesso pelo mesmo número. Para diferenciá-las, usa-se o","o":["complemento, como lote, gleba, casa, fundos ou sala","CEP","nome do morador de cada unidade","logradouro alternativo","número de telefone do produtor"],"c":0,"e":"O complemento diferencia unidades com a mesma posição no logradouro. Nome de pessoa nunca pode ser usado."},
-{"nv":2,"p":"Segundo a apostila, o ponto de referência é obrigatório quando","o":["o endereço estiver em área urbana","o endereço não possuir número ou complemento que permita sua localização no logradouro","o produtor pedir","houver CEP específico para o logradouro","o logradouro for uma rodovia federal"],"c":1,"e":"É obrigatório quando não há número ou complemento que localize a unidade, situação comum em área rural."},
-{"nv":2,"p":"Ao registrar um endereço rural, o Recenseador escreveu como ponto de referência: 'Casa do Seu Joaquim, ao lado da escola'. Esse registro","o":["está correto, pois facilita a localização","está correto, desde que o Seu Joaquim autorize","deve trocar a escola por uma igreja","deve ser feito apenas no campo complemento","está incorreto, pois não é permitido identificar pessoas nos componentes do endereço"],"c":4,"e":"Identificar pessoas no endereço fere o sigilo estatístico. 'Ao lado da escola' sozinho seria aceitável."},
-{"nv":3,"p":"No endereço 'Rodovia BR-101, 6 Km, Rua interna A, Casa 2 - Nova Canaã, 78414-003', os termos '6' e 'Km' correspondem, respectivamente, a","o":["complemento e ponto de referência","logradouro e localidade","número e modificador","CEP e número","modificador e complemento"],"c":2,"e":"'6' é o número e 'Km' é o modificador (alfanumérico, acrescenta informação ao número). 'Rua interna A, Casa 2' é o complemento."}]},
-
-{"id":"t11","disc":"tec","nivel":"intermediária","titulo":"Instrumentos de trabalho do Recenseador","pag":"20 a 22",
-"porque":"Questões diretas: qual instrumento serve para quê, o que é a lista prévia e como atualizá-la.",
-"blocos":[
-{"t":"Setor censitário","txt":"É a área de trabalho do Recenseador, a menor área geográfica definida pelo IBGE e a unidade territorial de coleta do Censo Agro, prioritariamente em áreas rurais. Observar os limites e percorrer todo o setor é responsabilidade do Recenseador, com a ajuda do seu Agente Censitário Supervisor. (p. 20)"},
-{"t":"Mapa do Setor e Descritivo","txt":"O Mapa do Setor Censitário é a representação gráfica da área a recensear, com elementos que ajudam o reconhecimento em campo; no verso, traz a descrição dos limites. O Descritivo do Setor é o texto que define todo o contorno do setor e deve ser consultado sempre que for preciso confirmar o perímetro. (p. 20)"},
-{"t":"Mapa Municipal Estatístico (MME)","txt":"Fica fixado no posto de coleta e mostra a visão geral de todos os setores do município e suas vias de acesso. Serve para o Recenseador ver onde fica o seu setor no município e planejar como chegar até ele. (p. 20)"},
-{"t":"Dispositivo Móvel de Coleta (DMC)","txt":"É um tablet para registrar e armazenar as informações coletadas. Nele estão: o Mapa do Setor digital (imagem de satélite com o limite do setor destacado em cor), a Lista de Endereços e os Questionários. (p. 21)"},
-{"t":"Lista de Endereços (lista prévia)","txt":"Reúne endereços de estabelecimentos trabalhados no setor em pesquisas anteriores, enriquecidos por registros administrativos; por isso se chama lista prévia. O Recenseador visita TODOS os estabelecimentos do setor, mesmo os que não estão na lista, e atualiza a relação: confirma os que continuam existindo, inclui os novos e exclui os não encontrados. (p. 21)"},
-{"t":"Questionários e Manual","txt":"O questionário registra as informações do estabelecimento: identificação, localização e características; identificação e características do produtor ou administradora; da produção; área; uso das terras, entre outros. O preenchimento correto garante a qualidade dos dados. O Manual do Recenseador reúne conceitos, procedimentos e sistemas; é usado no treinamento e como consulta em campo. (p. 21 e 22)"}],
-"exemplos":[
-{"p":"O Recenseador quer saber por qual estrada chegar ao seu setor, que fica longe da sede do município.","r":"Consulta o Mapa Municipal Estatístico, fixado no posto, que mostra todos os setores e as vias de acesso."},
-{"p":"Um estabelecimento da lista prévia virou um loteamento sem produção.","r":"Na atualização da lista, o endereço não encontrado como estabelecimento é excluído; os novos encontrados são incluídos."}],
-"pegadinhas":["MME fica no posto e serve para planejar a chegada; o mapa do setor serve para trabalhar dentro do setor.","Lista prévia não é completa: visite todos, inclusive os que não estão nela.","Atualizar a lista = confirmar, incluir e excluir."],
-"resumo":["Instrumentos: mapa do setor, descritivo, MME, DMC (mapa digital, lista, questionários) e Manual.","Setor = menor área do IBGE e unidade de coleta.","Lista prévia: pesquisas anteriores + registros administrativos; sempre atualizar."],
-"qs":[
-{"nv":1,"p":"O instrumento fixado no posto de coleta, que mostra todos os setores censitários do município e suas vias de acesso, é o","o":["Descritivo do Setor","Manual do Recenseador","Mapa Municipal Estatístico (MME)","questionário eletrônico","crachá de identificação"],"c":2,"e":"O MME fica no posto e é usado para planejar a chegada ao setor."},
-{"nv":1,"p":"O Dispositivo Móvel de Coleta (DMC) é","o":["um tablet usado para registrar e armazenar as informações coletadas em campo","um receptor de rádio para falar com o posto","o carro oficial do IBGE","um mapa de papel plastificado","um formulário impresso"],"c":0,"e":"O DMC é um tablet; nele estão o mapa digital, a lista de endereços e os questionários."},
-{"nv":2,"p":"A lista de endereços do DMC é chamada de lista prévia porque","o":["deve ser preenchida pelo produtor antes da visita","é composta por endereços trabalhados em pesquisas anteriores, enriquecida por registros administrativos","só pode ser consultada antes de sair a campo","foi feita pela prefeitura","contém apenas os estabelecimentos que já responderam"],"c":1,"e":"Vem de pesquisas anteriores e de registros administrativos, por isso é prévia; deve ser atualizada em campo."},
-{"nv":2,"p":"Para atualizar a lista prévia de endereços, o Recenseador deverá","o":["apenas confirmar os endereços que já estão na lista","excluir todos e cadastrar de novo","enviar a lista à prefeitura para revisão","incluir somente os endereços indicados pelo supervisor","confirmar os que continuam existindo, incluir os novos e excluir os não encontrados em campo"],"c":4,"e":"A atualização tem três ações: confirmar, incluir e excluir, a partir do que for verificado em campo."},
-{"nv":3,"p":"Sobre o setor censitário, de acordo com a apostila, é correto afirmar que","o":["é a maior divisão administrativa do município","é a menor área geográfica definida pelo IBGE e a unidade territorial de coleta, e cabe ao Recenseador percorrê-lo totalmente, com ajuda do ACS","pode ter seus limites alterados pelo Recenseador para facilitar a rota","é definido pelo próprio produtor rural","só existe em áreas urbanas"],"c":1,"e":"O setor é a menor área geográfica definida pelo IBGE e a unidade de coleta; observar os limites e percorrê-lo todo é responsabilidade do Recenseador, com o ACS."}]},
-
-{"id":"t12","disc":"tec","nivel":"intermediária","titulo":"Estrutura organizacional censitária e o papel do Recenseador","pag":"11 a 19",
-"porque":"Siglas parecidas (AOR, ACA, ACI, ACR, ACS, ACQ) e a pergunta clássica: a quem o Recenseador se reporta? Caiu em 2010 e em 2026 no IBFC.",
-"blocos":[
-{"t":"Permanente e temporária","txt":"A estrutura do Censo divide-se em permanente e temporária. A permanente fica na Sede (diretorias e coordenações-gerais) e nas Superintendências Estaduais (SES), ambas ligadas diretamente à Presidência do IBGE. Para o 12º Censo, serão contratados cerca de 36 mil temporários por processos seletivos simplificados. (p. 11 e 12)"},
-{"t":"Estrutura temporária: qualidade","txt":"Centro Nacional de Qualidade (CNQ): vinculado à Sede, monitora a qualidade dos dados no nível nacional e orienta os CEQs; tem Analistas Censitários Nacionais e Agentes Censitários de Qualidade. Centro Estadual de Qualidade (CEQ): vinculado às SES, monitora a qualidade no nível estadual. (p. 12 e 13)"},
-{"t":"Posto censitário","txt":"Vinculado às SES e Agências, é a base operacional da supervisão e dos Recenseadores, atendendo um ou mais municípios. Sua equipe: AOR, ACA, ACI, ACR, ACS e Recenseador. Sempre que requisitado, o Recenseador comparece ao posto para que o supervisor avalie o trabalho; se for preciso corrigir dados, volta a campo. (p. 13 e 19)"},
-{"t":"Quem faz o quê","txt":"AOR (Assistente Operacional Regional): gere o posto. ACA (Agente Censitário Administrativo): apoia as atividades administrativas do AOR. ACI (Agente Censitário de Informática): apoio de tecnologia ao AOR. ACR (Agente Censitário Regional): coordena as atividades censitárias do posto, é subordinado ao AOR e gerencia os ACS. ACS (Agente Censitário Supervisor): supervisiona e treina os Recenseadores; é o elo entre quem coleta e quem gerencia. ACQ (Agente Censitário de Qualidade): supervisiona a qualidade e orienta ACS e Recenseadores na correção de erros. (p. 14 a 17)"},
-{"t":"O Recenseador","txt":"Faz a coleta regular, presencial, em rotas diárias, sob a supervisão de um ACS. Recebe do ACS informações, material e instrumentos, e é ao ACS que se reporta sempre que tiver dificuldade ou dúvida. Antes da coleta, dedica-se ao treinamento. Atribuições: coletar conforme os manuais; ir a campo diariamente pela rota; abordar e entrevistar; registrar e transmitir dados (fotos, parcelas, coordenadas, questionários); agendar entrevistas se o informante pedir; zelar pela integridade do DMC e pela confidencialidade das informações. (p. 17 e 18)"},
-{"t":"Todos os agentes","txt":"Além das tarefas próprias, todo agente censitário deve ministrar treinamentos quando necessário e apoiar as demais tarefas administrativas da operação. (p. 15)"}],
-"exemplos":[
-{"p":"O Recenseador não sabe se uma área é estabelecimento ou sítio de lazer.","r":"Leva a dúvida ao seu Agente Censitário Supervisor (ACS)."},
-{"p":"O DMC travou e não transmite os dados.","r":"O apoio de tecnologia no posto é do ACI, acionado por meio da supervisão."}],
-"pegadinhas":["Recenseador se reporta ao ACS, não ao ACR nem ao AOR.","ACR coordena o posto e gerencia os ACS; ACS supervisiona os Recenseadores.","CNQ está ligado à Sede; CEQ às Superintendências Estaduais.","Confidencialidade e integridade do DMC são atribuições do Recenseador."],
-"resumo":["Permanente: Sede e SES, ligadas à Presidência. Temporária: CNQ, CEQ e postos.","Posto: AOR, ACA, ACI, ACR, ACS e Recenseador.","Cadeia: AOR → ACR → ACS → Recenseador.","Dúvida em campo: ACS."],
-"qs":[
-{"nv":1,"p":"Durante a coleta, sempre que encontrar alguma dificuldade ou dúvida, o Recenseador deve se reportar ao","o":["Assistente Operacional Regional (AOR)","Agente Censitário de Informática (ACI)","Agente Censitário Administrativo (ACA)","Agente Censitário Supervisor (ACS)","Analista Censitário Nacional"],"c":3,"e":"O Recenseador trabalha sob supervisão do ACS e é a ele que se reporta em dúvidas e dificuldades."},
-{"nv":2,"p":"O Centro Nacional de Qualidade (CNQ) é vinculado","o":["à Sede do IBGE e monitora a qualidade dos dados em nível nacional","às prefeituras municipais","aos postos censitários","às Superintendências Estaduais, em nível estadual","ao Ministério da Agricultura"],"c":0,"e":"O CNQ é vinculado à Sede. O CEQ é que é vinculado às Superintendências Estaduais."},
-{"nv":2,"p":"O agente responsável por coordenar as atividades censitárias no âmbito do posto, subordinado ao AOR e que gerencia o trabalho dos ACS, é o","o":["ACA","ACI","ACR","ACQ","Recenseador"],"c":2,"e":"O Agente Censitário Regional (ACR) é subordinado ao AOR e gerencia os ACS."},
-{"nv":2,"p":"NÃO é atribuição do Recenseador, segundo a apostila:","o":["zelar pela confidencialidade das informações coletadas","agendar entrevistas, se solicitado pelo informante","registrar e transmitir fotos, parcelas, coordenadas e questionários","zelar pela integridade do DMC","gerir o posto censitário e garantir a observância das instruções administrativas"],"c":4,"e":"Gerir o posto é atribuição do AOR. As demais estão entre as atribuições do Recenseador."},
-{"nv":3,"p":"Após avaliar o trabalho de um Recenseador no posto censitário, a supervisão identifica um dado incorreto em um questionário. Nesse caso, o Recenseador deverá","o":["corrigir o dado de memória, no próprio posto","retornar a campo para corrigir o dado coletado","pedir que o ACI altere o dado no sistema","ignorar, pois a correção é feita pelo CNQ","refazer todos os questionários do setor"],"c":1,"e":"A apostila diz que, se a supervisão indicar necessidade de corrigir dado coletado, o Recenseador deverá retornar a campo."}]},
-
-{"id":"t13","disc":"tec","nivel":"básica","titulo":"Divisão político-administrativa do Brasil e geocódigo","pag":"32 a 34",
-"porque":"Números e hierarquia: estados, municípios, distritos, subdistritos e setores, e a leitura do geocódigo. Questões rápidas de memorização.",
-"blocos":[
-{"t":"As unidades","txt":"O Brasil divide-se em: Unidades da Federação (26 estados e o Distrito Federal); estados, as unidades autônomas de maior abrangência, e o DF, onde fica a sede do Governo Federal; municípios, unidades autônomas de caráter local que dividem integralmente os estados e são criados, incorporados, fundidos ou desmembrados por lei estadual. São 5.569 municípios. A figura da apostila cita ainda 1 distrito estadual: Fernando de Noronha. (p. 32 e 33)"},
-{"t":"Distritos e subdistritos","txt":"Distritos dividem integralmente os municípios, são criados por legislação municipal e não têm autonomia administrativa (subordinam-se ao governo municipal). Há municípios com distrito único e outros com vários; são 10.744 distritos. Subdistritos existem geralmente só em grandes cidades, para dividir distritos muito populosos ou extensos: cerca de 645, e a maioria dos municípios não tem. (p. 32 e 33)"},
-{"t":"Setor censitário","txt":"Para estudos estatísticos, o IBGE subdivide as áreas em setores censitários. A extensão e o número de estabelecimentos influenciam a carga de trabalho, por isso os setores são planejados com dimensões adequadas e respeitam a divisão político-administrativa. Não se registram endereços nem entrevistas fora da área designada. (p. 33)"},
-{"t":"Geocódigo","txt":"Todo setor tem um geocódigo, código único que reúne UF, município, distrito, subdistrito e número do setor. Exemplo: 51 04104 05 00 0016 = Estado 51 | Município 04104 | Distrito 05 | Subdistrito 00 | Setor 0016. Aparece no título e no rodapé dos mapas e no canto superior direito do Descritivo do Setor. (p. 34)"}],
-"exemplos":[
-{"p":"Geocódigo 15 01402 05 00 0123.","r":"Estado 15, município 01402, distrito 05, subdistrito 00 (sem subdistrito), setor 0123."},
-{"p":"Uma vila foi transformada em distrito.","r":"Distritos são criados por legislação municipal e não têm autonomia administrativa."}],
-"pegadinhas":["Municípios: lei estadual. Distritos: lei municipal.","Distrito não tem autonomia; município tem.","No geocódigo, a ordem é: estado, município, distrito, subdistrito, setor."],
-"resumo":["26 estados + DF; 5.569 municípios; 10.744 distritos; ~645 subdistritos.","Município criado por lei estadual; distrito por lei municipal, sem autonomia.","Geocódigo: UF (2) + município (5) + distrito (2) + subdistrito (2) + setor (4)."],
-"qs":[
-{"nv":1,"p":"Segundo a apostila, o número de municípios brasileiros é","o":["5.570","5.569","5.565","10.744","645"],"c":1,"e":"A apostila informa 5.569 municípios. 10.744 são distritos e 645, subdistritos."},
-{"nv":1,"p":"Os distritos são unidades que","o":["têm autonomia administrativa e são criados por lei federal","dividem os estados e são criados por lei estadual","dividem integralmente os municípios, são criados por legislação municipal e não têm autonomia administrativa","existem somente nas capitais","correspondem aos setores censitários"],"c":2,"e":"Distritos dividem os municípios, são criados por lei municipal e são subordinados ao governo municipal."},
-{"nv":2,"p":"No geocódigo de setor 51 04104 05 00 0016, o trecho '05' identifica o","o":["estado","município","setor","subdistrito","distrito"],"c":4,"e":"Ordem: estado (51), município (04104), distrito (05), subdistrito (00), setor (0016)."},
-{"nv":2,"p":"Os municípios brasileiros são criados, incorporados, fundidos ou desmembrados por","o":["lei estadual","decreto presidencial","lei municipal","resolução do IBGE","portaria do Ministério do Planejamento"],"c":0,"e":"Municípios: lei estadual. Distritos: legislação municipal."},
-{"nv":3,"p":"Sobre os subdistritos, é correto afirmar que","o":["todo município tem pelo menos um","são criados para dividir setores censitários rurais","geralmente existem só em grandes cidades, para subdividir distritos de grande população ou extensão, e a maioria dos municípios não os possui","substituem os distritos nas capitais","são áreas indígenas delimitadas"],"c":2,"e":"Subdistritos (cerca de 645) existem geralmente nas grandes cidades; a maior parte dos municípios não tem."}]},
-
-{"id":"t14","disc":"tec","nivel":"básica","titulo":"O IBGE e o Censo Agropecuário, Florestal e Aquícola","pag":"3 a 10",
-"porque":"Abertura da apostila: história, missão, objetivos e números. São pontos fáceis que não podem ser perdidos.",
-"blocos":[
-{"t":"O IBGE","txt":"Fundado em 1936, é o órgão coordenador e produtor de informações estatísticas e geográficas do país. Missão: retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania. Rede nacional: 27 Superintendências Estaduais (26 nas capitais e 1 no Distrito Federal) e 566 Agências municipais, vinculadas à Presidência. (p. 4 e 5)"},
-{"t":"Para que servem os censos","txt":"Com as informações dos censos, o governo consegue identificar as áreas que mais precisam de investimentos em saúde, educação e outros setores; localizar regiões que precisam de estímulo ao desenvolvimento; e planejar uma distribuição mais equilibrada dos recursos públicos. (p. 6)"},
-{"t":"O que é uma pesquisa censitária","txt":"É o levantamento que coleta dados de TODA a população de um universo. No Censo Agro, o universo é o dos estabelecimentos agropecuários. É a principal e mais completa investigação sobre a estrutura e a produção agropecuária do país. (p. 6)"},
-{"t":"História","txt":"Primeiro Censo Agropecuário: 1920 (antes do IBGE). Em 1936 nasce o IBGE, que passa a fazer os censos. De 1940 a 1970, a cada dez anos; depois, a cada cinco (1975, 1980, 1985). Em 1990 não foi possível, e foi feito em 1996. No século XXI, a apostila cita os censos de 2007 e 2017. O de 2017 visitou mais de 5 milhões de estabelecimentos, e a coleta hoje usa DMCs, mapas digitais e imagens de satélite. (p. 8)"},
-{"t":"O 12º Censo","txt":"Objetivo: levantar informações sobre todos os estabelecimentos do território nacional. A coleta será em 2027, com referência aos dados de 2026. Espera-se: informações atualizadas e comparáveis com censos anteriores; dados por tipologias (agricultura familiar, médio produtor, patronal, povos e comunidades tradicionais); edições digitais sobre cerca de 5,1 milhões de estabelecimentos; e um cadastro de estabelecimentos para pesquisas amostrais. (p. 9)"},
-{"t":"Concepção, abrangência e impactos","txt":"Concepção: segue as recomendações da Estratégia Global para o Aprimoramento das Estatísticas Agropecuárias e do Programa Mundial de Censos Agropecuários da FAO. Abrangência: resultados no nível dos municípios, com recortes como Unidades de Conservação, Terras Indígenas, Territórios Quilombolas, biomas e Projetos de Assentamento. Impactos: permite avaliar políticas públicas como o Pronaf (Programa Nacional de Fortalecimento da Agricultura Familiar) e estudar a expansão das fronteiras agrícolas e a inovação tecnológica. (p. 10)"}],
-"exemplos":[
-{"p":"Por que o Censo Agro visita até o pequeno sítio que produz para o sustento?","r":"Porque é censitário: coleta todo o universo de estabelecimentos, sem amostra."},
-{"p":"Qual organismo internacional orienta a concepção do Censo Agro?","r":"A FAO, Organização das Nações Unidas para Alimentação e Agricultura."}],
-"pegadinhas":["Primeiro Censo Agro: 1920. Fundação do IBGE: 1936.","Coleta em 2027, referência ao ano de 2026.","27 Superintendências (26 capitais + DF) e 566 agências.","Censitário = todos, não amostra."],
-"resumo":["IBGE: 1936; missão de retratar o Brasil.","Censo: todos os estabelecimentos; o de 2017 visitou mais de 5 milhões.","12º Censo: coleta em 2027, referência a 2026; cerca de 5,1 milhões de estabelecimentos.","FAO na concepção; Pronaf entre os impactos."],
-"qs":[
-{"nv":1,"p":"O IBGE foi fundado em","o":["1920","1940","1936","1872","1975"],"c":2,"e":"O IBGE foi fundado em 1936. O primeiro Censo Agropecuário é de 1920, antes do IBGE."},
-{"nv":1,"p":"Uma pesquisa censitária caracteriza-se por","o":["coletar dados de toda a população de um determinado universo","entrevistar uma amostra sorteada","ser feita apenas por telefone","pesquisar somente as áreas urbanas","usar apenas registros administrativos"],"c":0,"e":"Censo coleta dados de todo o universo investigado; no Censo Agro, todos os estabelecimentos agropecuários."},
-{"nv":2,"p":"De acordo com a apostila, a coleta do 12º Censo Agropecuário, Florestal e Aquícola será realizada em","o":["2026, com referência aos dados de 2025","2027, com referência aos dados de 2027","2025, com referência aos dados de 2024","2027, com referência aos dados de 2026","2028, com referência aos dados de 2027"],"c":3,"e":"A apostila (p. 9) diz: coleta em 2027, tendo como referência os dados do ano de 2026."},
-{"nv":2,"p":"A rede nacional do IBGE é composta, segundo a apostila, por","o":["26 Superintendências e 5.569 agências","27 Superintendências Estaduais e 566 Agências municipais","27 Superintendências e 10.744 agências","5 Superintendências regionais e 566 postos","uma única sede, sem unidades estaduais"],"c":1,"e":"São 27 Superintendências Estaduais (26 nas capitais e 1 no DF) e 566 Agências municipais."},
-{"nv":3,"p":"As informações geradas pelo Censo Agro permitem avaliar políticas públicas. A apostila cita como exemplo o","o":["Programa Bolsa Família","Sistema Único de Saúde","Programa Minha Casa Minha Vida","Programa Nacional de Fortalecimento da Agricultura Familiar (Pronaf)","Programa Nacional de Alimentação Escolar"],"c":3,"e":"A apostila cita o Pronaf como exemplo de política pública avaliada com os dados do Censo Agro."}]}
+{
+"id": "t08",
+"disc": "tec",
+"nivel": "alta",
+"titulo": "Descritivo do setor: as cinco partes",
+"pag": "27 a 31",
+"porque": "O descritivo define o limite exato do trabalho. A apostila lista cinco partes, e a banca pode pedir a ordem, o nome ou a conduta em cada uma.",
+"blocos": [
+{
+"t": "O que é",
+"txt": "O Descritivo do Setor é um texto que define em detalhe os limites da área do Recenseador e orienta a cobertura correta do setor. Ele acompanha o mapa. (p. 27)"
+},
+{
+"t": "Parte 1: Ponto inicial e ponto final",
+"txt": "Indicam a referência para começar e terminar o percurso. O ponto inicial costuma ser um local de fácil acesso. Se não for possível, o Recenseador pode adotar outro ponto mais fácil, mas deve SEMPRE comunicar o Supervisor, que avalia a mudança e orienta o percurso. (p. 28)"
+},
+{
+"t": "Parte 2: Descrição do perímetro",
+"txt": "É o texto que descreve todo o limite do setor, definido por elementos fáceis de reconhecer em campo: A) corpos hídricos (rios, córregos, riachos, igarapés, arroios, lagos, lagoas, mar); B) rodovias, estradas e ferrovias, de qualquer esfera e pavimento; C) caminhos, ramais, acessos e estradas secundárias; D) linhas secas: retas que não existem no terreno e ligam um ponto visível a outro ou marcam uma distância fixa a partir de um elemento visível (por exemplo, uma faixa de 10 km ao norte de um rio). (p. 28 e 29)"
+},
+{
+"t": "Regras do perímetro",
+"txt": "Se encontrar inconsistências ou dificuldade para identificar um limite, comunique imediatamente a supervisão. Observar o perímetro garante que o Recenseador não invada o setor de outro nem deixe parte do seu sem coleta. O Recenseador NÃO pode alterar o perímetro do setor em hipótese alguma. (p. 29 e 30)"
+},
+{
+"t": "Parte 3: Setores a serem excluídos",
+"txt": "Indica setores que estão dentro do perímetro do seu setor, mas não são sua responsabilidade, como um setor urbano dentro de uma área rural. Neles o Recenseador não coleta, porque outro Recenseador fará isso. (p. 30)"
+},
+{
+"t": "Partes 4 e 5: não setorizadas, acessibilidade e observações",
+"txt": "Estruturas territoriais não setorizadas são agrupamentos, como aglomerados rurais e localidades indígenas, que não viraram um setor próprio por não terem o mínimo de domicílios. Eles são recenseados normalmente no seu setor, com atenção especial ao acesso e à abordagem. Acessibilidade e observações registram informações sobre o acesso e o percurso, por exemplo: RESTRIÇÃO DE ACESSO: ACESSO FLUVIAL. Isso indica que pode ser preciso uma embarcação, que o deslocamento será mais longo e que é necessário um planejamento logístico prévio com a supervisão. (p. 31)"
+}
+],
+"exemplos": [
+{
+"p": "O ponto inicial do descritivo é uma ponte que caiu com a chuva.",
+"r": "O Recenseador pode começar por outro ponto de fácil acesso, mas comunica o Supervisor, que avalia e orienta."
+},
+{
+"p": "Dentro do setor rural existe um pequeno setor urbano listado em 'setores a serem excluídos'.",
+"r": "Não se coleta nele: outro Recenseador é o responsável."
+}
+],
+"pegadinhas": [
+"Mudar o ponto inicial pode; mudar o perímetro, nunca.",
+"Linha seca não existe no chão: é uma reta imaginária.",
+"Estrutura não setorizada É recenseada no seu setor; setor a ser excluído NÃO é.",
+"Dúvida ou inconsistência no limite: supervisão imediatamente."
+],
+"resumo": [
+"5 partes: ponto inicial e final; perímetro; setores a excluir; estruturas não setorizadas; acessibilidade e observações.",
+"Limites: água, rodovias e ferrovias, caminhos e ramais, linhas secas.",
+"O Recenseador nunca altera o perímetro.",
+"Acesso fluvial e outras restrições exigem planejamento com a supervisão."
+],
+"qs": [
+{
+"nv": 1,
+"p": "Os limites de um setor censitário definidos por retas que não estão materializadas no terreno, ligando um ponto visível a outro, são chamados de",
+"o": [
+"ramais",
+"linhas secas",
+"igarapés",
+"perímetros urbanos",
+"escalas gráficas"
+],
+"c": 1,
+"e": "Linhas secas são retas imaginárias que definem um limite sem existir fisicamente no terreno."
+},
+{
+"nv": 2,
+"p": "O ponto inicial indicado no descritivo é de difícil acesso. Segundo a apostila, o Recenseador",
+"o": [
+"deve aguardar a melhora do acesso para começar",
+"pode alterar livremente o perímetro do setor",
+"pode adotar outro ponto de mais fácil acesso, comunicando sempre o Supervisor",
+"deve iniciar pelo ponto final, sem avisar ninguém",
+"deve pedir ao produtor que escolha o ponto de partida"
+],
+"c": 2,
+"e": "Pode adotar outro ponto mais acessível, desde que comunique o Supervisor, que avalia e orienta o percurso."
+},
+{
+"nv": 2,
+"p": "No item 'Setores a serem excluídos' do descritivo constam",
+"o": [
+"setores contidos no perímetro do seu setor que não fazem parte da sua responsabilidade",
+"estabelecimentos que se recusaram a responder",
+"setores que serão recenseados apenas no próximo censo",
+"áreas de massa d'água obrigatórias para coleta",
+"aglomerados rurais que devem ser recenseados com atenção especial"
+],
+"c": 0,
+"e": "São setores dentro do seu perímetro, como um setor urbano em área rural, em que você não coleta. Os aglomerados não setorizados, ao contrário, são recenseados."
+},
+{
+"nv": 2,
+"p": "Um Recenseador percebe que um limite descrito no perímetro não corresponde ao que vê em campo, por causa de uma estrada nova. Ele deve",
+"o": [
+"ajustar o perímetro no DMC conforme a nova estrada",
+"ignorar a diferença e seguir pela estrada nova",
+"coletar também no setor vizinho, para não perder estabelecimentos",
+"encerrar a coleta do setor",
+"comunicar imediatamente a supervisão, sem alterar o perímetro"
+],
+"c": 4,
+"e": "Inconsistências no limite devem ser comunicadas imediatamente à supervisão, e o Recenseador não pode alterar o perímetro em hipótese alguma."
+},
+{
+"nv": 3,
+"p": "No campo 'Acessibilidade e Observações' de um setor consta: RESTRIÇÃO DE ACESSO: ACESSO FLUVIAL. Essa informação indica que",
+"o": [
+"o setor não deve ser recenseado",
+"o acesso é feito por rio, o deslocamento será mais longo e exige planejamento logístico prévio com a supervisão",
+"o Recenseador deve atravessar a nado, se necessário",
+"o setor deve ser trocado por outro de acesso terrestre",
+"a coleta será feita por telefone"
+],
+"c": 1,
+"e": "Acesso fluvial indica possível uso de embarcação, maior tempo de deslocamento e planejamento logístico prévio com a supervisão."
+}
+]
+},
+{
+"id": "t09",
+"disc": "tec",
+"nivel": "alta",
+"titulo": "Coordenadas geográficas",
+"pag": "48 a 50",
+"porque": "Latitude e longitude caem em Técnicos e podem aparecer em leitura de mapas na Matemática. Sinais negativos e o ponto certo de captura são detalhes cobrados.",
+"blocos": [
+{
+"t": "O sistema de coordenadas",
+"txt": "Para localizar qualquer ponto da Terra num mapa, foi criado um sistema de linhas imaginárias, o Sistema de Coordenadas Geográficas. Cada ponto tem um par de valores: latitude e longitude. No Censo, as coordenadas vêm de um receptor de satélites, como o GPS integrado ao DMC. (p. 48)"
+},
+{
+"t": "Latitude",
+"txt": "É o afastamento, em graus, da linha do Equador até o ponto. Vai de 0° a 90° e pode ser Norte ou Sul. No mapa, lê-se pela linha horizontal que passa pelo ponto (no complemento de geografia, as linhas horizontais são os paralelos). (p. 48)"
+},
+{
+"t": "Longitude",
+"txt": "É o afastamento, em graus, do meridiano de Greenwich até o ponto. Vai de 0° a 180° e pode ser Leste ou Oeste. No mapa, lê-se pela linha vertical que passa pelo ponto (e as verticais, os meridianos). O cruzamento das duas linhas dá o par de coordenadas. (p. 48)"
+},
+{
+"t": "Sinais negativos",
+"txt": "No exemplo da apostila: latitude -22,326 indica que o ponto está ao SUL do Equador; longitude -42,669 indica que está a OESTE de Greenwich. (p. 49) Complemento, fora da apostila: por isso as longitudes do Brasil são negativas, e só o extremo norte do país, como Roraima e o Amapá, tem latitude positiva."
+},
+{
+"t": "Como capturar no campo",
+"txt": "Nas áreas rurais, toda captura de coordenadas dos estabelecimentos é MANUAL: o Recenseador se posiciona com o DMC no local correto antes de deixar o aparelho registrar. A coordenada deve representar o ponto de acesso à unidade; o local ideal é a entrada da edificação da sede, se houver. Com o par de coordenadas, é possível ver ou planejar uma rota no computador do Posto Censitário. (p. 49)"
+},
+{
+"t": "Cuidado com o GPS",
+"txt": "Confiar exclusivamente no GPS ou deixar de usar o mapa em papel são erros. A tecnologia ajuda, mas a interpretação depende do Recenseador. (p. 50)"
+}
+],
+"exemplos": [
+{
+"p": "Um ponto tem latitude -10,5 e longitude -48,3.",
+"r": "Está ao sul do Equador (latitude negativa) e a oeste de Greenwich (longitude negativa)."
+},
+{
+"p": "O estabelecimento tem a casa-sede a 300 m da porteira.",
+"r": "O ponto ideal de captura é a entrada da edificação da sede, e não a porteira nem o meio da lavoura."
+}
+],
+"pegadinhas": [
+"Latitude vai até 90°; longitude vai até 180°.",
+"Latitude parte do Equador; longitude parte de Greenwich.",
+"Negativo na latitude = Sul; negativo na longitude = Oeste.",
+"Na área rural a captura é manual, no ponto de acesso (entrada da sede)."
+],
+"resumo": [
+"Latitude: Equador, 0° a 90°, Norte ou Sul.",
+"Longitude: Greenwich, 0° a 180°, Leste ou Oeste.",
+"Negativos: Sul e Oeste.",
+"Captura manual na entrada da edificação da sede, se houver."
+],
+"qs": [
+{
+"nv": 1,
+"p": "A latitude é o afastamento, medido em graus,",
+"o": [
+"do meridiano de Greenwich até um ponto, de 0° a 180°",
+"da linha do Equador até um ponto, de 0° a 90°, podendo ser Norte ou Sul",
+"do polo Sul até o polo Norte",
+"de Brasília até um ponto qualquer do país",
+"do nível do mar até o ponto"
+],
+"c": 1,
+"e": "Latitude: a partir do Equador, de 0° a 90°, Norte ou Sul. Longitude: a partir de Greenwich, de 0° a 180°."
+},
+{
+"nv": 1,
+"p": "A longitude varia de",
+"o": [
+"0° a 45°",
+"0° a 90°",
+"0° a 360°",
+"0° a 180°, podendo ser Leste ou Oeste",
+"-90° a 90°, apenas no hemisfério Norte"
+],
+"c": 3,
+"e": "Longitude vai de 0° a 180°, Leste ou Oeste de Greenwich."
+},
+{
+"nv": 2,
+"p": "Um ponto com latitude -22,326 e longitude -42,669 está localizado",
+"o": [
+"ao norte do Equador e a leste de Greenwich",
+"ao sul do Equador e a leste de Greenwich",
+"ao norte do Equador e a oeste de Greenwich",
+"exatamente sobre a linha do Equador",
+"ao sul do Equador e a oeste de Greenwich"
+],
+"c": 4,
+"e": "Latitude negativa indica Sul; longitude negativa indica Oeste (exemplo da p. 49)."
+},
+{
+"nv": 2,
+"p": "Nas áreas rurais, a captura das coordenadas geográficas dos estabelecimentos deve ser feita",
+"o": [
+"manualmente, com o Recenseador posicionado no local correto, de preferência na entrada da edificação da sede",
+"automaticamente pelo DMC, a cada 10 minutos",
+"pelo Agente Censitário Supervisor, no posto",
+"pela prefeitura, a partir do cadastro de imóveis",
+"no ponto mais alto do terreno, para melhor sinal"
+],
+"c": 0,
+"e": "A captura é manual. A coordenada deve representar o ponto de acesso; o ideal é a entrada da edificação que representa a sede."
+},
+{
+"nv": 3,
+"p": "Sobre o uso do GPS do DMC durante a coleta, a apostila orienta que",
+"o": [
+"o mapa em papel pode ser descartado quando o GPS funciona",
+"o GPS substitui a leitura do descritivo do setor",
+"confiar exclusivamente no GPS é um erro, pois a interpretação correta depende do Recenseador",
+"o GPS só deve ser usado em áreas urbanas",
+"as coordenadas só valem se capturadas pelo supervisor"
+],
+"c": 2,
+"e": "A apostila alerta: confiar exclusivamente no GPS ou deixar de usar o mapa em papel são erros a evitar."
+}
+]
+},
+{
+"id": "t10",
+"disc": "tec",
+"nivel": "intermediária",
+"titulo": "Endereço no padrão CNEFE",
+"pag": "43 a 47",
+"porque": "São sete componentes com definições curtas. É conteúdo fácil de pontuar se você souber diferenciar número, modificador, complemento e ponto de referência.",
+"blocos": [
+{
+"t": "O padrão",
+"txt": "Endereço é um texto que identifica uma unidade construída ou em construção dentro de um município. O IBGE segue o padrão do Cadastro Nacional de Endereços para Fins Estatísticos (CNEFE): prioriza o endereço formal e, na falta dele, usa referências reconhecidas localmente que permitam individualizar e reencontrar a unidade. Componentes: logradouro, localidade, CEP, número e modificador, complemento, ponto de referência e coordenadas geográficas. (p. 43)"
+},
+{
+"t": "Logradouro",
+"txt": "Área pública de circulação de pessoas, veículos e mercadorias, reconhecida pela comunidade: estrada, rodovia, travessa, acesso e até um rio. Registra-se o nome oficial da prefeitura, sem omitir termos e sem abreviar. Sem nome oficial, usa-se o nome localmente reconhecido. Exemplos: Estrada Buriti, Rodovia BR 101, Rio Imperador, Acesso para Lavras. (p. 43 e 44)"
+},
+{
+"t": "Localidade e CEP",
+"txt": "Localidade é o nome do lugar ou região do endereço: na área rural, povoados, lugarejos, assentamentos, comunidades quilombolas; na urbana, parece com o bairro. Evite expressões genéricas e pergunte o nome à população local. Exemplos: Serra das Flores, Assentamento Chico Mendes, Comunidade Quilombola do Campinho. CEP é o Código de Endereçamento Postal, cadastro mantido pelos Correios (ECT), com oito dígitos. (p. 44 e 45)"
+},
+{
+"t": "Número, modificador e complemento",
+"txt": "Número é o valor que indica a posição da edificação no logradouro; pode existir ou não. Modificador é alfanumérico, ligado ao número, e diferencia posições com a mesma numeração ou acrescenta informação (em 'Rodovia BR-101, 6 Km', o '6' é o número e 'Km' é o modificador). Complemento diferencia unidades com a mesma posição no logradouro, quando várias têm acesso pelo mesmo número: lote, gleba, casa, frente, fundos, sobrado, sala, andar. (p. 45 a 47)"
+},
+{
+"t": "Ponto de referência",
+"txt": "Descrição de pontos fixos, estáveis e fáceis de ver, com expressões como 'ao lado de', 'em frente a', 'próximo à'. É OBRIGATÓRIO quando o endereço não tem número ou complemento que permita localizá-lo, o que é comum em área rural. Deve ser usado sempre que ajudar, mas nunca de forma redundante. Exemplos: Primeira casa após a ponte do Rio Pedra Linda; Ao lado da Igreja Nossa Senhora Aparecida. (p. 46 e 47)"
+},
+{
+"t": "Regra de ouro: sigilo",
+"txt": "Não é permitido identificar pessoas nos componentes do endereço. Escrever 'casa do Seu João' fere o sigilo estatístico que o IBGE tem obrigação legal de preservar. (p. 47)"
+}
+],
+"exemplos": [
+{
+"p": "Endereço: Acesso Guanumbi, 19, Lote 3, Galpão 1 - Cajueiros, 31546-090.",
+"r": "Logradouro: Acesso Guanumbi. Número: 19. Complemento: Lote 3, Galpão 1. Localidade: Cajueiros. CEP: 31546-090."
+},
+{
+"p": "Uma casa rural não tem número. O morador diz: 'é depois da porteira da Fazenda Boa Vista'.",
+"r": "Registra-se como ponto de referência: Após a porteira da Fazenda Boa Vista. Ele é obrigatório quando não há número nem complemento."
+}
+],
+"pegadinhas": [
+"Nunca use nome de pessoa no endereço (sigilo).",
+"Logradouro sem abreviação: 'Rodovia', e não 'Rod.'.",
+"Um rio pode ser logradouro.",
+"Ponto de referência: obrigatório sem número/complemento; proibido de forma redundante."
+],
+"resumo": [
+"7 componentes: logradouro, localidade, CEP, número e modificador, complemento, ponto de referência, coordenadas.",
+"Formal primeiro; sem formal, referência local.",
+"Complemento diferencia unidades com o mesmo número.",
+"Sigilo: nada de nomes de pessoas."
+],
+"qs": [
+{
+"nv": 1,
+"p": "O componente do endereço que consiste em área pública de circulação de pessoas, veículos e mercadorias, reconhecida pela comunidade, é o",
+"o": [
+"complemento",
+"modificador",
+"logradouro",
+"CEP",
+"ponto de referência"
+],
+"c": 2,
+"e": "Essa é a definição de logradouro, que pode ser estrada, rodovia, travessa, acesso ou até um rio."
+},
+{
+"nv": 2,
+"p": "Em uma mesma posição do logradouro há várias unidades com acesso pelo mesmo número. Para diferenciá-las, usa-se o",
+"o": [
+"complemento, como lote, gleba, casa, fundos ou sala",
+"CEP",
+"nome do morador de cada unidade",
+"logradouro alternativo",
+"número de telefone do produtor"
+],
+"c": 0,
+"e": "O complemento diferencia unidades com a mesma posição no logradouro. Nome de pessoa nunca pode ser usado."
+},
+{
+"nv": 2,
+"p": "Segundo a apostila, o ponto de referência é obrigatório quando",
+"o": [
+"o endereço estiver em área urbana",
+"o endereço não possuir número ou complemento que permita sua localização no logradouro",
+"o produtor pedir",
+"houver CEP específico para o logradouro",
+"o logradouro for uma rodovia federal"
+],
+"c": 1,
+"e": "É obrigatório quando não há número ou complemento que localize a unidade, situação comum em área rural."
+},
+{
+"nv": 2,
+"p": "Ao registrar um endereço rural, o Recenseador escreveu como ponto de referência: 'Casa do Seu Joaquim, ao lado da escola'. Esse registro",
+"o": [
+"está correto, pois facilita a localização",
+"está correto, desde que o Seu Joaquim autorize",
+"deve trocar a escola por uma igreja",
+"deve ser feito apenas no campo complemento",
+"está incorreto, pois não é permitido identificar pessoas nos componentes do endereço"
+],
+"c": 4,
+"e": "Identificar pessoas no endereço fere o sigilo estatístico. 'Ao lado da escola' sozinho seria aceitável."
+},
+{
+"nv": 3,
+"p": "No endereço 'Rodovia BR-101, 6 Km, Rua interna A, Casa 2 - Nova Canaã, 78414-003', os termos '6' e 'Km' correspondem, respectivamente, a",
+"o": [
+"complemento e ponto de referência",
+"logradouro e localidade",
+"número e modificador",
+"CEP e número",
+"modificador e complemento"
+],
+"c": 2,
+"e": "'6' é o número e 'Km' é o modificador (alfanumérico, acrescenta informação ao número). 'Rua interna A, Casa 2' é o complemento."
+}
+]
+},
+{
+"id": "t11",
+"disc": "tec",
+"nivel": "intermediária",
+"titulo": "Instrumentos de trabalho do Recenseador",
+"pag": "20 a 22",
+"porque": "Questões diretas: qual instrumento serve para quê, o que é a lista prévia e como atualizá-la.",
+"blocos": [
+{
+"t": "Setor censitário",
+"txt": "É a área de trabalho do Recenseador, a menor área geográfica definida pelo IBGE e a unidade territorial de coleta do Censo Agro, prioritariamente em áreas rurais. Observar os limites e percorrer todo o setor é responsabilidade do Recenseador, com a ajuda do seu Agente Censitário Supervisor. (p. 20)"
+},
+{
+"t": "Mapa do Setor e Descritivo",
+"txt": "O Mapa do Setor Censitário é a representação gráfica da área a recensear, com elementos que ajudam o reconhecimento em campo; no verso, traz a descrição dos limites. O Descritivo do Setor é o texto que define todo o contorno do setor e deve ser consultado sempre que for preciso confirmar o perímetro. (p. 20)"
+},
+{
+"t": "Mapa Municipal Estatístico (MME)",
+"txt": "Fica fixado no posto de coleta e mostra a visão geral de todos os setores do município e suas vias de acesso. Serve para o Recenseador ver onde fica o seu setor no município e planejar como chegar até ele. (p. 20)"
+},
+{
+"t": "Dispositivo Móvel de Coleta (DMC)",
+"txt": "É um tablet para registrar e armazenar as informações coletadas. Nele estão: o Mapa do Setor digital (imagem de satélite com o limite do setor destacado em cor), a Lista de Endereços e os Questionários. (p. 21)"
+},
+{
+"t": "Lista de Endereços (lista prévia)",
+"txt": "Reúne endereços de estabelecimentos trabalhados no setor em pesquisas anteriores, enriquecidos por registros administrativos; por isso se chama lista prévia. O Recenseador visita TODOS os estabelecimentos do setor, mesmo os que não estão na lista, e atualiza a relação: confirma os que continuam existindo, inclui os novos e exclui os não encontrados. (p. 21)"
+},
+{
+"t": "Questionários e Manual",
+"txt": "O questionário registra as informações do estabelecimento: identificação, localização e características; identificação e características do produtor ou administradora; da produção; área; uso das terras, entre outros. O preenchimento correto garante a qualidade dos dados. O Manual do Recenseador reúne conceitos, procedimentos e sistemas; é usado no treinamento e como consulta em campo. (p. 21 e 22)"
+}
+],
+"exemplos": [
+{
+"p": "O Recenseador quer saber por qual estrada chegar ao seu setor, que fica longe da sede do município.",
+"r": "Consulta o Mapa Municipal Estatístico, fixado no posto, que mostra todos os setores e as vias de acesso."
+},
+{
+"p": "Um estabelecimento da lista prévia virou um loteamento sem produção.",
+"r": "Na atualização da lista, o endereço não encontrado como estabelecimento é excluído; os novos encontrados são incluídos."
+}
+],
+"pegadinhas": [
+"MME fica no posto e serve para planejar a chegada; o mapa do setor serve para trabalhar dentro do setor.",
+"Lista prévia não é completa: visite todos, inclusive os que não estão nela.",
+"Atualizar a lista = confirmar, incluir e excluir."
+],
+"resumo": [
+"Instrumentos: mapa do setor, descritivo, MME, DMC (mapa digital, lista, questionários) e Manual.",
+"Setor = menor área do IBGE e unidade de coleta.",
+"Lista prévia: pesquisas anteriores + registros administrativos; sempre atualizar."
+],
+"qs": [
+{
+"nv": 1,
+"p": "O instrumento fixado no posto de coleta, que mostra todos os setores censitários do município e suas vias de acesso, é o",
+"o": [
+"Descritivo do Setor",
+"Manual do Recenseador",
+"Mapa Municipal Estatístico (MME)",
+"questionário eletrônico",
+"crachá de identificação"
+],
+"c": 2,
+"e": "O MME fica no posto e é usado para planejar a chegada ao setor."
+},
+{
+"nv": 1,
+"p": "O Dispositivo Móvel de Coleta (DMC) é",
+"o": [
+"um tablet usado para registrar e armazenar as informações coletadas em campo",
+"um receptor de rádio para falar com o posto",
+"o carro oficial do IBGE",
+"um mapa de papel plastificado",
+"um formulário impresso"
+],
+"c": 0,
+"e": "O DMC é um tablet; nele estão o mapa digital, a lista de endereços e os questionários."
+},
+{
+"nv": 2,
+"p": "A lista de endereços do DMC é chamada de lista prévia porque",
+"o": [
+"deve ser preenchida pelo produtor antes da visita",
+"é composta por endereços trabalhados em pesquisas anteriores, enriquecida por registros administrativos",
+"só pode ser consultada antes de sair a campo",
+"foi feita pela prefeitura",
+"contém apenas os estabelecimentos que já responderam"
+],
+"c": 1,
+"e": "Vem de pesquisas anteriores e de registros administrativos, por isso é prévia; deve ser atualizada em campo."
+},
+{
+"nv": 2,
+"p": "Para atualizar a lista prévia de endereços, o Recenseador deverá",
+"o": [
+"apenas confirmar os endereços que já estão na lista",
+"excluir todos e cadastrar de novo",
+"enviar a lista à prefeitura para revisão",
+"incluir somente os endereços indicados pelo supervisor",
+"confirmar os que continuam existindo, incluir os novos e excluir os não encontrados em campo"
+],
+"c": 4,
+"e": "A atualização tem três ações: confirmar, incluir e excluir, a partir do que for verificado em campo."
+},
+{
+"nv": 3,
+"p": "Sobre o setor censitário, de acordo com a apostila, é correto afirmar que",
+"o": [
+"é a maior divisão administrativa do município",
+"é a menor área geográfica definida pelo IBGE e a unidade territorial de coleta, e cabe ao Recenseador percorrê-lo totalmente, com ajuda do ACS",
+"pode ter seus limites alterados pelo Recenseador para facilitar a rota",
+"é definido pelo próprio produtor rural",
+"só existe em áreas urbanas"
+],
+"c": 1,
+"e": "O setor é a menor área geográfica definida pelo IBGE e a unidade de coleta; observar os limites e percorrê-lo todo é responsabilidade do Recenseador, com o ACS."
+}
+]
+},
+{
+"id": "t12",
+"disc": "tec",
+"nivel": "intermediária",
+"titulo": "Estrutura organizacional censitária e o papel do Recenseador",
+"pag": "11 a 19",
+"porque": "Siglas parecidas (AOR, ACA, ACI, ACR, ACS, ACQ) e a pergunta clássica: a quem o Recenseador se reporta? Caiu em 2010 e em 2026 no IBFC.",
+"blocos": [
+{
+"t": "Permanente e temporária",
+"txt": "A estrutura do Censo divide-se em permanente e temporária. A permanente fica na Sede (diretorias e coordenações-gerais) e nas Superintendências Estaduais (SES), ambas ligadas diretamente à Presidência do IBGE. Para o 12º Censo, serão contratados cerca de 36 mil temporários por processos seletivos simplificados. (p. 11 e 12)"
+},
+{
+"t": "Estrutura temporária: qualidade",
+"txt": "Centro Nacional de Qualidade (CNQ): vinculado à Sede, monitora a qualidade dos dados no nível nacional e orienta os CEQs; tem Analistas Censitários Nacionais e Agentes Censitários de Qualidade. Centro Estadual de Qualidade (CEQ): vinculado às SES, monitora a qualidade no nível estadual. (p. 12 e 13)"
+},
+{
+"t": "Posto censitário",
+"txt": "Vinculado às SES e Agências, é a base operacional da supervisão e dos Recenseadores, atendendo um ou mais municípios. Sua equipe: AOR, ACA, ACI, ACR, ACS e Recenseador. Sempre que requisitado, o Recenseador comparece ao posto para que o supervisor avalie o trabalho; se for preciso corrigir dados, volta a campo. (p. 13 e 19)"
+},
+{
+"t": "Quem faz o quê",
+"txt": "AOR (Assistente Operacional Regional): gere o posto. ACA (Agente Censitário Administrativo): apoia as atividades administrativas do AOR. ACI (Agente Censitário de Informática): apoio de tecnologia ao AOR. ACR (Agente Censitário Regional): coordena as atividades censitárias do posto, é subordinado ao AOR e gerencia os ACS. ACS (Agente Censitário Supervisor): supervisiona e treina os Recenseadores; é o elo entre quem coleta e quem gerencia. ACQ (Agente Censitário de Qualidade): supervisiona a qualidade e orienta ACS e Recenseadores na correção de erros. (p. 14 a 17)"
+},
+{
+"t": "O Recenseador",
+"txt": "Faz a coleta regular, presencial, em rotas diárias, sob a supervisão de um ACS. Recebe do ACS informações, material e instrumentos, e é ao ACS que se reporta sempre que tiver dificuldade ou dúvida. Antes da coleta, dedica-se ao treinamento. Atribuições: coletar conforme os manuais; ir a campo diariamente pela rota; abordar e entrevistar; registrar e transmitir dados (fotos, parcelas, coordenadas, questionários); agendar entrevistas se o informante pedir; zelar pela integridade do DMC e pela confidencialidade das informações. (p. 17 e 18)"
+},
+{
+"t": "Todos os agentes",
+"txt": "Além das tarefas próprias, todo agente censitário deve ministrar treinamentos quando necessário e apoiar as demais tarefas administrativas da operação. (p. 15)"
+}
+],
+"exemplos": [
+{
+"p": "O Recenseador não sabe se uma área é estabelecimento ou sítio de lazer.",
+"r": "Leva a dúvida ao seu Agente Censitário Supervisor (ACS)."
+},
+{
+"p": "O DMC travou e não transmite os dados.",
+"r": "Reporte ao seu ACS, como em qualquer dificuldade. No posto, o apoio de tecnologia da informação é do ACI."
+}
+],
+"pegadinhas": [
+"Recenseador se reporta ao ACS, não ao ACR nem ao AOR.",
+"ACR coordena o posto e gerencia os ACS; ACS supervisiona os Recenseadores.",
+"CNQ está ligado à Sede; CEQ às Superintendências Estaduais.",
+"Confidencialidade e integridade do DMC são atribuições do Recenseador."
+],
+"resumo": [
+"Permanente: Sede e SES, ligadas à Presidência. Temporária: CNQ, CEQ e postos.",
+"Posto: AOR, ACA, ACI, ACR, ACS e Recenseador.",
+"Cadeia: AOR → ACR → ACS → Recenseador.",
+"Dúvida em campo: ACS."
+],
+"qs": [
+{
+"nv": 1,
+"p": "Durante a coleta, sempre que encontrar alguma dificuldade ou dúvida, o Recenseador deve se reportar ao",
+"o": [
+"Assistente Operacional Regional (AOR)",
+"Agente Censitário de Informática (ACI)",
+"Agente Censitário Administrativo (ACA)",
+"Agente Censitário Supervisor (ACS)",
+"Analista Censitário Nacional"
+],
+"c": 3,
+"e": "O Recenseador trabalha sob supervisão do ACS e é a ele que se reporta em dúvidas e dificuldades."
+},
+{
+"nv": 2,
+"p": "O Centro Nacional de Qualidade (CNQ) é vinculado",
+"o": [
+"à Sede do IBGE e monitora a qualidade dos dados em nível nacional",
+"às prefeituras municipais",
+"aos postos censitários",
+"às Superintendências Estaduais, em nível estadual",
+"ao Ministério da Agricultura"
+],
+"c": 0,
+"e": "O CNQ é vinculado à Sede. O CEQ é que é vinculado às Superintendências Estaduais."
+},
+{
+"nv": 2,
+"p": "O agente responsável por coordenar as atividades censitárias no âmbito do posto, subordinado ao AOR e que gerencia o trabalho dos ACS, é o",
+"o": [
+"ACA",
+"ACI",
+"ACR",
+"ACQ",
+"Recenseador"
+],
+"c": 2,
+"e": "O Agente Censitário Regional (ACR) é subordinado ao AOR e gerencia os ACS."
+},
+{
+"nv": 2,
+"p": "NÃO é atribuição do Recenseador, segundo a apostila:",
+"o": [
+"zelar pela confidencialidade das informações coletadas",
+"agendar entrevistas, se solicitado pelo informante",
+"registrar e transmitir fotos, parcelas, coordenadas e questionários",
+"zelar pela integridade do DMC",
+"gerir o posto censitário e garantir a observância das instruções administrativas"
+],
+"c": 4,
+"e": "Gerir o posto é atribuição do AOR. As demais estão entre as atribuições do Recenseador."
+},
+{
+"nv": 3,
+"p": "Após avaliar o trabalho de um Recenseador no posto censitário, a supervisão identifica um dado incorreto em um questionário. Nesse caso, o Recenseador deverá",
+"o": [
+"corrigir o dado de memória, no próprio posto",
+"retornar a campo para corrigir o dado coletado",
+"pedir que o ACI altere o dado no sistema",
+"ignorar, pois a correção é feita pelo CNQ",
+"refazer todos os questionários do setor"
+],
+"c": 1,
+"e": "A apostila diz que, se a supervisão indicar necessidade de corrigir dado coletado, o Recenseador deverá retornar a campo."
+}
+]
+},
+{
+"id": "t13",
+"disc": "tec",
+"nivel": "básica",
+"titulo": "Divisão político-administrativa do Brasil e geocódigo",
+"pag": "32 a 34",
+"porque": "Números e hierarquia: estados, municípios, distritos, subdistritos e setores, e a leitura do geocódigo. Questões rápidas de memorização.",
+"blocos": [
+{
+"t": "As unidades",
+"txt": "O Brasil divide-se em: Unidades da Federação (26 estados e o Distrito Federal); estados, as unidades autônomas de maior abrangência, e o DF, onde fica a sede do Governo Federal; municípios, unidades autônomas de caráter local que dividem integralmente os estados e são criados, incorporados, fundidos ou desmembrados por lei estadual. São 5.569 municípios. A figura da apostila cita ainda 1 distrito estadual: Fernando de Noronha. (p. 32 e 33) Atenção: o texto literal da apostila (p. 32) diz 'Unidades da Federação: São os 26 estados, o Distrito Federal e os municípios'. Se a banca copiar essa frase, ela vem assim."
+},
+{
+"t": "Distritos e subdistritos",
+"txt": "Distritos dividem integralmente os municípios, são criados por legislação municipal e não têm autonomia administrativa (subordinam-se ao governo municipal). Há municípios com distrito único e outros com vários; são 10.744 distritos. Subdistritos existem geralmente só em grandes cidades, para dividir distritos muito populosos ou extensos: cerca de 645, e a maioria dos municípios não tem. (p. 32 e 33)"
+},
+{
+"t": "Setor censitário",
+"txt": "Para estudos estatísticos, o IBGE subdivide as áreas em setores censitários. A extensão e o número de estabelecimentos influenciam a carga de trabalho, por isso os setores são planejados com dimensões adequadas e respeitam a divisão político-administrativa. Não se registram endereços nem entrevistas fora da área designada. (p. 33)"
+},
+{
+"t": "Geocódigo",
+"txt": "Todo setor tem um geocódigo, código único que reúne UF, município, distrito, subdistrito e número do setor. Exemplo: 51 04104 05 00 0016 = Estado 51 | Município 04104 | Distrito 05 | Subdistrito 00 | Setor 0016. Aparece no título e no rodapé dos mapas e no canto superior direito do Descritivo do Setor. (p. 34)"
+}
+],
+"exemplos": [
+{
+"p": "Geocódigo 15 01402 05 00 0123.",
+"r": "Estado 15, município 01402, distrito 05, subdistrito 00 (sem subdistrito), setor 0123."
+},
+{
+"p": "Uma vila foi transformada em distrito.",
+"r": "Distritos são criados por legislação municipal e não têm autonomia administrativa."
+}
+],
+"pegadinhas": [
+"Municípios: lei estadual. Distritos: lei municipal.",
+"Distrito não tem autonomia; município tem.",
+"No geocódigo, a ordem é: estado, município, distrito, subdistrito, setor."
+],
+"resumo": [
+"26 estados + DF; 5.569 municípios; 10.744 distritos; ~645 subdistritos.",
+"Município criado por lei estadual; distrito por lei municipal, sem autonomia.",
+"Geocódigo: UF (2) + município (5) + distrito (2) + subdistrito (2) + setor (4)."
+],
+"qs": [
+{
+"nv": 1,
+"p": "Segundo a apostila, o número de municípios brasileiros é",
+"o": [
+"5.570",
+"5.569",
+"5.565",
+"10.744",
+"645"
+],
+"c": 1,
+"e": "A apostila informa 5.569 municípios. 10.744 são distritos e 645, subdistritos."
+},
+{
+"nv": 1,
+"p": "Os distritos são unidades que",
+"o": [
+"têm autonomia administrativa e são criados por lei federal",
+"dividem os estados e são criados por lei estadual",
+"dividem integralmente os municípios, são criados por legislação municipal e não têm autonomia administrativa",
+"existem somente nas capitais",
+"correspondem aos setores censitários"
+],
+"c": 2,
+"e": "Distritos dividem os municípios, são criados por lei municipal e são subordinados ao governo municipal."
+},
+{
+"nv": 2,
+"p": "No geocódigo de setor 51 04104 05 00 0016, o trecho '05' identifica o",
+"o": [
+"estado",
+"município",
+"setor",
+"subdistrito",
+"distrito"
+],
+"c": 4,
+"e": "Ordem: estado (51), município (04104), distrito (05), subdistrito (00), setor (0016)."
+},
+{
+"nv": 2,
+"p": "Os municípios brasileiros são criados, incorporados, fundidos ou desmembrados por",
+"o": [
+"lei estadual",
+"decreto presidencial",
+"lei municipal",
+"resolução do IBGE",
+"portaria do Ministério do Planejamento"
+],
+"c": 0,
+"e": "Municípios: lei estadual. Distritos: legislação municipal."
+},
+{
+"nv": 3,
+"p": "Sobre os subdistritos, é correto afirmar que",
+"o": [
+"todo município tem pelo menos um",
+"são criados para dividir setores censitários rurais",
+"geralmente existem só em grandes cidades, para subdividir distritos de grande população ou extensão, e a maioria dos municípios não os possui",
+"substituem os distritos nas capitais",
+"são áreas indígenas delimitadas"
+],
+"c": 2,
+"e": "Subdistritos (cerca de 645) existem geralmente nas grandes cidades; a maior parte dos municípios não tem."
+}
+]
+},
+{
+"id": "t14",
+"disc": "tec",
+"nivel": "básica",
+"titulo": "O IBGE e o Censo Agropecuário, Florestal e Aquícola",
+"pag": "3 a 10",
+"porque": "Abertura da apostila: história, missão, objetivos e números. São pontos fáceis que não podem ser perdidos.",
+"blocos": [
+{
+"t": "O IBGE",
+"txt": "Fundado em 1936, é o órgão coordenador e produtor de informações estatísticas e geográficas do país. Missão: retratar o Brasil com informações necessárias ao conhecimento de sua realidade e ao exercício da cidadania. Rede nacional: 27 Superintendências Estaduais (26 nas capitais e 1 no Distrito Federal) e 566 Agências municipais, vinculadas à Presidência. (p. 4 e 5)"
+},
+{
+"t": "Para que servem os censos",
+"txt": "Com as informações dos censos, o governo consegue identificar as áreas que mais precisam de investimentos em saúde, educação e outros setores; localizar regiões que precisam de estímulo ao desenvolvimento; e planejar uma distribuição mais equilibrada dos recursos públicos. (p. 6)"
+},
+{
+"t": "O que é uma pesquisa censitária",
+"txt": "É o levantamento que coleta dados de TODA a população de um universo. No Censo Agro, o universo é o dos estabelecimentos agropecuários. É a principal e mais completa investigação sobre a estrutura e a produção agropecuária do país. (p. 6)"
+},
+{
+"t": "História",
+"txt": "Primeiro Censo Agropecuário: 1920 (antes do IBGE). Em 1936 nasce o IBGE, que passa a fazer os censos. De 1940 a 1970, a cada dez anos; depois, a cada cinco (1975, 1980, 1985). Em 1990 não foi possível, e foi feito em 1996. No século XXI, a apostila cita os censos de 2007 e 2017. O de 2017 visitou mais de 5 milhões de estabelecimentos, e a coleta hoje usa DMCs, mapas digitais e imagens de satélite. (p. 8)"
+},
+{
+"t": "O 12º Censo",
+"txt": "Objetivo: levantar informações sobre todos os estabelecimentos do território nacional. A coleta será em 2027, com referência aos dados de 2026. Espera-se: informações atualizadas e comparáveis com censos anteriores; dados por tipologias (agricultura familiar, médio produtor, patronal, povos e comunidades tradicionais); edições digitais sobre cerca de 5,1 milhões de estabelecimentos; e um cadastro de estabelecimentos para pesquisas amostrais. (p. 9)"
+},
+{
+"t": "Concepção, abrangência e impactos",
+"txt": "Concepção: segue as recomendações da Estratégia Global para o Aprimoramento das Estatísticas Agropecuárias e do Programa Mundial de Censos Agropecuários da FAO. Abrangência: resultados no nível dos municípios, com recortes como Unidades de Conservação, Terras Indígenas, Territórios Quilombolas, biomas e Projetos de Assentamento. Impactos: permite avaliar políticas públicas como o Pronaf (Programa Nacional de Fortalecimento da Agricultura Familiar) e estudar a expansão das fronteiras agrícolas e a inovação tecnológica. (p. 10)"
+}
+],
+"exemplos": [
+{
+"p": "Por que o Censo Agro visita até o pequeno sítio que produz para o sustento?",
+"r": "Porque é censitário: coleta todo o universo de estabelecimentos, sem amostra."
+},
+{
+"p": "Qual organismo internacional orienta a concepção do Censo Agro?",
+"r": "A FAO, Organização das Nações Unidas para Alimentação e Agricultura."
+}
+],
+"pegadinhas": [
+"Primeiro Censo Agro: 1920. Fundação do IBGE: 1936.",
+"Coleta em 2027, referência ao ano de 2026.",
+"27 Superintendências (26 capitais + DF) e 566 agências.",
+"Censitário = todos, não amostra."
+],
+"resumo": [
+"IBGE: 1936; missão de retratar o Brasil.",
+"Censo: todos os estabelecimentos; o de 2017 visitou mais de 5 milhões.",
+"12º Censo: coleta em 2027, referência a 2026; cerca de 5,1 milhões de estabelecimentos.",
+"FAO na concepção; Pronaf entre os impactos."
+],
+"qs": [
+{
+"nv": 1,
+"p": "O IBGE foi fundado em",
+"o": [
+"1920",
+"1940",
+"1936",
+"1872",
+"1975"
+],
+"c": 2,
+"e": "O IBGE foi fundado em 1936. O primeiro Censo Agropecuário é de 1920, antes do IBGE."
+},
+{
+"nv": 1,
+"p": "Uma pesquisa censitária caracteriza-se por",
+"o": [
+"coletar dados de toda a população de um determinado universo",
+"entrevistar uma amostra sorteada",
+"ser feita apenas por telefone",
+"pesquisar somente as áreas urbanas",
+"usar apenas registros administrativos"
+],
+"c": 0,
+"e": "Censo coleta dados de todo o universo investigado; no Censo Agro, todos os estabelecimentos agropecuários."
+},
+{
+"nv": 2,
+"p": "De acordo com a apostila, a coleta do 12º Censo Agropecuário, Florestal e Aquícola será realizada em",
+"o": [
+"2026, com referência aos dados de 2025",
+"2027, com referência aos dados de 2027",
+"2025, com referência aos dados de 2024",
+"2027, com referência aos dados de 2026",
+"2028, com referência aos dados de 2027"
+],
+"c": 3,
+"e": "A apostila (p. 9) diz: coleta em 2027, tendo como referência os dados do ano de 2026."
+},
+{
+"nv": 2,
+"p": "A rede nacional do IBGE é composta, segundo a apostila, por",
+"o": [
+"26 Superintendências e 5.569 agências",
+"27 Superintendências Estaduais e 566 Agências municipais",
+"27 Superintendências e 10.744 agências",
+"5 Superintendências regionais e 566 postos",
+"uma única sede, sem unidades estaduais"
+],
+"c": 1,
+"e": "São 27 Superintendências Estaduais (26 nas capitais e 1 no DF) e 566 Agências municipais."
+},
+{
+"nv": 3,
+"p": "As informações geradas pelo Censo Agro permitem avaliar políticas públicas. A apostila cita como exemplo o",
+"o": [
+"Programa Bolsa Família",
+"Sistema Único de Saúde",
+"Programa Minha Casa Minha Vida",
+"Programa Nacional de Fortalecimento da Agricultura Familiar (Pronaf)",
+"Programa Nacional de Alimentação Escolar"
+],
+"c": 3,
+"e": "A apostila cita o Pronaf como exemplo de política pública avaliada com os dados do Censo Agro."
+}
+]
+}
 ]
