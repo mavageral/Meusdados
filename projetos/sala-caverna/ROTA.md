@@ -501,3 +501,14 @@ Ficaram de fora, de propósito:
   - **Acessibilidade:** o medidor usa `aria-valuetext`.
   - **Estado inicial:** sai em cor neutra, com o convite "Faça a 1ª aula".
 - **Testes:** 284/284, com o cenário "Apostila oficial no app: páginas da aula, busca e volta".
+- **Revisor de UI do leitor da apostila:**
+  - **Grave, corrigido:** a busca recriava o campo a cada letra, o que fecharia o teclado no iPhone. Agora a moldura da tela é desenhada uma vez só e a busca atualiza apenas a lista de resultados.
+  - **Grave para leitor de tela, corrigido:** o anúncio dos resultados agora sai de uma região de status fixa (`#ap-status`).
+  - **Também corrigido:**
+    - o destaque funciona sem acento (buscar "areas" marca "áreas");
+    - a tela rola até o primeiro trecho encontrado;
+    - o botão de voltar diz para onde volta (aula, curso ou biblioteca);
+    - as linhas têm no máximo 68 caracteres;
+    - os 88 títulos da apostila aparecem separados do texto;
+    - o link do PDF tem 44 px de altura;
+    - o destaque é aplicado antes do escape do texto, sem quebrar símbolos especiais.

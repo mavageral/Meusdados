@@ -15,6 +15,7 @@ FIGURAS = {
  54: "Fluxograma: existe produção ou exploração agropecuária, florestal ou aquícola na propriedade? Se a produção é destinada à comercialização (venda/troca) ou à subsistência vital da família produtora: RECENSEÁVEL. Se é exclusivamente para lazer, passatempo ou deleite dos moradores: NÃO RECENSEÁVEL. Figura: NÃO RECENSEÁVEL a criação exclusiva de pássaros, cães e gatos (animais domésticos) e a criação de animais para experiências de laboratório ou produção de soros, vacinas e produtos similares (fins científicos e médicos).",
  55: "Figura (locais NÃO recenseáveis, independentemente do que cultivam): hortos, postos zootécnicos e estações experimentais; hotéis-fazenda e locais de lazer; conventos e igrejas; hospitais, asilos e orfanatos; escolas profissionalizantes e patronatos; prisões e reformatórios.",
 }
+TITULOS = ['Estruturas territoriais de Povos e Comunidades Tradicionais (PCTs)', 'Diferença entre propriedade rural e estabelecimento agropecuário', 'Setores censitários de Povos e Comunidades Tradicionais (PCTs)', 'Estabelecimentos agropecuários pertencentes a indústrias', 'Objetivo do Censo Agropecuário, Florestal e Aquícola', 'Orientações de navegação para o trabalho em campo', 'Estabelecimentos em sucessão, partilha ou litígio', 'O Instituto Brasileiro de Geografia Estatística', 'Estabelecimentos em mais de um setor censitário', 'O 12º Censo Agropecuário, Florestal e Aquícola', 'Áreas não contínuas em municípios diferentes', 'Como identificar se há unidade recenseável?', 'O Censo Agropecuário, Florestal e Aquícola', '4.Estruturas territoriais não setorizadas', 'Divisão político-administrativa do Brasil', 'Conceito de Estabelecimento Agropecuário', 'Estabelecimentos com áreas não contínuas', 'Estabelecimentos novos ou sem produção', 'Áreas de Interesse Operacional (AIOs)', '4. Dispositivo Móvel de Coleta (DMC)', 'Como interpretar imagens de satélite', 'Atividades e locais não recenseáveis', 'Estrutura Organizacional Censitária', '3. Mapa Municipal Estatístico (MME)', 'Centro Nacional de Qualidade (CNQ)', 'Centro Estadual de Qualidade (CEQ)', 'Conhecendo a Estrutura Censitária', 'Mapa do Setor Censitário digital:', 'Exemplos de produtores sem área:', '5. Acessibilidade e Observações', 'Exemplo 2 - Áreas não contínuas', '1. Ponto Inicial e Ponto Final', 'Imagem de satélite ou orbital', 'Geocódigo do Setor Censitário', 'Multiplicidade de Identidades', 'Confinamento de gado (boitel)', 'Agente Censitário Supervisor', '3. Setores a serem excluídos', 'Tipos de setores censitários', 'Estabelecimento Agropecuário', '1. Mapa do Setor Censitário', 'Unidades da Federação (UFs)', 'Exemplo 1 - Áreas contínuas', 'Agente Censitário Regional', 'Acesso aos setores de PCTs', '2. Descrição do Perímetro', 'Unidades não recenseáveis', 'Instrumentos de trabalho', '5. Manual do Recenseador', 'Produção de subsistência', 'Estruturas Territoriais', 'Coordenadas Geográficas', '2. Descritivo do setor', 'Exploração comunitária', 'Trabalhando conceitos', 'Unidades Recenseáveis', 'Estrutura permanente', 'Estrutura temporária', 'Número e modificador', 'Lista de Endereços:', 'Descritivo do setor', 'Ponto de referência', 'Produtores sem área', 'Situações especiais', 'Postos censitários', 'Elementos do mapa', 'Posto censitário', 'Questionários:', 'Apresentação', 'Subdistritos', 'Encerramento', 'Abrangência', 'Concepção', 'Impactos', 'Legenda']
 CAB = re.compile(r"Conhecimentos básicos para o 12\s*[oº]\s*Censo Agropecuário, Florestal e Aquícola")
 
 def limpar(pg, txt):
@@ -31,7 +32,18 @@ def limpar(pg, txt):
         cur.append(l)
     if cur: pars.append(" ".join(cur))
     pars = [re.sub(r"\s+", " ", re.sub(r"(\w)- (\w)", r"\1\2", p)).strip() for p in pars]
-    return [p for p in pars if p]
+    out = []
+    for p in pars:
+        if not p: continue
+        p2 = p.replace("12o ", "12º ")
+        h = next((t for t in TITULOS if p2 == t or p2.startswith(t + " ")), None)
+        if h:
+            out.append("# " + h)
+            resto = p2[len(h):].strip()
+            if resto: out.append(resto)
+        else:
+            out.append(p)
+    return out
 
 def main():
     raw = open(sys.argv[1], encoding="utf-8").read().split("\f")
