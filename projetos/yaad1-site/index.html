@@ -564,6 +564,10 @@ button.j-hoje{cursor:pointer}button.j-hoje:hover{border-color:var(--text)}
 .hall-it small{font-size:12px;color:var(--muted);line-height:1.35}
 .hall-it:focus-visible{outline:2px solid var(--c);outline-offset:2px}
 a.item{text-decoration:none;color:inherit}
+.apt-n{font-size:30px;line-height:1;min-width:64px}
+.apt-tubo{position:relative;flex:1;height:14px;border-radius:99px;background:var(--glass-2);overflow:hidden}
+.apt-tubo i{display:block;height:100%;border-radius:99px}
+.apt-tubo em{position:absolute;top:0;bottom:0;width:1px;background:var(--edge-2)}
 .tr-bar{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--glass)}
 .tr-bar i{display:block;height:100%}
 .tr-dot{width:10px;height:10px;border-radius:50%;flex:none}
@@ -1181,6 +1185,7 @@ function hallHTML(){
       <button class="btn primary" style="min-height:52px" data-act="hall-aula">${a.tipo==="retomar"?"Voltar para a aula":aiOn()?"Entrar na aula ao vivo":"Entrar na aula"}</button>
       ${aiOn()?`<small class="muted">Você monta o plano, o professor explica e a turma acompanha no quadro, com pausas para você responder.</small>`:`<small class="muted">Com o Claude ligado, o professor e a turma dão a aula. Sem ele, você registra o estudo e responde à prova.</small>`}
     </article>
+    ${termometroHTML(true)}
     <div class="hall-amb" role="group" aria-label="Ambientes da escola">${AMBIENTES.map(([k,n,d,ic,c])=>`<button class="hall-it" data-act="hall-amb" data-k="${k}" style="--hc:${c}"><span class="ic" aria-hidden="true"><svg class="icon"><use href="#${ic}"/></svg></span><b>${n}</b><small>${d}</small></button>`).join("")}</div>
   </section>`;
 }
@@ -3178,7 +3183,7 @@ function trEstado(id){ return trSt(id).st || "nao"; }
 function proximaLicao(disc){ const ls=(trilha()[disc]||[]); return ls.find(L=>trEstado(L.id)==="reforco") || ls.find(L=>trEstado(L.id)==="aprendendo") || ls.find(L=>trEstado(L.id)==="nao") || null; }
 function revisoesTrilha(){ const hj=iso(today()); return Object.keys(DISC).flatMap(k=>trilha()[k]||[]).filter(L=>{ const t=trSt(L.id); return ["revisao","dominado"].includes(t.st) && t.prox && t.prox<=hj && (t.step||0)<TR_PASSOS.length; }); }
 function trResumo(disc){ const ls=trilha()[disc]||[], c={nao:0,aprendendo:0,reforco:0,revisao:0,dominado:0}; ls.forEach(L=>c[trEstado(L.id)]++); return {tot:ls.length, ...c}; }
-function discPrioritaria(){ return Object.keys(DISC).map(k=>{ const r=trResumo(k); return {k, s:DISC[k].peso*(1-(r.dominado+r.revisao*.5)/Math.max(1,r.tot)), tem:!!proximaLicao(k)}; }).filter(x=>x.tem).sort((a,b)=>b.s-a.s)[0]?.k || null; }
+function discPrioritaria(){ const A=(typeof aptidao==="function"&&frenteIBGE())?aptidao():null; return Object.keys(DISC).map(k=>{ const r=trResumo(k); return {k, s:A&&A.por[k]?DISC[k].peso*(1-A.por[k].media):DISC[k].peso*(1-(r.dominado+r.revisao*.5)/Math.max(1,r.tot)), tem:!!proximaLicao(k)}; }).filter(x=>x.tem).sort((a,b)=>b.s-a.s)[0]?.k || null; }
 function perm(n, seed){ const a=[...Array(n).keys()]; let x=(seed*9301+49297)%233280||7; for(let i=n-1;i>0;i--){ x=(x*9301+49297)%233280; const j=x%(i+1); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 function frenteIBGE(){ return frentes().find(f=>f.modelo==="ibge2027"||f.id==="ibge2027") || null; }
 function trRegistrar(L, ac, tot, ctx){ const f=frenteIBGE(), hj=iso(today()), mat=DISC[L.disc].n;
@@ -3198,6 +3203,7 @@ function openTrilha(foco){
   sheetHTML({title:"Curso da prova", next: rv.length?`Revisar ${rv.length} aula${rv.length>1?"s":""} de hoje`:prox?"Começar a próxima aula":"Fechar", body:`
     <h2 class="q">Curso da prova<small>Recenseador IBGE 2027. ${T.tec.length+T.mat.length+T.por.length} aulas escritas a partir do edital e da apostila oficial do IBGE, do assunto mais difícil para o mais fácil.</small></h2>
     ${rv.length?`<p class="note" style="margin:0">Hoje há ${rv.length} revisão${rv.length>1?"ões":""}: ${esc(rv.map(L=>L.titulo).slice(0,3).join("; "))}${rv.length>3?"…":""}. Revisar antes de aprender coisa nova segura o que você já estudou.</p>`:prox?`<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Próxima aula · ${esc(DISC[k].n)}</span><b style="font-weight:500">${esc(prox.titulo)}</b><small class="muted">${esc(nivTxt(prox.nivel)).replace(/^d/,"D")}${prox.pag?` · apostila, p. ${esc(prox.pag)}`:""}</small></div>`:`<p class="note" style="margin:0">Todas as aulas já foram aprovadas. Agora é revisar nas datas e treinar questões.</p>`}
+    ${termometroHTML()}
     ${planoHTML()}
     <details class="glass pad"><summary style="cursor:pointer;font-weight:500;min-height:44px;display:flex;align-items:center">Como o curso funciona</summary><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px;line-height:1.5"><li>Revisão do que venceu hoje.</li><li>Aula nova: por que cai, explicação do zero, exemplos, pegadinhas e resumo.</li><li>Teste de 5 questões no estilo da banca, com 5 alternativas.</li><li>Correção comentada. Com 4 acertos ou mais (80%), a aula é aprovada; com menos, os erros vão para a Forja e você refaz.</li><li>Aprovada, ela volta para revisão em 1, 3, 7, 15 e 30 dias. Depois de passar nas de 1, 3 e 7 dias, fica dominada.</li></ol></details>
     ${Object.keys(DISC).map(d=>{ const r=trResumo(d); return `<section style="display:grid;gap:8px" aria-label="${esc(DISC[d].n)}"><div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><h3 style="margin:0;font-weight:500;font-size:18px">${esc(DISC[d].n)}</h3><span class="mono muted" style="font-size:12px">${r.dominado} de ${r.tot} dominadas</span></div>${trilhaBarHTML(d)}
@@ -3205,7 +3211,7 @@ function openTrilha(foco){
     ${chanceHTML()}
     ${estrategiaHTML()}
     <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-tr="simulado">${M.simulado&&M.simulado.atual?"Continuar o simulado completo":"Simulado completo (60 questões)"}</button><button class="btn" style="min-height:48px" data-tr="treino">Treino de questões</button>${f?`<button class="btn" style="min-height:48px" data-tr="prova2010">Prova real de 2010</button>`:""}</div>`});
-  SH.querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>openLicao(b.dataset.tl));
+  SH.querySelectorAll("[data-tl],[data-fraca]").forEach(b=>b.onclick=()=>openLicao(b.dataset.tl||b.dataset.fraca));
   SH.querySelectorAll("[data-tr]").forEach(b=>b.onclick=()=>{ const t=b.dataset.tr; if(t==="prova2010") return openProvaReal("ibge2010"); if(t==="simulado") return openSimulado(); closeSheetSoft(); TAB="hoje"; PAINEL=false; PREP_ABERTO=true; PREP_FOCO=true; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>{ const el=document.querySelector(".prep"); if(el){ el.scrollIntoView({block:"start"}); const q=el.querySelector(".pp-p")||el; q.tabIndex=-1; q.focus({preventScroll:true}); } },80); });
   if(foco){ const el=SH.querySelector(`[data-tl="${foco}"]`); if(el) el.focus(); }
 }
@@ -3224,12 +3230,12 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
     if(F.rev){ if(ac>=2){ const step=(t.step||0)+1; trSet(id,{step, prox:step<TR_PASSOS.length?iso(addDays(today(),TR_PASSOS[step])):null, st:step>=3?"dominado":"revisao"}); msg=step>=3?"Revisão aprovada. Esta aula agora está dominada.":`Revisão aprovada. Próxima revisão em ${TR_PASSOS[Math.min(step,TR_PASSOS.length-1)]} dias.`; }
       else { trSet(id,{st:"reforco", step:0, prox:null}); msg="Esta aula precisa de reforço: releia e refaça o teste. Os erros foram para a Forja."; } }
     else { const tentativas=(t.tent||[]).concat([{d:hj, ac, tot}]).slice(-10);
-      if(ac/tot>=.8){ const ja=["revisao","dominado"].includes(t.st); trSet(id,{tent:tentativas, ...(ja?{}:{st:"revisao", step:0, prox:iso(addDays(today(),1))})}); msg=ja?"Aprovada de novo.":"Aprovada. Ela volta para revisão amanhã, e depois em 3, 7, 15 e 30 dias."; }
+      if(ac/tot>=.8){ const ja=["revisao","dominado"].includes(t.st); trSet(id,{tent:tentativas, motivo:null, ...(ja?{}:{st:"revisao", step:0, prox:iso(addDays(today(),1))})}); msg=ja?"Aprovada de novo.":"Aprovada. Ela volta para revisão amanhã, e depois em 3, 7, 15 e 30 dias."; }
       else { trSet(id,{tent:tentativas, st:"reforco"}); msg="Ainda não chegou a 80%. Os erros foram para a Forja: releia a aula e refaça o teste."; } }
     trRegistrar(L, ac, tot, {qs, dstr:F.dstr, b:F.b, t0:F.t0}); saveMain();
     F.res={qs, ac, tot, msg}; F.tela="res"; draw(true); }
   const draw=(foco)=>{ if(FLOW!==F) return; const LT="ABCDE", e=trEstado(id);
-    const cab=`<span class="tag">${esc(DISC[L.disc].n)} · ${esc(nivTxt(L.nivel))}${L.pag?` · apostila, p. ${esc(L.pag)}`:""}</span>`;
+    const cab=`${trSt(id).motivo==="simulado"&&e==="reforco"?`<p class="ponte" style="margin:0;animation:none">O simulado mostrou que este assunto precisa de reforço. Releia com calma e refaça o teste.</p>`:""}<span class="tag">${esc(DISC[L.disc].n)} · ${esc(nivTxt(L.nivel))}${L.pag?` · apostila, p. ${esc(L.pag)}`:""}</span>`;
     if(F.tela==="aula"){
       sheetHTML({title:"Aula", next:F.rev?"Refazer a revisão (3 questões)":"Fazer o teste (5 questões)", body:`${cab}<h2 class="q">${esc(L.titulo)}</h2>
         <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Por que cai na prova</span><p style="margin:0;line-height:1.55">${esc(L.porque)}</p></div>
@@ -3328,11 +3334,11 @@ function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual)
     const pts=it.filter(x=>x.ok).length, zero=Object.entries(por).filter(([,v])=>!v.ok).map(([k])=>k), passa=pts>=18&&!zero.length;
     it.filter(x=>x.j!=null).forEach(x=>{ const id="sim-"+x.q.key; st.resp=st.resp.filter(r=>r.id!==id); st.resp.push({id, mat:x.b.mat, ok:x.ok, d:hj}); });
     it.filter(x=>!x.ok).forEach(x=>{ const id="esim-"+x.q.key; M.erros=(M.erros||[]).filter(e=>e.id!==id); M.erros.push({proj:PID(), id, d:hj, mat:x.b.mat, topic:x.b.tema, p:x.b.p, minha:x.j!=null?x.b.o[x.j]:"(em branco)", certa:x.b.o[x.b.c], e:x.b.e, ok:false}); });
-    const dur=Math.round((Date.now()-S.t0)/60000);
-    M.simulado.hist.push({d:hj, pts, por, dur, keys:S.qs.map(q=>q.key), erros:it.filter(x=>!x.ok).map(x=>x.q.key)}); if(M.simulado.hist.length>12) M.simulado.hist=M.simulado.hist.slice(-12);
+    const dur=Math.round((Date.now()-S.t0)/60000), ajuste=adaptarPorSimulado(it), A=aptidao();
+    M.simulado.hist.push({d:hj, pts, por, dur, apt:A?A.apt:null, keys:S.qs.map(q=>q.key), erros:it.filter(x=>!x.ok).map(x=>x.q.key)}); if(M.simulado.hist.length>12) M.simulado.hist=M.simulado.hist.slice(-12);
     if(f){ const mk=marcosDe(f).find(m=>!m.ok && /^Simulado completo/.test(m.r)); if(mk){ f.ok=f.ok||{}; f.ok[mk.i]=true; } }
     M.simulado.atual=null; addXP(20+pts); saveMain();
-    F.R={it, pts, por, zero, passa, dur}; F.tela="res"; draw(true); }
+    F.R={it, pts, por, zero, passa, dur, ajuste}; F.tela="res"; draw(true); }
   const draw=(foco)=>{ if(FLOW!==F) return;
     if(F.tela==="prova"){ const feitas=Object.keys(S.resp).length, min=Math.round((Date.now()-S.t0)/60000), grupos=[["Conhecimentos Técnicos",0,30],["Matemática",30,45],["Língua Portuguesa",45,60]];
       sheetHTML({title:`Simulado ${S.n}`, next:"Corrigir", body:`<h2 class="q">Simulado completo<small>60 questões no formato da prova: 30 de Técnicos, 15 de Matemática e 15 de Português. A prova real tem 4 horas, cerca de 3 minutos por questão. Dá para parar e continuar depois.</small></h2>
@@ -3343,14 +3349,45 @@ function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual)
       sheetHTML({title:"Resultado do simulado", next:"Concluir", body:`<h2 class="q" tabindex="-1">${R.pts} de 60<small>${R.passa?"Passaria do corte (18 e pelo menos 1 em cada matéria).":R.zero.length?`Zerou ${esc(R.zero.join(" e "))}: seria eliminada. Reforce já essa matéria.`:"Abaixo do corte de 18. Os erros foram para a Forja."} Meta para classificar: 36 ou mais.</small></h2>
         ${Object.entries(R.por).map(([k,v])=>`<div class="pp-m"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(k)}</span><span class="mono" style="font-size:12px">${v.ok} de ${v.tot}</span></div><span class="b" aria-hidden="true"><i style="width:${Math.round(v.ok/v.tot*100)}%;${v.ok/v.tot<.5?"background:var(--warn)":""}"></i></span></div>`).join("")}
         <small class="muted">Tempo: ${R.dur} min. Em caso de empate, conta primeiro a nota de Técnicos e depois a de Matemática.</small>
+        ${R.ajuste&&(R.ajuste.reforco.length||R.ajuste.antecipada.length)?`<div class="ponte" style="animation:none"><b style="font-weight:500">O app ajustou o seu estudo</b><p style="margin:0">${R.ajuste.reforco.length?`Voltaram para reforço: ${esc(R.ajuste.reforco.map(i=>licao(i).titulo).join("; "))}. `:""}${R.ajuste.antecipada.length?`Revisão antecipada para amanhã: ${esc(R.ajuste.antecipada.map(i=>licao(i).titulo).join("; "))}.`:""}</p></div>`:""}
+        ${termometroHTML()}
         ${chanceHTML()}
         ${R.it.some(x=>!x.ok)?`<section style="display:grid;gap:8px"><span class="tag">Correção das que você errou · já estão na Forja</span>${R.it.map((x,i)=>x.ok?"":`<details class="cad-it"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center"><span><b style="font-weight:500">Questão ${i+1}</b> · ${esc(x.b.tema)}</span></summary><p><b style="font-weight:500">${esc(x.b.p)}</b></p><p>${x.j!=null?`Você marcou: ${esc(x.b.o[x.j])}.`:"Em branco."} Certa: ${esc(x.b.o[x.b.c])}.</p><p class="muted">${esc(x.b.e)}</p></details>`).join("")}</section>`:""}`});
       if(foco){ const h=SH.querySelector("h2.q"); if(h) h.focus({preventScroll:true}); $("#shb").scrollTop=0; } }
     SH.querySelectorAll("[data-sq]").forEach(b=>b.onclick=()=>{ const k=b.dataset.sq, j=+b.dataset.j; S.resp[k]=j; F.conf=false; saveMain(); const y=$("#shb").scrollTop; draw(); $("#shb").scrollTop=y; const nb=SH.querySelector(`[data-sq="${CSS.escape(k)}"][data-j="${j}"]`); if(nb) nb.focus({preventScroll:true}); });
+    SH.querySelectorAll("[data-fraca]").forEach(b=>b.onclick=()=>openLicao(b.dataset.fraca));
     SH.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para descartar as respostas"; return; } M.simulado.atual=null; saveMain(); openSimulado(); });
   };
   draw();
 }
+/* Termômetro de aptidão e estudo adaptativo.
+   Aptidão = pontos esperados se a prova fosse hoje ÷ 60. Cada aula tem um acerto estimado pelas suas respostas
+   (testes e simulados), puxado para 20% (chute com 5 alternativas) quando há poucas respostas: (acertos + 0,4) ÷ (respostas + 2).
+   Aula nunca respondida conta como chute. Matéria = média das suas aulas; pontos = 30 × Técnicos + 15 × Matemática + 15 × Português. */
+function respLicoes(){ const f=frenteIBGE(), resp=(((M.prep||{})[f?f.id:"ibge2027"])||{}).resp||[], m={};
+  resp.forEach(r=>{ const id=String(r.id||""), mm=id.match(/^tr-(\w+)-\d+$/)||id.match(/^sim-L:(\w+):\d+$/); if(mm) (m[mm[1]]=m[mm[1]]||[]).push(!!r.ok); }); return m; }
+function aptidao(){ if(!frenteIBGE()) return null; const T=trilha(), R=respLicoes(), por={}, lic=[]; let pts=0;
+  Object.keys(DISC).forEach(d=>{ const ls=T[d]||[]; if(!ls.length) return; let soma=0;
+    ls.forEach(L=>{ const a=(R[L.id]||[]).slice(-10), ok=a.filter(Boolean).length, p=(ok+0.4)/(a.length+2); soma+=p; lic.push({L, d, n:a.length, ok, p}); });
+    const media=soma/ls.length; por[d]={media, pts:DISC[d].peso*media}; pts+=DISC[d].peso*media; });
+  const fracas=lic.filter(x=>x.n>=2 && x.p<.7).map(x=>({...x, ganho:DISC[x.d].peso/(T[x.d].length)*(.9-x.p)})).sort((a,b)=>b.ganho-a.ganho).slice(0,5);
+  return {apt:Math.round(pts/60*100), pts:Math.round(pts), por, fracas, naoVistas:lic.filter(x=>!x.n).length}; }
+function faixaApt(a){ return a<30?["Começando","var(--bad)"]:a<50?["Base em construção","var(--warn)"]:a<70?["Competitiva","var(--c-2)"]:a<90?["Forte","var(--a-op-1)"]:["Excelente","var(--ok)"]; }
+function termometroHTML(compacto){ const A=aptidao(); if(!A) return ""; const [fx,cor]=faixaApt(A.apt), hist=((M.simulado&&M.simulado.hist)||[]).filter(h=>h.apt!=null), ant=hist.length>1?hist[hist.length-2].apt:null;
+  const tend = ant!=null ? (A.apt>ant?` Subiu ${A.apt-ant} pontos desde o simulado anterior.`:A.apt<ant?` Caiu ${ant-A.apt} pontos desde o simulado anterior.`:"") : "";
+  return `<div class="glass pad apt" style="display:grid;gap:8px">
+    <div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><span class="tag">Termômetro de aptidão</span><span class="mono" style="font-size:12px;color:${cor}">${fx}</span></div>
+    <div class="row" style="gap:12px;align-items:center"><b class="mono apt-n">${A.apt}%</b><div class="apt-tubo" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${A.apt}" aria-label="Aptidão para a prova: ${A.apt}%, ${fx}"><i style="width:${A.apt}%;background:${cor}"></i><em style="left:30%" aria-hidden="true"></em><em style="left:60%" aria-hidden="true"></em><em style="left:90%" aria-hidden="true"></em></div></div>
+    <small class="muted">Se a prova fosse hoje, você faria cerca de <b>${A.pts} de 60</b> (corte 18; meta 36).${tend}${compacto?"":` Técnicos ${Math.round(A.por.tec.media*100)}%, Matemática ${Math.round(A.por.mat.media*100)}%, Português ${Math.round(A.por.por.media*100)}%. ${A.naoVistas?`${A.naoVistas} aulas ainda contam como chute (20%).`:"Todas as aulas já têm respostas suas."} 90% ou mais é excelente.`}</small>
+    ${!compacto&&A.fracas.length?`<div style="display:grid;gap:6px"><span class="tag">Seus pontos fracos · onde mais rende estudar</span>${A.fracas.map(x=>`<button class="item" data-fraca="${x.L.id}"><span class="tr-dot" style="background:var(--warn)" aria-hidden="true"></span><span class="grow"><b style="font-weight:500">${esc(x.L.titulo)}</b><small>${esc(DISC[x.d].n)} · ${x.ok} de ${x.n} certas · pode valer cerca de ${Math.max(1,Math.round(x.ganho*10)/10).toString().replace(".",",")} ponto(s)</small></span></button>`).join("")}</div>`:""}
+  </div>`; }
+/* Depois de um simulado: aula aprovada com metade ou mais de erros volta para reforço; com algum erro, revisão amanhã. */
+function adaptarPorSimulado(it){ const porL={}, mudou={reforco:[], antecipada:[]};
+  it.forEach(x=>{ const m=String(x.q.key).match(/^L:(\w+):\d+$/); if(!m) return; const r=porL[m[1]]=porL[m[1]]||{ok:0,tot:0}; r.tot++; if(x.ok) r.ok++; });
+  Object.entries(porL).forEach(([id,r])=>{ const e=trEstado(id), err=r.tot-r.ok; if(!err) return;
+    if(["revisao","dominado"].includes(e) && r.tot>=2 && r.ok/r.tot<.5){ trSet(id,{st:"reforco", step:0, prox:null, motivo:"simulado"}); mudou.reforco.push(id); }
+    else if(["revisao","dominado"].includes(e)){ trSet(id,{prox:iso(addDays(today(),1))}); mudou.antecipada.push(id); } });
+  return mudou; }
 function frenteAtiva(){ const fs=frentes(); if(!fs.length) return null; const k=f=>{ const m=proxMarco(f); return m?diasAte(m.d):9999; }; return fs.slice().sort((a,b)=>k(a)-k(b))[0]; }
 function sessoesFrente(f){ const out=(M.livres||[]).filter(r=>r.frente===f.id);
   Object.entries(DAYS).forEach(([d,v])=>Object.values(v.blocks||{}).forEach(r=>{ if(r && r.st==="feito" && r.frente===f.id) out.push({...r, d}); })); return out; }
@@ -4099,6 +4136,7 @@ function prepHTML(){
     <div class="pp-dom">${barras}</div>
     ${est?`<div class="pp-est"><b>${est.pts}</b><span>de ${est.tot} pontos no ritmo dos seus treinos${a.corte?`<br><small class="muted">Critério do edital: ${esc(a.corte)}. É uma estimativa do treino, não uma garantia.</small>`:""}</span></div>`:a.mats.some(m=>m.q)?`<small class="muted">Com 5 respostas em cada matéria, o app estima quantos pontos você faria na prova.</small>`:""}
     ${corpo}
+    ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?termometroHTML(true):""}
     ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?chanceHTML():""}
     ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?`<button class="link" data-act="simulado" style="justify-self:start;min-height:44px">${M.simulado&&M.simulado.atual?"Continuar o simulado completo":"Simulado completo: 60 questões no formato da prova"}${(M.simulado&&M.simulado.hist||[]).length?` · último: ${M.simulado.hist.slice(-1)[0].pts} de 60`:""}</button>`:""}
     ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?`<button class="link" data-act="curso" style="justify-self:start;min-height:44px">Curso da prova: ${Object.keys(DISC).reduce((n,k)=>n+trResumo(k).dominado,0)} de 36 aulas dominadas${revisoesTrilha().length?` · ${revisoesTrilha().length} revisão(ões) hoje`:""}</button>`:""}
