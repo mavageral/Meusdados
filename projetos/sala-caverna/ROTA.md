@@ -542,3 +542,20 @@ Ficaram de fora, de propósito:
     - aviso sobre a frase literal das UFs na p. 32 (t13);
     - comentários de Português revisados.
   - Matemática não teve nenhum problema.
+
+## 29. Análise de performance e assertividade, com correções (30/11/2026)
+
+- **Medições:** celular simulado com o processador 4 vezes mais lento.
+  - O app pesa 1,28 MB (561 KB compactado).
+  - A primeira tela aparece em cerca de 0,8 s.
+  - Todas as ações respondem em menos de 220 ms (trocar de aba, abrir o curso, a aula ou a apostila).
+  - Com o curso inteiro feito e 3 simulados, os dados ocupam cerca de 100 KB e salvar leva 4 ms.
+- **Uso real:** no banco do Artifact, só há 1 registro (oração de 30/10) e o documento principal está na versão 2 desde 30/10.
+  - Hipóteses: o app está sendo aberto num lugar onde a nuvem não fica disponível e o progresso fica só no aparelho, ou ainda não houve uso com gravação.
+  - O banco do site da Vercel (Supabase "yaad1") está INATIVO (pausado).
+- **Correções:**
+  1. **A cópia mais recente vence.** Antes, a cópia da nuvem sempre sobrescrevia o aparelho, mesmo sendo mais antiga, e podia apagar erros, revisões e XP. Agora toda gravação leva a hora (`atualizado`), em `main` e nos dias. Os dias que só existem no aparelho são enviados para a nuvem.
+  2. **Aviso "Salvando só neste aparelho".** Aparece quando a nuvem não está disponível, com um toque para tentar conectar (`conectarNuvem`). Antes, o app ficava em silêncio.
+  3. **Respostas preservadas.** O limite de 400 respostas do treino apagava respostas do curso e dos simulados e derrubaria o termômetro. Agora só as respostas soltas do treino entram no limite.
+  4. **Toque mais rápido.** Marcar uma letra no teste e no simulado não redesenha mais a tela inteira: passou de 104 ms para 27 ms.
+- **Testes:** 298/298, com o cenário "Nuvem: a cópia mais recente vence, aviso sem nuvem e respostas do curso preservadas".

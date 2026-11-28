@@ -325,6 +325,32 @@ const CENARIOS = {
     await p.evaluate(() => { closeSheet(); openBiblioteca(); }); await p.waitForTimeout(50);
     ok(!!(await p.$('[data-bib="apostila"]')), "biblioteca sem a apostila no app");
   },
+  "Nuvem: a cópia mais recente vence, aviso sem nuvem e respostas do curso preservadas": async (p) => {
+    const montar = (remAtual, comDb) => (args) => { const [remAtual, comDb] = args;
+      localStorage.setItem("cav:main", JSON.stringify({ inicio: "2026-10-30", profile: { name: "Edna", photo: "" }, xp: 99, erros: [{ id: "x1" }], atualizado: 2000 }));
+      localStorage.setItem("cav:d:2026-11-29", JSON.stringify({ blocks: { "05:30|Oração da manhã": { st: "feito" } }, final: null, atualizado: 2000 }));
+      window.__sets = [];
+      const doc = k => ({ get: async () => ({ exists: k === "main", data: () => ({ xp: 5, erros: [], inicio: "2026-10-30", atualizado: remAtual }) }), set: async v => { window.__sets.push(k); } });
+      const db = { collection: () => ({ doc, get: async () => ({ docs: [] }) }) };
+      window.claude = { use: async k => k === "user" ? { id: async () => "u1", isOwner: async () => true } : k === "db" ? (comDb ? db : null) : null };
+    };
+    await p.addInitScript(montar(), [1000, true]); await p.reload(); await p.waitForTimeout(1500);
+    const a = await p.evaluate(() => ({ xp: M.xp, erros: (M.erros || []).length, sets: window.__sets }));
+    ok(a.xp === 99 && a.erros === 1 && a.sets.includes("main") && a.sets.includes("d_2026-11-29"), "a nuvem mais antiga apagou o progresso do aparelho: " + JSON.stringify(a));
+    const ctx2 = p.context(), p2 = await ctx2.newPage(); await p2.clock.install({ time: new Date(2026, 10, 27, 10, 5) });
+    await p2.addInitScript(montar(), [5000, true]); await p2.goto(p.url()); await p2.waitForTimeout(1500);
+    ok(await p2.evaluate(() => M.xp === 5), "a nuvem mais recente não foi carregada");
+    const p3 = await ctx2.newPage(); await p3.clock.install({ time: new Date(2026, 10, 27, 10, 5) });
+    await p3.addInitScript(montar(), [1000, false]); await p3.goto(p.url()); await p3.waitForTimeout(1500);
+    ok(/só neste aparelho/.test((await p3.textContent("#sync-st").catch(() => "")) || ""), "sem nuvem, o app não avisou que salva só no aparelho");
+    const r = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const f = frenteIBGE(), st = prepSt({ id: f.id });
+      for (let i = 0; i < 300; i++) st.resp.push({ id: "tr-t01-" + (i % 10) + "x" + i, mat: "Conhecimentos Técnicos", ok: true });
+      for (let i = 0; i < 450; i++) st.resp.push({ id: "q" + i, mat: "Matemática", ok: true });
+      const q = st.pool[0]; PREP_UI = { id: null, j: null }; responderPrep(q.c);
+      return { curso: st.resp.filter(x => /^tr-/.test(x.id)).length, soltos: st.resp.filter(x => !/^(tr-|sim-|ibge2010-)/.test(x.id)).length }; });
+    ok(r.curso === 300 && r.soltos === 400, "o limite do treino apagou respostas do curso: " + JSON.stringify(r));
+    await p2.close(); await p3.close();
+  },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
     await p.click('.tabbar [data-tab="estudar"]'); await p.waitForTimeout(200);
