@@ -1136,9 +1136,9 @@ function aulaHoje(){
   return {tipo:"livre", t:"Aula livre", d:"Escolha qualquer assunto: a turma entra com você"};
 }
 const AMBIENTES = [
-  ["aula","Aula ao vivo","Professor, colegas e quadro","i-sound","var(--a-grad-1)"],
+  ["treino","Treino da prova","Questões no estilo da banca","i-target","var(--a-grad-1)"],
   ["caderno","Caderno","O que o professor ensinou e o que você anotou","i-book","var(--a-biblia-1)"],
-  ["lab","Laboratório e jogos","Operação Cidade e jogos rápidos","i-target","var(--a-op-1)"],
+  ["lab","Laboratório e jogos","Operação Cidade e jogos rápidos","i-play","var(--a-op-1)"],
   ["biblioteca","Biblioteca","Apostilas, editais e cursos","i-link","var(--a-tech-1)"],
   ["plantao","Plantão do professor","Tire uma dúvida agora","i-spark","var(--a-anbima-1)"],
   ["estudos","Sala de estudos","Revisões e a Forja de erros","i-check","var(--a-rev-1)"]];
@@ -1165,6 +1165,7 @@ function entrarAula(){ const a=aulaHoje();
   const i=$("#q-livre"); if(i){ i.scrollIntoView({block:"center"}); i.focus(); } }
 function ambiente(k){
   if(k==="aula") return entrarAula();
+  if(k==="treino"){ TAB="hoje"; PAINEL=false; PREP_ABERTO=true; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); PREP_FOCO=true; setTimeout(()=>{ const el=document.querySelector(".prep"); if(el){ el.scrollIntoView({block:"start"}); const b=el.querySelector(".pp-p")||el; b.tabIndex=-1; b.focus({preventScroll:true}); } },80); return; }
   if(k==="caderno") return openCaderno();
   if(k==="biblioteca") return openBiblioteca();
   if(k==="plantao") return openChat("Professor, tenho uma dúvida: ");
@@ -1392,6 +1393,7 @@ function openStudy({dstr, b, mat, topic, livre}){
   const isBib = (b && b.c==="biblia") || mat==="biblia";
   const area = b ? b.c : (SUBJ[mat]?SUBJ[mat].a:"grad");
   FLOW = {kind:"study", dstr, b, mat, livre, isBib, at:0, data:{topic:topic||"", fonte:"", link:"", fotos:[], thumbs:[], notes:"", conta:"", aula:null, quiz:null, ans:{}, aberta:"", t0:Date.now()}};
+  FLOW.sug = topic||"";
   FLOW.steps = isBib ? ["plano","conta","prova","fim"] : ["plano","aula","foco","conta","prova","fim"];
   FLOW.next = () => stepStudy(+1); FLOW.back = () => stepStudy(-1);
   openSheet(`radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,${g1(area)} 35%,transparent),transparent 60%),linear-gradient(170deg,color-mix(in srgb,${g2(area)} 70%,#05060A),#05060A 60%)`);
@@ -1414,12 +1416,14 @@ function stepStudy(d){
 function drawStudy(){
   const F=FLOW, D=F.data, s=F.steps[F.at], S=F.steps.length, title = F.b ? `${F.b.l} · ${fmtH(F.b.a)}` : `Estudo livre · ${SUBJ[F.mat]?SUBJ[F.mat].n:F.mat}`;
   if(s==="plano"){
-    const mats = F.isBib ? [] : Object.entries(SUBJ).filter(([k])=>k!=="biblia");
+    const fixa = !F.isBib && !SUBJ[F.mat], mats = F.isBib||fixa ? [] : Object.entries(SUBJ).filter(([k])=>k!=="biblia");
+    const [mN, mAlvo] = String(F.mat||"").split(" · "); if(fixa && !D.fonte) D.fonte="Apostila";
     sheetHTML({title, steps:S, at:F.at, next: F.isBib||!aiOn()?"Próximo":"Gerar minha aula", body:`
-      <h2 class="q">${F.isBib?"O que você vai ler hoje?":"O que você vai estudar agora?"}<small>${F.isBib?"Livro, capítulo e o tema. Depois você conta o que aprendeu e responde uma pergunta.":"Diga o assunto e de onde vem: faculdade, vídeo, livro. Se tiver, mande uma foto ou print do material. O Claude monta uma aula curta antes de você começar."}</small></h2>
+      <h2 class="q">${F.isBib?"O que você vai ler hoje?":"O que você vai estudar agora?"}<small>${F.isBib?"Livro, capítulo e o tema. Depois você conta o que aprendeu e responde uma pergunta.":(F.sug?"O assunto de hoje já veio do seu plano. Pode trocar se quiser. Se tiver, mande uma foto ou print do material: o Claude monta uma aula curta antes de você começar.":"Diga o assunto e de onde vem: faculdade, vídeo, livro. Se tiver, mande uma foto ou print do material. O Claude monta uma aula curta antes de você começar.")}</small></h2>
+      ${fixa?`<div class="field"><span>Matéria</span><div style="display:grid;gap:2px;padding:2px 0"><b style="font-weight:500;font-size:18px">${esc(mN)}</b>${mAlvo?`<small class="muted">do seu plano · ${esc(mAlvo)}</small>`:""}</div></div>`:""}
       ${mats.length?`<div class="field"><span>Matéria</span><div class="pick" data-pick="mat">${mats.map(([k,v])=>`<button data-v="${k}" aria-pressed="${F.mat===k}">${esc(v.n)}</button>`).join("")}</div></div>`:""}
       <label class="field"><span>${F.isBib?"Livro e capítulo":"Assunto"}</span><input class="inp" id="st-topic" value="${esc(D.topic)}" placeholder="${F.isBib?"Ex.: Romanos 8":"Ex.: o assunto do material de hoje"}"></label>
-      ${F.isBib?"":`<div class="field"><span>De onde vem</span><div class="pick" data-pick="fonte">${["Faculdade","YouTube","Livro","Curso","Exercícios"].map(x=>`<button data-v="${x}" aria-pressed="${D.fonte===x}">${x}</button>`).join("")}</div></div>
+      ${F.isBib?"":`<div class="field"><span>De onde vem</span><div class="pick" data-pick="fonte">${(fixa?["Apostila","Exercícios","YouTube","Livro","Curso"]:["Faculdade","YouTube","Livro","Curso","Exercícios"]).map(x=>`<button data-v="${x}" aria-pressed="${D.fonte===x}">${x}</button>`).join("")}</div></div>
       <label class="field"><span>Link do vídeo ou material (opcional)</span><input class="inp" id="st-link" value="${esc(D.link)}" placeholder="https://"></label>`}
       ${canImg()?`<div class="field"><span>Foto ou print do material</span><button class="drop" data-act="fotos"><svg class="icon"><use href="#i-cam"/></svg><span class="grow">${D.thumbs.length?`${D.thumbs.length} foto(s) anexada(s). Toque para trocar.`:"Tirar foto ou escolher print"}</span></button><div class="thumbs">${D.thumbs.map(t=>`<img src="${t}" alt="Foto anexada">`).join("")}</div></div>`:""}
       ${!aiOn()?`<p class="note">O Claude não está ligado nesta cópia. A aula e a prova automáticas aparecem na versão publicada. Aqui você ainda registra o estudo e a descrição.</p>`:""}
@@ -1952,11 +1956,11 @@ function missaoHTML(){
   const x=topGoal(); if(!x) return "";
   const g=x.g, isMarco=g.marco&&!g.need, hojeTxt = isMarco ? g.how : (()=>{ const hb=blocksOf(today()).filter(b=>matsOfBlock(b).some(m=>g.mats.includes(m))); return hb.length?`Hoje alimentam esta meta: ${hb.map(b=>`${b.l} (${fmtH(b.a)})`).join(", ")}.`:`Hoje a agenda não tem bloco para esta meta. ${g.how}`; })();
   return `<section class="missao ${x.urgent||x.behind?"urg":""}" aria-label="Missão">
-    <div class="mh"><span class="eyebrow" style="color:#FFD2B0">${x.urgent?"Missão urgente":x.behind?"Meta atrás do ritmo":"Missão em foco"}</span><span class="dd">${x.left>=0?x.left:"!"}<small style="font:500 11px var(--mono);color:var(--muted);margin-left:4px">${x.left>=0?"dias":"atrasada"}</small></span></div>
+    <div class="mh"><span class="eyebrow" style="color:var(--c-2)">${x.urgent?"Missão urgente":x.behind?"Meta atrás do ritmo":"Missão em foco"}</span>${x.left===0?`<span class="chip" style="color:var(--c-2);border-color:var(--c)">Último dia: hoje</span>`:`<span class="dd">${x.left>0?x.left:"!"}<small style="font:500 11px var(--mono);color:var(--muted);margin-left:4px">${x.left>1?"dias":x.left===1?"dia":"atrasada"}</small></span>`}</div>
     <b style="font-weight:500;font-size:18px">${esc(g.n)}</b>
-    <div class="gbar" aria-label="${Math.round(x.p*100)}% feito, esperado ${Math.round(x.exp*100)}%"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>
+    ${isMarco?"":`<div class="gbar" aria-label="${Math.round(x.p*100)}% feito, esperado ${Math.round(x.exp*100)}%"><i style="width:${Math.round(x.p*100)}%"></i><em style="left:${Math.round(x.exp*100)}%"></em></div>`}
     <p class="muted" style="font-size:14px">${esc(hojeTxt)}</p>
-    <div class="row wrap">${isMarco?`<button class="btn sm primary" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" data-act="metas">Ver todas as metas</button></div>
+    <div class="row wrap">${isMarco?`<button class="btn sm primary" style="min-height:44px" data-act="marco" data-k="${g.marco}">Já fiz</button>`:""}<button class="btn sm" style="min-height:44px" data-act="metas">Ver todas as metas</button></div>
   </section>`;
 }
 /* Núcleo do Projeto Caverna (em andamento, missão, faixa de evolução, revisões de ontem e da semana): aparece no Início e no painel */
@@ -3772,7 +3776,7 @@ function vInicio(){
    por uma segunda resolução independente, domínio por matéria só com respostas reais,
    estimativa honesta frente ao critério do edital, e conquistas por fatos reais.
    ==================================================================== */
-let PREP_BUSY=false, PREP_UI={id:null, j:null}, PREP_ERRO="";
+let PREP_BUSY=false, PREP_UI={id:null, j:null}, PREP_ERRO="", PREP_ABERTO=false, PREP_FOCO=false;
 function alvoDe(f){ return {id:f.id, nome:f.titulo, banca:f.banca||"", corte:f.corte||"", mats:(f.materias||[]).filter(m=>m&&m.n).map(m=>({n:m.n, q:+m.questoes||0, t:m.topicos||[]}))}; }
 function alvoPrep(){ const f=frenteAtiva();
   if(f) return alvoDe(f);
@@ -3808,11 +3812,12 @@ function prepHTML(){
   const L="ABCDE";
   const barras=d.map(m=>`<div class="pp-m"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(m.n)}</span><span class="mono" style="font-size:12px">${m.cnt?`${Math.round(m.p*100)}% · ${m.ok} de ${m.cnt}`:"sem treino ainda"}</span></div><span class="b" aria-hidden="true"><i style="width:${m.cnt?Math.round(m.p*100):0}%;${m.cnt&&m.p<.5?"background:var(--warn)":""}"></i></span></div>`).join("");
   let corpo;
-  if(q){ corpo=`<div class="pp-q"><span class="tag">${esc(q.mat)}${q.tema?" · "+esc(q.tema):""}${q.verif===false?" · gabarito não conferido":""}</span><p class="pp-p">${esc(q.p)}</p>
+  if(q && !PREP_ABERTO) corpo=`<button class="btn" style="min-height:48px" data-act="pq-abrir">Responder 1 questão · 1 minuto</button><small class="muted">${st.pool.length} questões prontas${a.banca?` no estilo ${esc(a.banca)}`:""}. Cada resposta ajusta as barras acima.</small>`;
+  else if(q){ corpo=`<div class="pp-q"><span class="tag">${esc(q.mat)}${q.tema?" · "+esc(q.tema):""}${q.verif===false?" · gabarito não conferido":""}</span><p class="pp-p">${esc(q.p)}</p>
       <div class="pp-os" role="group" aria-label="Alternativas">${q.o.map((o,j)=>{ let cls=""; if(respondida){ if(j===q.c) cls="right"; else if(j===PREP_UI.j) cls="wrong"; } return `<button class="opt ${cls}" data-act="pq" data-j="${j}" ${respondida?"disabled":""} aria-pressed="${respondida&&j===PREP_UI.j}"><span class="k">${L[j]}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
       ${respondida?`<div class="pp-fb" role="status" tabindex="-1"><b>${PREP_UI.j===q.c?"Isso! Acertou.":`A certa é a ${L[q.c]}.`}</b> ${esc(q.e)}</div><button class="btn primary" style="min-height:48px" data-act="pq-next">Próxima questão</button>`:""}</div>`; }
   else if(PREP_BUSY) corpo=thinking("Preparando questões no estilo da banca e conferindo o gabarito…");
-  else corpo=`${PREP_ERRO?`<p class="ponte" role="alert" style="animation:none;margin:0">${esc(PREP_ERRO)}</p>`:""}<button class="btn primary" style="min-height:52px" data-act="pq-gerar">${st.resp.length?"Continuar treinando":"Responder a primeira questão"}</button><small class="muted">Uma questão leva um minuto. O app aprende onde você está forte e onde precisa de reforço.</small>`;
+  else corpo=`${PREP_ERRO?`<p class="ponte" role="alert" style="animation:none;margin:0">${esc(PREP_ERRO)}</p>`:""}<button class="btn" style="min-height:48px" data-act="pq-gerar">${st.resp.length?"Continuar treinando":"Responder a primeira questão"}</button><small class="muted">Uma questão leva um minuto. O app aprende onde você está forte e onde precisa de reforço.</small>`;
   return `<section class="prep" aria-label="Sua preparação">
     <div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><h2 style="font-weight:400;font-size:22px;margin:0">Sua preparação</h2><span class="muted" style="font-size:13px">${esc(a.nome)}${a.banca?" · "+esc(a.banca):""}</span></div>
     <div class="pp-dom">${barras}</div>
@@ -3820,7 +3825,8 @@ function prepHTML(){
     ${corpo}
   </section>`;
 }
-function paintPrep(){ const el=document.querySelector(".prep"); if(el){ el.outerHTML=prepHTML(); } }
+function paintPrep(){ const el=document.querySelector(".prep"); if(!el) return; const tinha=el.contains(document.activeElement); el.outerHTML=prepHTML();
+  const q=document.querySelector(".prep .pp-p"); if(q && (tinha||PREP_FOCO)){ PREP_FOCO=false; q.tabIndex=-1; q.focus({preventScroll:true}); } else if(tinha){ const n=document.querySelector(".prep"); n.tabIndex=-1; n.focus({preventScroll:true}); } }
 function responderPrep(j){ const a=alvoPrep(), st=prepSt(a), q=st.pool[0]; if(!q||PREP_UI.id===q.id) return;
   PREP_UI={id:q.id, j}; const ok=j===q.c;
   st.resp.push({id:q.id, mat:q.mat, ok, d:iso(today())}); if(st.resp.length>400) st.resp=st.resp.slice(-400);
@@ -3890,7 +3896,7 @@ function ferramentasApp(propor){
       async({tela,rotulo})=>{ const nomes={oportunidades:"Abrir oportunidades",ponto_de_partida:"Abrir o ponto de partida",vida_mudou:"Recalcular a rota",treino:"Treinar uma questão",conquistas:"Ver conquistas",frente:"Abrir a frente",estudar:"Começar o passo de hoje"};
         propor({titulo:rotulo||nomes[tela]||"Abrir", botao:"Abrir", aplicar:()=>{ closeSheet(); const f=frenteAtiva(), pg=passoGeral(f);
           if(tela==="oportunidades") openOportunidades(); else if(tela==="ponto_de_partida") openPartida(); else if(tela==="vida_mudou") openVida(); else if(tela==="conquistas") openConquistas();
-          else if(tela==="frente"&&f) openFrente(f.id); else if(tela==="treino"){ TAB="hoje"; PAINEL=false; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>document.querySelector(".prep")?.scrollIntoView({block:"start"}),80); }
+          else if(tela==="frente"&&f) openFrente(f.id); else if(tela==="treino"){ TAB="hoje"; PAINEL=false; PREP_ABERTO=true; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>document.querySelector(".prep")?.scrollIntoView({block:"start"}),80); }
           else if(tela==="estudar"){ if(pg.act==="frente-estudar") estudarFrente(pg.id); else if(pg.act==="bloco") openBlock(iso(today()),pg.k); } }, semRegistro:true }); return "Botão mostrado."; })];
 }
 function openChat(prefill){
@@ -4120,7 +4126,8 @@ document.addEventListener("click", e => {
   else if(act==="partida") openPartida();
   else if(act==="pq") responderPrep(+a.dataset.j);
   else if(act==="pq-next") proximaPrep();
-  else if(act==="pq-gerar"){ const al=alvoPrep(); if(prepSt(al).pool.length) paintPrep(); else gerarPrep(al); }
+  else if(act==="pq-abrir"){ PREP_ABERTO=true; paintPrep(); const b=document.querySelector(".prep .pp-p"); if(b){ b.tabIndex=-1; b.focus({preventScroll:true}); b.scrollIntoView({block:"center"}); } }
+  else if(act==="pq-gerar"){ PREP_ABERTO=true; PREP_FOCO=true; const al=alvoPrep(); if(prepSt(al).pool.length) paintPrep(); else gerarPrep(al); }
   else if(act==="conquistas") openConquistas();
   else if(act==="jogos") openJogos(a.dataset.j||"");
   else if(act==="cidade") openCidade();

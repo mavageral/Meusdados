@@ -316,3 +316,22 @@ A Edna reenviou o pedido original do Projeto Caverna. Na auditoria, item por ite
   - a Serasa salva nos dados passa para "não seguiu" e deixa de ser alvo (`semearSerasa`, uma vez só);
   - o contexto do tutor foi atualizado.
 - **Testes:** 188/188, com o cenário "Sem Serasa: metas, alvo e vagas".
+
+## 21. Análise de UX e ajustes (28/11/2026)
+
+Análise feita com capturas em 390 px das telas Início, Sala viva, Evolução, Diário e do estudo de um bloco do IBGE, usando as regras do `yaad1-product-guardrails`.
+
+| Problema encontrado | Ajuste feito |
+|---|---|
+| No estudo de um bloco do IBGE aparecia a lista de matérias do Caverna (Matemática, Economia, SQL…). Nenhuma estava marcada, e tocar numa delas desligava o estudo da frente | Em estudos de frente, a matéria fica fixa num quadro com a matéria e o alvo. A fonte ganhou "Apostila". O texto diz que o assunto já veio do plano |
+| O Início tinha 3.077 px: a questão do treino aberta disputava com o passo de hoje, e havia dois botões principais | A questão fica recolhida em "Responder 1 questão · 1 minuto", um botão secundário. O passo de hoje volta a ser a única ação principal. Início: cerca de 2.700 px |
+| Na missão, o dia do prazo aparecia como "0 dias" e as metas de marco mostravam uma barra de progresso sempre vazia | Agora aparece "Hoje · último dia" (e "1 dia" no singular). A barra só aparece em metas que têm progresso medido |
+| Na Sala viva, o ambiente "Aula ao vivo" repetia o botão da aula de hoje logo acima | Virou "Treino da prova", que leva às questões no estilo da banca |
+
+Ficaram de fora, de propósito:
+- **Faixa de 3 dias com texto miúdo:** é uma decisão anterior (escada de 3 dias, com o gesto de pinça para ampliar).
+- **Diário:** o calendário já diferencia os dias do projeto.
+
+**Revisor de UI:** nada grave. Foram aplicados os ajustes de foco (enunciado da questão ao abrir o treino), "Último dia: hoje" legível, botões da missão com 44 px, matéria fixa sem aparência de campo e "Apostila" já marcada.
+
+**Testes:** 202/202, com o cenário "UX: matéria fixa na frente, treino recolhido e último dia da missão".
