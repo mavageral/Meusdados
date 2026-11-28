@@ -15,12 +15,13 @@ def validar():
         for a in arqs:
             with open(os.path.join(PASTA, a), encoding="utf-8") as f:
                 dados[disc] += json.load(f)
-    extra_p = os.path.join(PASTA, "tecnicos-extra.json")
-    if os.path.exists(extra_p):
+    for disc, arq in (("tec", "tecnicos-extra.json"), ("mat", "matematica-extra.json"), ("por", "portugues-extra.json")):
+        extra_p = os.path.join(PASTA, arq)
+        if not os.path.exists(extra_p): continue
         with open(extra_p, encoding="utf-8") as f: extra = json.load(f)
-        for L in dados["tec"]:
+        for L in dados[disc]:
             L["qs"] = L["qs"] + extra.get(L["id"], [])
-        sobra = set(extra) - {L["id"] for L in dados["tec"]}
+        sobra = set(extra) - {L["id"] for L in dados[disc]}
         if sobra: erros.append(f"questões extras para aulas inexistentes: {sobra}")
     for disc, ls in dados.items():
         for L in ls:

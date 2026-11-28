@@ -285,7 +285,7 @@ const CENARIOS = {
   "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes": async (p) => {
     const a = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); openSimulado(); const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
       const mats = S.qs.map(q => B[q.key].mat); return { n: S.qs.length, tec: mats.filter(m => m === "Conhecimentos Técnicos").length, mat: mats.filter(m => m === "Matemática").length, por: mats.filter(m => m === "Língua Portuguesa").length, banco: bancoIBGE().length }; });
-    ok(a.n === 60 && a.tec === 30 && a.mat === 15 && a.por === 15 && a.banco === 274, "simulado fora do formato do edital: " + JSON.stringify(a));
+    ok(a.n === 60 && a.tec === 30 && a.mat === 15 && a.por === 15 && a.banco === 384, "simulado fora do formato do edital: " + JSON.stringify(a));
     const b = await p.evaluate(() => { const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
       S.qs.forEach((q, i) => S.resp[q.key] = i % 3 === 0 ? (B[q.key].c + 1) % 5 : B[q.key].c); FLOW.next();
       const h = M.simulado.hist.slice(-1)[0]; return { pts: h.pts, atual: M.simulado.atual, erros: M.erros.filter(e => e.id.startsWith("esim-")).length, marco: marcosDe(frenteIBGE()).find(m => /Simulado completo 1/.test(m.r)).ok, txt: document.querySelector("#shb").textContent }; });

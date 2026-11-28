@@ -1,0 +1,68 @@
+{
+"m01":[
+{"nv":1,"p":"Quanto é 2/3 de 90?","o":["30","45","60","120","135"],"c":2,"e":"90 ÷ 3 = 30; 30 × 2 = 60."},
+{"nv":1,"p":"O resultado de 1,25 + 0,8 é","o":["1,33","2,05","2,5","1,105","20,5"],"c":1,"e":"Alinhe as vírgulas: 1,25 + 0,80 = 2,05."},
+{"nv":2,"p":"O resultado de 3/4 ÷ 3/8 é","o":["2","9/32","1/2","3/2","6/32"],"c":0,"e":"Multiplique pelo inverso: 3/4 × 8/3 = 24/12 = 2."},
+{"nv":2,"p":"Uma lata de 20 litros está com 3/5 da sua capacidade ocupada por leite. Quantos litros de leite há na lata?","o":["15","8","12","4","3"],"c":2,"e":"20 ÷ 5 = 4; 4 × 3 = 12 litros."},
+{"nv":3,"p":"Um produtor gastou 1/3 do seu dinheiro em sementes e 1/4 em adubo, e ainda lhe sobraram R$ 500,00. Quanto ele tinha no início?","o":["R$ 1.000,00","R$ 1.500,00","R$ 2.000,00","R$ 1.200,00","R$ 900,00"],"c":3,"e":"Gastou 1/3 + 1/4 = 7/12; sobrou 5/12. Se 5/12 = 500, então 1/12 = 100 e o total = 1.200."}],
+"m02":[
+{"nv":1,"p":"O valor de (−6) × (−4) ÷ 3 é","o":["−8","8","24","−24","2"],"c":1,"e":"(−6) × (−4) = 24 (sinais iguais dão positivo); 24 ÷ 3 = 8."},
+{"nv":1,"p":"O valor da expressão 40 − (12 − 2 × 3) é","o":["34","10","70","26","4"],"c":0,"e":"Dentro do parêntese, primeiro a multiplicação: 12 − 6 = 6. Depois, 40 − 6 = 34."},
+{"nv":2,"p":"Uma conta tinha saldo de R$ 250,00. Foram pagos três boletos de R$ 120,00 cada. O saldo passou a ser de","o":["R$ 110,00","−R$ 360,00","R$ 610,00","−R$ 110,00","−R$ 250,00"],"c":3,"e":"3 × 120 = 360; 250 − 360 = −110 (saldo negativo)."},
+{"nv":2,"p":"O valor de 2³ + 3² é","o":["12","36","17","72","13"],"c":2,"e":"2³ = 8 e 3² = 9; 8 + 9 = 17."},
+{"nv":3,"p":"Um caminhão leva, no máximo, 1.250 kg por viagem. Qual é o menor número de viagens para transportar 8.000 kg?","o":["6","64","8","5","7"],"c":4,"e":"8.000 ÷ 1.250 = 6,4. Seis viagens levam só 7.500 kg; são necessárias 7."}],
+"m03":[
+{"nv":1,"p":"Qual dos números abaixo é divisível por 9?","o":["2.341","4.505","3.618","1.000","7.231"],"c":2,"e":"3 + 6 + 1 + 8 = 18, que é divisível por 9."},
+{"nv":1,"p":"O mínimo múltiplo comum (MMC) de 4 e 6 é","o":["12","24","2","10","6"],"c":0,"e":"Múltiplos de 4: 4, 8, 12...; de 6: 6, 12... O menor comum é 12."},
+{"nv":2,"p":"Dois ônibus saem juntos às 6h. Um sai de novo a cada 20 minutos e o outro, a cada 30 minutos. Eles voltarão a sair juntos às","o":["6h50","7h","7h30","8h","6h30"],"c":1,"e":"MMC(20, 30) = 60 min. Saem juntos de novo às 7h."},
+{"nv":2,"p":"Serão plantadas 120 mudas de café e 84 mudas de laranja em fileiras com o mesmo número de mudas, sem misturar as espécies, e com o maior número possível de mudas por fileira. Cada fileira terá","o":["6 mudas","24 mudas","4 mudas","12 mudas","21 mudas"],"c":3,"e":"MDC(120, 84) = 12 mudas por fileira."},
+{"nv":3,"p":"Qual dos números abaixo é primo?","o":["21","27","33","39","29"],"c":4,"e":"29 só é divisível por 1 e por 29. 21 = 3 × 7; 27 = 3 × 9; 33 = 3 × 11; 39 = 3 × 13."}],
+"m04":[
+{"nv":1,"p":"A razão entre 300 g e 1,2 kg é","o":["1/4","4","1/40","25","300/12"],"c":0,"e":"Mesma unidade: 1,2 kg = 1.200 g. 300/1.200 = 1/4."},
+{"nv":2,"p":"São grandezas inversamente proporcionais:","o":["a quantidade de feijão comprada e o preço total pago","a velocidade e o tempo para fazer um mesmo percurso","a área plantada e a quantidade de sementes","os litros de leite vendidos e o valor recebido","as horas trabalhadas e o salário, com valor fixo por hora"],"c":1,"e":"Mais velocidade, menos tempo no mesmo percurso: quando uma aumenta, a outra diminui na mesma razão."},
+{"nv":2,"p":"R$ 600,00 serão divididos entre duas pessoas em partes INVERSAMENTE proporcionais a 2 e 3. A maior parte será de","o":["R$ 240,00","R$ 300,00","R$ 360,00","R$ 400,00","R$ 200,00"],"c":2,"e":"Inversamente a 2 e 3 = diretamente a 1/2 e 1/3, ou seja, a 3 e 2. 600 ÷ 5 = 120; partes 360 e 240."},
+{"nv":2,"p":"Na proporção x/5 = 18/30, o valor de x é","o":["6","9","3","15","108"],"c":2,"e":"30x = 5 × 18 = 90 → x = 3."},
+{"nv":3,"p":"Uma receita usa 6 ovos para fazer 4 bolos. Mantida a proporção, quantos ovos são necessários para 10 bolos?","o":["12","20","24","16","15"],"c":4,"e":"6/4 = x/10 → 4x = 60 → x = 15 ovos."}],
+"m05":[
+{"nv":1,"p":"Se 3 metros de tela custam R$ 45,00, quanto custam 7 metros da mesma tela?","o":["R$ 105,00","R$ 90,00","R$ 115,00","R$ 135,00","R$ 63,00"],"c":0,"e":"Cada metro custa 45 ÷ 3 = 15; 7 × 15 = 105."},
+{"nv":2,"p":"Oito torneiras iguais enchem um tanque em 6 horas. Doze torneiras iguais encheriam o mesmo tanque em","o":["9 h","4 h","3 h","5 h","2 h"],"c":1,"e":"Inversa: 8 × 6 = 12 × x → 48 = 12x → x = 4 h."},
+{"nv":2,"p":"Usam-se 2 kg de adubo para cada 50 m² de horta. Para 350 m², serão necessários","o":["7 kg","17,5 kg","14 kg","28 kg","12 kg"],"c":2,"e":"350 ÷ 50 = 7; 7 × 2 = 14 kg."},
+{"nv":2,"p":"A ração estocada alimenta 20 animais por 15 dias. Com 25 animais, no mesmo consumo por animal, a ração durará","o":["18,75 dias","10 dias","20 dias","12 dias","15 dias"],"c":3,"e":"Inversa: 20 × 15 = 25 × x → 300 = 25x → x = 12 dias."},
+{"nv":3,"p":"Um recenseador percorre 18 km em 4 horas. Mantido o mesmo ritmo, em quanto tempo percorrerá 27 km?","o":["5 h","6 h 30 min","7 h","5 h 30 min","6 h"],"c":4,"e":"18 km em 4 h = 4,5 km/h. 27 ÷ 4,5 = 6 h."}],
+"m06":[
+{"nv":1,"p":"25% de 80 é igual a","o":["20","25","32","40","8"],"c":0,"e":"25% é um quarto: 80 ÷ 4 = 20."},
+{"nv":1,"p":"30 corresponde a quantos por cento de 120?","o":["30%","25%","40%","4%","90%"],"c":1,"e":"30 ÷ 120 = 0,25 = 25%."},
+{"nv":2,"p":"Uma ferramenta de R$ 60,00 teve desconto de 15%. O preço final é","o":["R$ 9,00","R$ 45,00","R$ 51,00","R$ 54,00","R$ 57,00"],"c":2,"e":"60 × 0,85 = 51. O desconto foi de R$ 9,00."},
+{"nv":2,"p":"Um valor de R$ 1.741,00 teve aumento de 10%. O novo valor é","o":["R$ 1.751,00","R$ 1.567,90","R$ 1.741,10","R$ 1.915,10","R$ 1.900,00"],"c":3,"e":"10% de 1.741 = 174,10; 1.741 + 174,10 = 1.915,10."},
+{"nv":3,"p":"A produção de um sítio passou de 800 para 1.000 sacas. O aumento percentual foi de","o":["20%","200%","80%","2,5%","25%"],"c":4,"e":"Aumento de 200 sobre 800: 200 ÷ 800 = 0,25 = 25%. (Sobre 1.000 seria 20%, mas a base é o valor inicial.)"}],
+"m07":[
+{"nv":1,"p":"A solução da equação 5x − 7 = 18 é","o":["5","11/5","25","2","3"],"c":0,"e":"5x = 25 → x = 5."},
+{"nv":1,"p":"A solução da equação x/4 + 3 = 9 é","o":["6","48","24","3","12"],"c":2,"e":"x/4 = 6 → x = 24."},
+{"nv":2,"p":"Um pai tem o triplo da idade do filho, e a soma das duas idades é 48 anos. A idade do filho é","o":["16 anos","12 anos","36 anos","24 anos","9 anos"],"c":1,"e":"x + 3x = 48 → 4x = 48 → x = 12."},
+{"nv":2,"p":"A solução da equação 2x + 3 = x + 10 é","o":["13","10/3","3","7","17"],"c":3,"e":"2x − x = 10 − 3 → x = 7."},
+{"nv":3,"p":"Numa situação hipotética, uma pessoa recebe R$ 1.741,00 fixos por mês mais R$ 12,00 por questionário concluído. Para receber R$ 2.461,00 no mês, quantos questionários ela precisa concluir?","o":["50","72","120","205","60"],"c":4,"e":"1.741 + 12x = 2.461 → 12x = 720 → x = 60. (O valor por questionário é fictício, só para o exercício.)"}],
+"m08":[
+{"nv":1,"p":"3.500 g correspondem a","o":["35 kg","0,35 kg","3,5 kg","350 kg","3.500 kg"],"c":2,"e":"1 kg = 1.000 g; 3.500 ÷ 1.000 = 3,5 kg."},
+{"nv":1,"p":"2 m³ correspondem a","o":["200 L","2.000 L","20.000 L","20 L","2 L"],"c":1,"e":"1 m³ = 1.000 L; 2 × 1.000 = 2.000 L."},
+{"nv":2,"p":"Um quilômetro quadrado (1 km²) corresponde a","o":["10 ha","1.000 ha","100 ha","10.000 ha","1 ha"],"c":2,"e":"1 km² = 1.000.000 m²; 1 ha = 10.000 m²; então 1 km² = 100 ha."},
+{"nv":2,"p":"2,5 horas correspondem a","o":["2 h 50 min","2 h 30 min","2 h 05 min","2 h 25 min","3 h"],"c":1,"e":"0,5 h = 30 min. Então 2,5 h = 2 h 30 min."},
+{"nv":3,"p":"Uma fazenda tem área de 2,4 km². Em hectares, essa área corresponde a","o":["24 ha","2.400 ha","24.000 ha","0,24 ha","240 ha"],"c":4,"e":"1 km² = 100 ha; 2,4 × 100 = 240 ha."}],
+"m09":[
+{"nv":1,"p":"A área de um terreno quadrado com 15 m de lado é","o":["60 m²","225 m²","30 m²","150 m²","2.250 m²"],"c":1,"e":"15 × 15 = 225 m²."},
+{"nv":1,"p":"O perímetro de um terreno quadrado com 15 m de lado é","o":["60 m","225 m","30 m","45 m","120 m"],"c":0,"e":"4 × 15 = 60 m."},
+{"nv":2,"p":"Um viveiro circular tem raio de 10 m. Usando π = 3,14, sua área é de","o":["31,4 m²","62,8 m²","314 m²","628 m²","100 m²"],"c":2,"e":"π × r² = 3,14 × 100 = 314 m²."},
+{"nv":2,"p":"Um terreno é formado por dois retângulos encostados, sem sobreposição: um de 20 m por 10 m e outro de 10 m por 5 m. A área total é","o":["200 m²","350 m²","45 m²","250 m²","300 m²"],"c":3,"e":"20 × 10 = 200 e 10 × 5 = 50; total 250 m²."},
+{"nv":3,"p":"Um silo cilíndrico tem 2 m de raio e 5 m de altura. Usando π = 3,14, o seu volume é","o":["31,4 m³","125,6 m³","20 m³","6,28 m³","62,8 m³"],"c":4,"e":"Área da base: 3,14 × 2² = 12,56 m². Volume: 12,56 × 5 = 62,8 m³."}],
+"m10":[
+{"nv":1,"p":"Uma tabela mostra a colheita de feijão, em sacas, de quatro sítios: A, 45; B, 60; C, 38; D, 52. O sítio que colheu menos foi o","o":["A","B","C","D","nenhum: todos colheram igual"],"c":2,"e":"38 sacas, no sítio C, é o menor valor."},
+{"nv":2,"p":"Com os dados da colheita (A, 45; B, 60; C, 38; D, 52 sacas), o total colhido pelos quatro sítios foi de","o":["195 sacas","185 sacas","205 sacas","150 sacas","97 sacas"],"c":0,"e":"45 + 60 + 38 + 52 = 195."},
+{"nv":2,"p":"Um gráfico de linhas mostra o preço da saca de milho: janeiro, R$ 80; fevereiro, R$ 85; março, R$ 78; abril, R$ 90. A maior queda de preço de um mês para o seguinte ocorreu de","o":["janeiro para fevereiro","fevereiro para março","março para abril","não houve queda","janeiro para abril"],"c":1,"e":"De 85 para 78 houve queda de 7. Nos outros meses, o preço subiu."},
+{"nv":2,"p":"De 1.200 entrevistas, 40% foram concluídas na 1ª visita, 35% na 2ª e o restante depois. Quantas foram concluídas até a 2ª visita?","o":["480","420","300","900","750"],"c":3,"e":"40% + 35% = 75%; 0,75 × 1.200 = 900."},
+{"nv":3,"p":"Com os dados da colheita (A, 45; B, 60; C, 38; D, 52 sacas), a média por sítio foi de","o":["49 sacas","52 sacas","45 sacas","47,5 sacas","48,75 sacas"],"c":4,"e":"195 ÷ 4 = 48,75 sacas."}],
+"m11":[
+{"nv":1,"p":"Em um mapa na escala 1:200.000, 1 cm representa, no terreno,","o":["200 m","2 km","20 km","200 km","20 m"],"c":1,"e":"200.000 cm = 2.000 m = 2 km."},
+{"nv":2,"p":"Num mapa na escala 1:25.000, um caminho mede 12 cm. O comprimento real é de","o":["30 km","300 m","3 km","1,2 km","2,5 km"],"c":2,"e":"12 × 25.000 = 300.000 cm = 3.000 m = 3 km."},
+{"nv":2,"p":"A escala gráfica de um mapa indica que 1 cm corresponde a 500 m. Uma distância de 9 cm no mapa corresponde a","o":["4,5 km","45 km","450 m","9 km","5 km"],"c":0,"e":"9 × 500 = 4.500 m = 4,5 km."},
+{"nv":2,"p":"Na rosa dos ventos, a direção intermediária entre o Norte e o Leste é o","o":["Noroeste","Sudeste","Sudoeste","Nordeste","Oeste"],"c":3,"e":"Entre Norte e Leste fica o Nordeste (NE)."},
+{"nv":3,"p":"Num mapa, dois pontos que estão a 6 km de distância no terreno aparecem a 12 cm um do outro. A escala do mapa é","o":["1:5.000","1:500.000","1:72.000","1:20.000","1:50.000"],"c":4,"e":"6 km = 600.000 cm; 600.000 ÷ 12 = 50.000. Escala 1:50.000."}]
+}
