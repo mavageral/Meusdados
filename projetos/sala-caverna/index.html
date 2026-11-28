@@ -813,9 +813,14 @@ function coll(){ return DB && UID ? DB.collection("data/users/" + UID) : null; }
 const qd = {};
 /* Sincronização visível (auditoria 27/11): falha de gravação não é mais silenciosa. Os dados ficam no aparelho e o app tenta de novo. */
 const SYNC = {falhas:{}, tent:{}};
+async function conectarNuvem(){ try{ const u=await claude.use("user"); if(u && !UID){ UID=await u.id(); } if(!DB) DB=await claude.use("db"); }catch(e){}
+  SYNC.semNuvem=!coll(); paintSync(); if(coll()){ saveMain(); Object.keys(DAYS).forEach(d=>{ if(DAYS[d] && Object.keys(DAYS[d].blocks||{}).length) saveDay(d); }); toast("Conectado: seu progresso foi enviado para a nuvem."); } else toast("A nuvem ainda não respondeu. Seu progresso continua salvo neste aparelho."); }
 function paintSync(){ const n=Object.keys(SYNC.falhas).length; let el=document.getElementById("sync-st");
+  if(!n && SYNC.semNuvem){ if(!el){ el=document.createElement("button"); el.id="sync-st"; el.type="button"; el.className="sync-st"; el.setAttribute("role","status"); document.body.appendChild(el); }
+    el.onclick=()=>conectarNuvem(); el.textContent="Salvando só neste aparelho: a nuvem não está disponível agora. Tocar para tentar conectar"; return; }
   if(!n){ if(el) el.remove(); return; }
-  if(!el){ el=document.createElement("button"); el.id="sync-st"; el.type="button"; el.className="sync-st"; el.setAttribute("role","status"); el.onclick=()=>{ Object.keys(SYNC.falhas).forEach(k=>{ SYNC.tent[k]=0; dbPut(k, SYNC.falhas[k], 0); }); }; document.body.appendChild(el); }
+  if(!el){ el=document.createElement("button"); el.id="sync-st"; el.type="button"; el.className="sync-st"; el.setAttribute("role","status"); document.body.appendChild(el); }
+  el.onclick=()=>{ Object.keys(SYNC.falhas).forEach(k=>{ SYNC.tent[k]=0; dbPut(k, SYNC.falhas[k], 0); }); };
   el.textContent=`Salvo neste aparelho · ${n===1?"1 registro":n+" registros"} ainda sem ir para a nuvem. Tocar para tentar de novo`; }
 function dbPut(key, val, atraso){
   const c = coll(); if(!c) return;
@@ -824,9 +829,9 @@ function dbPut(key, val, atraso){
     c.doc(key).set(snap).then(()=>{ delete SYNC.falhas[key]; SYNC.tent[key]=0; paintSync(); })
       .catch(()=>{ SYNC.falhas[key]=snap; const t=SYNC.tent[key]=(SYNC.tent[key]||0)+1; paintSync(); if(t<=4) dbPut(key, snap, 3000*t); }); }, atraso==null?600:atraso);
 }
-function saveMain(){ lsSet("cav:main", M); dbPut("main", M); }
+function saveMain(){ M.atualizado=Date.now(); lsSet("cav:main", M); dbPut("main", M); }
 function day(dstr){ return DAYS[dstr] || (DAYS[dstr] = {blocks:{}, final:null}); }
-function saveDay(dstr){ lsSet("cav:d:"+dstr, DAYS[dstr]); dbPut("d_"+dstr, {...DAYS[dstr], date:dstr}); }
+function saveDay(dstr){ if(DAYS[dstr]) DAYS[dstr].atualizado=Date.now(); lsSet("cav:d:"+dstr, DAYS[dstr]); dbPut("d_"+dstr, {...DAYS[dstr], date:dstr}); }
 
 async function boot(){
   const lm = lsGet("cav:main"); if(lm) M = Object.assign(M, lm); LOCAL0=!!lm; if(!window.claude || !claude.use) OWNER=true;
@@ -846,14 +851,17 @@ async function boot(){
     if(c){
       const timer = setTimeout(()=>{}, 10000);
       const s = await c.doc("main").get().catch(()=>null);
-      if(s && s.exists){ const loc=M.inicio; M = Object.assign(M, s.data()); if(!M.inicio) M.inicio=loc; ensureProjetos(); applyProjeto(); }
+      /* A cópia mais recente vence (auditoria de 30/11): antes, a nuvem sempre sobrescrevia o aparelho, mesmo sendo mais antiga. */
+      if(s && s.exists){ const rem=s.data()||{}; if(lm && (lm.atualizado||0) > (rem.atualizado||0)){ saveMain(); } else { const loc=M.inicio; M = Object.assign(M, rem); if(!M.inicio) M.inicio=loc; ensureProjetos(); applyProjeto(); } }
       else if(lm) saveMain();
-      const q = await c.get().catch(()=>null);
-      if(q) q.docs.forEach(x => { const v=x.data(); if(v && v.date){ const o={...v}; delete o.date; DAYS[v.date]=o; } });
+      const q = await c.get().catch(()=>null), naNuvem=new Set();
+      if(q) q.docs.forEach(x => { const v=x.data(); if(v && v.date){ naNuvem.add(v.date); const loc=DAYS[v.date]; if(loc && (loc.atualizado||0) > (v.atualizado||0)){ saveDay(v.date); return; } const o={...v}; delete o.date; DAYS[v.date]=o; } });
+      if(q) Object.keys(DAYS).forEach(d=>{ if(!naNuvem.has(d) && DAYS[d] && (Object.keys(DAYS[d].blocks||{}).length || DAYS[d].final)) saveDay(d); });
       clearTimeout(timer);
       render();
     }
   }catch(e){}
+  SYNC.semNuvem = !coll(); paintSync();
   try{
     SAMPLE = await claude.use("sample");
     if(SAMPLE) LIMITS = await SAMPLE.limits().catch(()=>null);
@@ -3258,7 +3266,7 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
         ${R.qs.map((q,n)=>{ const Q=L.qs[q.i], o=F.ordem.find(x=>x.i===q.i), letra=j=>LT[o.p.indexOf(j)]; return `<div class="cad-it"><small class="muted mono">Questão ${n+1} · ${q.ok?"certa":"errada"}</small><p><b style="font-weight:500">${esc(Q.p)}</b></p><p>${q.ok?`Você marcou ${letra(q.j)}: ${esc(Q.o[q.j])}.`:`Você marcou ${letra(q.j)}: ${esc(Q.o[q.j])}. A certa é ${letra(Q.c)}: ${esc(Q.o[Q.c])}.`}</p><p class="muted">${esc(Q.e)}</p></div>`; }).join("")}
         <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-ta="rever">Rever a aula</button>${trEstado(id)==="reforco"?`<button class="btn" style="min-height:48px" data-ta="refazer">Refazer o teste</button>`:proximaLicao(L.disc)?`<button class="btn" style="min-height:48px" data-ta="proxima">Próxima aula de ${esc(DISC[L.disc].n)}</button>`:""}<button class="btn" style="min-height:48px" data-ta="curso">Ver o curso</button></div>`});
     }
-    SH.querySelectorAll("[data-tq]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.tq, j=+b.dataset.j; F.resp[i]=j; const y=$("#shb").scrollTop; draw(); $("#shb").scrollTop=y; const nb=SH.querySelector(`[data-tq="${i}"][data-j="${j}"]`); if(nb) nb.focus({preventScroll:true}); });
+    SH.querySelectorAll("[data-tq]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.tq, j=+b.dataset.j; F.resp[i]=j; SH.querySelectorAll(`[data-tq="${i}"]`).forEach(x=>x.setAttribute("aria-pressed", String(+x.dataset.j===j))); const q=b.closest(".tr-q"); if(q) q.classList.add("feita"); });
     SH.querySelectorAll("[data-ta]").forEach(b=>b.onclick=async()=>{ const k=b.dataset.ta;
       if(k==="ouvir"){ salaFalar(L.titulo+". "+L.blocos.map(x=>x.t+". "+x.txt).join(" "), null, "professor"); }
       else if(k==="apostila"){ openApostila({pags:pagsDe(L.pag), rotulo:L.pag, voltar:()=>openLicao(id, {dstr:F.dstr, b:F.b})}); }
@@ -3346,7 +3354,7 @@ function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual)
   const draw=(foco)=>{ if(FLOW!==F) return;
     if(F.tela==="prova"){ const feitas=Object.keys(S.resp).length, min=Math.round((Date.now()-S.t0)/60000), grupos=[["Conhecimentos Técnicos",0,30],["Matemática",30,45],["Língua Portuguesa",45,60]];
       sheetHTML({title:`Simulado ${S.n}`, next:"Corrigir", body:`<h2 class="q">Simulado completo<small>60 questões no formato da prova: 30 de Técnicos, 15 de Matemática e 15 de Português. A prova real tem 4 horas, cerca de 3 minutos por questão. Dá para parar e continuar depois.</small></h2>
-        <p class="muted mono" style="margin:0;font-size:13px">${feitas} de ${S.qs.length} respondidas · ${min<60?min+" min":Math.floor(min/60)+" h "+(min%60)+" min"} desde o início</p>
+        <p class="muted mono" id="sm-cont" style="margin:0;font-size:13px">${feitas} de ${S.qs.length} respondidas<span> · ${min<60?min+" min":Math.floor(min/60)+" h "+(min%60)+" min"} desde o início</span></p>
         ${grupos.map(([g,a,z])=>`<section style="display:grid;gap:14px" aria-label="${esc(g)}"><span class="tag">${esc(g)} · questões ${a+1} a ${z}</span>${S.qs.slice(a,z).map((q,n)=>{ const b=B[q.key], k=a+n+1; return `<div class="tr-q${S.resp[q.key]!=null?" feita":""}"><p class="pp-p" id="smq${k}"><b class="mono" style="font-weight:500">${k}.</b> ${esc(b.p)}</p><div class="pp-os" role="group" aria-labelledby="smq${k}">${q.ord.map((j,x)=>`<button class="opt" data-sq="${esc(q.key)}" data-j="${j}" aria-pressed="${S.resp[q.key]===j}"><span class="k">${L[x]}</span><span>${esc(b.o[j])}</span></button>`).join("")}</div></div>`; }).join("")}</section>`).join("")}
         <button class="link" data-sm="novo" style="justify-self:start;min-height:44px">Descartar e montar outro simulado</button>`});
     } else { const R=F.R;
@@ -3358,7 +3366,7 @@ function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual)
         ${chanceHTML()}
         ${R.it.some(x=>!x.ok)?`<section style="display:grid;gap:8px"><span class="tag">Correção das que você errou · já estão na Forja</span>${R.it.map((x,i)=>x.ok?"":`<details class="cad-it"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center"><span><b style="font-weight:500">Questão ${i+1}</b> · ${esc(x.b.tema)}</span></summary><p><b style="font-weight:500">${esc(x.b.p)}</b></p><p>${x.j!=null?`Você marcou: ${esc(x.b.o[x.j])}.`:"Em branco."} Certa: ${esc(x.b.o[x.b.c])}.</p><p class="muted">${esc(x.b.e)}</p></details>`).join("")}</section>`:""}`});
       if(foco){ const h=SH.querySelector("h2.q"); if(h) h.focus({preventScroll:true}); $("#shb").scrollTop=0; } }
-    SH.querySelectorAll("[data-sq]").forEach(b=>b.onclick=()=>{ const k=b.dataset.sq, j=+b.dataset.j; S.resp[k]=j; F.conf=false; saveMain(); const y=$("#shb").scrollTop; draw(); $("#shb").scrollTop=y; const nb=SH.querySelector(`[data-sq="${CSS.escape(k)}"][data-j="${j}"]`); if(nb) nb.focus({preventScroll:true}); });
+    SH.querySelectorAll("[data-sq]").forEach(b=>b.onclick=()=>{ const k=b.dataset.sq, j=+b.dataset.j; S.resp[k]=j; F.conf=false; saveMain(); SH.querySelectorAll(`[data-sq="${CSS.escape(k)}"]`).forEach(x=>x.setAttribute("aria-pressed", String(+x.dataset.j===j))); const q=b.closest(".tr-q"); if(q) q.classList.add("feita"); const ct=$("#sm-cont"); if(ct) ct.firstChild.textContent=`${Object.keys(S.resp).length} de ${S.qs.length} respondidas`; });
     SH.querySelectorAll("[data-fraca]").forEach(b=>b.onclick=()=>openLicao(b.dataset.fraca));
     SH.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para descartar as respostas"; return; } M.simulado.atual=null; saveMain(); openSimulado(); });
   };
@@ -4192,7 +4200,7 @@ function paintPrep(){ const el=document.querySelector(".prep"); if(!el) return; 
   const q=document.querySelector(".prep .pp-p"); if(q && (tinha||PREP_FOCO)){ PREP_FOCO=false; q.tabIndex=-1; q.focus({preventScroll:true}); } else if(tinha){ const n=document.querySelector(".prep"); n.tabIndex=-1; n.focus({preventScroll:true}); } }
 function responderPrep(j){ const a=alvoPrep(), st=prepSt(a), q=st.pool[0]; if(!q||PREP_UI.id===q.id) return;
   PREP_UI={id:q.id, j}; const ok=j===q.c;
-  st.resp.push({id:q.id, mat:q.mat, ok, d:iso(today())}); if(st.resp.length>400) st.resp=st.resp.slice(-400);
+  st.resp.push({id:q.id, mat:q.mat, ok, d:iso(today())}); { const solt=st.resp.filter(r=>!/^(tr-|sim-|ibge2010-)/.test(String(r.id||""))); if(solt.length>400){ const fora=new Set(solt.slice(0,solt.length-400)); st.resp=st.resp.filter(r=>!fora.has(r)); } }
   if(!ok) logErro(q.mat, q.tema, q, j); addXP(ok?3:1);
   paintPrep(); const fb=document.querySelector(".pp-fb"); if(fb) fb.focus({preventScroll:false}); }
 function proximaPrep(){ const a=alvoPrep(), st=prepSt(a); st.pool.shift(); PREP_UI={id:null,j:null}; saveMain(); paintPrep();
