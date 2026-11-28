@@ -245,7 +245,7 @@ const CENARIOS = {
   "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos": async (p) => {
     await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const f = frentes()[0]; f.guia = f.guia.slice(0, 4); atualizarIBGE(); TAB = "hoje"; PAINEL = false; render(); });
     ok(await p.evaluate(() => frentes()[0].guia.some(g => /kXUThPtMCQA/.test(g[1])) && frentes()[0].guia.some(g => /cesgranrio/.test(g[1]))), "links novos (vídeos e Cesgranrio) não chegaram à frente salva");
-    await p.click('[data-act="prova-real"]'); await p.waitForTimeout(100);
+    await p.click('[data-act="provas-lista"]'); await p.waitForTimeout(80); await p.click('[data-pl="ibge2010"]'); await p.waitForTimeout(100);
     ok((await p.$$('[data-pq="21"]')).length === 0 && (await p.$$('[data-pq]')).length === 39 * 4, "cartão-resposta com número errado de questões (sem Gerais e sem a anulada)");
     await p.click('[data-pq="1"][data-j="1"]'); await p.click('[data-pq="11"][data-j="3"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-pq="32"][data-j="2"]'); await p.click('[data-pq="33"][data-j="0"]');
     ok(/5 de 39/.test(await p.textContent("#shb")), "contagem de marcadas errada (a anulada não entra)");
@@ -260,9 +260,32 @@ const CENARIOS = {
     await p.click('[data-pr="refazer"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-sh="next"]');
     ok(await p.evaluate(() => M.erros.filter(e => e.id.startsWith("eibge2010-")).length === 1 && M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length === 1), "refazer a prova duplicou erros ou respostas");
   },
-  "Curso da prova: 36 aulas, teste com 80%, Forja, revisões e agenda": async (p) => {
+  "Provas do IBFC 2026, frases da apostila e textos de interpretação": async (p) => {
+    await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); TAB = "hoje"; PAINEL = false; render(); });
+    await p.click('[data-act="provas-lista"]'); await p.waitForTimeout(80);
+    ok((await p.$$("[data-pl]")).length === 3, "a lista não mostra as 3 provas reais");
+    await p.click('[data-pl="ibfc2026acs"]'); await p.waitForTimeout(80);
+    const a = await p.evaluate(() => ({ n: document.querySelectorAll("[data-pq]").length, so27: !!document.querySelector('[data-pr="so27"]'), pdf: !!document.querySelector('a[href*="163263"]'), anul: (document.querySelector("#shb").textContent.match(/Anulada/g) || []).length }));
+    ok(a.n === 12 * 5 && !a.so27 && a.pdf && a.anul === 3, "cartão do IBFC ACS errado (12 questões válidas, 5 letras, 3 anuladas, PDF): " + JSON.stringify(a));
+    for (const [n, j] of [[46, 1], [47, 4], [48, 3], [49, 2], [51, 4], [52, 0]]) await p.click(`[data-pq="${n}"][data-j="${j}"]`);
+    await p.click('[data-sh="next"]'); await p.waitForTimeout(80);
+    const b = await p.evaluate(() => ({ txt: document.querySelector("#shb").textContent, erros: M.erros.filter(e => e.id.startsWith("eibfc2026acs-")).map(e => e.id), resp: M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibfc2026acs-")).length }));
+    ok(/83%/.test(b.txt) && /dos 30 pontos/.test(b.txt) && b.erros.join() === "eibfc2026acs-52" && b.resp === 6, "correção do IBFC errada: " + JSON.stringify({ ...b, txt: b.txt.slice(0, 160) }));
+    const g = await p.evaluate(() => { const L = "ABCDE", pr = PROVAS_REAIS.ibfc2026acr; return pr.gab.slice(40) === "BABDCCBCBACA*DEACDEA" && PROVAS_REAIS.ibfc2026acs.gab.slice(45) === "BEDC*EB*DEBD*BA"; });
+    ok(g, "gabarito oficial do IBFC fora do lugar");
+    const c = await p.evaluate(() => { closeSheet(); openFrases(); const c0 = FLOW.fila[0], n = FLOW.fila.length; return { n, id: c0.id, tem: !!document.querySelector(".fr-lac"), ops: document.querySelectorAll("[data-fo]").length }; });
+    ok(c.n === 10 && c.tem && c.ops === 5, "treino de frases não abriu com 10 cartões e 5 opções: " + JSON.stringify(c));
+    const d = await p.evaluate(async () => { const espera = () => new Promise(r => setTimeout(r, 150)); const c0 = FLOW.fila[0], bs = [...document.querySelectorAll("[data-fo]")], certo = bs.find(b => b.textContent.includes(c0.r) && b.textContent.replace(/^[A-E✓]/, "").trim() === c0.r); certo.click(); await espera();
+      const ok1 = /Certo/.test(document.querySelector("#fr-fb").textContent); FLOW.next(); const c1 = FLOW.fila[1]; const errado = [...document.querySelectorAll("[data-fo]")].find(b => b.textContent.replace(/^[A-E✓]/, "").trim() !== c1.r); errado.click(); await espera();
+      const fb = document.querySelector("#fr-fb").textContent; return { ok1, fb, s0: M.frases[c0.id], s1: M.frases[c1.id], forja: M.erros.some(e => e.id === "efr-" + c1.id), resp: M.prep.ibge2027.resp.filter(r => r.id.startsWith("fr-")).length, apt: respLicoes()[c0.aula] }; });
+    ok(d.ok1 && /A apostila diz/.test(d.fb) && d.s0.cx === 1 && d.s0.prox === "2026-11-28" && d.s1.cx === 0 && d.forja && d.resp === 2 && d.apt && d.apt.length >= 1, "frases: acerto, erro, Forja ou revisão errados: " + JSON.stringify(d));
+    const e = await p.evaluate(() => { closeSheet(); openLicao("p13"); const t1 = /Água guardada/.test(document.querySelector("#shb").textContent); FLOW.next(); const t2 = !!document.querySelector(".tr-texto:not([open])") && /cisterna de placas/.test(document.querySelector("#shb").textContent);
+      return { t1, t2, foraSim: !bancoIBGE().some(b => b.key.startsWith("L:p13:")), dec: licao("t05").blocos.some(b => /6\.040/.test(b.t)), t12: !/a resposta era ACR/.test(JSON.stringify(licao("t12"))) }; });
+    ok(e.t1 && e.t2 && e.foraSim && e.dec && e.t12, "textos de interpretação, Decreto 6.040 ou correção da t12: " + JSON.stringify(e));
+  },
+  "Curso da prova: 40 aulas, teste com 80%, Forja, revisões e agenda": async (p) => {
     await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); openTrilha(); });
-    ok((await p.$$("[data-tl]")).length === 36, "o curso não lista as 36 aulas");
+    ok((await p.$$("[data-tl]")).length === 40, "o curso não lista as 40 aulas");
     await p.click('[data-tl="t02"]'); await p.waitForTimeout(80);
     ok(/Sede, setores/.test(await p.textContent("#shb")) && /apostila, p\. 61/.test(await p.textContent("#shb")), "aula t02 sem título ou sem página da apostila");
     ok(await p.evaluate(() => trEstado("t02") === "aprendendo"), "abrir a aula não marcou 'aprendendo'");
@@ -293,7 +316,7 @@ const CENARIOS = {
     const c = await p.evaluate(() => { closeSheet(); const ch = chanceIBGE(); return { corte: ch.corte, meta: ch.meta, esp: ch.esp, html: chanceHTML() }; });
     ok(c.corte > 0.9 && c.meta > 0.3 && c.esp >= 36 && c.esp <= 44 && /Chance de passar/.test(c.html), "chance estatística fora do esperado: " + JSON.stringify({ corte: c.corte, meta: c.meta, esp: c.esp }));
     const d = await p.evaluate(() => { const pl = planoIBGE(); openTrilha(); return { pl, txt: document.querySelector("#shb").textContent }; });
-    ok(d.pl.tot === 36 && /Plano até a prova/.test(d.txt) && /Estratégia para o dia da prova/.test(d.txt) && /Simulado completo/.test(d.txt), "curso sem plano, estratégia ou simulado: " + JSON.stringify(d.pl));
+    ok(d.pl.tot === 40 && /Plano até a prova/.test(d.txt) && /Estratégia para o dia da prova/.test(d.txt) && /Simulado completo/.test(d.txt), "curso sem plano, estratégia ou simulado: " + JSON.stringify(d.pl));
     const e = await p.evaluate(() => { openLicao("t04", { rev: false }); FLOW.tela = "teste"; licao("t04").qs.forEach((q, i) => FLOW.resp[i] = q.c); FLOW.next(); const t1 = (trSt("t04").tent || []).length;
       const k = document.querySelector('[data-ta="rever"]'); k && k.click(); const zer = Object.keys(FLOW.resp).length; FLOW.tela = "teste"; licao("t04").qs.forEach((q, i) => FLOW.resp[i] = q.c);
       return { t1, zer }; });

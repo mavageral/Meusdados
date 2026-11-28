@@ -569,3 +569,34 @@ Ficaram de fora, de propósito:
   - **Corrigido na t12:** entraram o bloco "definições curtas da p. 15", as atribuições item por item e 2 pegadinhas.
 - **Padrão da banca:** o IBFC copia a letra da apostila (definições, listas, lacunas). A Cesgranrio, em 2010, misturou letra e situação.
 - **Ajustes em Matemática:** a aula m01 agora usa o nome "números racionais" e a m08, "medidas de superfície", como no edital.
+
+## 31. Coletânea: provas do IBFC 2026, frases da apostila, textos e o que a Cesgranrio cobra (28/11/2026)
+
+- **Pesquisa nas provas antigas:**
+  - Cesgranrio Recenseador 2006 e 2009, Liquigás 2013 e 2018 (fundamental), FGV Recenseador 2022, IBFC ACS e ACR 2026, além das estatísticas do QConcursos.
+  - **Português:** interpretação é mais da metade, com 1 ou 2 textos, crônica ou expositivo, de 5 a 10 questões por texto. Depois vêm vocabulário no contexto, reescrita e conectivos ("a reescrita que ALTERA o sentido"), pontuação, ortografia e acentuação "pela mesma regra".
+  - **Matemática:** problemas do dia a dia, com porcentagem, regra de três, tabelas e gráficos, e decimais e dinheiro.
+  - **Técnicos:** a letra da apostila. O tema mais cobrado é o estabelecimento agropecuário, seguido de setor, endereço, povos e comunidades tradicionais e equipe.
+- **Provas reais:** nova lista com 3 provas (`openProvasLista`).
+  - Recenseador 2010, da Cesgranrio.
+  - IBFC 2026 ACS, questões técnicas 46 a 60, com 3 anuladas.
+  - IBFC 2026 ACR, questões técnicas 41 a 60, com 1 anulada.
+  - O gabarito é o definitivo, do tipo A, com o link do PDF.
+  - Prova só com técnicas mostra a porcentagem de acerto e a estimativa sobre 30 pontos.
+- **Frases da apostila** (`openFrases`, 53 cartões em `frases-apostila.json`):
+  - lacunas com as frases literais que a banca copia;
+  - revisão espaçada em 1, 3, 7, 15 e 30 dias;
+  - o erro vai para a Forja;
+  - as respostas entram no termômetro da aula (`fr-<aula>-<id>`).
+- **Interpretação:** 4 aulas novas (p12 a p15), cada uma com um texto escrito para o Yaad1 e 5 questões no estilo da banca.
+  - Os textos são duas crônicas, um informativo e um de opinião.
+  - Os comandos são ideia central, conectivo, referência, sinônimo e antônimo, reescrita que ALTERA e gênero.
+  - O texto aparece na aula e no teste.
+  - Essas questões ficam fora do simulado, porque dependem do texto.
+  - O curso passou a ter 40 aulas.
+- **Conteúdo:**
+  - **t05:** bloco do Decreto 6.040/2007, com o texto do Planalto (PCT, territórios tradicionais e desenvolvimento sustentável).
+  - **t12:** a questão 58 do IBFC ACS foi anulada; o texto anterior dizia, errado, que a resposta era ACR.
+  - **Estratégia:** 2 regras novas sobre os comandos em maiúscula e sobre responder pelo texto.
+- **Testes:** 316/316, com o cenário "Provas do IBFC 2026, frases da apostila e textos de interpretação".
+- **Bug achado pelo teste e corrigido:** as opções da frase mudavam de ordem depois da resposta.

@@ -502,6 +502,10 @@
 "txt": "Uma pessoa pode se reconhecer como parte de mais de uma comunidade tradicional. O pertencimento é autodeclaratório: registra-se o que o próprio informante declara, sem questionar, julgar ou tentar corrigir. (p. 40)"
 },
 {
+"t": "Decreto 6.040/2007: a definição na lei",
+"txt": "O Decreto nº 6.040, de 7 de fevereiro de 2007, institui a Política Nacional de Desenvolvimento Sustentável dos Povos e Comunidades Tradicionais (PNPCT). Ele define três termos que a banca pode copiar. Povos e Comunidades Tradicionais: 'grupos culturalmente diferenciados e que se reconhecem como tais, que possuem formas próprias de organização social, que ocupam e usam territórios e recursos naturais como condição para sua reprodução cultural, social, religiosa, ancestral e econômica, utilizando conhecimentos, inovações e práticas gerados e transmitidos pela tradição'. Territórios Tradicionais: 'os espaços necessários à reprodução cultural, social e econômica' desses povos, 'sejam eles utilizados de forma permanente ou temporária'. Desenvolvimento Sustentável: 'o uso equilibrado dos recursos naturais, voltado para a melhoria da qualidade de vida da presente geração, garantindo as mesmas possibilidades para as gerações futuras'. O decreto também manda reconhecer com rapidez a autoidentificação desses povos, o que combina com a regra do Censo: quem diz a que povo pertence é o próprio informante."
+},
+{
 "t": "As três categorias de áreas",
 "txt": "1) Territórios oficialmente reconhecidos pelo Estado: Terras Indígenas e Territórios Quilombolas oficialmente delimitados, Unidades de Conservação e parte dos Projetos de Assentamento. 2) Agrupamentos identificados pelo IBGE: Agrupamentos Indígenas e Agrupamentos Quilombolas. 3) Áreas delimitadas para a operação censitária: as Áreas de Interesse Operacional (AIO) de PCTs. (p. 40)"
 },
@@ -531,13 +535,16 @@
 "pegadinhas": [
 "AIO não segue os limites dos setores: pode ser maior ou menor e chegar a um município inteiro.",
 "O Recenseador não corrige nem questiona a identidade declarada.",
-"Agrupamentos Indígenas e Quilombolas são identificados pelo IBGE; Terras Indígenas e Territórios Quilombolas são reconhecidos pelo Estado."
+"Agrupamentos Indígenas e Quilombolas são identificados pelo IBGE; Terras Indígenas e Territórios Quilombolas são reconhecidos pelo Estado.",
+"'Que se reconhecem como tais' é a autoidentificação: não é preciso documento, laudo nem registro para ser comunidade tradicional.",
+"Território tradicional pode ser usado de forma permanente OU temporária. A alternativa que diz 'somente de uso permanente' está errada."
 ],
 "resumo": [
 "PCTs: grupos que se reconhecem como tais e dependem do território para sua reprodução.",
 "Pertencimento é autodeclarado; pode haver mais de uma identidade.",
 "3 categorias: reconhecidos pelo Estado, agrupamentos do IBGE, AIOs.",
-"Acesso negociado antes, com base na Convenção 169 da OIT; guias com apoio de FUNAI e SESAI."
+"Acesso negociado antes, com base na Convenção 169 da OIT; guias com apoio de FUNAI e SESAI.",
+"Decreto 6.040/2007 (PNPCT): PCT são grupos culturalmente diferenciados que se reconhecem como tais; território pode ser de uso permanente ou temporário."
 ],
 "qs": [
 {

@@ -5,7 +5,7 @@ import json, sys, os, collections
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PASTA = os.path.join(RAIZ, "projetos/sala-caverna/conteudo/trilha-ibge")
 APP = os.path.join(RAIZ, "projetos/sala-caverna/index.html")
-ORDEM = [("tec", ["tecnicos-1.json", "tecnicos-2.json"]), ("mat", ["matematica.json"]), ("por", ["portugues.json"])]
+ORDEM = [("tec", ["tecnicos-1.json", "tecnicos-2.json"]), ("mat", ["matematica.json"]), ("por", ["portugues.json", "portugues-textos.json"])]
 INI, FIM = "<!-- TRILHA-IBGE:INICIO -->", "<!-- TRILHA-IBGE:FIM -->"
 
 def validar():
@@ -54,6 +54,21 @@ def main():
     if erros:
         print("\n".join("ERRO " + e for e in erros)); sys.exit(1)
     if "--so-validar" in sys.argv: return
+    fp = os.path.join(PASTA, "frases-apostila.json")
+    if os.path.exists(fp):
+        with open(fp, encoding="utf-8") as f: FR = json.load(f)
+        idsl = {L["id"] for ls in dados.values() for L in ls}; vf = set()
+        for c in FR:
+            k = c.get("id")
+            if k in vf: sys.exit(f"frase {k}: id repetido")
+            vf.add(k)
+            if c.get("aula") not in idsl: sys.exit(f"frase {k}: aula {c.get('aula')} não existe")
+            if c.get("t", "").count("___") != 1: sys.exit(f"frase {k}: precisa de uma lacuna ___")
+            ds = c.get("d", [])
+            if len(ds) != 4 or len({x.lower() for x in ds + [c.get('r', '')]}) != 5: sys.exit(f"frase {k}: precisa de 4 distratores diferentes da resposta")
+            if not c.get("pag"): sys.exit(f"frase {k}: sem página")
+        dados["frases"] = FR
+        print(f"frases da apostila: {len(FR)}")
     txt = json.dumps(dados, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     bloco = f'{INI}\n<script type="application/json" id="trilha-ibge">{txt}</script>\n{FIM}'
     with open(APP, encoding="utf-8") as f: s = f.read()
