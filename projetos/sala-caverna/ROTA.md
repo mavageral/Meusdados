@@ -335,3 +335,36 @@ Ficaram de fora, de propósito:
 **Revisor de UI:** nada grave. Foram aplicados os ajustes de foco (enunciado da questão ao abrir o treino), "Último dia: hoje" legível, botões da missão com 44 px, matéria fixa sem aparência de campo e "Apostila" já marcada.
 
 **Testes:** 202/202, com o cenário "UX: matéria fixa na frente, treino recolhido e último dia da missão".
+
+## 22. Material enviado pela dona: prova real de 2010, edital e vídeos (28/11/2026)
+
+**O que chegou:**
+- prova de Recenseador de 2010 (Cesgranrio, prova branca) com o gabarito;
+- edital nº 03/2026 com as alterações de 17/11;
+- apostila oficial do Censo Agro;
+- 4 prints (playlists do YouTube e o Anexo III);
+- 2 links de lives enviados pelo Pr. Renner.
+
+**Conferências:**
+- **Prazos:** o PDF do edital (17/11) ainda mostra inscrição até 25/11 e taxa até 27/11. Valem as datas da prorrogação publicada em 25/11 pela Agência de Notícias do IBGE: inscrição até 30/11, às 23h59, e taxa até 09/12. O app já usava essas datas.
+- **Anexo III (conteúdo da prova):** igual aos tópicos da frente.
+- **Gabarito de 2010:** conferido resolvendo as 10 questões de Matemática. Bate com a prova branca.
+
+**No app:**
+- **Prova real (cartão-resposta), `openProvaReal("ibge2010")`:**
+  - a pessoa lê a prova no PDF dela e marca só as letras;
+  - o código guarda só o gabarito oficial (letras) e o assunto de cada questão. Nenhum texto da prova entra no repositório;
+  - Conhecimentos Gerais (não cai em 2027) vem pulado por padrão. A questão 37, anulada, não conta;
+  - a correção é por regra fixa;
+  - os erros vão para a Forja com o assunto. As respostas entram nas barras de "Sua preparação". Refazer não duplica;
+  - a estimativa no formato de 2027 só aparece com pelo menos 5 questões marcadas em cada matéria;
+  - entradas: na folha da frente IBGE e em "Sua preparação".
+- **Biblioteca:**
+  - site da Cesgranrio, para inscrição e pagamento;
+  - aulas da Nova Concursos de Matemática e de Português (as duas lives enviadas);
+  - playlists gratuitas do Mario Tossan.
+  - A frente já salva recebe os links novos uma vez (`atualizarIBGE`).
+
+**Revisor de UI:** corrigido o item grave (marcar uma letra levava a tela ao topo). Também entraram: confirmação antes de apagar as respostas, estimativa que diz em quantas questões se apoia, rótulos mais curtos para leitor de tela e XP só na primeira correção do dia.
+
+**Testes:** 222/222, com o cenário "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos".

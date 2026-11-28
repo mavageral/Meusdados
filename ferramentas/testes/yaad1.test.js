@@ -240,6 +240,24 @@ const CENARIOS = {
     const m = await p.textContent(".missao .mh");
     ok(/Último dia: hoje/.test(m) && !(await p.$(".missao .gbar")), "missão no dia do prazo não diz Hoje: " + m);
   },
+  "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos": async (p) => {
+    await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const f = frentes()[0]; f.guia = f.guia.slice(0, 4); atualizarIBGE(); TAB = "hoje"; PAINEL = false; render(); });
+    ok(await p.evaluate(() => frentes()[0].guia.some(g => /kXUThPtMCQA/.test(g[1])) && frentes()[0].guia.some(g => /cesgranrio/.test(g[1]))), "links novos (vídeos e Cesgranrio) não chegaram à frente salva");
+    await p.click('[data-act="prova-real"]'); await p.waitForTimeout(100);
+    ok((await p.$$('[data-pq="21"]')).length === 0 && (await p.$$('[data-pq]')).length === 39 * 4, "cartão-resposta com número errado de questões (sem Gerais e sem a anulada)");
+    await p.click('[data-pq="1"][data-j="1"]'); await p.click('[data-pq="11"][data-j="3"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-pq="32"][data-j="2"]'); await p.click('[data-pq="33"][data-j="0"]');
+    ok(/5 de 39/.test(await p.textContent("#shb")), "contagem de marcadas errada (a anulada não entra)");
+    const rol = await p.evaluate(() => { const sb = document.querySelector("#shb"); sb.scrollTop = 900; const y = sb.scrollTop; document.querySelector('[data-pq="40"][data-j="0"]').click(); return Math.abs(document.querySelector("#shb").scrollTop - y) < 5 && y > 0; });
+    ok(rol, "marcar uma letra jogou a tela para o topo");
+    await p.click('[data-pq="40"][data-j="0"]');
+    await p.click('[data-sh="next"]'); await p.waitForTimeout(100);
+    const r = await p.evaluate(() => ({ txt: document.querySelector("#shb").textContent, erros: M.erros.filter(e => e.id.startsWith("eibge2010-")).map(e => e.id), resp: M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length }));
+    ok(/Questão 12/.test(r.txt) && /certa é A/.test(r.txt) && /Questão 33/.test(r.txt) && !/Questão 11 ·/.test(r.txt), "correção pelo gabarito oficial errada: " + r.txt.slice(0, 200));
+    ok(r.erros.length === 2 && r.resp === 5, "erros não foram para a Forja ou respostas não entraram no treino: " + JSON.stringify(r));
+    await p.click('[data-pr="refazer"]'); ok(await p.evaluate(() => Object.keys(M.provaReal.ibge2010.resp).length === 5), "Refazer do zero apagou sem confirmar");
+    await p.click('[data-pr="refazer"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-sh="next"]');
+    ok(await p.evaluate(() => M.erros.filter(e => e.id.startsWith("eibge2010-")).length === 1 && M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length === 1), "refazer a prova duplicou erros ou respostas");
+  },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
     await p.click('.tabbar [data-tab="estudar"]'); await p.waitForTimeout(200);
