@@ -51,3 +51,10 @@ As regras são fixas e não dependem da IA:
 1. Altere o JSON.
 2. Rode `python3 -I ferramentas/embutir-trilha.py`. Ele valida o conteúdo (5 questões por aula, 5 alternativas diferentes, gabarito válido, comentário em toda questão e página em toda aula técnica) e embute o curso no `index.html`.
 3. Rode a bateria: `node ferramentas/testes/yaad1.test.js`.
+
+## Apostila oficial no app
+
+- `../apostila-ibge/apostila.json` traz o texto oficial da apostila, página por página, com a fonte citada.
+- O arquivo é gerado por `ferramentas/extrair-apostila.py` a partir do `pdftotext` do PDF oficial. O PDF não entra no repositório.
+- As figuras que não têm texto foram transcritas e aparecem marcadas como "[Conteúdo da figura]".
+- O `embutir-trilha.py` embute a apostila junto com o curso.

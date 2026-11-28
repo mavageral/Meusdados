@@ -297,6 +297,32 @@ const CENARIOS = {
       return { t1, zer }; });
     ok(e.t1 === 1 && e.zer === 0, "rever a aula não zerou as respostas ou contou duas vezes: " + JSON.stringify(e));
   },
+  "Termômetro de aptidão e estudo adaptativo pelos erros do simulado": async (p) => {
+    const a = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const A0 = aptidao();
+      ["t01", "t02"].forEach(id => { openLicao(id); FLOW.tela = "teste"; licao(id).qs.forEach((q, i) => FLOW.resp[i] = q.c); FLOW.next(); closeSheet(); });
+      const A1 = aptidao(); return { a0: A0.apt, p0: A0.pts, a1: A1.apt, html: termometroHTML(), st: trEstado("t02") }; });
+    ok(a.a0 === 20 && a.p0 === 12, "aptidão inicial deveria ser 20% (só chute): " + JSON.stringify(a));
+    ok(a.a1 > a.a0 && /Termômetro de aptidão/.test(a.html) && /role="meter"/.test(a.html) && /corte/.test(a.html) && a.st === "revisao", "aptidão não subiu depois de aprender: " + JSON.stringify({ a0: a.a0, a1: a.a1 }));
+    const b = await p.evaluate(() => { openSimulado(); const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
+      S.qs = S.qs.filter(q => !/^L:t0[12]:/.test(q.key)).slice(0, 55).concat([0, 1, 2, 3, 4].map(i => ({ key: "L:t02:" + i, ord: [0, 1, 2, 3, 4] })));
+      S.qs.forEach(q => S.resp[q.key] = /^L:t02:/.test(q.key) ? (B[q.key].c + 1) % 5 : B[q.key].c); FLOW.next();
+      const A = aptidao(); return { st: trEstado("t02"), motivo: trSt("t02").motivo, fraca: A.fracas.some(x => x.L.id === "t02"), txt: document.querySelector("#shb").textContent, hist: M.simulado.hist.slice(-1)[0].apt, prox: proximaLicao("tec").id }; });
+    ok(b.st === "reforco" && b.motivo === "simulado" && /O app ajustou o seu estudo/.test(b.txt), "simulado com erros não mandou a aula para reforço: " + JSON.stringify({ st: b.st, motivo: b.motivo }));
+    ok(b.fraca && b.prox === "t02" && typeof b.hist === "number", "ponto fraco não apareceu ou não virou a próxima aula: " + JSON.stringify({ fraca: b.fraca, prox: b.prox, hist: b.hist }));
+  },
+  "Apostila oficial no app: páginas da aula, busca e volta": async (p) => {
+    const a = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); return { n: apostila().paginas.length, pg: JSON.stringify(pagsDe("59, 60, 64 a 66")), fig: apostila().paginas.find(x => x.p === 55).t.some(t => /hotéis-fazenda/.test(t)) }; });
+    ok(a.n >= 60 && a.pg === "[59,60,64,65,66]" && a.fig, "apostila incompleta, páginas mal lidas ou figura sem transcrição: " + JSON.stringify(a));
+    await p.evaluate(() => openLicao("t02")); await p.click('[data-ta="apostila"]'); await p.waitForTimeout(80);
+    const t = await p.textContent("#shb");
+    ok(/Página 61/.test(t) && /Sede é o local destinado à administração/.test(t) && !/Página 20/.test(t), "a aula não abriu as páginas certas da apostila");
+    await p.fill("#ap-busca", "boitel"); await p.waitForTimeout(400);
+    ok(/página.* com "boitel"/.test(await p.textContent("#shb")) && !!(await p.$("#shb mark")), "a busca na apostila não achou 'boitel'");
+    await p.click('[data-sh="next"]'); await p.waitForTimeout(80);
+    ok(await p.evaluate(() => FLOW && FLOW.kind === "licao" && FLOW.id === "t02"), "Voltar para a aula não voltou");
+    await p.evaluate(() => { closeSheet(); openBiblioteca(); }); await p.waitForTimeout(50);
+    ok(!!(await p.$('[data-bib="apostila"]')), "biblioteca sem a apostila no app");
+  },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
     await p.click('.tabbar [data-tab="estudar"]'); await p.waitForTimeout(200);

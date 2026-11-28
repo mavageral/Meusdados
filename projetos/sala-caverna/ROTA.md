@@ -438,3 +438,77 @@ Ficaram de fora, de propósito:
     - "dificuldade" substituiu "nível" (concordância).
   - **Aceito sem mudança:** os blocos de texto longos das aulas.
 - **Testes:** 258/258, com o cenário "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes".
+
+## 26. Termômetro de aptidão e estudo adaptativo (28/11/2026)
+
+- **Pedido:** a dona quer que o app acompanhe o desempenho nos simulados, descubra os pontos fracos, adapte o estudo e mostre um termômetro de aptidão (30% fraco, 90% excelente).
+- **Termômetro (`aptidao`, `termometroHTML`):**
+  - Aptidão = pontos esperados se a prova fosse hoje ÷ 60.
+  - Cada aula tem um acerto estimado pelas últimas 10 respostas (testes e simulados): (acertos + 0,4) ÷ (respostas + 2). Com poucas respostas, essa conta puxa o acerto para 20%, que é o chute com 5 alternativas. Aula nunca respondida conta como chute.
+  - Pontos = 30 × Técnicos + 15 × Matemática + 15 × Português, usando a média das aulas de cada matéria.
+  - No começo, o termômetro marca 20% (12 pontos) e sobe com o aprendizado real.
+  - Faixas:
+
+    | Faixa | Aptidão |
+    |---|---|
+    | Começando | abaixo de 30% |
+    | Base em construção | 30% a 49% |
+    | Competitiva | 50% a 69% |
+    | Forte | 70% a 89% |
+    | Excelente | 90% ou mais |
+
+  - O termômetro aparece com `role="meter"`, mostra a tendência entre simulados e é exibido no curso, no resultado do simulado, em "Sua preparação" e no Hall da Sala viva.
+- **Pontos fracos:**
+  - são as aulas com pelo menos 2 respostas e acerto abaixo de 70%;
+  - a lista vem ordenada pelos pontos que se pode recuperar e mostra as 5 primeiras;
+  - cada uma tem um botão que abre a aula.
+- **Adaptação (`adaptarPorSimulado`), feita depois de cada simulado:**
+  - aula aprovada em que se errou metade ou mais das questões volta para reforço, com o aviso "o simulado mostrou…";
+  - aula aprovada com algum erro tem a revisão antecipada para o dia seguinte;
+  - a próxima matéria a estudar é a que mais rende pontos a recuperar (peso × (1 − acerto));
+  - a aptidão de cada simulado fica guardada no histórico.
+- **Testes:** 270/270, com o cenário "Termômetro de aptidão e estudo adaptativo pelos erros do simulado".
+
+## 27. Apostila oficial dentro do app e ajustes do termômetro (28/11/2026)
+
+- **Autorização da dona:** colocar o texto da apostila no app.
+- **Apostila:**
+  - `ferramentas/extrair-apostila.py` gera `conteudo/apostila-ibge/apostila.json` a partir do texto do PDF oficial: 68 páginas e cerca de 75 mil caracteres, sem os cabeçalhos repetidos e com a fonte citada;
+  - as figuras sem texto (páginas 33, 34, 43, 47, 54 e 55) ganharam transcrição marcada como "[Conteúdo da figura]";
+  - `embutir-trilha.py` embute a apostila em `#apostila-ibge`;
+  - o PDF não entra no Git.
+- **Leitor (`openApostila`):**
+  - abre só as páginas da aula ("Ler na apostila (p. 61 a 63)") ou a apostila inteira;
+  - busca em todas as páginas, sem diferenciar acentos, e destaca o termo achado;
+  - tem o botão "Voltar para a aula";
+  - também pode ser aberto pela Biblioteca e pelo Curso da prova.
+- **"Explicar de outro jeito":** nas aulas técnicas, agora usa as páginas da apostila como fonte oficial (até 7 mil caracteres).
+- **Termômetro (revisor de UI, sem nenhum item grave):**
+  - **Pontos fracos:** usam a taxa real abaixo de 80%. Uma aula aprovada não aparece mais como fraca.
+  - **Faixas alinhadas ao corte e à meta:**
+
+    | Faixa | Aptidão |
+    |---|---|
+    | Começando | abaixo de 30% |
+    | Base em construção | 30% a 59% |
+    | Competitiva | 60% a 74% |
+    | Forte | 75% a 89% |
+    | Excelente | 90% ou mais |
+
+  - **Tubo:** ganhou as legendas "corte", "meta" e "excelente".
+  - **Texto mais simples:** "precisa de 18 para não ser eliminada e de uns 36 para ficar entre os primeiros".
+  - **Pontos a ganhar:** mostram o valor real ("menos de 1 ponto", "cerca de 1,2 pontos").
+  - **Acessibilidade:** o medidor usa `aria-valuetext`.
+  - **Estado inicial:** sai em cor neutra, com o convite "Faça a 1ª aula".
+- **Testes:** 284/284, com o cenário "Apostila oficial no app: páginas da aula, busca e volta".
+- **Revisor de UI do leitor da apostila:**
+  - **Grave, corrigido:** a busca recriava o campo a cada letra, o que fecharia o teclado no iPhone. Agora a moldura da tela é desenhada uma vez só e a busca atualiza apenas a lista de resultados.
+  - **Grave para leitor de tela, corrigido:** o anúncio dos resultados agora sai de uma região de status fixa (`#ap-status`).
+  - **Também corrigido:**
+    - o destaque funciona sem acento (buscar "areas" marca "áreas");
+    - a tela rola até o primeiro trecho encontrado;
+    - o botão de voltar diz para onde volta (aula, curso ou biblioteca);
+    - as linhas têm no máximo 68 caracteres;
+    - os 88 títulos da apostila aparecem separados do texto;
+    - o link do PDF tem 44 px de altura;
+    - o destaque é aplicado antes do escape do texto, sem quebrar símbolos especiais.
