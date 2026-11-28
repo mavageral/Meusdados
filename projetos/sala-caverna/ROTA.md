@@ -559,3 +559,13 @@ Ficaram de fora, de propósito:
   3. **Respostas preservadas.** O limite de 400 respostas do treino apagava respostas do curso e dos simulados e derrubaria o termômetro. Agora só as respostas soltas do treino entram no limite.
   4. **Toque mais rápido.** Marcar uma letra no teste e no simulado não redesenha mais a tela inteira: passou de 104 ms para 27 ms.
 - **Testes:** 298/298, com o cenário "Nuvem: a cópia mais recente vence, aviso sem nuvem e respostas do curso preservadas".
+
+## 30. O conteúdo é suficiente para a prova? (30/11/2026)
+
+- **Cobertura:**
+  - todos os itens do Anexo III de Matemática e de Português estão nas aulas;
+  - as aulas citam 64 das 66 páginas de conteúdo da apostila (as páginas 67 e 68 são o encerramento).
+- **Validação externa:** a prova do IBFC de 27/09/2026 (ACS) usou a mesma apostila. Das 15 questões técnicas, 13 estão cobertas por completo e 2 estavam cobertas só em parte (atribuições do ACS e a definição curta do ACR na p. 15).
+  - **Corrigido na t12:** entraram o bloco "definições curtas da p. 15", as atribuições item por item e 2 pegadinhas.
+- **Padrão da banca:** o IBFC copia a letra da apostila (definições, listas, lacunas). A Cesgranrio, em 2010, misturou letra e situação.
+- **Ajustes em Matemática:** a aula m01 agora usa o nome "números racionais" e a m08, "medidas de superfície", como no edital.

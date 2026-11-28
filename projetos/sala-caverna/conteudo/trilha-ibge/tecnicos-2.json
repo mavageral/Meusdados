@@ -514,6 +514,14 @@
 "txt": "AOR (Assistente Operacional Regional): gere o posto. ACA (Agente Censitário Administrativo): apoia as atividades administrativas do AOR. ACI (Agente Censitário de Informática): apoio de tecnologia ao AOR. ACR (Agente Censitário Regional): coordena as atividades censitárias do posto, é subordinado ao AOR e gerencia os ACS. ACS (Agente Censitário Supervisor): supervisiona e treina os Recenseadores; é o elo entre quem coleta e quem gerencia. ACQ (Agente Censitário de Qualidade): supervisiona a qualidade e orienta ACS e Recenseadores na correção de erros. (p. 14 a 17)"
 },
 {
+"t": "Atenção: as definições curtas da página 15",
+"txt": "A página 15 traz definições curtas que a banca costuma copiar ao pé da letra. ACR: 'Supervisiona o trabalho dos recenseadores. Responsável pelo treinamento e gerencia o desempenho da equipe, a cobertura territorial da operação e o cumprimento de prazos.' ACS: 'Responsável pela supervisão do trabalho dos Recenseadores.' Na prova do IBFC de 27/09/2026, uma questão copiou a definição curta do ACR e a resposta era ACR. Regra prática: se o enunciado repete a frase da página 15 com 'treinamento, desempenho da equipe, cobertura territorial e prazos', a resposta é ACR; se fala que é o elo entre quem coleta e quem gerencia, ou que o recenseador se reporta a ele, é ACS. (p. 15 a 18)"
+},
+{
+"t": "Atribuições, item por item",
+"txt": "ACR (p. 16): monitorar a cobertura e o cronograma da coleta; analisar relatórios e indicadores operacionais; gerir e responder alertas no sistema; solucionar pendências da Supervisão de Qualidade; apoiar tecnicamente os ACS; zelar pela qualidade, confidencialidade e integridade dos dados. ACS (p. 17): realizar treinamentos; apoiar técnica e operacionalmente os Recenseadores; analisar relatórios de produção da coleta; gerir e responder alertas no Sistema de Indicadores de Desempenho (SIGC); monitorar a cobertura e controlar o cronograma da coleta; gerenciar as solicitações do Centro Estadual de Qualidade (CEQ); executar diferentes tipos de coleta conforme solicitado pelo IBGE. Atenção: 'realizar a coleta regular de dados conforme os manuais' é atribuição do RECENSEADOR, não do ACS."
+},
+{
 "t": "O Recenseador",
 "txt": "Faz a coleta regular, presencial, em rotas diárias, sob a supervisão de um ACS. Recebe do ACS informações, material e instrumentos, e é ao ACS que se reporta sempre que tiver dificuldade ou dúvida. Antes da coleta, dedica-se ao treinamento. Atribuições: coletar conforme os manuais; ir a campo diariamente pela rota; abordar e entrevistar; registrar e transmitir dados (fotos, parcelas, coordenadas, questionários); agendar entrevistas se o informante pedir; zelar pela integridade do DMC e pela confidencialidade das informações. (p. 17 e 18)"
 },
@@ -536,7 +544,9 @@
 "Recenseador se reporta ao ACS, não ao ACR nem ao AOR.",
 "ACR coordena o posto e gerencia os ACS; ACS supervisiona os Recenseadores.",
 "CNQ está ligado à Sede; CEQ às Superintendências Estaduais.",
-"Confidencialidade e integridade do DMC são atribuições do Recenseador."
+"Confidencialidade e integridade do DMC são atribuições do Recenseador.",
+"A definição curta do ACR na p. 15 diz que ele supervisiona os recenseadores, treina e cuida de cobertura e prazos: se a questão copiar essa frase, marque ACR.",
+"'Realizar a coleta regular conforme os manuais' é do Recenseador, e não do ACS."
 ],
 "resumo": [
 "Permanente: Sede e SES, ligadas à Presidência. Temporária: CNQ, CEQ e postos.",
