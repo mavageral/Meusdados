@@ -611,3 +611,45 @@ Ficaram de fora, de propósito:
 - **Formato no app:** cada questão vale 1 ponto, como em 2027. Na prova original, as questões tinham pesos diferentes.
 - **Ordem da lista:** primeiro as de Recenseador (2010, 2006, 2009). As do IBFC 2026 vêm depois, marcadas como "outro cargo do mesmo censo", só para treinar Técnicos.
 - **Testes:** 318/318.
+
+## 33. Análise preditiva: chance real de passar (28/11/2026)
+
+- **Simulador (`ferramentas/preditivo-ibge.py`, numpy):**
+  - a prova de 60 questões com dificuldade variando por questão;
+  - concorrentes de 3 perfis: 45% sem preparo (cerca de 32% de acerto), 40% com preparo médio (50%) e 15% bem preparados (70%);
+  - 35% de faltas e área com 20 vagas.
+- **Corte de eliminação (18 pontos e pelo menos 1 em cada matéria):**
+  - 35% de acerto: 77% de chance;
+  - 45% de acerto: 99%;
+  - a partir de 60% de acerto: 100%.
+- **Nota da última vaga, por concorrência:**
+
+  | Candidatos por vaga | Nota da última vaga |
+  |---|---|
+  | 3 | 26 |
+  | 8 | 36 |
+  | 15 | 41 |
+  | 30 | 45 |
+  | 60 | 47 |
+
+  - Com uma concorrência mais preparada, a nota sobe de 3 a 4 pontos.
+- **Chance de vaga com 15 candidatos por vaga:**
+  - 60% de acerto: 17%;
+  - 75% de acerto: 88%;
+  - 85% de acerto: 100%.
+- **Com 30 candidatos por vaga:** 56% de chance com 75% de acerto e 98% com 85%.
+- **Teste do estimador do app** (alunas simuladas com acerto verdadeiro conhecido):
+  - com questões novas, ele é calibrado: 35% de acerto deu 76,8% de chance, contra 77,1% verdadeiros;
+  - com questões repetidas, ele inflava: uma aluna de 45% aparecia como 65%;
+  - **corrigido:** a chance agora conta só a primeira resposta de cada questão (`chaveQ`), e a aluna de 45% aparece como 45%.
+- **A caixa de chance agora mostra:**
+  - a chance de pegar a vaga, que é o número principal, com a escolha de candidatos por vaga (`CV_CORTE`);
+  - a chance de não ser eliminada;
+  - a meta segura de 45 pontos (antes eram 36).
+- **Estratégia:** passou a dizer "mire 45 ou mais".
+- **Ajustes do revisor de interface:**
+  - o botão escolhido agora aparece destacado;
+  - o botão "Copiar" do currículo não interfere mais na escolha;
+  - a troca de concorrência é anunciada;
+  - os termos ficaram simples e a metodologia está em "Como calculamos".
+- **Testes:** 320/320.

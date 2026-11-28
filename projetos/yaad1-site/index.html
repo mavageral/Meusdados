@@ -595,6 +595,7 @@ details[open].glass>summary::after,details[open].cad-it>summary::after{transform
 .cad-it.mine{border-color:color-mix(in srgb,var(--c) 45%,var(--edge-2))}
 @media (min-width:760px){.hall-amb{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.cv-box .chip[aria-pressed="true"]{background:var(--text);color:var(--on-light);border-color:transparent}
 .fr-lac{font-weight:600;border-bottom:2px solid currentColor;padding:0 2px}
 </style>
 </head><body>
@@ -3357,20 +3358,33 @@ function planoHTML(){ const p=planoIBGE(); if(!p.tot) return "";
 function lgam(x){ const g=7, c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7]; if(x<0.5) return Math.log(Math.PI/Math.sin(Math.PI*x))-lgam(1-x); x-=1; let a=c[0]; const t=x+g+0.5; for(let i=1;i<9;i++) a+=c[i]/(x+i); return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a); }
 function betaBinomPMF(n,a,b){ const lB=(x,y)=>lgam(x)+lgam(y)-lgam(x+y), lC=k=>lgam(n+1)-lgam(k+1)-lgam(n-k+1); const out=[]; for(let k=0;k<=n;k++) out.push(Math.exp(lC(k)+lB(k+a,n-k+b)-lB(a,b))); return out; }
 function binomPMF(n,p){ let a=[1]; for(let i=0;i<n;i++){ const b=new Array(a.length+1).fill(0); a.forEach((v,k)=>{ b[k]+=v*(1-p); b[k+1]+=v*p; }); a=b; } return a; }
-function chanceIBGE(){ const f=frenteIBGE(); if(!f) return null; const st=(M.prep||{})[f.id]; const resp=(st&&st.resp)||[];
+function chaveQ(id){ id=String(id||""); let m;
+  if((m=id.match(/^tr-(\w+)-(\d+)$/))) return "L:"+m[1]+":"+m[2];
+  if((m=id.match(/^sim-(.+)$/))) return m[1];
+  if((m=id.match(/^fr-\w+-(f\d+)$/))) return "F:"+m[1];
+  if(/^ibge-q\d+$/.test(id)) return "G:"+id;
+  return id; }
+/* Nota da última vaga da área, por concorrência (simulação de Monte Carlo com 3 perfis de concorrentes, 35% de faltas;
+   ROTA, seção 33). É hipótese: a concorrência real de cada área sai depois das inscrições. */
+const CV_CORTE={3:26, 8:36, 15:41, 30:45, 60:47};
+function chanceIBGE(){ const f=frenteIBGE(); if(!f) return null; const st=(M.prep||{})[f.id]; const visto=new Set(), resp=((st&&st.resp)||[]).filter(r=>{ const k=chaveQ(r.id); if(visto.has(k)) return false; visto.add(k); return true; });
   const ds=[["Conhecimentos Técnicos",30],["Matemática",15],["Língua Portuguesa",15]].map(([n,q])=>{ const rs=resp.filter(r=>r.mat===n).slice(-40), ok=rs.filter(r=>r.ok).length; return {n, q, cnt:rs.length, ok, p:(ok+1)/(rs.length+2)}; });
   if(ds.some(d=>d.cnt<10)) return {falta:ds.filter(d=>d.cnt<10).map(d=>`${d.n} (${d.cnt} de 10)`), ds};
   const P=ds.map(d=>betaBinomPMF(d.q, d.ok+1, d.cnt-d.ok+1)); let tot=[1], prZero=1;
   P.forEach(a=>{ const b=new Array(tot.length+a.length-1).fill(0); tot.forEach((x,i)=>a.forEach((y,j)=>{ b[i+j]+=x*y; })); tot=b; });
   P.forEach(a=>{ prZero*= (1-a[0]); });
   const cauda=k=>tot.slice(k).reduce((x,y)=>x+y,0), esp=ds.reduce((s,d)=>s+d.q*d.p,0);
-  return {ds, esp:Math.round(esp), corte:cauda(18)*prZero, meta:cauda(36), alta:cauda(42)}; }
+  const cv=CV_CORTE[M.cvIBGE]?M.cvIBGE:15, k=CV_CORTE[cv];
+  return {ds, esp:Math.round(esp), corte:cauda(18)*prZero, meta:cauda(45), alta:cauda(42), cv, kVaga:k, vaga:cauda(k)*prZero}; }
 const pctTxt = x => x>=.995?"mais de 99%":x<.01?"menos de 1%":Math.round(x*100)+"%";
+document.addEventListener("click", e=>{ const b=e.target.closest(".cv-box [data-cv]"); if(!b||!CV_CORTE[+b.dataset.cv]) return; M.cvIBGE=+b.dataset.cv; saveMain(); const box=b.closest(".cv-box"); const t=document.createElement("div"); t.innerHTML=chanceHTML(); const nb=t.firstElementChild; box.replaceWith(nb); const f=nb.querySelector(`[data-cv="${M.cvIBGE}"]`); if(f) f.focus(); const c=chanceIBGE(); if(c&&!c.falta) toast(`Com ${c.cv} por vaga: ${pctTxt(c.vaga)} de pegar a vaga.`); });
 function chanceHTML(){ const c=chanceIBGE(); if(!c) return "";
-  if(c.falta) return `<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Chance de passar</span><small class="muted">Com pelo menos 10 respostas em cada matéria, o app calcula sua chance de passar. Faltam: ${esc(c.falta.join(", "))}.</small></div>`;
-  return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Chance de passar, pelos seus acertos</span>
-    <div class="row wrap" style="gap:14px"><span><b class="mono" style="font-size:22px">${pctTxt(c.corte)}</b><br><small class="muted">de passar do corte (18 e 1 por matéria)</small></span><span><b class="mono" style="font-size:22px">${pctTxt(c.meta)}</b><br><small class="muted">de chegar à meta de 36</small></span><span><b class="mono" style="font-size:22px">${c.esp}</b><br><small class="muted">pontos esperados</small></span></div>
-    <small class="muted">${c.ds.map(d=>`${d.n}: ${Math.round(d.ok/d.cnt*100)}% em ${d.cnt}`).join(" · ")}. Cálculo estatístico (beta-binomial) pelas suas últimas 40 respostas em cada matéria: com poucas respostas, a chance fica mais prudente. A prova real pode ser mais fácil ou mais difícil: use como bússola, não como garantia.</small></div>`; }
+  if(c.falta) return `<div class="glass pad cv-box" style="display:grid;gap:4px"><span class="tag">Chance de passar</span><small class="muted">Com pelo menos 10 respostas em cada matéria, o app calcula sua chance de passar. Faltam: ${esc(c.falta.join(", "))}.</small></div>`;
+  return `<div class="glass pad cv-box" style="display:grid;gap:8px"><span class="tag">Chance de passar, pelos seus acertos</span>
+    <div class="row wrap" style="gap:14px"><span><b class="mono" style="font-size:30px">${pctTxt(c.vaga)}</b><br><small class="muted">de pegar a vaga (precisa de uns ${c.kVaga} pontos)</small></span><span><b class="mono" style="font-size:18px">${pctTxt(c.corte)}</b><br><small class="muted">de não ser eliminada (mínimo de 18 pontos e pelo menos 1 em cada matéria)</small></span><span><b class="mono" style="font-size:18px">${c.esp}</b><br><small class="muted">pontos esperados</small></span></div>
+    <div style="display:grid;gap:6px"><small class="muted">Escolha quantas pessoas disputam cada vaga na sua área. Não ser eliminada não garante a vaga: ela sai por ordem de nota. Quando a Cesgranrio divulgar a concorrência, escolha a mais próxima.</small><div class="row wrap" role="group" aria-label="Candidatos por vaga" style="gap:6px">${Object.keys(CV_CORTE).map(v=>`<button class="chip" data-cv="${v}" aria-pressed="${+v===c.cv}" style="min-height:44px;min-width:56px">${v} por vaga</button>`).join("")}</div></div>
+    <small class="muted">Meta segura: 45 pontos (75%). Chance de chegar lá: ${pctTxt(c.meta)}.</small>
+    <small class="muted">Use como bússola, não como garantia.</small><details><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center" class="muted">Como calculamos</summary><small class="muted">${c.ds.map(d=>`${d.n}: ${Math.round(d.ok/d.cnt*100)}% em ${d.cnt}`).join(" · ")}. Cálculo estatístico (beta-binomial) pelas suas últimas 40 respostas em cada matéria, contando só a primeira vez que você respondeu cada questão (repetir a mesma questão infla o acerto). A nota da vaga vem de uma simulação com hipóteses sobre os concorrentes. A prova real pode ser mais fácil ou mais difícil: use como bússola, não como garantia.</small></details></div>`; }
 const ESTRATEGIA=[
  ["Não deixe nenhuma em branco","Questão em branco, com duas marcações ou com rasura vale zero, e errar não tira ponto (edital, item 10.7.1). Na dúvida, elimine o que puder e marque."],
  ["Comece por Conhecimentos Técnicos","São 30 dos 60 pontos e o primeiro critério de desempate depois da idade; Matemática é o segundo (item 12.3.1). Garanta Técnicos com calma."],
@@ -3380,7 +3394,7 @@ const ESTRATEGIA=[
  ["Saída e caderno","Fique no mínimo 2 horas na sala, ou será eliminado (itens 10.17 e 10.18). O caderno de questões só pode ser levado na última hora (item 10.19): fique até lá para conferir com o gabarito de 01/02."],
  ["Leia o comando duas vezes","A Cesgranrio escreve NÃO, EXCETO e ALTERA em letra maiúscula, e muita gente marca a alternativa certa da pergunta oposta. Sublinhe a palavra no caderno antes de ler as alternativas."],
  ["No texto, responda pelo texto","Alternativas verdadeiras no mundo, mas que o texto não diz, estão erradas. Volte à linha citada antes de marcar. Em Matemática, cuidado com a resposta pela metade: desconto calculado sobre a base errada ou o valor intermediário da conta."],
- ["Mire além do corte","O corte é 18 pontos e pelo menos 1 em cada matéria (item 11.1), mas a vaga sai pela ordem de nota na sua área de trabalho (item 12.5). Mire 36 ou mais."]];
+ ["Mire além do corte","O corte é 18 pontos e pelo menos 1 em cada matéria (item 11.1), mas a vaga sai pela ordem de nota na sua área de trabalho (item 12.5). Mire 45 ou mais: em áreas disputadas, a última vaga costuma ficar entre 41 e 47."]];
 function estrategiaHTML(){ return `<details class="glass pad"><summary style="cursor:pointer;font-weight:500;min-height:44px;display:flex;align-items:center">Estratégia para o dia da prova (regras do edital)</summary><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:8px;line-height:1.5">${ESTRATEGIA.map(([t,x])=>`<li><b style="font-weight:500">${esc(t)}.</b> ${esc(x)}</li>`).join("")}</ol></details>`; }
 /* Simulado completo: 60 questões no formato do edital (30 Técnicos, 15 Matemática, 15 Português), do banco do curso
    e do guia, priorizando as que você errou e as menos vistas. Letras embaralhadas a cada simulado. */

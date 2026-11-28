@@ -314,8 +314,12 @@ const CENARIOS = {
       S.qs.forEach((q, i) => S.resp[q.key] = i % 3 === 0 ? (B[q.key].c + 1) % 5 : B[q.key].c); FLOW.next();
       const h = M.simulado.hist.slice(-1)[0]; return { pts: h.pts, atual: M.simulado.atual, erros: M.erros.filter(e => e.id.startsWith("esim-")).length, marco: marcosDe(frenteIBGE()).find(m => /Simulado completo 1/.test(m.r)).ok, txt: document.querySelector("#shb").textContent }; });
     ok(b.pts === 40 && b.atual === null && b.erros === 20 && b.marco && /40 de 60/.test(b.txt) && /Passaria do corte/.test(b.txt), "simulado corrigido errado: " + JSON.stringify({ ...b, txt: b.txt.slice(0, 80) }));
-    const c = await p.evaluate(() => { closeSheet(); const ch = chanceIBGE(); return { corte: ch.corte, meta: ch.meta, esp: ch.esp, html: chanceHTML() }; });
-    ok(c.corte > 0.9 && c.meta > 0.3 && c.esp >= 36 && c.esp <= 44 && /Chance de passar/.test(c.html), "chance estatística fora do esperado: " + JSON.stringify({ corte: c.corte, meta: c.meta, esp: c.esp }));
+    const c = await p.evaluate(() => { closeSheet(); const ch = chanceIBGE(); return { corte: ch.corte, meta: ch.meta, vaga: ch.vaga, esp: ch.esp, html: chanceHTML() }; });
+    ok(c.corte > 0.9 && c.meta > 0.05 && c.vaga > 0.3 && c.esp >= 36 && c.esp <= 44 && /Chance de passar/.test(c.html) && /de pegar a vaga/.test(c.html), "chance estatística fora do esperado: " + JSON.stringify({ corte: c.corte, meta: c.meta, esp: c.esp }));
+    const cv = await p.evaluate(() => { const f = frenteIBGE(), st = prepSt({ id: f.id }), antes = chanceIBGE().ds[0].cnt;
+      for (let i = 0; i < 30; i++) st.resp.push({ id: "tr-t01-1", mat: "Conhecimentos Técnicos", ok: true });
+      const depois = chanceIBGE().ds[0].cnt; M.cvIBGE = 60; const v60 = chanceIBGE(); M.cvIBGE = 3; const v3 = chanceIBGE(); M.cvIBGE = 15; return { antes, depois, k60: v60.kVaga, k3: v3.kVaga, menor: v60.vaga <= v3.vaga }; });
+    ok(cv.depois <= cv.antes + 1 && cv.k60 === 47 && cv.k3 === 26 && cv.menor, "a chance contou a mesma questão várias vezes ou ignorou a concorrência: " + JSON.stringify(cv));
     const d = await p.evaluate(() => { const pl = planoIBGE(); openTrilha(); return { pl, txt: document.querySelector("#shb").textContent }; });
     ok(d.pl.tot === 40 && /Plano até a prova/.test(d.txt) && /Estratégia para o dia da prova/.test(d.txt) && /Simulado completo/.test(d.txt), "curso sem plano, estratégia ou simulado: " + JSON.stringify(d.pl));
     const e = await p.evaluate(() => { openLicao("t04", { rev: false }); FLOW.tela = "teste"; licao("t04").qs.forEach((q, i) => FLOW.resp[i] = q.c); FLOW.next(); const t1 = (trSt("t04").tent || []).length;
