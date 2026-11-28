@@ -280,6 +280,23 @@ const CENARIOS = {
     const d = await p.evaluate(() => { closeSheet(); const ibge = blocksOf(new Date(2026, 10, 30)).find(b => b.foco); return { prox: proximaLicao("tec").id, passo: passoHoje(frenteIBGE()).topico || "" }; });
     ok(d.prox === "t03" && /Situações especiais/.test(d.passo), "a próxima aula não prioriza o reforço ou o passo não mostra a aula: " + JSON.stringify(d));
   },
+  "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes": async (p) => {
+    const a = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); openSimulado(); const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
+      const mats = S.qs.map(q => B[q.key].mat); return { n: S.qs.length, tec: mats.filter(m => m === "Conhecimentos Técnicos").length, mat: mats.filter(m => m === "Matemática").length, por: mats.filter(m => m === "Língua Portuguesa").length, banco: bancoIBGE().length }; });
+    ok(a.n === 60 && a.tec === 30 && a.mat === 15 && a.por === 15 && a.banco === 204, "simulado fora do formato do edital: " + JSON.stringify(a));
+    const b = await p.evaluate(() => { const S = M.simulado.atual, B = Object.fromEntries(bancoIBGE().map(b => [b.key, b]));
+      S.qs.forEach((q, i) => S.resp[q.key] = i % 3 === 0 ? (B[q.key].c + 1) % 5 : B[q.key].c); FLOW.next();
+      const h = M.simulado.hist.slice(-1)[0]; return { pts: h.pts, atual: M.simulado.atual, erros: M.erros.filter(e => e.id.startsWith("esim-")).length, marco: marcosDe(frenteIBGE()).find(m => /Simulado completo 1/.test(m.r)).ok, txt: document.querySelector("#shb").textContent }; });
+    ok(b.pts === 40 && b.atual === null && b.erros === 20 && b.marco && /40 de 60/.test(b.txt) && /Passaria do corte/.test(b.txt), "simulado corrigido errado: " + JSON.stringify({ ...b, txt: b.txt.slice(0, 80) }));
+    const c = await p.evaluate(() => { closeSheet(); const ch = chanceIBGE(); return { corte: ch.corte, meta: ch.meta, esp: ch.esp, html: chanceHTML() }; });
+    ok(c.corte > 0.9 && c.meta > 0.3 && c.esp >= 36 && c.esp <= 44 && /Chance de passar/.test(c.html), "chance estatística fora do esperado: " + JSON.stringify({ corte: c.corte, meta: c.meta, esp: c.esp }));
+    const d = await p.evaluate(() => { const pl = planoIBGE(); openTrilha(); return { pl, txt: document.querySelector("#shb").textContent }; });
+    ok(d.pl.tot === 36 && /Plano até a prova/.test(d.txt) && /Estratégia para o dia da prova/.test(d.txt) && /Simulado completo/.test(d.txt), "curso sem plano, estratégia ou simulado: " + JSON.stringify(d.pl));
+    const e = await p.evaluate(() => { openLicao("t04", { rev: false }); FLOW.tela = "teste"; licao("t04").qs.forEach((q, i) => FLOW.resp[i] = q.c); FLOW.next(); const t1 = (trSt("t04").tent || []).length;
+      const k = document.querySelector('[data-ta="rever"]'); k && k.click(); const zer = Object.keys(FLOW.resp).length; FLOW.tela = "teste"; licao("t04").qs.forEach((q, i) => FLOW.resp[i] = q.c);
+      return { t1, zer }; });
+    ok(e.t1 === 1 && e.zer === 0, "rever a aula não zerou as respostas ou contou duas vezes: " + JSON.stringify(e));
+  },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");
     await p.click('.tabbar [data-tab="estudar"]'); await p.waitForTimeout(200);

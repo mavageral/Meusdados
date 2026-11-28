@@ -401,3 +401,40 @@ Ficaram de fora, de propósito:
   - na Sala viva, o ambiente "Curso da prova" substitui "Treino da prova", e o treino de questões fica dentro do curso;
   - a frente e "Sua preparação" também têm atalhos para o curso.
 - **Testes:** 244/244, com o cenário novo "Curso da prova: 36 aulas, teste com 80%, Forja, revisões e agenda".
+
+## 25. Para passar: plano, simulado completo, chance estatística e estratégia (28/11/2026)
+
+- **Pedido:** deixar tudo pronto para o estudo, usando testes, matemática e estatística para tornar a aprovação o mais provável possível.
+- **Plano até a prova (`planoIBGE`):**
+  - as 36 aulas vão de 30/11 a 09/01, com simulados completos em 10/01, 17/01 e 24/01 e só revisão na última semana;
+  - o app mostra se você está em dia (com tolerância de 1 aula), adiantada ou atrasada, e qual ritmo semanal alcança o plano.
+- **Simulado completo (`openSimulado`):**
+  - 60 questões no formato do edital (30 de Técnicos, 15 de Matemática, 15 de Português), tiradas do banco de 204 (180 do curso e 24 do guia);
+  - prioriza as que você errou e as que não viu nos dois últimos simulados, e embaralha as letras;
+  - dá para parar e continuar;
+  - o resultado mostra nota por matéria, o corte, o aviso de matéria zerada, o desempate e a correção comentada;
+  - os erros vão para a Forja, as respostas para "Sua preparação", e o próximo marco "Simulado completo" é marcado sozinho.
+- **Chance de passar (`chanceIBGE`):**
+  - usa as últimas 40 respostas de cada matéria (exige pelo menos 10 em cada);
+  - o modelo é beta-binomial, que leva em conta a incerteza de ter poucas respostas;
+  - mostra a chance de passar do corte (18 pontos e pelo menos 1 por matéria), a chance de chegar à meta de 36 e os pontos esperados.
+- **Estratégia para o dia da prova:** 7 regras conferidas no edital e citadas pelo número do item:
+  - não deixar questão em branco, porque errar não desconta (10.7.1);
+  - começar por Técnicos, que é o critério de desempate (12.3.1);
+  - administrar o tempo (10.2);
+  - usar caneta e evitar rasura (10.7.2 e 10.20);
+  - não contar com calculadora;
+  - ficar pelo menos 2 horas e sair na última hora levando o caderno de questões (10.17 a 10.19);
+  - mirar além do corte, porque a vaga sai pela ordem de nota (11.1 e 12.5).
+- **Revisor de UI (curso):**
+  - **Grave, corrigido:** corrigir de novo depois de "Rever a aula" contava a mesma resposta outra vez e permitia virar "dominada" sem estudo. Agora a correção conta uma vez só e "Rever" zera as respostas.
+  - **Também corrigido:**
+    - a letra marcada agora é lida pelo leitor de tela, e os avisos são anunciados;
+    - o foco vai para o título ao abrir a aula;
+    - pede confirmação antes de sair de um teste já respondido;
+    - quando a aula é reprovada, o botão principal passa a ser "Refazer o teste";
+    - "Próxima aula" aparece no resultado;
+    - os itens que abrem ganharam uma seta;
+    - "dificuldade" substituiu "nível" (concordância).
+  - **Aceito sem mudança:** os blocos de texto longos das aulas.
+- **Testes:** 258/258, com o cenário "IBGE: simulado completo, chance estatística, plano e regra de não contar duas vezes".

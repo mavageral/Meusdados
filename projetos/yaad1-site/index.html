@@ -570,6 +570,8 @@ a.item{text-decoration:none;color:inherit}
 .tr-bloco{display:grid;gap:6px}
 .tr-bloco h3{margin:0;font-weight:500;font-size:17px}
 .tr-bloco p{margin:0;line-height:1.6}
+details.glass>summary::after,details.cad-it>summary::after{content:"";width:8px;height:8px;margin-left:auto;flex:none;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s;opacity:.7}
+details[open].glass>summary::after,details[open].cad-it>summary::after{transform:rotate(-135deg)}
 .tr-q{display:grid;gap:8px;padding-bottom:14px;border-bottom:1px solid var(--edge)}
 .pr-row{display:grid;grid-template-columns:36px 1fr;align-items:center;gap:8px;padding:2px 0;border-bottom:1px solid var(--edge)}
 .pr-row b{font:500 14px var(--mono);color:var(--muted)}
@@ -988,7 +990,7 @@ document.querySelector(".tabbar").addEventListener("click", e => {
 });
 $("#cbtn").addEventListener("click", () => openChat());
 
-function toast(t){ const el=document.createElement("div"); el.className="toast"; el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(), 2600); }
+function toast(t){ const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=t; document.body.append(el); setTimeout(()=>el.remove(), 2600); }
 
 const DOTS = `<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg>`;
 function avatarHTML(sz){ const ph=M.profile.photo, n=M.profile.name||(OWNER===false?"Y":NAME_DEFAULT); return `<span class="avatar" style="width:${sz}px;height:${sz}px;font-size:${Math.round(sz*.4)}px">${ph?`<img src="${esc(ph)}" alt="">`:esc(n[0])}</span>`; }
@@ -3166,6 +3168,7 @@ let TRILHA=null;
 function trilha(){ if(TRILHA) return TRILHA; try{ TRILHA=JSON.parse(document.getElementById("trilha-ibge").textContent); }catch(e){ TRILHA={tec:[],mat:[],por:[]}; } return TRILHA; }
 const DISC={tec:{n:"Conhecimentos Técnicos", c:"var(--a-op-1)", peso:30}, mat:{n:"Matemática", c:"var(--a-grad-1)", peso:15}, por:{n:"Língua Portuguesa", c:"var(--a-biblia-1)", peso:15}};
 const TR_PASSOS=[1,3,7,15,30];
+const nivTxt = n => n==="prática diária" ? "prática diária" : "dificuldade "+n;
 const discDe = nome => Object.keys(DISC).find(k=>DISC[k].n===nome) || null;
 function licao(id){ const T=trilha(); for(const k of Object.keys(DISC)){ const L=(T[k]||[]).find(x=>x.id===id); if(L) return L; } return null; }
 function trSt(id){ M.trilha=M.trilha||{}; return M.trilha[id]||{}; }
@@ -3194,13 +3197,16 @@ function openTrilha(foco){
   const rv=revisoesTrilha(), k=discPrioritaria(), prox=k?proximaLicao(k):null, f=frenteIBGE(), T=trilha();
   sheetHTML({title:"Curso da prova", next: rv.length?`Revisar ${rv.length} aula${rv.length>1?"s":""} de hoje`:prox?"Começar a próxima aula":"Fechar", body:`
     <h2 class="q">Curso da prova<small>Recenseador IBGE 2027. ${T.tec.length+T.mat.length+T.por.length} aulas escritas a partir do edital e da apostila oficial do IBGE, do assunto mais difícil para o mais fácil.</small></h2>
-    ${rv.length?`<p class="note" style="margin:0">Hoje há ${rv.length} revisão${rv.length>1?"ões":""}: ${esc(rv.map(L=>L.titulo).slice(0,3).join("; "))}${rv.length>3?"…":""}. Revisar antes de aprender coisa nova segura o que você já estudou.</p>`:prox?`<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Próxima aula · ${esc(DISC[k].n)}</span><b style="font-weight:500">${esc(prox.titulo)}</b><small class="muted">Nível ${esc(prox.nivel)}${prox.pag?` · apostila, p. ${esc(prox.pag)}`:""}</small></div>`:`<p class="note" style="margin:0">Todas as aulas já foram aprovadas. Agora é revisar nas datas e treinar questões.</p>`}
+    ${rv.length?`<p class="note" style="margin:0">Hoje há ${rv.length} revisão${rv.length>1?"ões":""}: ${esc(rv.map(L=>L.titulo).slice(0,3).join("; "))}${rv.length>3?"…":""}. Revisar antes de aprender coisa nova segura o que você já estudou.</p>`:prox?`<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Próxima aula · ${esc(DISC[k].n)}</span><b style="font-weight:500">${esc(prox.titulo)}</b><small class="muted">${esc(nivTxt(prox.nivel)).replace(/^d/,"D")}${prox.pag?` · apostila, p. ${esc(prox.pag)}`:""}</small></div>`:`<p class="note" style="margin:0">Todas as aulas já foram aprovadas. Agora é revisar nas datas e treinar questões.</p>`}
+    ${planoHTML()}
     <details class="glass pad"><summary style="cursor:pointer;font-weight:500;min-height:44px;display:flex;align-items:center">Como o curso funciona</summary><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:6px;line-height:1.5"><li>Revisão do que venceu hoje.</li><li>Aula nova: por que cai, explicação do zero, exemplos, pegadinhas e resumo.</li><li>Teste de 5 questões no estilo da banca, com 5 alternativas.</li><li>Correção comentada. Com 4 acertos ou mais (80%), a aula é aprovada; com menos, os erros vão para a Forja e você refaz.</li><li>Aprovada, ela volta para revisão em 1, 3, 7, 15 e 30 dias. Depois de passar nas de 1, 3 e 7 dias, fica dominada.</li></ol></details>
     ${Object.keys(DISC).map(d=>{ const r=trResumo(d); return `<section style="display:grid;gap:8px" aria-label="${esc(DISC[d].n)}"><div class="row" style="justify-content:space-between;gap:8px;align-items:baseline"><h3 style="margin:0;font-weight:500;font-size:18px">${esc(DISC[d].n)}</h3><span class="mono muted" style="font-size:12px">${r.dominado} de ${r.tot} dominadas</span></div>${trilhaBarHTML(d)}
-      <div class="list">${(T[d]||[]).map((L,i)=>{ const e=trEstado(L.id), [en,ec]=TR_EST[e]; return `<button class="item" data-tl="${L.id}"><span class="mono muted" style="font-size:12px;min-width:22px">${i+1}</span><span class="grow"><b style="font-weight:500">${esc(L.titulo)}</b><small>${en}${ec?"":""} · nível ${esc(L.nivel)}</small></span>${e!=="nao"?`<span class="tr-dot" style="background:${ec}" aria-hidden="true"></span>`:""}</button>`; }).join("")}</div></section>`; }).join("")}
-    <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-tr="treino">Treino de questões</button>${f?`<button class="btn" style="min-height:48px" data-tr="prova2010">Prova real de 2010</button>`:""}</div>`});
+      <div class="list">${(T[d]||[]).map((L,i)=>{ const e=trEstado(L.id), [en,ec]=TR_EST[e]; return `<button class="item" data-tl="${L.id}"><span class="mono muted" style="font-size:12px;min-width:22px">${i+1}</span><span class="grow"><b style="font-weight:500">${esc(L.titulo)}</b><small>${en} · ${esc(nivTxt(L.nivel))}</small></span>${e!=="nao"?`<span class="tr-dot" style="background:${ec}" aria-hidden="true"></span>`:""}</button>`; }).join("")}</div></section>`; }).join("")}
+    ${chanceHTML()}
+    ${estrategiaHTML()}
+    <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-tr="simulado">${M.simulado&&M.simulado.atual?"Continuar o simulado completo":"Simulado completo (60 questões)"}</button><button class="btn" style="min-height:48px" data-tr="treino">Treino de questões</button>${f?`<button class="btn" style="min-height:48px" data-tr="prova2010">Prova real de 2010</button>`:""}</div>`});
   SH.querySelectorAll("[data-tl]").forEach(b=>b.onclick=()=>openLicao(b.dataset.tl));
-  SH.querySelectorAll("[data-tr]").forEach(b=>b.onclick=()=>{ const t=b.dataset.tr; if(t==="prova2010") return openProvaReal("ibge2010"); closeSheetSoft(); TAB="hoje"; PAINEL=false; PREP_ABERTO=true; PREP_FOCO=true; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>{ const el=document.querySelector(".prep"); if(el){ el.scrollIntoView({block:"start"}); const q=el.querySelector(".pp-p")||el; q.tabIndex=-1; q.focus({preventScroll:true}); } },80); });
+  SH.querySelectorAll("[data-tr]").forEach(b=>b.onclick=()=>{ const t=b.dataset.tr; if(t==="prova2010") return openProvaReal("ibge2010"); if(t==="simulado") return openSimulado(); closeSheetSoft(); TAB="hoje"; PAINEL=false; PREP_ABERTO=true; PREP_FOCO=true; render(); const al=alvoPrep(); if(!prepSt(al).pool.length) gerarPrep(al); setTimeout(()=>{ const el=document.querySelector(".prep"); if(el){ el.scrollIntoView({block:"start"}); const q=el.querySelector(".pp-p")||el; q.tabIndex=-1; q.focus({preventScroll:true}); } },80); });
   if(foco){ const el=SH.querySelector(`[data-tl="${foco}"]`); if(el) el.focus(); }
 }
 function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=ctx||{};
@@ -3210,9 +3216,10 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
   const F = FLOW = {kind:"licao", id, tela: rev?"teste":"aula", resp:{}, ordem: idx.map((i,n)=>({i, p:perm(5, tent*5+n+1+(rev?11:0))})), t0:Date.now(), dstr:ctx.dstr, b:ctx.b, rev, back:()=>{}, next:()=>{
     if(F.tela==="aula"){ F.tela="teste"; draw(true); }
     else if(F.tela==="teste"){ if(Object.keys(F.resp).length<F.ordem.length){ const pend=SH.querySelector(".tr-q:not(.feita)"); if(pend){ pend.scrollIntoView({block:"center"}); const b=pend.querySelector("button"); if(b) b.focus({preventScroll:true}); } toast("Responda todas para corrigir."); return; } corrigir(); }
-    else { closeSheet(); render(); } }};
+    else if(F.res && trEstado(id)==="reforco") openLicao(id, {dstr:F.dstr, b:F.b});
+    else { closeSheet(); render(); } }, guard:()=>{ if(F.tela!=="teste"||!Object.keys(F.resp).length||F.res||F.sair) return false; F.sair=true; toast("As respostas deste teste serão perdidas. Toque em fechar de novo para sair."); return true; }};
   openSheet(`radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,${DISC[L.disc].c} 26%,transparent),transparent 60%),var(--bg)`);
-  function corrigir(){ const qs=F.ordem.map(o=>({i:o.i, j:F.resp[o.i], ok:F.resp[o.i]===L.qs[o.i].c})), ac=qs.filter(q=>q.ok).length, tot=qs.length, hj=iso(today()), t=trSt(id);
+  function corrigir(){ if(F.res) return; const qs=F.ordem.map(o=>({i:o.i, j:F.resp[o.i], ok:F.resp[o.i]===L.qs[o.i].c})), ac=qs.filter(q=>q.ok).length, tot=qs.length, hj=iso(today()), t=trSt(id);
     let msg;
     if(F.rev){ if(ac>=2){ const step=(t.step||0)+1; trSet(id,{step, prox:step<TR_PASSOS.length?iso(addDays(today(),TR_PASSOS[step])):null, st:step>=3?"dominado":"revisao"}); msg=step>=3?"Revisão aprovada. Esta aula agora está dominada.":`Revisão aprovada. Próxima revisão em ${TR_PASSOS[Math.min(step,TR_PASSOS.length-1)]} dias.`; }
       else { trSet(id,{st:"reforco", step:0, prox:null}); msg="Esta aula precisa de reforço: releia e refaça o teste. Os erros foram para a Forja."; } }
@@ -3222,9 +3229,9 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
     trRegistrar(L, ac, tot, {qs, dstr:F.dstr, b:F.b, t0:F.t0}); saveMain();
     F.res={qs, ac, tot, msg}; F.tela="res"; draw(true); }
   const draw=(foco)=>{ if(FLOW!==F) return; const LT="ABCDE", e=trEstado(id);
-    const cab=`<span class="tag">${esc(DISC[L.disc].n)} · nível ${esc(L.nivel)}${L.pag?` · apostila, p. ${esc(L.pag)}`:""}</span>`;
+    const cab=`<span class="tag">${esc(DISC[L.disc].n)} · ${esc(nivTxt(L.nivel))}${L.pag?` · apostila, p. ${esc(L.pag)}`:""}</span>`;
     if(F.tela==="aula"){
-      sheetHTML({title:"Aula", next:"Fazer o teste (5 questões)", body:`${cab}<h2 class="q">${esc(L.titulo)}</h2>
+      sheetHTML({title:"Aula", next:F.rev?"Refazer a revisão (3 questões)":"Fazer o teste (5 questões)", body:`${cab}<h2 class="q">${esc(L.titulo)}</h2>
         <div class="glass pad" style="display:grid;gap:4px"><span class="tag">Por que cai na prova</span><p style="margin:0;line-height:1.55">${esc(L.porque)}</p></div>
         ${L.blocos.map((b,i)=>`<section class="tr-bloco"><h3>${i+1}. ${esc(b.t)}</h3><p>${esc(b.txt)}</p></section>`).join("")}
         <section style="display:grid;gap:8px"><span class="tag">Exemplos: tente antes de abrir a resolução</span>${L.exemplos.map(x=>`<details class="glass pad"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center;line-height:1.45">${esc(x.p)}</summary><p style="margin:8px 0 0;line-height:1.55"><b style="font-weight:500">Resolução:</b> ${esc(x.r)}</p></details>`).join("")}</section>
@@ -3235,13 +3242,13 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
         <small class="muted">${L.disc==="tec"?"Fonte: apostila oficial \"Conhecimentos básicos para o 12º Censo Agropecuário, Florestal e Aquícola\" (IBGE). As páginas indicadas ajudam você a conferir.":"Conteúdo do Anexo III do edital nº 03/2026. Aula escrita para o Yaad1."}</small>`});
     } else if(F.tela==="teste"){
       sheetHTML({title:F.rev?"Revisão":"Teste", next:"Corrigir", body:`${cab}<h2 class="q">${F.rev?"Revisão":"Teste"}: ${esc(L.titulo)}<small>${F.rev?"3 questões. Acertando 2, a aula segue para a próxima revisão.":"5 questões, uma letra certa em cada. A meta é 4 acertos (80%)."}</small></h2>
-        ${F.ordem.map((o,n)=>{ const Q=L.qs[o.i]; return `<div class="tr-q${F.resp[o.i]!=null?" feita":""}"><p class="pp-p" id="trq${n}"><b class="mono" style="font-weight:500">${n+1}.</b> ${esc(Q.p)}</p><div class="pp-os" role="group" aria-labelledby="trq${n}">${o.p.map((j,k)=>`<button class="opt" data-tq="${o.i}" data-j="${j}" aria-pressed="${F.resp[o.i]===j}"><span class="k" aria-hidden="true">${LT[k]}</span><span>${esc(Q.o[j])}</span></button>`).join("")}</div></div>`; }).join("")}`});
+        ${F.ordem.map((o,n)=>{ const Q=L.qs[o.i]; return `<div class="tr-q${F.resp[o.i]!=null?" feita":""}"><p class="pp-p" id="trq${n}"><b class="mono" style="font-weight:500">${n+1}.</b> ${esc(Q.p)}</p><div class="pp-os" role="group" aria-labelledby="trq${n}">${o.p.map((j,k)=>`<button class="opt" data-tq="${o.i}" data-j="${j}" aria-pressed="${F.resp[o.i]===j}"><span class="k">${LT[k]}</span><span>${esc(Q.o[j])}</span></button>`).join("")}</div></div>`; }).join("")}`});
     } else {
       const R=F.res;
-      sheetHTML({title:"Resultado", next:"Concluir", body:`${cab}<h2 class="q" tabindex="-1">${R.ac} de ${R.tot}<small>${esc(L.titulo)}</small></h2>
-        <p class="${R.ac/R.tot>=(F.rev?.66:.8)?"note":"ponte"}" style="margin:0;animation:none" role="status">${esc(R.msg)}</p>
+      sheetHTML({title:"Resultado", next:trEstado(id)==="reforco"?"Refazer o teste":"Concluir", body:`${cab}<h2 class="q" tabindex="-1" aria-describedby="tr-msg">${R.ac} de ${R.tot}<small>${esc(L.titulo)}</small></h2>
+        <p id="tr-msg" class="${R.ac/R.tot>=(F.rev?.66:.8)?"note":"ponte"}" style="margin:0;animation:none">${esc(R.msg)}</p>
         ${R.qs.map((q,n)=>{ const Q=L.qs[q.i], o=F.ordem.find(x=>x.i===q.i), letra=j=>LT[o.p.indexOf(j)]; return `<div class="cad-it"><small class="muted mono">Questão ${n+1} · ${q.ok?"certa":"errada"}</small><p><b style="font-weight:500">${esc(Q.p)}</b></p><p>${q.ok?`Você marcou ${letra(q.j)}: ${esc(Q.o[q.j])}.`:`Você marcou ${letra(q.j)}: ${esc(Q.o[q.j])}. A certa é ${letra(Q.c)}: ${esc(Q.o[Q.c])}.`}</p><p class="muted">${esc(Q.e)}</p></div>`; }).join("")}
-        <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-ta="rever">Rever a aula</button>${trEstado(id)==="reforco"?`<button class="btn" style="min-height:48px" data-ta="refazer">Refazer o teste</button>`:""}<button class="btn" style="min-height:48px" data-ta="curso">Ver o curso</button></div>`});
+        <div class="row wrap" style="gap:8px"><button class="btn" style="min-height:48px" data-ta="rever">Rever a aula</button>${trEstado(id)==="reforco"?`<button class="btn" style="min-height:48px" data-ta="refazer">Refazer o teste</button>`:proximaLicao(L.disc)?`<button class="btn" style="min-height:48px" data-ta="proxima">Próxima aula de ${esc(DISC[L.disc].n)}</button>`:""}<button class="btn" style="min-height:48px" data-ta="curso">Ver o curso</button></div>`});
     }
     SH.querySelectorAll("[data-tq]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.tq, j=+b.dataset.j; F.resp[i]=j; const y=$("#shb").scrollTop; draw(); $("#shb").scrollTop=y; const nb=SH.querySelector(`[data-tq="${i}"][data-j="${j}"]`); if(nb) nb.focus({preventScroll:true}); });
     SH.querySelectorAll("[data-ta]").forEach(b=>b.onclick=async()=>{ const k=b.dataset.ta;
@@ -3252,10 +3259,95 @@ function openLicao(id, ctx){ const L=licao(id); if(!L) return openTrilha(); ctx=
 AULA (fonte única): ${JSON.stringify({titulo:L.titulo, blocos:L.blocos, resumo:L.resumo})}`, {semPerfil:true});
           out.innerHTML=`<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Outro jeito de ver</span><p style="margin:0;line-height:1.55">${esc(r.txt||"")}</p>${r.exemplo?`<p style="margin:0"><b style="font-weight:500">Exemplo:</b> ${esc(r.exemplo)}</p><p class="muted" style="margin:0">${esc(r.resolucao||"")}</p>`:""}<small class="muted">Gerado pelo Claude a partir só desta aula. Em caso de dúvida, vale o texto da aula e da apostila.</small></div>`; }
         catch(e){ out.innerHTML=`<p class="note">${esc(aiErr(e))}</p>`; } b.disabled=false; }
-      else if(k==="rever"){ F.tela="aula"; draw(true); }
+      else if(k==="rever"){ F.tela="aula"; F.resp={}; F.res=null; draw(true); }
       else if(k==="refazer"){ openLicao(id, {dstr:F.dstr, b:F.b}); }
-      else if(k==="curso"){ openTrilha(id); } });
-    if(foco){ const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); } $("#shb").scrollTop=0; }
+      else if(k==="curso"){ openTrilha(id); }
+      else if(k==="proxima"){ const N=proximaLicao(L.disc); if(N) openLicao(N.id, {dstr:F.dstr, b:F.b}); } });
+    if(foco){ document.querySelectorAll(".toast").forEach(t=>t.remove()); const h=SH.querySelector("h2.q"); if(h){ h.tabIndex=-1; h.focus({preventScroll:true}); } $("#shb").scrollTop=0; }
+  };
+  draw(true);
+}
+/* Plano até a prova, chance estatística, simulado completo e estratégia (regras do edital nº 03/2026). */
+const PLANO_IBGE={ini:"2026-11-30", aulasAte:"2027-01-09", prova:"2027-01-31"};
+function planoIBGE(){ const T=trilha(), tot=Object.keys(DISC).reduce((n,k)=>n+(T[k]||[]).length,0), feitas=Object.keys(DISC).reduce((n,k)=>{ const r=trResumo(k); return n+r.revisao+r.dominado; },0);
+  const d0=fromIso(PLANO_IBGE.ini), d1=fromIso(PLANO_IBGE.aulasAte), hj=today(), frac=Math.max(0,Math.min(1,(hj-d0)/(d1-d0))), esperado=Math.floor(tot*frac);
+  const semanas=Math.max(1,Math.ceil((d1-hj)/(7*864e5))), ritmo=Math.ceil(Math.max(0,tot-feitas)/semanas);
+  return {tot, feitas, esperado, dif:feitas-esperado, ritmo, faseAulas: hj<=d1}; }
+function planoHTML(){ const p=planoIBGE(); if(!p.tot) return "";
+  const txt = !p.faseAulas ? (p.feitas>=p.tot?"Todas as aulas aprovadas. Até a prova: simulados completos aos domingos e revisões do dia.":`Fase de simulados: faltam ${p.tot-p.feitas} aulas. Faça 1 aula e 1 bloco de questões por dia até fechar.`)
+    : p.dif>=-1 ? `Em dia: ${p.feitas} de ${p.tot} aulas aprovadas${p.dif>0?` (${p.dif} à frente do plano)`:""}. Ritmo: ${p.ritmo} aulas por semana até 09/01.`
+    : `${-p.dif} aula${p.dif<-1?"s":""} atrás do plano (${p.feitas} de ${p.tot}; o esperado hoje era ${p.esperado}). Para alcançar: ${p.ritmo} aulas por semana até 09/01, de 1 a 2 por bloco do IBGE.`;
+  return `<div class="glass pad" style="display:grid;gap:6px"><span class="tag">Plano até a prova</span><p style="margin:0;line-height:1.5">${esc(txt)}</p><small class="muted">Aulas até 09/01. Simulados completos em 10/01, 17/01 e 24/01. Na última semana, só revisão e descanso.</small></div>`; }
+function lgam(x){ const g=7, c=[0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7]; if(x<0.5) return Math.log(Math.PI/Math.sin(Math.PI*x))-lgam(1-x); x-=1; let a=c[0]; const t=x+g+0.5; for(let i=1;i<9;i++) a+=c[i]/(x+i); return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a); }
+function betaBinomPMF(n,a,b){ const lB=(x,y)=>lgam(x)+lgam(y)-lgam(x+y), lC=k=>lgam(n+1)-lgam(k+1)-lgam(n-k+1); const out=[]; for(let k=0;k<=n;k++) out.push(Math.exp(lC(k)+lB(k+a,n-k+b)-lB(a,b))); return out; }
+function binomPMF(n,p){ let a=[1]; for(let i=0;i<n;i++){ const b=new Array(a.length+1).fill(0); a.forEach((v,k)=>{ b[k]+=v*(1-p); b[k+1]+=v*p; }); a=b; } return a; }
+function chanceIBGE(){ const f=frenteIBGE(); if(!f) return null; const st=(M.prep||{})[f.id]; const resp=(st&&st.resp)||[];
+  const ds=[["Conhecimentos Técnicos",30],["Matemática",15],["Língua Portuguesa",15]].map(([n,q])=>{ const rs=resp.filter(r=>r.mat===n).slice(-40), ok=rs.filter(r=>r.ok).length; return {n, q, cnt:rs.length, ok, p:(ok+1)/(rs.length+2)}; });
+  if(ds.some(d=>d.cnt<10)) return {falta:ds.filter(d=>d.cnt<10).map(d=>`${d.n} (${d.cnt} de 10)`), ds};
+  const P=ds.map(d=>betaBinomPMF(d.q, d.ok+1, d.cnt-d.ok+1)); let tot=[1], prZero=1;
+  P.forEach(a=>{ const b=new Array(tot.length+a.length-1).fill(0); tot.forEach((x,i)=>a.forEach((y,j)=>{ b[i+j]+=x*y; })); tot=b; });
+  P.forEach(a=>{ prZero*= (1-a[0]); });
+  const cauda=k=>tot.slice(k).reduce((x,y)=>x+y,0), esp=ds.reduce((s,d)=>s+d.q*d.p,0);
+  return {ds, esp:Math.round(esp), corte:cauda(18)*prZero, meta:cauda(36), alta:cauda(42)}; }
+const pctTxt = x => x>=.995?"mais de 99%":x<.01?"menos de 1%":Math.round(x*100)+"%";
+function chanceHTML(){ const c=chanceIBGE(); if(!c) return "";
+  if(c.falta) return `<div class="glass pad" style="display:grid;gap:4px"><span class="tag">Chance de passar</span><small class="muted">Com pelo menos 10 respostas em cada matéria, o app calcula sua chance de passar. Faltam: ${esc(c.falta.join(", "))}.</small></div>`;
+  return `<div class="glass pad" style="display:grid;gap:8px"><span class="tag">Chance de passar, pelos seus acertos</span>
+    <div class="row wrap" style="gap:14px"><span><b class="mono" style="font-size:22px">${pctTxt(c.corte)}</b><br><small class="muted">de passar do corte (18 e 1 por matéria)</small></span><span><b class="mono" style="font-size:22px">${pctTxt(c.meta)}</b><br><small class="muted">de chegar à meta de 36</small></span><span><b class="mono" style="font-size:22px">${c.esp}</b><br><small class="muted">pontos esperados</small></span></div>
+    <small class="muted">${c.ds.map(d=>`${d.n}: ${Math.round(d.ok/d.cnt*100)}% em ${d.cnt}`).join(" · ")}. Cálculo estatístico (beta-binomial) pelas suas últimas 40 respostas em cada matéria: com poucas respostas, a chance fica mais prudente. A prova real pode ser mais fácil ou mais difícil: use como bússola, não como garantia.</small></div>`; }
+const ESTRATEGIA=[
+ ["Não deixe nenhuma em branco","Questão em branco, com duas marcações ou com rasura vale zero, e errar não tira ponto (edital, item 10.7.1). Na dúvida, elimine o que puder e marque."],
+ ["Comece por Conhecimentos Técnicos","São 30 dos 60 pontos e o primeiro critério de desempate depois da idade; Matemática é o segundo (item 12.3.1). Garanta Técnicos com calma."],
+ ["Controle o tempo","São 4 horas, já contando digital e cartão-resposta (item 10.2): uns 3 minutos por questão. Guarde 30 minutos para passar as respostas ao cartão."],
+ ["Cartão-resposta sem rasura","Use caneta azul ou preta; lápis, borracha e corretor são proibidos (itens 10.7.2 e 10.20). Marque primeiro no caderno e passe ao cartão com atenção."],
+ ["Sem calculadora","Calculadora e qualquer material de consulta são proibidos (item 10.20). Treine as contas à mão: todas as aulas de Matemática do curso usam só conta à mão."],
+ ["Saída e caderno","Fique no mínimo 2 horas na sala, ou será eliminado (itens 10.17 e 10.18). O caderno de questões só pode ser levado na última hora (item 10.19): fique até lá para conferir com o gabarito de 01/02."],
+ ["Mire além do corte","O corte é 18 pontos e pelo menos 1 em cada matéria (item 11.1), mas a vaga sai pela ordem de nota na sua área de trabalho (item 12.5). Mire 36 ou mais."]];
+function estrategiaHTML(){ return `<details class="glass pad"><summary style="cursor:pointer;font-weight:500;min-height:44px;display:flex;align-items:center">Estratégia para o dia da prova (regras do edital)</summary><ol style="margin:8px 0 0;padding-left:18px;display:grid;gap:8px;line-height:1.5">${ESTRATEGIA.map(([t,x])=>`<li><b style="font-weight:500">${esc(t)}.</b> ${esc(x)}</li>`).join("")}</ol></details>`; }
+/* Simulado completo: 60 questões no formato do edital (30 Técnicos, 15 Matemática, 15 Português), do banco do curso
+   e do guia, priorizando as que você errou e as menos vistas. Letras embaralhadas a cada simulado. */
+function bancoIBGE(){ const T=trilha(), out=[];
+  Object.keys(DISC).forEach(k=>(T[k]||[]).forEach(L=>L.qs.forEach((q,i)=>out.push({key:`L:${L.id}:${i}`, mat:DISC[k].n, tema:L.titulo, p:q.p, o:q.o, c:q.c, e:q.e}))));
+  IBGE_QS.forEach(q=>out.push({key:`G:${q.id}`, mat:q.mat, tema:q.tema, p:q.p, o:q.o, c:q.c, e:q.e}));
+  return out; }
+function montarSimulado(){ const B=bancoIBGE(), hist=(M.simulado&&M.simulado.hist)||[], n=hist.length, vistas={}, erradas=new Set();
+  hist.forEach(h=>(h.erros||[]).forEach(k=>erradas.add(k))); hist.slice(-2).forEach(h=>(h.keys||[]).forEach(k=>vistas[k]=1));
+  (M.erros||[]).filter(e=>!e.ok && String(e.id).startsWith("etr-")).forEach(e=>{ const m=String(e.id).match(/^etr-(\w+)-(\d+)$/); if(m) erradas.add(`L:${m[1]}:${m[2]}`); });
+  const pick=(mat,q)=>{ const xs=B.filter(b=>b.mat===mat), ord=perm(xs.length, n*31+mat.length); const pr=b=>(erradas.has(b.key)?0:vistas[b.key]?2:1);
+    return ord.map(i=>xs[i]).sort((a,b)=>pr(a)-pr(b)).slice(0,q); };
+  const qs=[...pick("Conhecimentos Técnicos",30), ...pick("Matemática",15), ...pick("Língua Portuguesa",15)].map((b,i)=>({key:b.key, ord:perm(b.o.length, n*61+i+3)}));
+  return {qs, resp:{}, t0:Date.now(), n:n+1}; }
+function openSimulado(){ M.simulado=M.simulado||{hist:[]}; if(!M.simulado.atual){ M.simulado.atual=montarSimulado(); saveMain(); }
+  const S=M.simulado.atual, B=Object.fromEntries(bancoIBGE().map(b=>[b.key,b])), L="ABCDE";
+  S.qs=S.qs.filter(q=>B[q.key]);
+  const F = FLOW = {kind:"simulado", tela:"prova", back:()=>{}, next:()=>{ if(F.tela==="prova"){ const falt=S.qs.length-Object.keys(S.resp).length;
+      if(falt && !F.conf){ F.conf=true; toast(`Faltam ${falt}. Em branco vale zero e errar não desconta: toque de novo em Corrigir para entregar assim.`); return; } corrigir(); } else { closeSheet(); render(); } }};
+  openSheet("radial-gradient(120% 60% at 100% 0%,color-mix(in srgb,var(--a-op-1) 24%,transparent),transparent 60%),var(--bg)");
+  function corrigir(){ const f=frenteIBGE(), st=prepSt({id:f?f.id:"ibge2027"}), hj=iso(today()), por={};
+    const it=S.qs.map(q=>{ const b=B[q.key], j=S.resp[q.key], ok=j===b.c; por[b.mat]=por[b.mat]||{ok:0,tot:0}; por[b.mat].tot++; if(ok) por[b.mat].ok++; return {q,b,j,ok}; });
+    const pts=it.filter(x=>x.ok).length, zero=Object.entries(por).filter(([,v])=>!v.ok).map(([k])=>k), passa=pts>=18&&!zero.length;
+    it.filter(x=>x.j!=null).forEach(x=>{ const id="sim-"+x.q.key; st.resp=st.resp.filter(r=>r.id!==id); st.resp.push({id, mat:x.b.mat, ok:x.ok, d:hj}); });
+    it.filter(x=>!x.ok).forEach(x=>{ const id="esim-"+x.q.key; M.erros=(M.erros||[]).filter(e=>e.id!==id); M.erros.push({proj:PID(), id, d:hj, mat:x.b.mat, topic:x.b.tema, p:x.b.p, minha:x.j!=null?x.b.o[x.j]:"(em branco)", certa:x.b.o[x.b.c], e:x.b.e, ok:false}); });
+    const dur=Math.round((Date.now()-S.t0)/60000);
+    M.simulado.hist.push({d:hj, pts, por, dur, keys:S.qs.map(q=>q.key), erros:it.filter(x=>!x.ok).map(x=>x.q.key)}); if(M.simulado.hist.length>12) M.simulado.hist=M.simulado.hist.slice(-12);
+    if(f){ const mk=marcosDe(f).find(m=>!m.ok && /^Simulado completo/.test(m.r)); if(mk){ f.ok=f.ok||{}; f.ok[mk.i]=true; } }
+    M.simulado.atual=null; addXP(20+pts); saveMain();
+    F.R={it, pts, por, zero, passa, dur}; F.tela="res"; draw(true); }
+  const draw=(foco)=>{ if(FLOW!==F) return;
+    if(F.tela==="prova"){ const feitas=Object.keys(S.resp).length, min=Math.round((Date.now()-S.t0)/60000), grupos=[["Conhecimentos Técnicos",0,30],["Matemática",30,45],["Língua Portuguesa",45,60]];
+      sheetHTML({title:`Simulado ${S.n}`, next:"Corrigir", body:`<h2 class="q">Simulado completo<small>60 questões no formato da prova: 30 de Técnicos, 15 de Matemática e 15 de Português. A prova real tem 4 horas, cerca de 3 minutos por questão. Dá para parar e continuar depois.</small></h2>
+        <p class="muted mono" style="margin:0;font-size:13px">${feitas} de ${S.qs.length} respondidas · ${min<60?min+" min":Math.floor(min/60)+" h "+(min%60)+" min"} desde o início</p>
+        ${grupos.map(([g,a,z])=>`<section style="display:grid;gap:14px" aria-label="${esc(g)}"><span class="tag">${esc(g)} · questões ${a+1} a ${z}</span>${S.qs.slice(a,z).map((q,n)=>{ const b=B[q.key], k=a+n+1; return `<div class="tr-q${S.resp[q.key]!=null?" feita":""}"><p class="pp-p" id="smq${k}"><b class="mono" style="font-weight:500">${k}.</b> ${esc(b.p)}</p><div class="pp-os" role="group" aria-labelledby="smq${k}">${q.ord.map((j,x)=>`<button class="opt" data-sq="${esc(q.key)}" data-j="${j}" aria-pressed="${S.resp[q.key]===j}"><span class="k">${L[x]}</span><span>${esc(b.o[j])}</span></button>`).join("")}</div></div>`; }).join("")}</section>`).join("")}
+        <button class="link" data-sm="novo" style="justify-self:start;min-height:44px">Descartar e montar outro simulado</button>`});
+    } else { const R=F.R;
+      sheetHTML({title:"Resultado do simulado", next:"Concluir", body:`<h2 class="q" tabindex="-1">${R.pts} de 60<small>${R.passa?"Passaria do corte (18 e pelo menos 1 em cada matéria).":R.zero.length?`Zerou ${esc(R.zero.join(" e "))}: seria eliminada. Reforce já essa matéria.`:"Abaixo do corte de 18. Os erros foram para a Forja."} Meta para classificar: 36 ou mais.</small></h2>
+        ${Object.entries(R.por).map(([k,v])=>`<div class="pp-m"><div class="row" style="justify-content:space-between;gap:8px"><span>${esc(k)}</span><span class="mono" style="font-size:12px">${v.ok} de ${v.tot}</span></div><span class="b" aria-hidden="true"><i style="width:${Math.round(v.ok/v.tot*100)}%;${v.ok/v.tot<.5?"background:var(--warn)":""}"></i></span></div>`).join("")}
+        <small class="muted">Tempo: ${R.dur} min. Em caso de empate, conta primeiro a nota de Técnicos e depois a de Matemática.</small>
+        ${chanceHTML()}
+        ${R.it.some(x=>!x.ok)?`<section style="display:grid;gap:8px"><span class="tag">Correção das que você errou · já estão na Forja</span>${R.it.map((x,i)=>x.ok?"":`<details class="cad-it"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center"><span><b style="font-weight:500">Questão ${i+1}</b> · ${esc(x.b.tema)}</span></summary><p><b style="font-weight:500">${esc(x.b.p)}</b></p><p>${x.j!=null?`Você marcou: ${esc(x.b.o[x.j])}.`:"Em branco."} Certa: ${esc(x.b.o[x.b.c])}.</p><p class="muted">${esc(x.b.e)}</p></details>`).join("")}</section>`:""}`});
+      if(foco){ const h=SH.querySelector("h2.q"); if(h) h.focus({preventScroll:true}); $("#shb").scrollTop=0; } }
+    SH.querySelectorAll("[data-sq]").forEach(b=>b.onclick=()=>{ const k=b.dataset.sq, j=+b.dataset.j; S.resp[k]=j; F.conf=false; saveMain(); const y=$("#shb").scrollTop; draw(); $("#shb").scrollTop=y; const nb=SH.querySelector(`[data-sq="${CSS.escape(k)}"][data-j="${j}"]`); if(nb) nb.focus({preventScroll:true}); });
+    SH.querySelectorAll("[data-sm]").forEach(b=>b.onclick=()=>{ if(!b.dataset.conf){ b.dataset.conf="1"; b.textContent="Toque de novo para descartar as respostas"; return; } M.simulado.atual=null; saveMain(); openSimulado(); });
   };
   draw();
 }
@@ -4007,6 +4099,8 @@ function prepHTML(){
     <div class="pp-dom">${barras}</div>
     ${est?`<div class="pp-est"><b>${est.pts}</b><span>de ${est.tot} pontos no ritmo dos seus treinos${a.corte?`<br><small class="muted">Critério do edital: ${esc(a.corte)}. É uma estimativa do treino, não uma garantia.</small>`:""}</span></div>`:a.mats.some(m=>m.q)?`<small class="muted">Com 5 respostas em cada matéria, o app estima quantos pontos você faria na prova.</small>`:""}
     ${corpo}
+    ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?chanceHTML():""}
+    ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?`<button class="link" data-act="simulado" style="justify-self:start;min-height:44px">${M.simulado&&M.simulado.atual?"Continuar o simulado completo":"Simulado completo: 60 questões no formato da prova"}${(M.simulado&&M.simulado.hist||[]).length?` · último: ${M.simulado.hist.slice(-1)[0].pts} de 60`:""}</button>`:""}
     ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?`<button class="link" data-act="curso" style="justify-self:start;min-height:44px">Curso da prova: ${Object.keys(DISC).reduce((n,k)=>n+trResumo(k).dominado,0)} de 36 aulas dominadas${revisoesTrilha().length?` · ${revisoesTrilha().length} revisão(ões) hoje`:""}</button>`:""}
     ${frentes().some(f=>f.modelo==="ibge2027"&&f.id===a.id)?`<button class="link" data-act="prova-real" data-id="ibge2010" style="justify-self:start;min-height:44px">${(M.provaReal&&M.provaReal.ibge2010&&M.provaReal.ibge2010.fim)?(M.provaReal.ibge2010.fim.pode?`Prova real de 2010: ${M.provaReal.ibge2010.fim.est} de 60 · refazer ou ver erros`:"Prova real de 2010: continuar ou ver erros"):"Fazer a prova real de 2010 (Cesgranrio)"}</button>`:""}
   </section>`;
@@ -4320,6 +4414,7 @@ document.addEventListener("click", e => {
   else if(act==="hall-aula") entrarAula();
   else if(act==="prova-real") openProvaReal(a.dataset.id);
   else if(act==="curso") openTrilha();
+  else if(act==="simulado") openSimulado();
   else if(act==="hall-amb") ambiente(a.dataset.k);
   else if(act==="painel"){ PAINEL=true; render(); window.scrollTo({top:0}); }
   else if(act==="inicio"){ PAINEL=false; SELDAY=null; render(); window.scrollTo({top:0}); }
