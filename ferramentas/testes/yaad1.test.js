@@ -247,10 +247,14 @@ const CENARIOS = {
     ok((await p.$$('[data-pq="21"]')).length === 0 && (await p.$$('[data-pq]')).length === 39 * 4, "cartão-resposta com número errado de questões (sem Gerais e sem a anulada)");
     await p.click('[data-pq="1"][data-j="1"]'); await p.click('[data-pq="11"][data-j="3"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-pq="32"][data-j="2"]'); await p.click('[data-pq="33"][data-j="0"]');
     ok(/5 de 39/.test(await p.textContent("#shb")), "contagem de marcadas errada (a anulada não entra)");
+    const rol = await p.evaluate(() => { const sb = document.querySelector("#shb"); sb.scrollTop = 900; const y = sb.scrollTop; document.querySelector('[data-pq="40"][data-j="0"]').click(); return Math.abs(document.querySelector("#shb").scrollTop - y) < 5 && y > 0; });
+    ok(rol, "marcar uma letra jogou a tela para o topo");
+    await p.click('[data-pq="40"][data-j="0"]');
     await p.click('[data-sh="next"]'); await p.waitForTimeout(100);
     const r = await p.evaluate(() => ({ txt: document.querySelector("#shb").textContent, erros: M.erros.filter(e => e.id.startsWith("eibge2010-")).map(e => e.id), resp: M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length }));
     ok(/Questão 12/.test(r.txt) && /certa é A/.test(r.txt) && /Questão 33/.test(r.txt) && !/Questão 11 ·/.test(r.txt), "correção pelo gabarito oficial errada: " + r.txt.slice(0, 200));
     ok(r.erros.length === 2 && r.resp === 5, "erros não foram para a Forja ou respostas não entraram no treino: " + JSON.stringify(r));
+    await p.click('[data-pr="refazer"]'); ok(await p.evaluate(() => Object.keys(M.provaReal.ibge2010.resp).length === 5), "Refazer do zero apagou sem confirmar");
     await p.click('[data-pr="refazer"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-sh="next"]');
     ok(await p.evaluate(() => M.erros.filter(e => e.id.startsWith("eibge2010-")).length === 1 && M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length === 1), "refazer a prova duplicou erros ou respostas");
   },

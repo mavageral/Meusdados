@@ -365,4 +365,6 @@ Ficaram de fora, de propósito:
   - playlists gratuitas do Mario Tossan.
   - A frente já salva recebe os links novos uma vez (`atualizarIBGE`).
 
-**Testes:** 218/218, com o cenário "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos".
+**Revisor de UI:** corrigido o item grave (marcar uma letra levava a tela ao topo). Também entraram: confirmação antes de apagar as respostas, estimativa que diz em quantas questões se apoia, rótulos mais curtos para leitor de tela e XP só na primeira correção do dia.
+
+**Testes:** 222/222, com o cenário "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos".
