@@ -53,6 +53,18 @@ def main():
     else:
         assert "\n<script>\n" in s, "não achei o <script> principal do app"
         s = s.replace("\n<script>\n", "\n" + bloco + "\n<script>\n", 1)
+    ap = os.path.join(RAIZ, "projetos/sala-caverna/conteudo/apostila-ibge/apostila.json")
+    if os.path.exists(ap):
+        with open(ap, encoding="utf-8") as f: A = json.load(f)
+        assert len(A.get("paginas", [])) > 50, "apostila incompleta"
+        atxt = json.dumps(A, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+        ab = f'<!-- APOSTILA-IBGE:INICIO -->\n<script type="application/json" id="apostila-ibge">{atxt}</script>\n<!-- APOSTILA-IBGE:FIM -->'
+        if "<!-- APOSTILA-IBGE:INICIO -->" in s:
+            a2, b2 = s.index("<!-- APOSTILA-IBGE:INICIO -->"), s.index("<!-- APOSTILA-IBGE:FIM -->") + len("<!-- APOSTILA-IBGE:FIM -->")
+            s = s[:a2] + ab + s[b2:]
+        else:
+            s = s.replace(FIM, FIM + "\n" + ab, 1)
+        print(f"apostila: {len(A['paginas'])} páginas ({len(atxt)//1024} KB)")
     with open(APP, "w", encoding="utf-8") as f: f.write(s)
     print(f"embutido em {os.path.relpath(APP, RAIZ)} ({len(txt)//1024} KB)")
 

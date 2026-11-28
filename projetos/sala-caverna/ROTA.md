@@ -468,3 +468,36 @@ Ficaram de fora, de propósito:
   - a próxima matéria a estudar é a que mais rende pontos a recuperar (peso × (1 − acerto));
   - a aptidão de cada simulado fica guardada no histórico.
 - **Testes:** 270/270, com o cenário "Termômetro de aptidão e estudo adaptativo pelos erros do simulado".
+
+## 27. Apostila oficial dentro do app e ajustes do termômetro (28/11/2026)
+
+- **Autorização da dona:** colocar o texto da apostila no app.
+- **Apostila:**
+  - `ferramentas/extrair-apostila.py` gera `conteudo/apostila-ibge/apostila.json` a partir do texto do PDF oficial: 68 páginas e cerca de 75 mil caracteres, sem os cabeçalhos repetidos e com a fonte citada;
+  - as figuras sem texto (páginas 33, 34, 43, 47, 54 e 55) ganharam transcrição marcada como "[Conteúdo da figura]";
+  - `embutir-trilha.py` embute a apostila em `#apostila-ibge`;
+  - o PDF não entra no Git.
+- **Leitor (`openApostila`):**
+  - abre só as páginas da aula ("Ler na apostila (p. 61 a 63)") ou a apostila inteira;
+  - busca em todas as páginas, sem diferenciar acentos, e destaca o termo achado;
+  - tem o botão "Voltar para a aula";
+  - também pode ser aberto pela Biblioteca e pelo Curso da prova.
+- **"Explicar de outro jeito":** nas aulas técnicas, agora usa as páginas da apostila como fonte oficial (até 7 mil caracteres).
+- **Termômetro (revisor de UI, sem nenhum item grave):**
+  - **Pontos fracos:** usam a taxa real abaixo de 80%. Uma aula aprovada não aparece mais como fraca.
+  - **Faixas alinhadas ao corte e à meta:**
+
+    | Faixa | Aptidão |
+    |---|---|
+    | Começando | abaixo de 30% |
+    | Base em construção | 30% a 59% |
+    | Competitiva | 60% a 74% |
+    | Forte | 75% a 89% |
+    | Excelente | 90% ou mais |
+
+  - **Tubo:** ganhou as legendas "corte", "meta" e "excelente".
+  - **Texto mais simples:** "precisa de 18 para não ser eliminada e de uns 36 para ficar entre os primeiros".
+  - **Pontos a ganhar:** mostram o valor real ("menos de 1 ponto", "cerca de 1,2 pontos").
+  - **Acessibilidade:** o medidor usa `aria-valuetext`.
+  - **Estado inicial:** sai em cor neutra, com o convite "Faça a 1ª aula".
+- **Testes:** 284/284, com o cenário "Apostila oficial no app: páginas da aula, busca e volta".
