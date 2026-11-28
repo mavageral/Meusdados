@@ -368,3 +368,11 @@ Ficaram de fora, de propósito:
 **Revisor de UI:** corrigido o item grave (marcar uma letra levava a tela ao topo). Também entraram: confirmação antes de apagar as respostas, estimativa que diz em quantas questões se apoia, rótulos mais curtos para leitor de tela e XP só na primeira correção do dia.
 
 **Testes:** 222/222, com o cenário "IBGE: prova real de 2010 com gabarito oficial, Forja e links novos".
+
+## 23. CPA da ANBIMA para fevereiro de 2027 (28/11/2026)
+
+- **Pedido da dona:** passar a prova da CPA para depois do IBGE.
+- **O que mudou:** o prazo da meta passou de 23/01 para 26/02/2027. Até a prova do IBGE, a ANBIMA fica só na sexta, das 14h às 16h, para manter o conteúdo vivo. Em fevereiro, a agenda volta sozinha para terça, quinta e sexta (o período do IBGE termina em 30/01). A data exata da prova continua sendo marcada quando a média dos simulados chegar a 70%.
+- **Textos atualizados:** certificados, painel da ANBIMA, simulado e contexto do tutor.
+- **Revisor de UI:** não rodou, porque a mudança é só de texto e data, sem tela nova.
+- **Testes:** 222/222.
