@@ -208,14 +208,14 @@ const CENARIOS = {
       const ibge = seg.find(b => b.foco); openBlock("2026-11-30", bkey(ibge));
       return { antes, sem, de_novo, f: !!f, pool: M.prep.ibge2027.pool.length, seg: ibge.l, c: ibge.c, kind: kindOf(ibge), mats: matsOfBlock(ibge).length,
         fe: seg.some(b => /Bíblia/.test(b.l)) && seg.some(b => /Oração/.test(b.l)), sexta: blocksOf(new Date(2026, 11, 4)).some(b => /ANBIMA/.test(b.l)),
-        dom: dom.some(b => b.foco && /opcional/.test(b.l)), depois: depois.some(b => b.foco), frente: FLOW.frente, mat: FLOW.mat, topic: FLOW.data.topic,
+        dom: dom.some(b => b.foco && /opcional/.test(b.l)), depois: depois.some(b => b.foco), kindF: FLOW.kind, idF: FLOW.id, bF: !!FLOW.b,
         top: topGoal().g.id, ativa: frenteAtiva().id };
     });
     ok(!r.antes, "metas do IBGE apareceram sem a frente");
     ok(r.sem && !r.de_novo && r.f && r.pool === 24, "semente do IBGE errada (repetiu ou sem as 24 questões)");
     ok(/IBGE: Conhecimentos Técnicos/.test(r.seg) && r.c === "op" && r.kind === "estudo" && r.mats === 0, "bloco de segunda não virou IBGE");
     ok(r.fe && r.sexta && r.dom && !r.depois, "agenda mexeu em fé ou ANBIMA de sexta, ou não voltou depois da prova");
-    ok(r.frente === "ibge2027" && /^Conhecimentos Técnicos · /.test(r.mat) && r.topic === "O IBGE e o Censo Agro", "bloco IBGE não abriu o estudo da frente: " + r.mat + " / " + r.topic);
+    ok(r.kindF === "licao" && r.idF === "t01" && r.bF, "bloco IBGE não abriu a primeira aula de Técnicos do curso: " + r.kindF + " / " + r.idF);
     ok(r.top === "ibge-insc" && r.ativa === "ibge2027", "missão não prioriza a inscrição do IBGE: " + r.top);
     const m = await p.evaluate(() => { closeSheet(); const f = frentes()[0]; f.ok[0] = true; return Math.round(goalProgress(GOALS.find(g => g.id === "ibge-insc")) * 100); });
     ok(m === 100, "marcar a inscrição na frente não concluiu a meta");
@@ -227,15 +227,17 @@ const CENARIOS = {
     ok(!r.alvo && !/Serasa Experian/.test(r.txt), "Serasa ainda aparece como alvo na tela");
   },
   "UX: matéria fixa na frente, treino recolhido e último dia da missão": async (p) => {
-    const r = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); const ibge = blocksOf(new Date(2026, 10, 30)).find(b => b.foco); openBlock("2026-11-30", bkey(ibge));
-      const sh = document.querySelector("#shb"); const out = { picker: !!sh.querySelector('[data-pick="mat"]'), chip: /Conhecimentos Técnicos\s*do seu plano · Recenseador IBGE 2027/.test(sh.textContent), larg: document.documentElement.scrollWidth <= innerWidth && SH.scrollWidth <= SH.clientWidth, apostila: !!sh.querySelector('[data-pick="fonte"] [data-v="Apostila"]'), plano: /já veio do seu plano/.test(sh.textContent) };
+    const r = await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); M.frentes.push({ id: "fx9", titulo: "Agente Municipal", materias: [{ n: "Legislação", questoes: 10, topicos: ["Lei Orgânica"] }], dias: [0, 1, 2, 3, 4, 5, 6], min: 40, marcos: [], ok: {} }); estudarFrente("fx9");
+      const sh = document.querySelector("#shb"); const out = { picker: !!sh.querySelector('[data-pick="mat"]'), chip: /Legislação\s*do seu plano · Agente Municipal/.test(sh.textContent), larg: document.documentElement.scrollWidth <= innerWidth && SH.scrollWidth <= SH.clientWidth, apostila: !!sh.querySelector('[data-pick="fonte"] [data-v="Apostila"]'), plano: /já veio do seu plano/.test(sh.textContent) };
       closeSheet(); TAB = "hoje"; PAINEL = false; render(); out.recolhido = !document.querySelector(".prep .pp-p") && !!document.querySelector('[data-act="pq-abrir"]'); return out; });
     ok(!r.picker && r.chip && r.larg && r.apostila && r.plano, "estudo da frente ainda mostra a lista de matérias do Caverna: " + JSON.stringify(r));
     ok(r.recolhido, "a questão do treino abre sozinha no Início");
     await p.click('[data-act="pq-abrir"]');
     ok(!!(await p.$(".prep .pp-p")), "Responder 1 questão não abriu a questão");
-    await p.evaluate(() => { TAB = "estudar"; render(); }); await p.click('[data-k="treino"]'); await p.waitForTimeout(150);
-    ok(await p.evaluate(() => TAB === "hoje" && !!document.querySelector(".prep .pp-p")), "Treino da prova na Sala viva não levou à questão");
+    await p.evaluate(() => { TAB = "estudar"; render(); }); await p.click('[data-k="curso"]'); await p.waitForTimeout(100);
+    ok(await p.evaluate(() => FLOW && FLOW.kind === "trilha"), "Curso da prova na Sala viva não abriu o curso");
+    await p.click('[data-tr="treino"]'); await p.waitForTimeout(150);
+    ok(await p.evaluate(() => TAB === "hoje" && !!document.querySelector(".prep .pp-p")), "Treino de questões do curso não levou à questão");
     await p.clock.setFixedTime(new Date(2026, 10, 30, 9, 0)); await p.evaluate(() => render());
     const m = await p.textContent(".missao .mh");
     ok(/Último dia: hoje/.test(m) && !(await p.$(".missao .gbar")), "missão no dia do prazo não diz Hoje: " + m);
@@ -257,6 +259,26 @@ const CENARIOS = {
     await p.click('[data-pr="refazer"]'); ok(await p.evaluate(() => Object.keys(M.provaReal.ibge2010.resp).length === 5), "Refazer do zero apagou sem confirmar");
     await p.click('[data-pr="refazer"]'); await p.click('[data-pq="12"][data-j="1"]'); await p.click('[data-sh="next"]');
     ok(await p.evaluate(() => M.erros.filter(e => e.id.startsWith("eibge2010-")).length === 1 && M.prep.ibge2027.resp.filter(x => x.id.startsWith("ibge2010-")).length === 1), "refazer a prova duplicou erros ou respostas");
+  },
+  "Curso da prova: 36 aulas, teste com 80%, Forja, revisões e agenda": async (p) => {
+    await p.evaluate(() => { window.__SEM_SEMENTE = false; semearIBGE(); openTrilha(); });
+    ok((await p.$$("[data-tl]")).length === 36, "o curso não lista as 36 aulas");
+    await p.click('[data-tl="t02"]'); await p.waitForTimeout(80);
+    ok(/Sede, setores/.test(await p.textContent("#shb")) && /apostila, p\. 61/.test(await p.textContent("#shb")), "aula t02 sem título ou sem página da apostila");
+    ok(await p.evaluate(() => trEstado("t02") === "aprendendo"), "abrir a aula não marcou 'aprendendo'");
+    await p.click('[data-sh="next"]');
+    for (const [i, c] of await p.evaluate(() => licao("t02").qs.map((q, i) => [i, q.c]))) await p.click(`[data-tq="${i}"][data-j="${c}"]`);
+    await p.click('[data-sh="next"]'); await p.waitForTimeout(80);
+    const a = await p.evaluate(() => ({ st: trSt("t02"), txt: document.querySelector("#shb").textContent, resp: M.prep.ibge2027.resp.filter(r => r.id.startsWith("tr-t02-")).length, livre: (M.livres || []).some(r => r.trilha === "t02" && r.frente === "ibge2027") }));
+    ok(a.st.st === "revisao" && a.st.prox === "2026-11-28" && /5 de 5/.test(a.txt), "aprovação com 5 de 5 não levou à revisão de amanhã: " + JSON.stringify(a.st));
+    ok(a.resp === 5 && a.livre, "respostas não foram para o treino ou o estudo não contou para a frente");
+    const b = await p.evaluate(() => { openLicao("t03"); FLOW.tela = "teste"; licao("t03").qs.forEach((q, i) => FLOW.resp[i] = (q.c + 1) % 5); FLOW.next(); return { st: trEstado("t03"), erros: M.erros.filter(e => e.id.startsWith("etr-t03-")).length }; });
+    ok(b.st === "reforco" && b.erros === 5, "teste abaixo de 80% não foi para reforço e Forja: " + JSON.stringify(b));
+    const c = await p.evaluate(() => { closeSheet(); M.trilha.t02.prox = iso(today()); const rv = revisoesTrilha().map(L => L.id); openLicao("t02", { rev: true }); const n = FLOW.ordem.length; FLOW.ordem.forEach(o => FLOW.resp[o.i] = licao("t02").qs[o.i].c); FLOW.next(); return { rv, n, st: trSt("t02") }; });
+    ok(c.rv.includes("t02") && c.n === 3 && c.st.step === 1 && c.st.prox === "2026-11-30", "revisão não avançou para 3 dias: " + JSON.stringify(c));
+    await p.clock.setFixedTime(new Date(2026, 10, 30, 8, 30));
+    const d = await p.evaluate(() => { closeSheet(); const ibge = blocksOf(new Date(2026, 10, 30)).find(b => b.foco); return { prox: proximaLicao("tec").id, passo: passoHoje(frenteIBGE()).topico || "" }; });
+    ok(d.prox === "t03" && /Situações especiais/.test(d.passo), "a próxima aula não prioriza o reforço ou o passo não mostra a aula: " + JSON.stringify(d));
   },
   "Sala viva no rodapé: hall, caderno, biblioteca e aula ao vivo": async (p) => {
     ok(/Sala viva/.test(await p.textContent('.tabbar [data-tab="estudar"]')), "rodapé sem a Sala viva");

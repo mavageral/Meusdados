@@ -1,0 +1,207 @@
+[
+{"id":"m01","disc":"mat","nivel":"alta","titulo":"Frações, decimais e operações","porque":"Frações e decimais aparecem em quase toda questão de Matemática: preço por litro, parte da produção, porcentagem. Sem elas, o resto não anda.",
+"blocos":[
+{"t":"O que é uma fração","txt":"Fração é uma parte de um inteiro dividido em partes iguais. Em 3/4, o 4 (denominador) diz em quantas partes o inteiro foi dividido e o 3 (numerador) diz quantas partes foram tomadas. 3/4 de 120 sacas: divida por 4 e multiplique por 3: 120 ÷ 4 = 30; 30 × 3 = 90 sacas."},
+{"t":"Somar e subtrair","txt":"Com denominadores iguais, some os numeradores: 2/7 + 3/7 = 5/7. Com denominadores diferentes, iguale primeiro pelo MMC: 3/4 + 1/2 = 3/4 + 2/4 = 5/4. Sempre simplifique no final, dividindo numerador e denominador pelo mesmo número: 6/8 = 3/4."},
+{"t":"Multiplicar e dividir","txt":"Multiplicar: numerador vezes numerador, denominador vezes denominador: 2/3 × 3/5 = 6/15 = 2/5. Dividir: mantenha a primeira e multiplique pelo inverso da segunda: 3/4 ÷ 1/2 = 3/4 × 2/1 = 6/4 = 3/2."},
+{"t":"Decimais","txt":"Decimal é outra forma de escrever fração com denominador 10, 100, 1.000: 0,5 = 5/10 = 1/2; 0,25 = 1/4; 0,75 = 3/4; 0,2 = 1/5. Somar e subtrair: alinhe as vírgulas. Multiplicar: multiplique sem vírgula e depois conte as casas decimais dos dois números: 2,5 × 1,2 → 25 × 12 = 300 → duas casas → 3,00. Dividir por 10, 100, 1.000: ande com a vírgula para a esquerda."},
+{"t":"Como a banca cobra","txt":"Problema típico: uma parte vendida, outra guardada, quanto sobrou? Calcule cada parte do total e subtraia. Ou: um preço é uma fração de outro (o litro numa região custa 1/4 do preço de outra). Leia devagar, anote cada valor e confira a unidade (reais, litros, sacas)."}],
+"exemplos":[
+{"p":"Um produtor colheu 120 sacas. Vendeu 2/5 e guardou 1/4. Quantas sobraram?","r":"2/5 de 120 = 48; 1/4 de 120 = 30. Sobram 120 − 48 − 30 = 42 sacas."},
+{"p":"Quanto é 1,5 × 0,4?","r":"15 × 4 = 60; são 2 casas decimais no total: 0,60 = 0,6."}],
+"pegadinhas":["Não some denominadores: 1/2 + 1/3 não é 2/5 (é 5/6).","Na divisão de frações, inverta só a segunda.","Na multiplicação de decimais, conte as casas dos dois fatores."],
+"resumo":["Fração de um número: divide pelo de baixo, multiplica pelo de cima.","Soma e subtração: mesmo denominador antes.","Divisão: multiplica pelo inverso.","0,5 = 1/2; 0,25 = 1/4; 0,75 = 3/4; 0,2 = 1/5."],
+"qs":[
+{"nv":1,"p":"O resultado de 3/4 + 1/2 é","o":["4/6","5/4","4/4","3/8","1/4"],"c":1,"e":"1/2 = 2/4. Então 3/4 + 2/4 = 5/4."},
+{"nv":1,"p":"O número decimal 0,25 corresponde à fração","o":["1/25","2/5","1/4","25/10","1/2"],"c":2,"e":"0,25 = 25/100, que simplificado por 25 dá 1/4."},
+{"nv":2,"p":"Um produtor colheu 120 sacas de feijão. Vendeu 2/5 da colheita e guardou 1/4 para consumo. O restante foi doado. Quantas sacas foram doadas?","o":["42","48","30","72","50"],"c":0,"e":"Vendeu 48 (2/5 de 120) e guardou 30 (1/4 de 120). Doou 120 − 78 = 42."},
+{"nv":2,"p":"O produto 2,5 × 1,2 é igual a","o":["2,7","0,3","3,7","30","3"],"c":4,"e":"25 × 12 = 300, com duas casas decimais: 3,00 = 3."},
+{"nv":3,"p":"Em uma região, 200 litros de água custam R$ 6,00. Em outra região, a água custa 2/3 desse valor. Quanto custam 100 litros de água nessa outra região?","o":["R$ 1,00","R$ 2,00","R$ 3,00","R$ 4,00","R$ 1,50"],"c":1,"e":"2/3 de R$ 6,00 = R$ 4,00 por 200 L. Então 100 L custam R$ 2,00."}]},
+
+{"id":"m02","disc":"mat","nivel":"alta","titulo":"Números naturais e inteiros: operações, sinais e propriedades","porque":"A ordem das operações e a regra de sinais derrubam muita gente em questões fáceis. São pontos que não podem ser perdidos.",
+"blocos":[
+{"t":"Naturais e inteiros","txt":"Naturais: 0, 1, 2, 3... (contagem). Inteiros: incluem os negativos: ..., −3, −2, −1, 0, 1, 2... Negativos aparecem em temperatura, saldo bancário, prejuízo e altitude abaixo do nível do mar."},
+{"t":"Ordem das operações","txt":"1º parênteses, colchetes e chaves (de dentro para fora); 2º potências e raízes; 3º multiplicações e divisões, na ordem em que aparecem; 4º somas e subtrações, na ordem em que aparecem. Exemplo: 18 − 3 × 4 + 6 ÷ 2 = 18 − 12 + 3 = 9."},
+{"t":"Regra de sinais","txt":"Soma com sinais iguais: some e mantenha o sinal (−3 − 5 = −8). Sinais diferentes: subtraia e fique com o sinal do maior em valor absoluto (−8 + 5 = −3). Menos com menos vira mais: −(−3) = +3. Multiplicação e divisão: sinais iguais dão positivo, diferentes dão negativo: (−4) × (−2) = 8; (−12) ÷ 3 = −4."},
+{"t":"Propriedades úteis","txt":"Comutativa: a ordem não altera a soma nem o produto (3 + 5 = 5 + 3). Associativa: posso agrupar como quiser. Distributiva: 7 × 98 = 7 × (100 − 2) = 700 − 14 = 686. Elemento neutro: 0 na soma, 1 na multiplicação. Qualquer número vezes 0 é 0; não existe divisão por 0."}],
+"exemplos":[
+{"p":"De manhã fazia −4 °C. À tarde subiu 11 graus e à noite caiu 9. Qual a temperatura à noite?","r":"−4 + 11 = 7; 7 − 9 = −2 °C."},
+{"p":"Calcule 5 + 2 × (8 − 3).","r":"Parênteses: 5. Depois 2 × 5 = 10. Por fim 5 + 10 = 15."}],
+"pegadinhas":["Multiplicação vem antes da soma, mesmo aparecendo depois.","−(−3) = +3.","Em números grandes, alinhe as casas: unidade com unidade, milhar com milhar."],
+"resumo":["Ordem: parênteses, potência, × e ÷, + e −.","Sinais iguais no produto: +; diferentes: −.","Distributiva ajuda nas contas de cabeça."],
+"qs":[
+{"nv":1,"p":"O valor da expressão 18 − 3 × 4 + 6 ÷ 2 é","o":["63","9","33","15","21"],"c":1,"e":"Primeiro × e ÷: 3 × 4 = 12 e 6 ÷ 2 = 3. Depois: 18 − 12 + 3 = 9."},
+{"nv":1,"p":"O resultado de (−8) + 5 − (−3) é","o":["−16","−6","0","6","16"],"c":2,"e":"−8 + 5 = −3; −3 − (−3) = −3 + 3 = 0."},
+{"nv":2,"p":"De manhã, a temperatura numa serra era de −4 °C. À tarde subiu 11 graus e, à noite, caiu 9 graus. A temperatura à noite era de","o":["6 °C","−24 °C","2 °C","16 °C","−2 °C"],"c":4,"e":"−4 + 11 = 7; 7 − 9 = −2 °C."},
+{"nv":2,"p":"Um município tinha 12.450 estabelecimentos agropecuários; 3.875 deles não eram de agricultura familiar. Quantos eram de agricultura familiar?","o":["8.575","8.675","9.425","16.325","8.585"],"c":0,"e":"12.450 − 3.875 = 8.575."},
+{"nv":3,"p":"Usando a propriedade distributiva, o valor de 7 × 98 é","o":["696","676","686","706","600"],"c":2,"e":"7 × 98 = 7 × (100 − 2) = 700 − 14 = 686."}]},
+
+{"id":"m03","disc":"mat","nivel":"média","titulo":"Múltiplos, divisores, MMC e MDC","porque":"Questões de 'encontro de novo' (MMC) e de 'dividir em grupos iguais do maior tamanho' (MDC) são clássicas da Cesgranrio. Caiu MDC na prova de recenseador de 2010.",
+"blocos":[
+{"t":"Múltiplos e divisores","txt":"Múltiplos de 6: 0, 6, 12, 18, 24... (a tabuada). Divisores de 12: 1, 2, 3, 4, 6, 12 (os números que dividem 12 sem resto). Número primo tem exatamente dois divisores: 1 e ele mesmo (2, 3, 5, 7, 11, 13...). O 1 não é primo."},
+{"t":"Critérios de divisibilidade","txt":"Por 2: termina em número par. Por 3: a soma dos algarismos é divisível por 3 (2.451 → 2+4+5+1 = 12 → sim). Por 5: termina em 0 ou 5. Por 9: soma dos algarismos divisível por 9. Por 10: termina em 0."},
+{"t":"MMC: quando vão coincidir de novo","txt":"Mínimo Múltiplo Comum é o menor múltiplo comum a dois ou mais números. Use quando algo se repete em ciclos e você quer saber quando coincide de novo. Ex.: um supervisor vem a cada 6 dias e outro a cada 8 dias. Múltiplos de 6: 6, 12, 18, 24...; de 8: 8, 16, 24... MMC = 24: voltam a se encontrar em 24 dias."},
+{"t":"MDC: dividir em partes iguais e máximas","txt":"Máximo Divisor Comum é o maior número que divide todos ao mesmo tempo. Use para separar em grupos iguais do maior tamanho possível, sem sobra. Ex.: 48 e 60 recenseadores em equipes iguais, sem misturar os grupos. Divisores comuns: 1, 2, 3, 4, 6, 12. MDC = 12 por equipe; equipes: 48 ÷ 12 = 4 e 60 ÷ 12 = 5, total 9."},
+{"t":"Como decidir qual usar","txt":"Pergunta fala em 'próxima vez juntos', 'coincidir', 'ao mesmo tempo de novo': MMC (resposta maior ou igual aos números). Pergunta fala em 'maior tamanho possível', 'sem sobrar', 'partes iguais': MDC (resposta menor ou igual aos números)."}],
+"exemplos":[
+{"p":"Dois ônibus saem juntos às 7h; um passa a cada 15 min e outro a cada 20 min. Quando saem juntos de novo?","r":"MMC(15, 20) = 60 min: às 8h."},
+{"p":"Cortar cordas de 24 m e 36 m em pedaços iguais, do maior tamanho, sem sobra.","r":"MDC(24, 36) = 12 m por pedaço."}],
+"pegadinhas":["MMC dá resposta maior; MDC dá resposta menor. Use isso para conferir.","Leia se a pergunta quer o tamanho do grupo ou o número de grupos.","1 não é primo; 2 é o único primo par."],
+"resumo":["Coincidir de novo: MMC.","Partes iguais e máximas: MDC.","Divisível por 3: soma dos algarismos divisível por 3."],
+"qs":[
+{"nv":1,"p":"Qual dos números abaixo é divisível por 3?","o":["1.234","2.451","5.002","4.100","7.111"],"c":1,"e":"2 + 4 + 5 + 1 = 12, que é divisível por 3."},
+{"nv":1,"p":"O máximo divisor comum (MDC) de 24 e 36 é","o":["72","6","24","4","12"],"c":4,"e":"Divisores comuns de 24 e 36: 1, 2, 3, 4, 6, 12. O maior é 12."},
+{"nv":2,"p":"Uma área tem 48 recenseadores e outra, 60. Eles serão divididos em equipes com o mesmo número de pessoas, sem misturar as áreas e com o maior número possível de pessoas por equipe. Quantas equipes serão formadas no total?","o":["9","12","6","20","108"],"c":0,"e":"MDC(48, 60) = 12 pessoas por equipe. Equipes: 48 ÷ 12 = 4 e 60 ÷ 12 = 5, total 9."},
+{"nv":2,"p":"Um supervisor visita o posto a cada 6 dias e outro, a cada 8 dias. Se os dois estiveram no posto hoje, voltarão a se encontrar lá daqui a","o":["14 dias","48 dias","2 dias","24 dias","12 dias"],"c":3,"e":"MMC(6, 8) = 24 dias."},
+{"nv":3,"p":"Quantos divisores naturais tem o número 12?","o":["4","5","6","12","3"],"c":2,"e":"1, 2, 3, 4, 6 e 12: seis divisores."}]},
+
+{"id":"m04","disc":"mat","nivel":"alta","titulo":"Razão, proporção e divisão proporcional","porque":"É a base da regra de três, da porcentagem e da escala de mapas. A divisão proporcional aparece em problemas de lucro e de partilha.",
+"blocos":[
+{"t":"Razão","txt":"Razão é a comparação de duas grandezas por divisão: a razão entre 15 e 45 é 15/45 = 1/3. Exemplos do dia a dia: escala de mapa (1:50.000), velocidade (km por hora), densidade (habitantes por km²)."},
+{"t":"Proporção","txt":"Proporção é a igualdade entre duas razões: a/b = c/d. Propriedade fundamental: o produto dos meios é igual ao dos extremos: a × d = b × c. Ex.: x/12 = 3/4 → 4x = 36 → x = 9."},
+{"t":"Grandezas diretamente e inversamente proporcionais","txt":"Diretamente: uma aumenta e a outra aumenta na mesma razão (mais quilos, mais caro). Inversamente: uma aumenta e a outra diminui na mesma razão (mais trabalhadores, menos dias)."},
+{"t":"Divisão proporcional","txt":"Para dividir um valor em partes diretamente proporcionais a números dados: some os números, divida o total por essa soma e multiplique por cada número. Ex.: R$ 9.000 entre áreas de 10, 20 e 30 ha. Soma 60; 9.000 ÷ 60 = 150 por hectare. Partes: 1.500, 3.000 e 4.500."},
+{"t":"Razão de partes","txt":"Se a razão entre homens e mulheres é 3:5, pense em 3 + 5 = 8 partes. Com 40 pessoas, cada parte vale 5: homens 15 e mulheres 25."}],
+"exemplos":[
+{"p":"Dividir R$ 1.800 entre duas pessoas em partes proporcionais a 2 e 4.","r":"2 + 4 = 6; 1.800 ÷ 6 = 300. Partes: 600 e 1.200."},
+{"p":"Em 3/5 = x/40, quanto vale x?","r":"5x = 120 → x = 24."}],
+"pegadinhas":["Razão 3:5 não quer dizer 3 de 5 pessoas: são 8 partes no total.","Na divisão proporcional, some os pesos antes de dividir.","Confira se o problema pede a maior ou a menor parte."],
+"resumo":["Razão = divisão; proporção = igualdade de razões.","Meios × meios = extremos × extremos.","Divisão proporcional: total ÷ soma dos pesos × cada peso."],
+"qs":[
+{"nv":1,"p":"A razão entre 15 e 45 é","o":["3","1/3","1/15","30","3/45"],"c":1,"e":"15/45 = 1/3 (simplificando por 15)."},
+{"nv":1,"p":"Na proporção x/12 = 3/4, o valor de x é","o":["16","4","9","36","8"],"c":2,"e":"4x = 3 × 12 = 36, então x = 9."},
+{"nv":2,"p":"R$ 1.800,00 serão divididos entre duas pessoas em partes diretamente proporcionais a 2 e 4. A maior parte será de","o":["R$ 1.200,00","R$ 900,00","R$ 600,00","R$ 1.350,00","R$ 1.080,00"],"c":0,"e":"2 + 4 = 6; 1.800 ÷ 6 = 300. Maior parte: 4 × 300 = 1.200."},
+{"nv":2,"p":"Em uma turma de treinamento com 40 pessoas, a razão entre o número de homens e o de mulheres é 3 para 5. O número de mulheres é","o":["15","24","8","25","30"],"c":3,"e":"3 + 5 = 8 partes; 40 ÷ 8 = 5 por parte. Mulheres: 5 × 5 = 25."},
+{"nv":3,"p":"Três produtores dividirão um lucro de R$ 9.000,00 em partes diretamente proporcionais às suas áreas: 10 ha, 20 ha e 30 ha. Quanto receberá o produtor de 20 ha?","o":["R$ 4.500,00","R$ 1.500,00","R$ 6.000,00","R$ 2.000,00","R$ 3.000,00"],"c":4,"e":"10 + 20 + 30 = 60; 9.000 ÷ 60 = 150 por hectare; 20 × 150 = 3.000."}]},
+
+{"id":"m05","disc":"mat","nivel":"alta","titulo":"Regra de três simples: direta e inversa","porque":"Está no edital com esse nome e cai quase sempre. O erro mais comum é tratar uma inversa como direta.",
+"blocos":[
+{"t":"Montar a regra de três","txt":"Coloque as grandezas em colunas, cada uma com sua unidade. Linha 1: os valores conhecidos. Linha 2: o valor conhecido e o x. Ex.: 4 kg custam R$ 18; 10 kg custam x."},
+{"t":"Direta ou inversa?","txt":"Pergunte: se uma grandeza aumentar, a outra aumenta ou diminui? Se aumenta (mais quilos → mais caro), é DIRETA. Se diminui (mais recenseadores → menos dias), é INVERSA. Marque setas: na direta, as setas vão no mesmo sentido; na inversa, em sentidos opostos."},
+{"t":"Resolver a direta","txt":"Multiplique cruzado. 4/10 = 18/x → 4x = 180 → x = 45. Atalho: 10 kg é 2,5 vezes 4 kg, então o preço é 2,5 × 18 = 45."},
+{"t":"Resolver a inversa","txt":"Inverta uma das razões antes de multiplicar cruzado, ou multiplique em linha reta. Ex.: 4 recenseadores levam 15 dias; 6 levam x. Inversa: 4 × 15 = 6 × x → 60 = 6x → x = 10 dias. Confira: mais gente, menos dias. Faz sentido."},
+{"t":"Unidades primeiro","txt":"Antes de montar, deixe tudo na mesma unidade: minutos com minutos, metros com metros. Ex.: 45 min para 30% da bateria; para 70% são 45 × 70 ÷ 30 = 105 min = 1 h 45 min."}],
+"exemplos":[
+{"p":"Andando 50 m, uma pessoa dá 65 passos. Quantos passos em 400 m?","r":"Direta: 400 ÷ 50 = 8; 8 × 65 = 520 passos."},
+{"p":"A 60 km/h uma viagem leva 3 h. A 90 km/h, quanto leva?","r":"Inversa: 60 × 3 = 90 × x → x = 2 h."}],
+"pegadinhas":["Mais trabalhadores, menos tempo: inversa.","Mais velocidade, menos tempo: inversa.","Sempre confira se a resposta faz sentido."],
+"resumo":["Direta: aumenta com aumenta → multiplica cruzado.","Inversa: aumenta com diminui → multiplica em linha.","Iguale as unidades antes."],
+"qs":[
+{"nv":1,"p":"Se 4 kg de feijão custam R$ 18,00, quanto custam 10 kg do mesmo feijão?","o":["R$ 40,00","R$ 45,00","R$ 72,00","R$ 36,00","R$ 50,00"],"c":1,"e":"Direta: 4x = 10 × 18 = 180 → x = 45."},
+{"nv":2,"p":"Quatro recenseadores levam 15 dias para cobrir uma região. Mantendo o mesmo ritmo de trabalho, em quantos dias seis recenseadores cobririam a mesma região?","o":["22,5","12","8","10","20"],"c":3,"e":"Inversa: 4 × 15 = 6 × x → x = 10 dias."},
+{"nv":2,"p":"Ao caminhar 50 m, uma pessoa dá, em média, 65 passos. Quantos passos dará, em média, ao caminhar 400 m?","o":["520","480","325","600","260"],"c":0,"e":"Direta: 400 é 8 vezes 50; 8 × 65 = 520."},
+{"nv":2,"p":"A 60 km/h, um carro faz um percurso em 3 horas. Em quanto tempo faria o mesmo percurso a 90 km/h?","o":["4,5 h","1,5 h","2 h","2,5 h","3 h"],"c":2,"e":"Inversa: 60 × 3 = 90 × x → 180 = 90x → x = 2 h."},
+{"nv":3,"p":"Um tablet carrega 30% da bateria em 45 minutos. Mantido o mesmo ritmo, quanto tempo levará para ir de 30% a 100%?","o":["2 h 30 min","1 h 30 min","1 h 05 min","2 h","1 h 45 min"],"c":4,"e":"Faltam 70%. Direta: 30% → 45 min; 70% → 45 × 70 ÷ 30 = 105 min = 1 h 45 min."}]},
+
+{"id":"m06","disc":"mat","nivel":"alta","titulo":"Porcentagem: descontos, aumentos e partes de um gráfico","porque":"Caiu em 2010 (desconto de 20% e gráfico de setores) e cai em todo concurso. Quem domina o 'fator' resolve em segundos.",
+"blocos":[
+{"t":"O que é","txt":"Porcentagem é uma fração de denominador 100: 20% = 20/100 = 0,20. Para achar p% de um valor, multiplique pelo decimal: 20% de 36 = 0,20 × 36 = 7,20."},
+{"t":"Atalhos de cabeça","txt":"10%: divida por 10 (10% de 240 = 24). 5%: metade de 10% (12). 15% = 10% + 5% (36). 50% = metade; 25% = um quarto; 1% = divida por 100."},
+{"t":"Aumento e desconto pelo fator","txt":"Aumento de 25%: multiplique por 1,25 (80 × 1,25 = 100). Desconto de 20%: multiplique por 0,80 (36 × 0,80 = 28,80, e o desconto foi de 7,20). Aumentos e descontos sucessivos: multiplique os fatores. +10% e depois −10%: 1,10 × 0,90 = 0,99, ou seja, 1% a menos, e não 'volta ao mesmo preço'."},
+{"t":"Gráfico de setores","txt":"Num gráfico de pizza, cada fatia é um percentual do total. Para achar a quantidade, aplique o percentual ao total pesquisado. Se pedirem 'pelo menos o suficiente', some as fatias que atendem à condição antes de calcular."},
+{"t":"Quanto por cento é","txt":"Para saber quanto por cento A é de B: A ÷ B × 100. Ex.: 36 de 240 → 36 ÷ 240 = 0,15 = 15%."}],
+"exemplos":[
+{"p":"Uma camisa de R$ 36,00 teve desconto de 20%. Qual o desconto e o preço final?","r":"Desconto 0,20 × 36 = R$ 7,20. Preço final 36 × 0,80 = R$ 28,80."},
+{"p":"De 800 estabelecimentos, 30% vendem o excedente e 25% produzem só para o consumo. Quantos produzem pelo menos o suficiente para o consumo?","r":"30% + 25% = 55%; 0,55 × 800 = 440."}],
+"pegadinhas":["Aumento e desconto de mesmo percentual NÃO se anulam.","Leia se a questão pede o desconto ou o preço final.","'Pelo menos' manda somar as categorias que atendem."],
+"resumo":["p% = p/100.","Aumento: × (1 + p); desconto: × (1 − p).","Sucessivos: multiplique os fatores.","Quanto por cento: parte ÷ total × 100."],
+"qs":[
+{"nv":1,"p":"Uma loja deu 20% de desconto numa camisa de R$ 36,00. O valor do desconto foi de","o":["R$ 3,60","R$ 6,20","R$ 7,20","R$ 8,60","R$ 28,80"],"c":2,"e":"0,20 × 36 = 7,20. R$ 28,80 é o preço final, não o desconto."},
+{"nv":1,"p":"15% de 240 é igual a","o":["36","24","16","30","3,6"],"c":0,"e":"10% de 240 = 24; 5% = 12; 15% = 36."},
+{"nv":2,"p":"Um produto de R$ 80,00 sofreu aumento de 25%. O novo preço é","o":["R$ 105,00","R$ 100,00","R$ 85,00","R$ 120,00","R$ 95,00"],"c":1,"e":"80 × 1,25 = 100."},
+{"nv":2,"p":"Numa pesquisa com 800 estabelecimentos, 30% vendem o excedente da produção, 25% produzem apenas o suficiente para o consumo da família e os demais não produzem o suficiente. Quantos estabelecimentos produzem, pelo menos, o suficiente para o consumo?","o":["360","240","550","440","200"],"c":3,"e":"Pelo menos o suficiente: 30% + 25% = 55%. 0,55 × 800 = 440."},
+{"nv":3,"p":"Um produto de R$ 200,00 teve aumento de 10% e, em seguida, desconto de 10% sobre o novo preço. O preço final é","o":["R$ 202,00","R$ 220,00","R$ 200,00","R$ 180,00","R$ 198,00"],"c":4,"e":"200 × 1,10 = 220; 220 × 0,90 = 198. Os percentuais não se anulam."}]},
+
+{"id":"m07","disc":"mat","nivel":"alta","titulo":"Equações do 1º grau e problemas","porque":"Transformar o texto em equação é o que a banca testa. Caiu em 2010 (cafezinhos e sorvete).",
+"blocos":[
+{"t":"O que é","txt":"Equação é uma igualdade com um valor desconhecido (x). Resolver é achar o x que torna a igualdade verdadeira. Regra: o que se faz de um lado se faz do outro. Ex.: 3x + 5 = 20 → 3x = 15 → x = 5."},
+{"t":"Passo a passo","txt":"1) Tire os parênteses (distributiva): 2(x − 3) = 10 → 2x − 6 = 10. 2) Passe os números para um lado e os x para o outro, trocando o sinal: 2x = 16. 3) Divida pelo número que multiplica o x: x = 8. 4) Confira substituindo: 2(8 − 3) = 10. Certo."},
+{"t":"Do texto para a equação","txt":"Chame de x o que a pergunta quer. 'O dobro' = 2x; 'a metade' = x/2; '12 a mais' = x + 12; 'a soma' = +; 'o restante' = total − parte. Ex.: três cafés e um sorvete custaram R$ 13,60 e o sorvete custa R$ 2,00 a mais que o café: 3x + (x + 2) = 13,60 → 4x = 11,60 → x = 2,90."},
+{"t":"Frações na equação","txt":"Multiplique tudo pelo denominador para sumir com a fração: x + x/2 = 45 → (× 2) 2x + x = 90 → 3x = 90 → x = 30."}],
+"exemplos":[
+{"p":"Em duas semanas um recenseador visitou 84 estabelecimentos; na segunda, 12 a mais que na primeira. Quantos na primeira?","r":"x + (x + 12) = 84 → 2x = 72 → x = 36."},
+{"p":"Pagou 3 cafés e 1 sorvete com R$ 20 e recebeu R$ 6,40 de troco; o sorvete custa R$ 2 a mais que o café. Preço do café?","r":"Gasto: 20 − 6,40 = 13,60. 3x + x + 2 = 13,60 → x = 2,90."}],
+"pegadinhas":["Ao passar um termo para o outro lado, troque o sinal.","Confira a resposta substituindo na equação.","Se houver troco, calcule primeiro quanto foi gasto."],
+"resumo":["Isolar o x: números de um lado, x do outro.","Tire parênteses e frações primeiro.","Traduza o texto: dobro, metade, a mais, restante."],
+"qs":[
+{"nv":1,"p":"A solução da equação 3x + 5 = 20 é","o":["5","25/3","15","4","6"],"c":0,"e":"3x = 15 → x = 5."},
+{"nv":1,"p":"A solução da equação 2(x − 3) = 10 é","o":["2","13/2","7","8","5"],"c":3,"e":"2x − 6 = 10 → 2x = 16 → x = 8."},
+{"nv":2,"p":"Ao pagar três cafés e um sorvete com uma nota de R$ 20,00, Ana recebeu R$ 6,40 de troco. Se o sorvete custa R$ 2,00 a mais que cada café, o preço de um café é","o":["R$ 2,40","R$ 2,90","R$ 3,40","R$ 3,90","R$ 2,60"],"c":1,"e":"Gasto 13,60. 3x + (x + 2) = 13,60 → 4x = 11,60 → x = 2,90."},
+{"nv":2,"p":"Um número somado à sua metade resulta em 45. Esse número é","o":["15","22,5","30","40","90"],"c":2,"e":"x + x/2 = 45 → 3x/2 = 45 → x = 30."},
+{"nv":3,"p":"Em duas semanas, um recenseador visitou 84 estabelecimentos. Na segunda semana, visitou 12 estabelecimentos a mais que na primeira. Quantos visitou na primeira semana?","o":["42","48","30","24","36"],"c":4,"e":"x + (x + 12) = 84 → 2x = 72 → x = 36."}]},
+
+{"id":"m08","disc":"mat","nivel":"média","titulo":"Medidas e conversões: comprimento, área, volume, massa e tempo","porque":"O edital pede o sistema métrico decimal e a conversão de medidas. Hectare é essencial para o Censo Agro.",
+"blocos":[
+{"t":"Comprimento","txt":"km, hm, dam, m, dm, cm, mm. Cada degrau vale 10 vezes o seguinte. Para descer um degrau, multiplique por 10; para subir, divida por 10. 2,5 km = 2.500 m; 150.000 cm = 1.500 m = 1,5 km."},
+{"t":"Área","txt":"Na área, cada degrau vale 100 (porque é comprimento × comprimento): 1 m² = 10.000 cm². No campo: 1 hectare (ha) = 10.000 m² (um quadrado de 100 m × 100 m). 1 km² = 100 ha. 4,5 ha = 45.000 m²."},
+{"t":"Volume e capacidade","txt":"No volume, cada degrau vale 1.000: 1 m³ = 1.000 dm³. Ligação com litros: 1 dm³ = 1 L e 1 m³ = 1.000 L. 1 L = 1.000 mL."},
+{"t":"Massa","txt":"kg, hg, dag, g, dg, cg, mg, cada degrau valendo 10. 1 kg = 1.000 g; 1 tonelada (t) = 1.000 kg."},
+{"t":"Tempo","txt":"O tempo não é decimal: 1 h = 60 min; 1 min = 60 s; 1 dia = 24 h. 3 h 15 min = 3 × 60 + 15 = 195 min. 50 min = 50 × 60 = 3.000 s. Cuidado: 1,5 h é 1 h 30 min, e não 1 h 50 min."}],
+"exemplos":[
+{"p":"54.000 litros de água escoaram em 15 minutos. Quantos litros por segundo?","r":"15 min = 900 s; 54.000 ÷ 900 = 60 L/s."},
+{"p":"Quantos hectares tem um terreno de 200 m × 150 m?","r":"30.000 m² ÷ 10.000 = 3 ha."}],
+"pegadinhas":["Área: degraus de 100; volume: degraus de 1.000.","Tempo não usa vírgula decimal como minutos: 1,5 h = 1 h 30 min.","1 ha = 10.000 m²."],
+"resumo":["Comprimento ×10; área ×100; volume ×1.000.","1 m³ = 1.000 L; 1 dm³ = 1 L.","1 ha = 10.000 m²; 1 km² = 100 ha.","1 h = 60 min = 3.600 s."],
+"qs":[
+{"nv":1,"p":"2,5 km correspondem a","o":["250 m","25 m","2.500 m","25.000 m","0,25 m"],"c":2,"e":"1 km = 1.000 m; 2,5 × 1.000 = 2.500 m."},
+{"nv":1,"p":"3 horas e 15 minutos correspondem a","o":["315 min","195 min","185 min","180 min","225 min"],"c":1,"e":"3 × 60 + 15 = 195 min."},
+{"nv":2,"p":"Uma área de 4,5 hectares corresponde a","o":["45.000 m²","4.500 m²","450.000 m²","450 m²","4.500.000 m²"],"c":0,"e":"1 ha = 10.000 m²; 4,5 × 10.000 = 45.000 m²."},
+{"nv":2,"p":"Ao se romper a comporta de um açude, 54.000 litros de água escoaram em 15 minutos. Em média, quantos litros escoaram por segundo?","o":["3.600","60","360","36","600"],"c":1,"e":"15 min = 900 s; 54.000 ÷ 900 = 60 L/s."},
+{"nv":3,"p":"Uma caixa d'água tem a forma de um paralelepípedo de 2 m de comprimento, 1,5 m de largura e 1 m de altura. Sua capacidade é de","o":["30.000 L","300 L","4.500 L","3.000 L","4,5 L"],"c":3,"e":"Volume: 2 × 1,5 × 1 = 3 m³ = 3.000 L."}]},
+
+{"id":"m09","disc":"mat","nivel":"média","titulo":"Áreas, perímetros e volumes","porque":"Terrenos, tanques de peixe e silos: o Censo Agro mede área e volume o tempo todo, e a prova usa esses contextos.",
+"blocos":[
+{"t":"Perímetro","txt":"Perímetro é o contorno: a soma de todos os lados. Retângulo de 40 m × 25 m: 40 + 25 + 40 + 25 = 130 m (ou 2 × (40 + 25)). Serve para calcular cerca, muro ou caminhada em volta."},
+{"t":"Áreas das figuras","txt":"Retângulo: base × altura (40 × 25 = 1.000 m²). Quadrado: lado × lado. Triângulo: base × altura ÷ 2 (30 × 20 ÷ 2 = 300 m²). Trapézio: (base maior + base menor) × altura ÷ 2. Círculo: π × raio², com π ≈ 3,14. Figura irregular: divida em retângulos e triângulos e some."},
+{"t":"Volume","txt":"Paralelepípedo (caixa, tanque): comprimento × largura × altura. Cubo: aresta³. Cilindro: área da base (π × r²) × altura. Para litros, lembre: 1 m³ = 1.000 L. Tanque de 10 m × 6 m × 1,5 m = 90 m³ = 90.000 L."},
+{"t":"Unidades","txt":"Perímetro em m; área em m² ou ha; volume em m³ ou litros. Converta antes de calcular se as medidas estiverem em unidades diferentes."}],
+"exemplos":[
+{"p":"Quantos metros de arame para cercar com 3 fios um pasto de 50 m × 30 m?","r":"Perímetro 2 × (50 + 30) = 160 m; 3 fios: 480 m."},
+{"p":"Área de um terreno de 200 m × 150 m em hectares.","r":"30.000 m² = 3 ha."}],
+"pegadinhas":["Perímetro soma; área multiplica.","Triângulo: não esqueça de dividir por 2.","Volume em m³ vira litros multiplicando por 1.000."],
+"resumo":["Perímetro = soma dos lados.","Retângulo b × h; triângulo b × h ÷ 2; círculo π r².","Volume da caixa = c × l × a; 1 m³ = 1.000 L."],
+"qs":[
+{"nv":1,"p":"O perímetro de um terreno retangular de 40 m por 25 m é","o":["65 m","1.000 m","260 m","130 m","100 m"],"c":3,"e":"2 × (40 + 25) = 130 m."},
+{"nv":1,"p":"A área de um terreno retangular de 40 m por 25 m é","o":["1.000 m²","130 m²","65 m²","900 m²","10.000 m²"],"c":0,"e":"40 × 25 = 1.000 m²."},
+{"nv":2,"p":"Um terreno triangular tem 30 m de base e 20 m de altura. Sua área é","o":["600 m²","50 m²","300 m²","150 m²","100 m²"],"c":2,"e":"30 × 20 ÷ 2 = 300 m²."},
+{"nv":2,"p":"Um terreno retangular mede 200 m por 150 m. Sua área, em hectares, é","o":["30 ha","0,3 ha","300 ha","3 ha","3.000 ha"],"c":3,"e":"200 × 150 = 30.000 m²; 30.000 ÷ 10.000 = 3 ha."},
+{"nv":3,"p":"Um tanque para criação de peixes tem forma de paralelepípedo, com 10 m de comprimento, 6 m de largura e 1,5 m de profundidade. Cheio, ele comporta","o":["9.000 L","900 L","900.000 L","17.500 L","90.000 L"],"c":4,"e":"10 × 6 × 1,5 = 90 m³ = 90.000 L."}]},
+
+{"id":"m10","disc":"mat","nivel":"básica","titulo":"Tabelas, gráficos e quadros informativos","porque":"É o assunto mais 'IBGE' da Matemática. Em 2010 caíram gráfico de setores e gráfico de barras. São pontos de leitura atenta, sem conta difícil.",
+"blocos":[
+{"t":"Antes de tudo","txt":"Leia o título, a fonte e a unidade (mil, toneladas, %). Muitas questões erradas vêm de ignorar que os números estão 'em mil' ou que o eixo não começa no zero."},
+{"t":"Tabela","txt":"Cruze a linha com a coluna para achar o dado. Para comparar, subtraia; para o total, some; para a média, some e divida pela quantidade."},
+{"t":"Gráfico de barras ou colunas","txt":"Compara quantidades entre categorias. Use os números escritos nas barras quando houver; o tamanho visual pode enganar."},
+{"t":"Gráfico de setores (pizza)","txt":"Mostra partes de um todo; as fatias somam 100%. Quantidade = percentual × total."},
+{"t":"Gráfico de linhas","txt":"Mostra evolução no tempo. Subida = aumento; descida = queda; o ponto mais alto é o máximo do período."}],
+"exemplos":[
+{"p":"Produção de leite (mil litros): jan 120, fev 95, mar 140, abr 110. Qual a média mensal?","r":"(120 + 95 + 140 + 110) ÷ 4 = 465 ÷ 4 = 116,25 mil litros."},
+{"p":"Num gráfico de setores com 800 estabelecimentos, a fatia de pecuária é 30%.","r":"0,30 × 800 = 240 estabelecimentos."}],
+"pegadinhas":["Confira a unidade: '120' pode ser 120 mil.","Média: divida pela quantidade de valores, não pelo maior.","'A mais que' pede diferença."],
+"resumo":["Título, fonte, unidade.","Tabela: cruzar linha e coluna.","Setores: percentual × total.","Média = soma ÷ quantidade."],
+"qs":[
+{"nv":1,"p":"A tabela mostra a produção de leite (em mil litros) de uma cooperativa: janeiro 120; fevereiro 95; março 140; abril 110. O mês de maior produção foi","o":["janeiro","fevereiro","março","abril","todos tiveram a mesma produção"],"c":2,"e":"140 mil litros em março é o maior valor."},
+{"nv":2,"p":"Com os dados da cooperativa (janeiro 120; fevereiro 95; março 140; abril 110, em mil litros), a produção total de janeiro a março foi de","o":["355 mil litros","465 mil litros","345 mil litros","335 mil litros","255 mil litros"],"c":0,"e":"120 + 95 + 140 = 355 mil litros."},
+{"nv":2,"p":"Um gráfico de setores mostra que, de 800 estabelecimentos pesquisados, 45% têm lavoura temporária, 30% pecuária, 15% horticultura e 10% outras atividades. Quantos estabelecimentos têm pecuária?","o":["300","240","120","360","30"],"c":1,"e":"0,30 × 800 = 240."},
+{"nv":2,"p":"Um gráfico de barras mostra as vagas de recenseador em três municípios: A, 1.250; B, 980; C, 1.430. Quantas vagas o município C tem a mais que o município B?","o":["180","550","350","450","2.410"],"c":3,"e":"1.430 − 980 = 450."},
+{"nv":3,"p":"Com os dados da cooperativa (janeiro 120; fevereiro 95; março 140; abril 110, em mil litros), a média mensal de produção nos quatro meses foi de","o":["115 mil litros","120 mil litros","117,5 mil litros","465 mil litros","116,25 mil litros"],"c":4,"e":"465 ÷ 4 = 116,25 mil litros."}]},
+
+{"id":"m11","disc":"mat","nivel":"básica","titulo":"Mapas, croquis, escalas e representações gráficas","porque":"O último item do edital de Matemática conversa direto com o trabalho de campo: escala, orientação e croqui.",
+"blocos":[
+{"t":"Escala numérica","txt":"1:100.000 quer dizer que 1 unidade no mapa vale 100.000 iguais no terreno: 1 cm = 100.000 cm = 1 km. Para achar a distância real: medida no mapa × denominador, depois converta. Para achar a escala: distância real (em cm) ÷ distância no mapa (em cm). Ex.: 4 km = 400.000 cm em 8 cm → 1:50.000."},
+{"t":"Escala gráfica","txt":"É uma régua desenhada no mapa (por exemplo, um segmento marcado 0 a 1 km). Compare a distância que você quer medir com essa régua."},
+{"t":"Orientação","txt":"Rosa dos ventos: Norte (N), Sul (S), Leste (L ou E), Oeste (O ou W). Olhando para o Norte, o Leste fica à direita e o Oeste, à esquerda. Colaterais: NE, NO, SE, SO, entre os principais."},
+{"t":"Croqui e esquema","txt":"Croqui é um desenho simples, feito à mão, que mostra a posição dos elementos (estrada, rio, casa, porteira) sem precisão de medida. Esquema e representação gráfica mostram relações (sequência, rota, organização) de forma simplificada. Leia a legenda e as setas."},
+{"t":"Distância e tempo","txt":"Depois de converter a escala, use velocidade para estimar o tempo: tempo = distância ÷ velocidade. 3,5 km a 5 km/h = 0,7 h = 42 min."}],
+"exemplos":[
+{"p":"Mapa 1:20.000; distância de 6,5 cm.","r":"6,5 × 20.000 = 130.000 cm = 1.300 m = 1,3 km."},
+{"p":"Caminhando para o Norte, viro à direita. Para onde vou?","r":"Para o Leste."}],
+"pegadinhas":["Converta cm para m (÷ 100) e m para km (÷ 1.000).","0,7 h são 42 min, e não 70 min.","Croqui não tem escala exata."],
+"resumo":["Real = mapa × denominador.","Escala = real ÷ mapa (mesma unidade).","Voltado ao Norte: Leste à direita.","Tempo = distância ÷ velocidade."],
+"qs":[
+{"nv":1,"p":"Em um mapa na escala 1:100.000, 1 cm representa, no terreno,","o":["100 m","1 km","10 km","100 km","10 m"],"c":1,"e":"100.000 cm = 1.000 m = 1 km."},
+{"nv":2,"p":"Em um mapa na escala 1:20.000, a distância entre duas porteiras é de 6,5 cm. A distância real é de","o":["13 km","130 m","1,3 km","3,25 km","1,5 km"],"c":2,"e":"6,5 × 20.000 = 130.000 cm = 1.300 m = 1,3 km."},
+{"nv":2,"p":"Num mapa, dois povoados que estão a 4 km de distância aparecem separados por 8 cm. A escala desse mapa é","o":["1:50.000","1:5.000","1:500","1:500.000","1:32.000"],"c":0,"e":"4 km = 400.000 cm; 400.000 ÷ 8 = 50.000. Escala 1:50.000."},
+{"nv":2,"p":"Um recenseador caminha em direção ao Norte e vira à sua direita. Ele passa a caminhar em direção ao","o":["Oeste","Sul","Leste","Noroeste","Sudoeste"],"c":2,"e":"Voltado para o Norte, o Leste fica à direita."},
+{"nv":3,"p":"Na escala gráfica de um mapa, 2 cm correspondem a 1 km. Uma estrada mede 7 cm nesse mapa. Caminhando a 5 km/h, quanto tempo leva para percorrê-la?","o":["35 min","1 h 10 min","21 min","42 min","1 h 24 min"],"c":3,"e":"7 cm = 3,5 km. 3,5 ÷ 5 = 0,7 h = 42 min."}]}
+]

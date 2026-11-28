@@ -376,3 +376,28 @@ Ficaram de fora, de propósito:
 - **Textos atualizados:** certificados, painel da ANBIMA, simulado e contexto do tutor.
 - **Revisor de UI:** não rodou, porque a mudança é só de texto e data, sem tela nova.
 - **Testes:** 222/222.
+
+## 24. Curso da prova: Recenseador IBGE 2027 (28/11/2026)
+
+- **Pedido:** a dona quer estudar tudo o que cai na prova dentro do Yaad1, com aulas criadas pelo próprio app e na ordem do mais difícil para o mais fácil (quadro "Projeto de Preparação Completa"). O método pedido: revisão, aula, exemplos, exercícios, questões no padrão da banca, correção, avaliação com meta de 80% e registro. As revisões ficam em 1, 3, 7, 15 e 30 dias. Não deve depender só de videoaulas nem de apostilas pagas.
+- **Estudo feito antes de escrever:**
+  - a apostila oficial inteira, inclusive as tabelas em imagem (páginas 33, 34, 43, 47, 54 e 55);
+  - o Anexo III do edital;
+  - a prova de 2010 com o gabarito conferido;
+  - os assuntos das provas do IBFC de 27/09/2026, que usaram a mesma apostila.
+- **O curso:**
+  - 36 aulas e 180 questões, em `conteudo/trilha-ibge/` (veja o README).
+  - Técnicos tem 14 aulas, com a página da apostila em cada regra. Matemática e Português têm 11 aulas cada.
+  - O curso é validado e embutido por `ferramentas/embutir-trilha.py`. O `checar-sintaxe.py` agora ignora blocos JSON.
+- **No app:**
+  - **`openTrilha()`:** mapa do curso, com o estado de cada aula (não iniciada, aprendendo, reforço, em revisão, dominada) e as revisões do dia em primeiro lugar.
+  - **`openLicao()`:** a aula mostra por que o assunto cai, explicação, exemplos com a resolução escondida, pegadinhas e resumo. Também tem as opções de ouvir, guardar o resumo no caderno e "explicar de outro jeito" (Claude, só a partir do texto da aula).
+  - **Teste e revisão:** 5 questões no teste, com as letras embaralhadas a cada tentativa, e 3 questões na revisão. A correção é comentada.
+  - **Regras:** com 80% ou mais, a aula vai para revisão. Ela fica dominada depois das revisões de 1, 3 e 7 dias. Erro vai para a Forja. As respostas entram em "Sua preparação".
+- **Ligações:**
+  - o bloco do IBGE na agenda abre primeiro a revisão vencida daquela matéria e, se não houver, a próxima aula; o bloco fica registrado;
+  - "Estudar agora" da frente abre a próxima aula;
+  - o passo de hoje mostra o título da próxima aula;
+  - na Sala viva, o ambiente "Curso da prova" substitui "Treino da prova", e o treino de questões fica dentro do curso;
+  - a frente e "Sua preparação" também têm atalhos para o curso.
+- **Testes:** 244/244, com o cenário novo "Curso da prova: 36 aulas, teste com 80%, Forja, revisões e agenda".
